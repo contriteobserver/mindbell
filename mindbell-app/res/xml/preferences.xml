@@ -17,7 +17,7 @@
 
 <PreferenceScreen
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:mindful="http://mindful-apps.com/ns">
+        xmlns:mindful="http://dknapps.de/ns">
 
     <PreferenceCategory
             android:title="@string/prefsCategoryGlobal">
@@ -49,7 +49,7 @@
 			android:dialogTitle="@string/prefsVolume" />
 			 -->
 			 
-		<com.googlecode.mindbell.preference.MediaVolumePreference  android:key="@string/keyVolume"
+		<de.dknapps.mindbell.preference.MediaVolumePreference  android:key="@string/keyVolume"
 	        android:title="@string/prefsVolume"
 			android:dialogTitle="@string/prefsVolume"
 			mindful:ringtone="@raw/bell10s"
