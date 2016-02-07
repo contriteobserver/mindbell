@@ -119,9 +119,4 @@
         
 	</PreferenceCategory>
 
-    <!-- PreferenceCategory
-            android:title="@string/prefsCategoryTry">
-            <Preference android:key="@string/keyTry" android:title="@string/prefsRingBell"/>
-	</PreferenceCategory-->
-
 </PreferenceScreen>

@@ -16,14 +16,14 @@
 -->
 <resources>
 
-    <string name="app_name">Mindfulness Bell</string>
+    <string name="app_name">MindBell</string>
 
     <!-- Main window -->
-    <string name="explanation">The Mindfulness Bell rings periodically during the day,
-	 to give you the opportunity to hold on for a moment and consider what you are 
-	 currently doing, and in what state of mind you are while you are doing it. 
-	 According to the Buddhist teacher Thich Nhat Hanh, this is an effective 
-	 means of developing mindfulness.</string>
+    <string name="explanation">MindBell rings periodically during the day as a mindfulness
+    	bell, to give you the opportunity to hold on for a moment and consider what you are 
+		currently doing, and in what state of mind you are while you are doing it. 
+		According to the Buddhist teacher Thich Nhat Hanh, this is an effective 
+		means of developing mindfulness.</string>
     <string name="howToSet">To activate the bell, use the menu button.</string>
 
     <!-- Menu -->
@@ -31,11 +31,11 @@
     <string name="menuAbout">About MindBell</string>
 
     <!-- Preference window -->
-    <string name="preferencesTitle">Mindfulness Bell Preferences</string>
+    <string name="preferencesTitle">MindBell Preferences</string>
     <string name="prefsCategoryGlobal">Global settings</string>
-    <string name="prefsActive">Mindfulness Bell Active</string>
-    <string name="summaryNotActive">Mindfulness Bell is turned off.</string>
-    <string name="summaryActive">Mindfulness Bell is turned on.</string>
+    <string name="prefsActive">Activate bell</string>
+    <string name="summaryNotActive">Bell is turned off</string>
+    <string name="summaryActive">Bell is turned on</string>
     <string name="prefsCategoryDisplay">Display</string>
     <string name="prefsShow">Show bell when ringing</string>
     <string name="summaryShow">Play sound and show bell</string>
@@ -61,17 +61,15 @@
     <string name="prefsFrequency">Ring bell about every &#8230;</string>
     <string name="prefsStart">Start bell every day at &#8230;</string>
     <string name="prefsEnd">Stop bell every day at &#8230;</string>
-    <string name="prefsCategoryTry">Try it now</string>
-    <string name="prefsRingBell">Ring Bell</string>
     <string name="prefsActiveOnDaysOfWeek">Days of week to be active &#8230;</string>
     <string name="atLeastOneActiveDayNeeded">Specify at least one day</string>
 
 	<!-- AboutActivity -->
-	<string name="title_activity_about">About PswGenDroid</string>
+	<string name="title_activity_about">About MindBell</string>
 	<string name="about_html_text_url">file:///android_asset/about.html</string>
 
     <!-- Status bar notification -->
-    <string name="statusTitleBellActive">Mindfulness Bell is active</string>
+    <string name="statusTitleBellActive">MindBell is active</string>
     <string name="statusTextBellActive">_STARTTIME_ to _ENDTIME_ on _WEEKDAYS_</string>
 
     <!-- Reasons why bell is muted -->
@@ -80,12 +78,14 @@
     <string name="reasonMutedInFlightMode">Bell muted in flight mode</string>
 
     <!-- Offer popup -->
+    <!--
     <string name="main_title_popup">New from Mindful Apps</string>
     <string name="main_message1_popup">Nature Sounds Alarm Clock - the alarm that you set with your finger!</string>
     <string name="main_message2_popup">Wake up to pleasant nature sounds.</string>
     <string name="main_yes_popup">Show me</string>
     <string name="main_no_popup">No thanks</string>
     <string name="main_uri_popup" translatable="false">market://details?id=com.mindful_apps.alarm.natural</string>
+    -->
 
     <!-- Preference keys (don't localize) -->
     <string name="keyActive" translatable="false">active</string>

@@ -16,31 +16,32 @@
 -->
 <resources>
 
-    <string name="app_name">Glocke der Achtsamkeit</string>
+    <string name="app_name">MindBell</string>
 
     <!-- Main window -->
-    <string name="explanation">	Die Glocke der Achtsamkeit erklingt regelmäßig im Laufe des Tages. Dadurch können wir 
-	kurz innehalten und uns bewusst werden, was wir gerade tun, und in welchem 
-	Geisteszustand wir das angehen, was wir gerade tun. Gemäß dem buddhistischen
-	Lehrer Thich Nhat Hanh ist dies ein wirksames Mittel, um Achtsamkeit zu entwickeln.</string>
+    <string name="explanation">MindBell erklingt regelmäßig als Achtsamkeitsglocke im
+	    Laufe des Tages. Dadurch können wir kurz innehalten und uns bewusst werden, was wir
+	    gerade tun, und in welchem Geisteszustand wir das angehen, was wir gerade tun. Gemäß
+	    dem buddhistischen Lehrer Thich Nhat Hanh ist dies ein wirksames Mittel, um Achtsamkeit
+	    zu entwickeln.</string>
     <string name="howToSet">Mit dem Menü-Knopf können Sie die Glocke aktivieren.</string>
 
     <!-- Menu -->
     <string name="menuSettings">Einstellungen</string>
-    <string name="menuAbout">Über Glocke der Achtsamkeit</string>
+    <string name="menuAbout">Über MindBell</string>
 
     <!-- Preference window -->
-    <string name="preferencesTitle">Glocke der Achtsamkeit: Einstellungen</string>
+    <string name="preferencesTitle">MindBell Einstellungen</string>
     <string name="prefsCategoryGlobal">Globale Einstellungen</string>
-    <string name="prefsActive">Glocke der Achtsamkeit aktiv</string>
-    <string name="summaryNotActive">Glocke ist derzeit ausgeschaltet.</string>
-    <string name="summaryActive">Glocke ist derzeit angeschaltet.</string>
+    <string name="prefsActive">Glocke aktivieren</string>
+    <string name="summaryNotActive">Glocke ist derzeit ausgeschaltet</string>
+    <string name="summaryActive">Glocke ist derzeit angeschaltet</string>
     <string name="prefsCategoryDisplay">Anzeige</string>
-    <string name="prefsShow">Glocke beim Schlagen zeigen</string>
+    <string name="prefsShow">Glocke beim Läuten zeigen</string>
     <string name="summaryShow">Klang abspielen und Glocke anzeigen</string>
-    <string name="summaryDontShow">Klang abspielen aber Glocke nicht zeigen</string>
+    <string name="summaryDontShow">Klang abspielen, aber Glocke nicht zeigen</string>
     <string name="prefsStatus">Status-Icon anzeigen</string>
-    <string name="summaryStatus">Zeige Status-Icon wenn Glocke aktiv ist</string>
+    <string name="summaryStatus">Zeige Status-Icon bei aktiver Glocke</string>
     <string name="summaryNoStatus">Kein Status-Icon</string>
     <string name="prefsCategorySound">Klang</string>
     <string name="prefsVolume">Lautstärke</string>
@@ -48,8 +49,8 @@
     <string name="summaryVibrate">Glocke vibriert beim Läuten</string>
     <string name="summaryNoVibrate">Glocke vibriert nicht beim Läuten</string>
     <string name="prefsMuteWithPhone">Mit Telefon stummschalten</string>
-    <string name="summaryMuteWithPhone">Glocke schlägt nicht im Lautlosmodus</string>
-    <string name="summaryNoMuteWithPhone">Glocke schlägt auch im Lautlosmodus</string>
+    <string name="summaryMuteWithPhone">Glocke läutet nicht im Lautlosmodus</string>
+    <string name="summaryNoMuteWithPhone">Glocke läutet auch im Lautlosmodus</string>
     <string name="prefsMuteOffHook">Beim Telefonieren still</string>
     <string name="summaryNotMuted">Glocke läutet auch während Telefongesprächen</string>
     <string name="summaryMuted">Glocke läutet nicht während Telefongesprächen</string>
@@ -57,16 +58,14 @@
     <string name="summaryNotMutedInFlightMode">Glocke läutet auch im Flugmodus</string>
     <string name="summaryMutedInFlightMode">Glocke läutet nicht im Flugmodus</string>
     <string name="prefsCategoryDetails">Details</string>
-    <string name="prefsFrequency">Schlage die Glocke etwa alle &#8230;</string>
+    <string name="prefsFrequency">Glocke läutet etwa alle &#8230;</string>
     <string name="prefsStart">Starte Glocke täglich um &#8230;</string>
     <string name="prefsEnd">Beende Glocke täglich um &#8230;</string>
-    <string name="prefsCategoryTry">Testen:</string>
-    <string name="prefsRingBell">Glocke schlagen</string>
     <string name="prefsActiveOnDaysOfWeek">Tage an denen die Glocke aktiv ist &#8230;</string>
     <string name="atLeastOneActiveDayNeeded">Mindestens einen Tag angeben</string>
     
     <!-- Status bar notification -->
-    <string name="statusTitleBellActive">Glocke der Achtsamkeit ist aktiv</string>
+    <string name="statusTitleBellActive">MindBell ist aktiv</string>
     <string name="statusTextBellActive">_STARTTIME_ bis _ENDTIME_ am _WEEKDAYS_</string>
 
     <!-- Reasons why bell is muted -->
