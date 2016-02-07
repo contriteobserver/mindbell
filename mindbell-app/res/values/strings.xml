@@ -28,7 +28,7 @@
 
     <!-- Menu -->
     <string name="menuSettings">Settings</string>
-    <string name="menuAbout">About Mindfulness Bell</string>
+    <string name="menuAbout">About MindBell</string>
 
     <!-- Preference window -->
     <string name="preferencesTitle">Mindfulness Bell Preferences</string>
@@ -65,6 +65,10 @@
     <string name="prefsRingBell">Ring Bell</string>
     <string name="prefsActiveOnDaysOfWeek">Days of week to be active &#8230;</string>
     <string name="atLeastOneActiveDayNeeded">Specify at least one day</string>
+
+	<!-- AboutActivity -->
+	<string name="title_activity_about">About PswGenDroid</string>
+	<string name="about_html_text_url">file:///android_asset/about.html</string>
 
     <!-- Status bar notification -->
     <string name="statusTitleBellActive">Mindfulness Bell is active</string>

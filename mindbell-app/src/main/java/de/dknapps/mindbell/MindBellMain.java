@@ -16,19 +16,13 @@
 package de.dknapps.mindbell;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.Toast;
 import de.dknapps.mindbell.accessors.AndroidContextAccessor;
 import de.dknapps.mindbell.accessors.AndroidPrefsAccessor;
@@ -40,19 +34,18 @@ public class MindBellMain extends Activity {
     private static final String KEY_POPUP = "popup";
     private SharedPreferences popupPrefs;
 
-    private void checkWhetherToShowPopup() {
-        if (!hasShownPopup()) {
-            setPopupShown(true);
-            showPopup();
-        }
-    }
+    // FIXME dkn For the time being there is no need to show a popup on first startup
+    // private void checkWhetherToShowPopup() {
+    // if (!hasShownPopup()) {
+    // setPopupShown(true);
+    // showPopup();
+    // }
+    // }
 
-    /**
-     * @return
-     */
-    private boolean hasShownPopup() {
-        return popupPrefs.getBoolean(KEY_POPUP, false);
-    }
+    // FIXME dkn For the time being there is no need to show a popup on first startup
+    // private boolean hasShownPopup() {
+    // return popupPrefs.getBoolean(KEY_POPUP, false);
+    // }
 
     /**
      *
@@ -70,18 +63,19 @@ public class MindBellMain extends Activity {
         setContentView(R.layout.main);
     }
 
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        Dialog dialog;
-        switch (id) {
-        case R.id.about:
-            dialog = new AboutDialog(this);
-            break;
-        default:
-            dialog = null;
-        }
-        return dialog;
-    }
+    // FIXME dkn Kann weg ...
+    // @Override
+    // protected Dialog onCreateDialog(int id) {
+    // Dialog dialog;
+    // switch (id) {
+    // case R.id.about:
+    // dialog = new AboutDialog(this);
+    // break;
+    // default:
+    // dialog = null;
+    // }
+    // return dialog;
+    // }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -90,18 +84,20 @@ public class MindBellMain extends Activity {
         inflater.inflate(R.menu.settings, menu);
         MenuItem settingsItem = menu.findItem(R.id.settings);
         settingsItem.setIntent(new Intent(this, MindBellPreferences.class));
-        // MenuItem aboutItem = menu.findItem(R.id.about);
+        MenuItem aboutItem = menu.findItem(R.id.about);
+        aboutItem.setIntent(new Intent(this, AboutActivity.class));
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.about) {
-            showDialog(R.id.about);
-            return true;
-        }
-        return false;
-    }
+    // FIXME dkn Kann weg ...
+    // @Override
+    // public boolean onOptionsItemSelected(MenuItem item) {
+    // if (item.getItemId() == R.id.about) {
+    // showDialog(R.id.about);
+    // return true;
+    // }
+    // return false;
+    // }
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
@@ -122,28 +118,28 @@ public class MindBellMain extends Activity {
     // }
     // }
 
-    private void setPopupShown(boolean shown) {
-        popupPrefs.edit().putBoolean(KEY_POPUP, shown).commit();
-    }
+    // FIXME dkn For the time being there is no need to show a popup on first startup
+    // private void setPopupShown(boolean shown) {
+    // popupPrefs.edit().putBoolean(KEY_POPUP, shown).commit();
+    // }
 
-    /**
-     *
-     */
-    private void showPopup() {
-        DialogInterface.OnClickListener yesListener = new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                takeUserToOffer();
-            }
-        };
+    // FIXME dkn For the time being there is no need to show a popup on first startup
+    // private void showPopup() {
+    // DialogInterface.OnClickListener yesListener = new DialogInterface.OnClickListener() {
+    // public void onClick(DialogInterface dialog, int which) {
+    // dialog.dismiss();
+    // takeUserToOffer();
+    // }
+    // };
+    //
+    // View popupView = LayoutInflater.from(this).inflate(R.layout.popup_dialog, null);
+    // new AlertDialog.Builder(this).setTitle(R.string.main_title_popup).setIcon(R.drawable.alarm_natural_icon)
+    // .setView(popupView).setPositiveButton(R.string.main_yes_popup, yesListener)
+    // .setNegativeButton(R.string.main_no_popup, null).show();
+    // }
 
-        View popupView = LayoutInflater.from(this).inflate(R.layout.popup_dialog, null);
-        new AlertDialog.Builder(this).setTitle(R.string.main_title_popup).setIcon(R.drawable.alarm_natural_icon)
-                .setView(popupView).setPositiveButton(R.string.main_yes_popup, yesListener)
-                .setNegativeButton(R.string.main_no_popup, null).show();
-    }
-
-    private void takeUserToOffer() {
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_uri_popup))));
-    }
+    // FIXME dkn For the time being there is no need to show a popup on first startup
+    // private void takeUserToOffer() {
+    // startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_uri_popup))));
+    // }
 }
