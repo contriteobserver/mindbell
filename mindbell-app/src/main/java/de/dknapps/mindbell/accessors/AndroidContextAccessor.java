@@ -23,8 +23,6 @@ import static de.dknapps.mindbell.MindBellPreferences.TAG;
 
 import java.io.IOException;
 
-import de.dknapps.mindbell.R;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -36,11 +34,13 @@ import android.net.Uri;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.provider.Settings.Global;
+import android.support.v4.app.NotificationCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 import de.dknapps.mindbell.MindBell;
 import de.dknapps.mindbell.MindBellMain;
+import de.dknapps.mindbell.R;
 import de.dknapps.mindbell.Scheduler;
 import de.dknapps.mindbell.util.Utils;
 
@@ -49,16 +49,16 @@ import de.dknapps.mindbell.util.Utils;
  *
  */
 public class AndroidContextAccessor extends ContextAccessor {
-    public static AndroidContextAccessor get(Context context) {
-        return new AndroidContextAccessor(context);
-    }
-
     public static final int KEYMUTEINFLIGHTMODE = R.string.keyMuteInFlightMode;
-    public static final int KEYMUTEOFFHOOK = R.string.keyMuteOffHook;
 
+    public static final int KEYMUTEOFFHOOK = R.string.keyMuteOffHook;
     public static final int KEYMUTEWITHPHONE = R.string.keyMuteWithPhone;
 
     private static final int uniqueNotificationID = R.layout.bell;
+
+    public static AndroidContextAccessor get(Context context) {
+        return new AndroidContextAccessor(context);
+    }
 
     private final Context context;
 
@@ -282,12 +282,20 @@ public class AndroidContextAccessor extends ContextAccessor {
             Log.i(TAG, "Update status notification: " + contentText);
             NotificationManager notificationManager = (NotificationManager) context
                     .getSystemService(Context.NOTIFICATION_SERVICE);
-            Notification notif = new Notification(statusDrawable, "", System.currentTimeMillis());
             Intent notificationIntent = new Intent(context, MindBellMain.class);
             PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
-            notif.setLatestEventInfo(context.getApplicationContext(), contentTitle, contentText, contentIntent);
-            notif.flags |= Notification.FLAG_ONGOING_EVENT;
+            Notification notif = null;
+            notif = new NotificationCompat.Builder(context.getApplicationContext()) //
+                    .setCategory(NotificationCompat.CATEGORY_ALARM) //
+                    .setContentTitle(contentTitle) //
+                    .setContentText(contentText) //
+                    .setContentIntent(contentIntent) //
+                    .setOngoing(true) //
+                    .setSmallIcon(statusDrawable) //
+                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC) //
+                    .setWhen(System.currentTimeMillis()) //
+                    .build();
             notificationManager.notify(uniqueNotificationID, notif);
         }
     }
