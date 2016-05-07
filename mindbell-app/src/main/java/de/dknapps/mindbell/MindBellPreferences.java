@@ -22,8 +22,6 @@ package de.dknapps.mindbell;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.dknapps.mindbell.R;
-
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
@@ -67,6 +65,8 @@ public class MindBellPreferences extends PreferenceActivity {
         }
     }
 
+    public static final String TAG = "MindBell";
+
     private static void setMultiSelectListPreferenceSummary(MultiSelectListPreference mslp, Set<?> newValues) {
         String[] weekdayAbbreviations = mslp.getContext().getResources().getStringArray(R.array.weekdayAbbreviations);
         StringBuilder sb = new StringBuilder();
@@ -81,8 +81,6 @@ public class MindBellPreferences extends PreferenceActivity {
         mslp.setSummary(sb.toString());
     }
 
-    public static final String TAG = "MindBell";
-
     private final Preference.OnPreferenceChangeListener listChangeListener = new ListChangeListener();
 
     private final Preference.OnPreferenceChangeListener multiSelectListChangeListener = new MultiSelectListChangeListener();
@@ -95,7 +93,9 @@ public class MindBellPreferences extends PreferenceActivity {
         new AndroidPrefsAccessor(this);
 
         // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.preferences);
+        addPreferencesFromResource(R.xml.preferences_1);
+        addPreferencesFromResource(R.xml.preferences_2); // notifications depend on SDK
+        addPreferencesFromResource(R.xml.preferences_3);
 
         setupListPreference(R.string.keyFrequency);
         setupListPreference(R.string.keyStart);

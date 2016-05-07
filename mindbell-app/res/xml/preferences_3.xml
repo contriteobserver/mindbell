@@ -25,42 +25,12 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:mindful="http://dknapps.de/ns">
 
-    <PreferenceCategory
-            android:title="@string/prefsCategoryGlobal">
-        <CheckBoxPreference
-                android:key="@string/keyActive"
-                android:title="@string/prefsActive"
-                android:summaryOff="@string/summaryNotActive"
-                android:summaryOn="@string/summaryActive"
-               	android:defaultValue="false" />
-    </PreferenceCategory>
-
-	<PreferenceCategory android:title="@string/prefsCategoryDisplay">
-	  <CheckBoxPreference android:key="@string/keyShow"
-	    android:title="@string/prefsShow"
-	    android:summaryOff="@string/summaryDontShow"
-	    android:summaryOn="@string/summaryShow"
-	    android:defaultValue="true"/>
-	  <CheckBoxPreference android:key="@string/keyStatus"
-	    android:title="@string/prefsStatus"
-	    android:summaryOff="@string/summaryNoStatus"
-	    android:summaryOn="@string/summaryStatus"
-	    android:defaultValue="true"/>
-	  <CheckBoxPreference android:key="@string/keyStatusVisibilityPublic"
-	    android:title="@string/prefsStatusVisibilityPublic"
-	    android:summaryOff="@string/summaryStatusVisibilityPrivate"
-	    android:summaryOn="@string/summaryStatusVisibilityPublic"
-	    android:defaultValue="true"
-	    android:dependency="@string/keyStatus"/>
-	</PreferenceCategory>
-
 	<PreferenceCategory android:title="@string/prefsCategorySound">
-<!-- 
+		<!-- 
 		<com.hlidskialf.android.preference.SeekBarPreference android:key="@string/keyVolume"
 	        android:title="@string/prefsVolume"
 			android:dialogTitle="@string/prefsVolume" />
-			 -->
-			 
+		-->
 		<de.dknapps.mindbell.preference.MediaVolumePreference  android:key="@string/keyVolume"
 	        android:title="@string/prefsVolume"
 			android:dialogTitle="@string/prefsVolume"
@@ -92,7 +62,6 @@
 
     <PreferenceCategory
             android:title="@string/prefsCategoryDetails">
-
         <ListPreference
                 android:key="@string/keyFrequency"
                 android:defaultValue="3600000"
@@ -101,7 +70,6 @@
                 android:entries="@array/bellFrequencies"
                 android:entryValues="@array/bellFrequencyValues"
                 android:dialogTitle="@string/prefsFrequency" />
-
         <ListPreference
                 android:key="@string/keyStart"
                 android:defaultValue="9"
@@ -110,7 +78,6 @@
                 android:entries="@array/hourStrings"
                 android:entryValues="@array/hourValues"
                 android:dialogTitle="@string/prefsStart" />
-
         <ListPreference
                 android:key="@string/keyEnd"
                 android:defaultValue="21"
@@ -119,7 +86,6 @@
                 android:entries="@array/hourStrings"
                 android:entryValues="@array/hourValues"
                 android:dialogTitle="@string/prefsEnd" />
-        
         <MultiSelectListPreference
                 android:key="@string/keyActiveOnDaysOfWeek"
                 android:defaultValue="@array/daysOfWeekValues"
@@ -128,7 +94,6 @@
                 android:entries="@array/daysOfWeek"
                 android:entryValues="@array/daysOfWeekValues"
                 android:dialogTitle="@string/prefsActiveOnDaysOfWeek" />
-        
 	</PreferenceCategory>
 
 </PreferenceScreen>
