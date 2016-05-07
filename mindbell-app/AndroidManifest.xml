@@ -19,7 +19,7 @@
     limitations under the License.
  -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="22" android:versionName="2.5.2" package="de.dknapps.mindbell">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="23" android:versionName="2.5.3" package="de.dknapps.mindbell">
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
