@@ -115,4 +115,6 @@ public abstract class PrefsAccessor {
         return false;
     }
 
+    public abstract boolean makeStatusNotificationVisibilityPublic();
+
 }

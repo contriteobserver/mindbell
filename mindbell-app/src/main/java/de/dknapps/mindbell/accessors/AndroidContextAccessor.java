@@ -285,15 +285,16 @@ public class AndroidContextAccessor extends ContextAccessor {
             Intent notificationIntent = new Intent(context, MindBellMain.class);
             PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
-            Notification notif = null;
-            notif = new NotificationCompat.Builder(context.getApplicationContext()) //
+            int visibility = (prefs.makeStatusNotificationVisibilityPublic()) ? NotificationCompat.VISIBILITY_PUBLIC
+                    : NotificationCompat.VISIBILITY_PRIVATE;
+            Notification notif = new NotificationCompat.Builder(context.getApplicationContext()) //
                     .setCategory(NotificationCompat.CATEGORY_ALARM) //
                     .setContentTitle(contentTitle) //
                     .setContentText(contentText) //
                     .setContentIntent(contentIntent) //
                     .setOngoing(true) //
                     .setSmallIcon(statusDrawable) //
-                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC) //
+                    .setVisibility(visibility) //
                     .setWhen(System.currentTimeMillis()) //
                     .build();
             notificationManager.notify(uniqueNotificationID, notif);

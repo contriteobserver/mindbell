@@ -31,6 +31,8 @@ public class MockPrefsAccessor extends PrefsAccessor {
     private boolean showBell = true;
 
     private boolean statusNotification = true;
+    
+    private boolean statusNotificationVisibilityPublic = true;
 
     private TimeOfDay daytimeEnd = new TimeOfDay(21, 0);
 
@@ -101,6 +103,11 @@ public class MockPrefsAccessor extends PrefsAccessor {
     @Override
     public boolean isBellActive() {
         return bellActive;
+    }
+
+    @Override
+    public boolean makeStatusNotificationVisibilityPublic() {
+        return statusNotificationVisibilityPublic;
     }
 
     /**

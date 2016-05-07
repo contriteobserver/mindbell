@@ -47,6 +47,9 @@
     <string name="prefsStatus">Status-Icon anzeigen</string>
     <string name="summaryStatus">Zeige Status-Icon bei aktiver Glocke</string>
     <string name="summaryNoStatus">Kein Status-Icon</string>
+    <string name="prefsStatusVisibilityPublic">Zeige Text auf Sperrbildschirm</string>
+    <string name="summaryStatusVisibilityPrivate">Text auf Sperrbildschirm ausblenden</string>
+    <string name="summaryStatusVisibilityPublic">Text auf Sperrbildschirm anzeigen</string>
     <string name="prefsCategorySound">Klang</string>
     <string name="prefsVolume">Lautstärke</string>
     <string name="prefsVibrate">Vibrieren</string>

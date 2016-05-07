@@ -30,9 +30,8 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import de.dknapps.mindbell.util.TimeOfDay;
-
 import de.dknapps.mindbell.R;
+import de.dknapps.mindbell.util.TimeOfDay;
 
 /**
  * @author marc
@@ -46,6 +45,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private final String keyActive;
     private final String keyShow;
     private final String keyStatus;
+    private final String keyStatusVisibilityPublic;
     private final String keyMuteInFlightMode;
     private final String keyMuteOffHook;
     private final String keyMuteWithPhone;
@@ -61,6 +61,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private final boolean defaultActive = false;
     private final boolean defaultShow = true;
     private final boolean defaultStatus = true;
+    private final boolean defaultStatusVisibilityPublic = true;
     private final boolean defaultMuteInFlightMode = false;
     private final boolean defaultMuteOffHook = true;
     private final boolean defaultMuteWithPhone = true;
@@ -69,8 +70,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private final String defaultFrequency = "3600000";
     private final String defaultStart = "9";
     private final String defaultEnd = "21";
-    private final Set<String> defaultActiveOnDaysOfWeek = new HashSet<String>(Arrays.asList(new String[] { "2", "3", "4", "5",
-            "6" })); // MO-FR
+    private final Set<String> defaultActiveOnDaysOfWeek = new HashSet<String>(
+            Arrays.asList(new String[] { "2", "3", "4", "5", "6" })); // MO-FR
     private final String[] weekdayAbbreviations;
 
     private final float defaultVolume = AndroidContextAccessor.MINUS_SIX_DB;
@@ -89,6 +90,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         keyActive = context.getString(R.string.keyActive);
         keyShow = context.getString(R.string.keyShow);
         keyStatus = context.getString(R.string.keyStatus);
+        keyStatusVisibilityPublic = context.getString(R.string.keyStatusVisibilityPublic);
         keyMuteInFlightMode = context.getString(R.string.keyMuteInFlightMode);
         keyMuteOffHook = context.getString(R.string.keyMuteOffHook);
         keyMuteWithPhone = context.getString(R.string.keyMuteWithPhone);
@@ -110,8 +112,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
      */
     private void checkSettings() {
         // boolean settings:
-        String[] booleanSettings = new String[] { keyShow, keyStatus, keyActive, keyMuteInFlightMode, keyMuteOffHook,
-                keyMuteWithPhone, keyVibrate };
+        String[] booleanSettings = new String[] { keyShow, keyStatus, keyStatusVisibilityPublic, keyActive, keyMuteInFlightMode,
+                keyMuteOffHook, keyMuteWithPhone, keyVibrate };
         for (String s : booleanSettings) {
             try {
                 settings.getBoolean(s, false);
@@ -177,6 +179,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         if (!settings.contains(keyStatus)) {
             settings.edit().putBoolean(keyStatus, defaultStatus).commit();
             Log.w(TAG, "Reset missing setting for '" + keyStatus + "' to '" + defaultStatus + "'");
+        }
+        if (!settings.contains(keyStatusVisibilityPublic)) {
+            settings.edit().putBoolean(keyStatusVisibilityPublic, defaultStatusVisibilityPublic).commit();
+            Log.w(TAG,
+                    "Reset missing setting for '" + keyStatusVisibilityPublic + "' to '" + defaultStatusVisibilityPublic + "'");
         }
         if (!settings.contains(keyMuteInFlightMode)) {
             settings.edit().putBoolean(keyMuteInFlightMode, defaultMuteInFlightMode).commit();
@@ -345,6 +352,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public boolean isSettingVibrate() {
         return settings.getBoolean(keyVibrate, defaultVibrate);
+    }
+
+    @Override
+    public boolean makeStatusNotificationVisibilityPublic() {
+        return settings.getBoolean(keyStatusVisibilityPublic, defaultStatusVisibilityPublic);
     }
 
 }

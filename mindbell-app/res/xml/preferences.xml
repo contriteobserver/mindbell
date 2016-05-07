@@ -46,6 +46,12 @@
 	    android:summaryOff="@string/summaryNoStatus"
 	    android:summaryOn="@string/summaryStatus"
 	    android:defaultValue="true"/>
+	  <CheckBoxPreference android:key="@string/keyStatusVisibilityPublic"
+	    android:title="@string/prefsStatusVisibilityPublic"
+	    android:summaryOff="@string/summaryStatusVisibilityPrivate"
+	    android:summaryOn="@string/summaryStatusVisibilityPublic"
+	    android:defaultValue="true"
+	    android:dependency="@string/keyStatus"/>
 	</PreferenceCategory>
 
 	<PreferenceCategory android:title="@string/prefsCategorySound">
