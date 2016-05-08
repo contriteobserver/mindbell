@@ -29,7 +29,7 @@
 		currently doing, and in what state of mind you are while you are doing it. 
 		According to the Buddhist teacher Thich Nhat Hanh, this is an effective 
 		means of developing mindfulness.</string>
-    <string name="howToSet">To activate the bell, use the menu button.</string>
+    <string name="howToSet">Use alarm icon or settings in menu to activate the bell.</string>
 
     <!-- Menu -->
     <string name="menuSettings">Settings</string>

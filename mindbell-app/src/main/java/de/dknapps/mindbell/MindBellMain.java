@@ -21,24 +21,32 @@ package de.dknapps.mindbell;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.MotionEvent;
 import android.widget.Toast;
 import de.dknapps.mindbell.accessors.AndroidContextAccessor;
 import de.dknapps.mindbell.accessors.AndroidPrefsAccessor;
 import de.dknapps.mindbell.accessors.ContextAccessor;
+import de.dknapps.mindbell.accessors.PrefsAccessor;
 import de.dknapps.mindbell.logic.RingingLogic;
+import de.dknapps.mindbell.util.Utils;
 
 public class MindBellMain extends Activity {
-    private static final String POPUP_PREFS_FILE = "popup-prefs";
-    private static final String KEY_POPUP = "popup";
-    private SharedPreferences popupPrefs;
 
-    // FIXME dkn For the time being there is no need to show a popup on first startup
+    // TODO dkn For the time being there is no need to show a popup on first startup
+    // private static final String POPUP_PREFS_FILE = "popup-prefs";
+
+    // TODO dkn For the time being there is no need to show a popup on first startup
+    // private static final String KEY_POPUP = "popup";
+
+    // TODO dkn For the time being there is no need to show a popup on first startup
+    // private SharedPreferences popupPrefs;
+
+    // TODO dkn For the time being there is no need to show a popup on first startup
     // private void checkWhetherToShowPopup() {
     // if (!hasShownPopup()) {
     // setPopupShown(true);
@@ -46,7 +54,7 @@ public class MindBellMain extends Activity {
     // }
     // }
 
-    // FIXME dkn For the time being there is no need to show a popup on first startup
+    // TODO dkn For the time being there is no need to show a popup on first startup
     // private boolean hasShownPopup() {
     // return popupPrefs.getBoolean(KEY_POPUP, false);
     // }
@@ -63,23 +71,10 @@ public class MindBellMain extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        popupPrefs = getSharedPreferences(POPUP_PREFS_FILE, MODE_PRIVATE);
+        // TODO dkn For the time being there is no need to show a popup on first startup
+        // popupPrefs = getSharedPreferences(POPUP_PREFS_FILE, MODE_PRIVATE);
         setContentView(R.layout.main);
     }
-
-    // FIXME dkn Kann weg ...
-    // @Override
-    // protected Dialog onCreateDialog(int id) {
-    // Dialog dialog;
-    // switch (id) {
-    // case R.id.about:
-    // dialog = new AboutDialog(this);
-    // break;
-    // default:
-    // dialog = null;
-    // }
-    // return dialog;
-    // }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -90,18 +85,34 @@ public class MindBellMain extends Activity {
         settingsItem.setIntent(new Intent(this, MindBellPreferences.class));
         MenuItem aboutItem = menu.findItem(R.id.about);
         aboutItem.setIntent(new Intent(this, AboutActivity.class));
+        MenuItem activeItem = menu.findItem(R.id.active);
+        activeItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+
+            public boolean onMenuItemClick(MenuItem item) {
+                PrefsAccessor prefsAccessor = new AndroidPrefsAccessor(MindBellMain.this);
+                prefsAccessor.setBellActive(!prefsAccessor.isBellActive()); // toggle active/inactive
+                Utils.updateBellSchedule(MindBellMain.this);
+                invalidateOptionsMenu(); // re-call onPrepareOptionsMenu()
+                return true;
+            }
+        });
         return true;
     }
 
-    // FIXME dkn Kann weg ...
-    // @Override
-    // public boolean onOptionsItemSelected(MenuItem item) {
-    // if (item.getItemId() == R.id.about) {
-    // showDialog(R.id.about);
-    // return true;
-    // }
-    // return false;
-    // }
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem activeItem = menu.findItem(R.id.active);
+        PrefsAccessor prefsAccessor = new AndroidPrefsAccessor(MindBellMain.this);
+        activeItem
+                .setIcon((prefsAccessor.isBellActive()) ? R.drawable.ic_alarm_off_white_24dp : R.drawable.ic_alarm_on_white_24dp);
+        return true;
+    }
+
+    @Override
+    protected void onResume() {
+        invalidateOptionsMenu(); // Maybe active setting has been changed via MindBellPreferences
+        super.onResume();
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
@@ -113,7 +124,7 @@ public class MindBellMain extends Activity {
         return true;
     }
 
-    // FIXME dkn For the time being there is no need to show a popup on first startup
+    // TODO dkn For the time being there is no need to show a popup on first startup
     // @Override
     // public void onWindowFocusChanged(boolean hasFocus) {
     // super.onWindowFocusChanged(hasFocus);
@@ -122,12 +133,12 @@ public class MindBellMain extends Activity {
     // }
     // }
 
-    // FIXME dkn For the time being there is no need to show a popup on first startup
+    // TODO dkn For the time being there is no need to show a popup on first startup
     // private void setPopupShown(boolean shown) {
     // popupPrefs.edit().putBoolean(KEY_POPUP, shown).commit();
     // }
 
-    // FIXME dkn For the time being there is no need to show a popup on first startup
+    // TODO dkn For the time being there is no need to show a popup on first startup
     // private void showPopup() {
     // DialogInterface.OnClickListener yesListener = new DialogInterface.OnClickListener() {
     // public void onClick(DialogInterface dialog, int which) {
@@ -142,7 +153,7 @@ public class MindBellMain extends Activity {
     // .setNegativeButton(R.string.main_no_popup, null).show();
     // }
 
-    // FIXME dkn For the time being there is no need to show a popup on first startup
+    // TODO dkn For the time being there is no need to show a popup on first startup
     // private void takeUserToOffer() {
     // startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_uri_popup))));
     // }

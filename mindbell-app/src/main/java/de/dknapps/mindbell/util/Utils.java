@@ -19,18 +19,24 @@
  *******************************************************************************/
 package de.dknapps.mindbell.util;
 
+import static de.dknapps.mindbell.MindBellPreferences.TAG;
+
 import java.io.IOException;
 import java.io.InputStream;
 
+import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.Resources.NotFoundException;
 import android.net.Uri;
+import android.util.Log;
+import de.dknapps.mindbell.UpdateBellSchedule;
 
 /**
  * @author marc
- * 
+ *
  */
 public class Utils {
 
@@ -57,7 +63,7 @@ public class Utils {
 
     /**
      * Convert a resource id into a Uri.
-     * 
+     *
      * @param context
      * @param resid
      * @return
@@ -66,4 +72,20 @@ public class Utils {
         Resources resources = context.getResources();
         return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + resources.getResourcePackageName(resid) + "/" + resid);
     }
+
+    /**
+     * Update bell schedule and notification by using the regularly used BroadcastReceiver UpdateBellSchedule.
+     *
+     * @param packageContext
+     */
+    public static void updateBellSchedule(Context packageContext) {
+        Intent intent = new Intent(packageContext, UpdateBellSchedule.class);
+        PendingIntent sender = PendingIntent.getBroadcast(packageContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        try {
+            sender.send();
+        } catch (PendingIntent.CanceledException e) {
+            Log.e(TAG, "Could not send: " + e.getMessage());
+        }
+    }
+
 }

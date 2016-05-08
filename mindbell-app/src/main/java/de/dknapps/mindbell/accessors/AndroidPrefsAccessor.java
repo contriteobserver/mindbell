@@ -169,7 +169,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
         // Now set default values for those that are missing
         if (!settings.contains(keyActive)) {
-            settings.edit().putBoolean(keyActive, defaultActive).commit();
+            setBellActive(defaultActive);
             Log.w(TAG, "Reset missing setting for '" + keyActive + "' to '" + defaultActive + "'");
         }
         if (!settings.contains(keyShow)) {
@@ -357,6 +357,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public boolean makeStatusNotificationVisibilityPublic() {
         return settings.getBoolean(keyStatusVisibilityPublic, defaultStatusVisibilityPublic);
+    }
+
+    @Override
+    public void setBellActive(boolean active) {
+        settings.edit().putBoolean(keyActive, active).commit();
     }
 
 }

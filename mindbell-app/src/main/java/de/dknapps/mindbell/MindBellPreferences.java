@@ -22,16 +22,14 @@ package de.dknapps.mindbell;
 import java.util.HashSet;
 import java.util.Set;
 
-import android.app.PendingIntent;
-import android.content.Intent;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.MultiSelectListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.util.Log;
 import android.widget.Toast;
 import de.dknapps.mindbell.accessors.AndroidPrefsAccessor;
+import de.dknapps.mindbell.util.Utils;
 
 public class MindBellPreferences extends PreferenceActivity {
     /**
@@ -107,14 +105,7 @@ public class MindBellPreferences extends PreferenceActivity {
     @Override
     public void onPause() {
         super.onPause();
-
-        Intent intent = new Intent(this, UpdateBellSchedule.class);
-        PendingIntent sender = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        try {
-            sender.send();
-        } catch (PendingIntent.CanceledException e) {
-            Log.e(TAG, "Could not send: " + e.getMessage());
-        }
+        Utils.updateBellSchedule(this);
     }
 
     private void setupListPreference(int keyID) {
