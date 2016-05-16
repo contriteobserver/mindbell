@@ -267,13 +267,13 @@ public class AndroidContextAccessor extends ContextAccessor {
             removeStatusNotification();
         } else {
             // Suppose bell is not muted
-            int statusDrawable = R.drawable.bell_status_active;
+            int statusDrawable = R.drawable.ic_stat_bell_active;
             CharSequence contentTitle = context.getText(R.string.statusTitleBellActive);
             String contentText = context.getText(R.string.statusTextBellActive).toString();
             String muteRequestReason = getMuteRequestReason(shouldShowMessage);
             // Override icon and notification text if bell is muted
             if (muteRequestReason != null) {
-                statusDrawable = R.drawable.bell_status_active_but_muted;
+                statusDrawable = R.drawable.ic_stat_bell_active_but_muted;
                 contentText = muteRequestReason;
             }
             contentText = contentText.replace("_STARTTIME_", prefs.getDaytimeStartString())
@@ -289,6 +289,7 @@ public class AndroidContextAccessor extends ContextAccessor {
                     : NotificationCompat.VISIBILITY_PRIVATE;
             Notification notif = new NotificationCompat.Builder(context.getApplicationContext()) //
                     .setCategory(NotificationCompat.CATEGORY_ALARM) //
+                    .setColor(context.getResources().getColor(R.color.notificationBackground)) //
                     .setContentTitle(contentTitle) //
                     .setContentText(contentText) //
                     .setContentIntent(contentIntent) //

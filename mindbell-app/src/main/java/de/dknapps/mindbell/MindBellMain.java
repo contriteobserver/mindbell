@@ -103,8 +103,7 @@ public class MindBellMain extends Activity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem activeItem = menu.findItem(R.id.active);
         PrefsAccessor prefsAccessor = new AndroidPrefsAccessor(MindBellMain.this);
-        activeItem
-                .setIcon((prefsAccessor.isBellActive()) ? R.drawable.ic_alarm_off_white_24dp : R.drawable.ic_alarm_on_white_24dp);
+        activeItem.setIcon((prefsAccessor.isBellActive()) ? R.drawable.ic_action_bell_off : R.drawable.ic_action_bell_on);
         return true;
     }
 

@@ -22,5 +22,6 @@
  <resources>
  
 	<color name="aboutGrey">#ffa0a0a0</color>
+	<color name="notificationBackground">#ff0d1445</color>
 	
  </resources>
