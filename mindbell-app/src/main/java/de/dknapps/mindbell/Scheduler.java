@@ -60,6 +60,7 @@ public class Scheduler extends BroadcastReceiver {
 
         // reschedule
         Intent nextIntent = new Intent(context, Scheduler.class);
+        nextIntent.putExtra(context.getText(R.string.extraIsRescheduling).toString(), true);
         PendingIntent sender = PendingIntent.getBroadcast(context, 0, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         long nowMillis = Calendar.getInstance().getTimeInMillis();
         long nextBellTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowMillis, prefs);
@@ -67,6 +68,11 @@ public class Scheduler extends BroadcastReceiver {
         TimeOfDay nextBellTime = new TimeOfDay(nextBellTimeMillis);
         Log.d(TAG, "scheduled next bell alarm for " + nextBellTime.hour + ":" + String.format("%02d", nextBellTime.minute)
                 + " on weekday " + nextBellTime.weekday);
+
+        if (!intent.getBooleanExtra(context.getText(R.string.extraIsRescheduling).toString(), false)) {
+            Log.d(TAG, "not ringing, has been called by preferences or activate bell button");
+            return;
+        }
 
         // ring if daytime
         if (!prefs.isDaytime()) {

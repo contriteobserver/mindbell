@@ -29,7 +29,7 @@
 		currently doing, and in what state of mind you are while you are doing it. 
 		According to the Buddhist teacher Thich Nhat Hanh, this is an effective 
 		means of developing mindfulness.</string>
-    <string name="howToSet">Use alarm icon or settings in menu to activate the bell.</string>
+    <string name="howToSet">Use bell icon or settings in menu to activate the bell.</string>
 
     <!-- Menu -->
     <string name="menuSettings">Settings</string>
@@ -111,5 +111,8 @@
     <string name="keyEnd" translatable="false">end</string>
     <string name="keyActiveOnDaysOfWeek" translatable="false">activeOnDaysOfWeek</string>
     <string name="keyTry" translatable="false">try</string>
+    
+    <!-- Unique string to be added to a Scheduling Intent to see who sent it (don't localize) -->
+    <string name="extraIsRescheduling" translatable="false">de.dknapps.mindbell.Scheduler.IsRescheduling</string>
 
 </resources>
