@@ -113,6 +113,6 @@
     <string name="keyTry" translatable="false">try</string>
     
     <!-- Unique string to be added to a Scheduling Intent to see who sent it (don't localize) -->
-    <string name="extraIsRescheduling" translatable="false">de.dknapps.mindbell.Scheduler.IsRescheduling</string>
+    <string name="extraIsRescheduling" translatable="false">com.googlecode.mindbell.Scheduler.IsRescheduling</string>
 
 </resources>

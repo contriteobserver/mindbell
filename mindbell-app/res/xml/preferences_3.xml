@@ -31,7 +31,7 @@
 	        android:title="@string/prefsVolume"
 			android:dialogTitle="@string/prefsVolume" />
 		-->
-		<de.dknapps.mindbell.preference.MediaVolumePreference  android:key="@string/keyVolume"
+		<com.googlecode.mindbell.preference.MediaVolumePreference  android:key="@string/keyVolume"
 	        android:title="@string/prefsVolume"
 			android:dialogTitle="@string/prefsVolume"
 			mindful:ringtone="@raw/bell10s"
