@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.googlecode.mindbell.R;
 import com.googlecode.mindbell.util.TimeOfDay;
 
 import android.content.Context;
@@ -32,7 +33,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import com.googlecode.mindbell.R;
 
 /**
  * @author marc
@@ -73,6 +73,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private final String defaultEnd = "21";
     private final Set<String> defaultActiveOnDaysOfWeek = new HashSet<String>(
             Arrays.asList(new String[] { "2", "3", "4", "5", "6" })); // MO-FR
+    private final String[] daysOfWeekValues;
     private final String[] weekdayAbbreviations;
 
     private final float defaultVolume = AndroidContextAccessor.MINUS_SIX_DB;
@@ -101,6 +102,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         keyStart = context.getString(R.string.keyStart);
         keyEnd = context.getString(R.string.keyEnd);
         keyActiveOnDaysOfWeek = context.getString(R.string.keyActiveOnDaysOfWeek);
+        daysOfWeekValues = context.getResources().getStringArray(R.array.daysOfWeekValues);
         weekdayAbbreviations = context.getResources().getStringArray(R.array.weekdayAbbreviations);
 
         keyVolume = context.getString(R.string.keyVolume);
@@ -263,14 +265,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     @Override
     public String getActiveOnDaysOfWeekString() {
+        // Warning: Similar code in MindBellPreferences#setMultiSelectListPreferenceSummary()
         Set<Integer> activeOnDaysOfWeek = getActiveOnDaysOfWeek();
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < weekdayAbbreviations.length; i++) {
-            if (activeOnDaysOfWeek.contains(Integer.valueOf(i + 1))) { // active on this day?
+        for (String dayOfWeekValue : daysOfWeekValues) { // internal weekday value in locale oriented order
+            Integer dayOfWeekValueAsInteger = Integer.valueOf(dayOfWeekValue);
+            if (activeOnDaysOfWeek.contains(dayOfWeekValueAsInteger)) { // active on this day?
                 if (sb.length() > 0) {
                     sb.append(", ");
                 }
-                sb.append(weekdayAbbreviations[i]); // add day to the list of active days
+                sb.append(weekdayAbbreviations[dayOfWeekValueAsInteger - 1]); // add day to the list of active days
             }
         }
         return sb.toString();

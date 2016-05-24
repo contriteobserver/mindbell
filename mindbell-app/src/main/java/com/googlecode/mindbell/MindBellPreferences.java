@@ -31,7 +31,6 @@ import android.preference.MultiSelectListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.widget.Toast;
-import com.googlecode.mindbell.R;
 
 public class MindBellPreferences extends PreferenceActivity {
     /**
@@ -68,14 +67,17 @@ public class MindBellPreferences extends PreferenceActivity {
     public static final String TAG = "MindBell";
 
     private static void setMultiSelectListPreferenceSummary(MultiSelectListPreference mslp, Set<?> newValues) {
+        // Warning: Similar code in AndroidPrefsAccessor#getActiveOnDaysOfWeekString()
+        String[] daysOfWeekValues = mslp.getContext().getResources().getStringArray(R.array.daysOfWeekValues);
         String[] weekdayAbbreviations = mslp.getContext().getResources().getStringArray(R.array.weekdayAbbreviations);
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < weekdayAbbreviations.length; i++) {
-            if (((HashSet<?>) newValues).contains(String.valueOf(i + 1))) { // is this day selected?
+        for (String dayOfWeekValue : daysOfWeekValues) { // internal weekday value in locale oriented order
+            Integer dayOfWeekValueAsInteger = Integer.valueOf(dayOfWeekValue);
+            if (((HashSet<?>) newValues).contains(dayOfWeekValue)) { // is this day selected?
                 if (sb.length() > 0) {
                     sb.append(", ");
                 }
-                sb.append(weekdayAbbreviations[i]); // add day to the list of active days
+                sb.append(weekdayAbbreviations[dayOfWeekValueAsInteger - 1]); // add day to the list of active days
             }
         }
         mslp.setSummary(sb.toString());
