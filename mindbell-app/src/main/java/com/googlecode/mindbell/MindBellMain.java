@@ -35,7 +35,6 @@ import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.MotionEvent;
 import android.widget.Toast;
-import com.googlecode.mindbell.R;
 
 public class MindBellMain extends Activity {
 
@@ -62,11 +61,11 @@ public class MindBellMain extends Activity {
     // }
 
     /**
-     *
+     * Show hint how to activate the bell.
      */
     private void notifyIfNotActive() {
         if (!new AndroidPrefsAccessor(this).isBellActive()) {
-            Toast.makeText(this, R.string.howToSet, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.howToSet, Toast.LENGTH_LONG).show();
         }
     }
 
