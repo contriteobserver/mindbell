@@ -24,13 +24,31 @@
   android:layout_width="fill_parent"
   android:background="#ff0f0f41" android:gravity="right" android:layout_height="wrap_content">
 
-<TextView android:text="@string/explanation" android:id="@+id/tvExplanation" 
-	android:layout_width="wrap_content" android:layout_height="wrap_content"
-	android:layout_alignParentBottom="true" android:padding="20px"
-	android:background="@drawable/semitransparent"></TextView>
-	
-<ImageView
-    android:src="@drawable/bell"
-    android:layout_above="@id/tvExplanation"  android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerInside"/>
+	<TextView
+	    android:id="@+id/tvExplanation"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:background="@drawable/semitransparent"
+	    android:padding="20px"
+	    android:text="@string/explanation" />
 
+	<TextView
+	    android:id="@+id/tvHowToRing"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_above="@id/tvExplanation"
+	    android:layout_centerHorizontal="true"
+	    android:textColor="#ffffffff"
+	    android:padding="20px"
+	    style="@android:style/TextAppearance.DeviceDefault.Large"
+	    android:text="@string/howToRing" />
+
+	<ImageView
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:layout_above="@id/tvExplanation"
+	    android:scaleType="centerInside"
+	    android:src="@drawable/bell" />
+	
 </RelativeLayout>
