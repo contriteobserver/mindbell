@@ -94,6 +94,9 @@ public class MindBellMain extends Activity {
                 prefsAccessor.setBellActive(!prefsAccessor.isBellActive()); // toggle active/inactive
                 Utils.updateBellSchedule(MindBellMain.this);
                 invalidateOptionsMenu(); // re-call onPrepareOptionsMenu()
+                CharSequence feedback = getText(
+                        (prefsAccessor.isBellActive()) ? R.string.summaryActive : R.string.summaryNotActive);
+                Toast.makeText(MindBellMain.this, feedback, Toast.LENGTH_SHORT).show();
                 return true;
             }
         });
