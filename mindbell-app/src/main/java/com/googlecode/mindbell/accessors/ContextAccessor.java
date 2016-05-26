@@ -21,17 +21,46 @@ package com.googlecode.mindbell.accessors;
 
 /**
  * Convenience access to information from the context. Can be replaced by test implementation.
- *
- * @author marc
- *
  */
 public abstract class ContextAccessor {
+
     public static final float MINUS_ONE_DB = 0.891250938f;
     public static final float MINUS_THREE_DB = 0.707945784f;
     public static final float MINUS_SIX_DB = 0.501187234f;
 
+    /** Flag whether bell is currently playing on a MediaPlayer of *any* ContextAccessor */
+    private static boolean isPlaying = false;
+
     /** Alarm volume before ringing the bell */
-    protected int originalVolume;
+    private static int originalVolume;
+
+    /**
+     * Returns alarm volume before ringing the bell.
+     */
+    public static synchronized int getOriginalVolume() {
+        return originalVolume;
+    }
+
+    /**
+     * Returns flag whether bell is currently playing on a MediaPlayer of *any* ContextAccessor.
+     */
+    public static synchronized boolean isBellSoundPlaying() {
+        return isPlaying;
+    }
+
+    /**
+     * Sets flag whether bell is currently playing on a MediaPlayer of *any* ContextAccessor.
+     */
+    public static synchronized void setBellSoundPlaying(boolean newIsPlaying) {
+        isPlaying = newIsPlaying;
+    }
+
+    /**
+     * Sets alarm volume before ringing the bell.
+     */
+    public static synchronized void setOriginalVolume(int newOriginalVolume) {
+        originalVolume = newOriginalVolume;
+    }
 
     public abstract void finishBellSound();
 
@@ -83,8 +112,6 @@ public abstract class ContextAccessor {
     protected String getReasonMutedWithPhone() {
         return "bell muted with phone";
     }
-
-    public abstract boolean isBellSoundPlaying();
 
     /**
      * Return whether bell should be muted and show reason message if wanted.
