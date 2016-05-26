@@ -49,7 +49,9 @@ public abstract class ContextAccessor {
     }
 
     /**
-     * Sets flag whether bell is currently playing on a MediaPlayer of *any* ContextAccessor.
+     * Sets flag whether bell is currently playing on a MediaPlayer of *any* ContextAccessor. As matter of fact this flag means at
+     * first that no thread should read the alarm volume as original volume if the flag is true because the alarm volume has been
+     * maximized to play the bell and has not yet been reset to the *original* original value.
      */
     public static synchronized void setBellSoundPlaying(boolean newIsPlaying) {
         isPlaying = newIsPlaying;
