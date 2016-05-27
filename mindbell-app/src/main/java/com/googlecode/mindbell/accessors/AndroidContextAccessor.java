@@ -82,8 +82,8 @@ public class AndroidContextAccessor extends ContextAccessor {
             }
             mediaPlayer.release();
             mediaPlayer = null;
+            setBellSoundPlaying(Boolean.FALSE);
             setAlarmVolume(getOriginalVolume());
-            setBellSoundPlaying(false); // enable other threads to read originalVolume again
         }
     }
 
@@ -196,10 +196,10 @@ public class AndroidContextAccessor extends ContextAccessor {
 
     @Override
     public void startBellSound(final Runnable runWhenDone) {
+
         if (isBellSoundPlaying()) {
             MindBell.logDebug("startBellSound() found playing bell, originalVolume remains to be " + getOriginalVolume());
         } else {
-            setBellSoundPlaying(true); // prevent other threads from reading and overwrite the originalValue with max value
             setOriginalVolume(getAlarmVolume());
             MindBell.logDebug("startBellSound() found bell not playing, originalVolume is " + getOriginalVolume());
         }
@@ -224,6 +224,7 @@ public class AndroidContextAccessor extends ContextAccessor {
             });
 
             mediaPlayer.start();
+            setBellSoundPlaying(Boolean.TRUE);
 
             Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
             if (isSettingVibrate()) {
