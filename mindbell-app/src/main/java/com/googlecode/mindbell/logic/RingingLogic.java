@@ -19,18 +19,17 @@
  *******************************************************************************/
 package com.googlecode.mindbell.logic;
 
-import com.googlecode.mindbell.MindBell;
 import com.googlecode.mindbell.accessors.ContextAccessor;
 
 /**
  * @author marc
- *
+ * 
  */
 public class RingingLogic {
 
     /**
      * Trigger the bell's sound. This is the preferred way to play the sound.
-     *
+     * 
      * @param context
      *            the context in which to play the sound.
      * @param runWhenDone
@@ -48,12 +47,7 @@ public class RingingLogic {
         }
         // 2. Stop any ongoing ring, and manually reset volume to original.
         if (ca.isBellSoundPlaying()) {
-            MindBell.logDebug("ringBell() found playing bell, calling finishBellSound()");
-            // Finishing does only work if using the *same* AndroidContextAccessor. Therefore this call might be ignored if the
-            // AndroidContextAccessor does not hold a valid MediaPlayer reference.
             ca.finishBellSound();
-        } else {
-            MindBell.logDebug("ringBell() found bell not playing, ");
         }
 
         // 3. Kick off the playback of the bell sound, with an automatic volume

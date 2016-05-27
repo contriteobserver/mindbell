@@ -25,7 +25,6 @@ import java.io.IOException;
 
 import com.googlecode.mindbell.MindBell;
 import com.googlecode.mindbell.MindBellMain;
-import com.googlecode.mindbell.R;
 import com.googlecode.mindbell.Scheduler;
 import com.googlecode.mindbell.util.Utils;
 
@@ -44,14 +43,15 @@ import android.support.v4.app.NotificationCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
+import com.googlecode.mindbell.R;
 
 /**
  * @author marc
  *
  */
 public class AndroidContextAccessor extends ContextAccessor {
-
     public static final int KEYMUTEINFLIGHTMODE = R.string.keyMuteInFlightMode;
+
     public static final int KEYMUTEOFFHOOK = R.string.keyMuteOffHook;
     public static final int KEYMUTEWITHPHONE = R.string.keyMuteWithPhone;
 
@@ -73,18 +73,13 @@ public class AndroidContextAccessor extends ContextAccessor {
 
     @Override
     public void finishBellSound() {
-        if (mediaPlayer == null) {
-            MindBell.logDebug("finishBellSound() had no player to stop, probably different AndroidContextAccessor");
-        } else {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.stop();
-                MindBell.logDebug("finishBellSound() stopped ongoing player");
-            }
-            mediaPlayer.release();
-            mediaPlayer = null;
-            setBellSoundPlaying(Boolean.FALSE);
-            setAlarmVolume(getOriginalVolume());
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+            MindBell.logDebug("Stopped ongoing player.");
         }
+        mediaPlayer.release();
+        mediaPlayer = null;
+        setAlarmVolume(originalVolume);
     }
 
     @Override
@@ -124,6 +119,11 @@ public class AndroidContextAccessor extends ContextAccessor {
     @Override
     protected String getReasonMutedWithPhone() {
         return context.getText(R.string.reasonMutedWithPhone).toString();
+    }
+
+    @Override
+    public boolean isBellSoundPlaying() {
+        return mediaPlayer != null;
     }
 
     @Override
@@ -196,13 +196,9 @@ public class AndroidContextAccessor extends ContextAccessor {
 
     @Override
     public void startBellSound(final Runnable runWhenDone) {
+        // MindBell.logDebug("Starting bell sound");
 
-        if (isBellSoundPlaying()) {
-            MindBell.logDebug("startBellSound() found playing bell, originalVolume remains to be " + getOriginalVolume());
-        } else {
-            setOriginalVolume(getAlarmVolume());
-            MindBell.logDebug("startBellSound() found bell not playing, originalVolume is " + getOriginalVolume());
-        }
+        originalVolume = getAlarmVolume();
         setAlarmVolume(getAlarmMaxVolume());
         float bellVolume = getBellVolume();
         MindBell.logDebug("Ringing bell with volume " + bellVolume);
@@ -215,7 +211,7 @@ public class AndroidContextAccessor extends ContextAccessor {
             mediaPlayer.prepare();
             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 public void onCompletion(MediaPlayer mp) {
-                    MindBell.logDebug("onCompletion(), originalVolume is " + getOriginalVolume());
+                    // MindBell.logDebug("Upon completion, originalVolume is " + originalVolume);
                     finishBellSound();
                     if (runWhenDone != null) {
                         runWhenDone.run();
@@ -224,7 +220,6 @@ public class AndroidContextAccessor extends ContextAccessor {
             });
 
             mediaPlayer.start();
-            setBellSoundPlaying(Boolean.TRUE);
 
             Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
             if (isSettingVibrate()) {
