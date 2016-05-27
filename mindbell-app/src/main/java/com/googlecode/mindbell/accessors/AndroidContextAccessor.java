@@ -25,6 +25,7 @@ import java.io.IOException;
 
 import com.googlecode.mindbell.MindBell;
 import com.googlecode.mindbell.MindBellMain;
+import com.googlecode.mindbell.R;
 import com.googlecode.mindbell.Scheduler;
 import com.googlecode.mindbell.util.Utils;
 
@@ -43,12 +44,7 @@ import android.support.v4.app.NotificationCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
-import com.googlecode.mindbell.R;
 
-/**
- * @author marc
- *
- */
 public class AndroidContextAccessor extends ContextAccessor {
     public static final int KEYMUTEINFLIGHTMODE = R.string.keyMuteInFlightMode;
 
@@ -79,7 +75,14 @@ public class AndroidContextAccessor extends ContextAccessor {
         }
         mediaPlayer.release();
         mediaPlayer = null;
-        setAlarmVolume(originalVolume);
+        int alarmMaxVolume = getAlarmMaxVolume();
+        if (originalVolume == alarmMaxVolume) { // "someone" else set it to max, so we don't touch it
+            MindBell.logDebug(
+                    "finishBellSound() found originalVolume " + originalVolume + " to be max, alarm volume left untouched");
+        } else {
+            MindBell.logDebug("finishBellSound() found originalVolume " + originalVolume + ", setting alarm volume to it");
+            setAlarmVolume(originalVolume);
+        }
     }
 
     @Override
@@ -196,10 +199,15 @@ public class AndroidContextAccessor extends ContextAccessor {
 
     @Override
     public void startBellSound(final Runnable runWhenDone) {
-        // MindBell.logDebug("Starting bell sound");
-
         originalVolume = getAlarmVolume();
-        setAlarmVolume(getAlarmMaxVolume());
+        int alarmMaxVolume = getAlarmMaxVolume();
+        if (originalVolume == alarmMaxVolume) { // "someone" else set it to max, so we don't touch it
+            MindBell.logDebug(
+                    "startBellSound() found originalVolume " + originalVolume + " to be max, alarm volume left untouched");
+        } else {
+            MindBell.logDebug("startBellSound() found originalVolume " + originalVolume + ", setting alarm volume to max");
+            setAlarmVolume(alarmMaxVolume);
+        }
         float bellVolume = getBellVolume();
         MindBell.logDebug("Ringing bell with volume " + bellVolume);
         Uri bellUri = Utils.getResourceUri(context, R.raw.bell10s);
@@ -211,7 +219,7 @@ public class AndroidContextAccessor extends ContextAccessor {
             mediaPlayer.prepare();
             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 public void onCompletion(MediaPlayer mp) {
-                    // MindBell.logDebug("Upon completion, originalVolume is " + originalVolume);
+                    MindBell.logDebug("Upon completion, originalVolume is " + originalVolume);
                     finishBellSound();
                     if (runWhenDone != null) {
                         runWhenDone.run();
@@ -235,7 +243,6 @@ public class AndroidContextAccessor extends ContextAccessor {
                 runWhenDone.run();
             }
         }
-
     }
 
     public void updateBellSchedule() {

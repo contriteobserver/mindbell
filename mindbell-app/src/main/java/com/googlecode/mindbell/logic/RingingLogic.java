@@ -23,13 +23,13 @@ import com.googlecode.mindbell.accessors.ContextAccessor;
 
 /**
  * @author marc
- * 
+ *
  */
 public class RingingLogic {
 
     /**
      * Trigger the bell's sound. This is the preferred way to play the sound.
-     * 
+     *
      * @param context
      *            the context in which to play the sound.
      * @param runWhenDone
@@ -46,7 +46,7 @@ public class RingingLogic {
             return false;
         }
         // 2. Stop any ongoing ring, and manually reset volume to original.
-        if (ca.isBellSoundPlaying()) {
+        if (ca.isBellSoundPlaying()) { // probably false, as context is (probably) different from that for startBellSound()
             ca.finishBellSound();
         }
 

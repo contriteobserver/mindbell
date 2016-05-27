@@ -19,7 +19,7 @@
     limitations under the License.
  -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="29" android:versionName="2.5.9" package="com.googlecode.mindbell">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="30" android:versionName="2.5.10" package="com.googlecode.mindbell">
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
@@ -80,7 +80,6 @@
                 <action android:name="android.intent.action.AIRPLANE_MODE"/>
                 <action android:name="android.intent.action.PHONE_STATE"/>
                 <action android:name="android.media.RINGER_MODE_CHANGED"/>
-                <action android:name="android.media.VOLUME_CHANGED_ACTION" />
             </intent-filter>
         </receiver>
         
