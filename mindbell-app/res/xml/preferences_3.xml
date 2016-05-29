@@ -57,7 +57,7 @@
             android:title="@string/prefsMuteInFlightMode"
             android:summaryOff="@string/summaryNotMutedInFlightMode"
             android:summaryOn="@string/summaryMutedInFlightMode" 
-			android:defaultValue="true"/>
+			android:defaultValue="false"/>
 	</PreferenceCategory>
 
     <PreferenceCategory

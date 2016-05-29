@@ -31,8 +31,8 @@ public class MockPrefsAccessor extends PrefsAccessor {
     private boolean showBell = true;
 
     private boolean statusNotification = true;
-    
-    private boolean statusNotificationVisibilityPublic = true;
+
+    private final boolean statusNotificationVisibilityPublic = true;
 
     private TimeOfDay daytimeEnd = new TimeOfDay(21, 0);
 
@@ -130,6 +130,7 @@ public class MockPrefsAccessor extends PrefsAccessor {
      * @param theBellActive
      *            the bellActive to set
      */
+    @Override
     public void setBellActive(boolean theBellActive) {
         this.bellActive = theBellActive;
     }
@@ -186,6 +187,7 @@ public class MockPrefsAccessor extends PrefsAccessor {
      * @param theStatusNotification
      *            the statusNotification to set
      */
+    @Override
     public void setStatusNotification(boolean theStatusNotification) {
         this.statusNotification = theStatusNotification;
     }

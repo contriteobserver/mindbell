@@ -29,11 +29,13 @@ import com.googlecode.mindbell.R;
 import com.googlecode.mindbell.Scheduler;
 import com.googlecode.mindbell.util.Utils;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -41,6 +43,7 @@ import android.os.Vibrator;
 import android.provider.Settings;
 import android.provider.Settings.Global;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -65,6 +68,18 @@ public class AndroidContextAccessor extends ContextAccessor {
 
     private AndroidContextAccessor(Context context) {
         this.context = context;
+    }
+
+    /**
+     * Returns true if mute bell with phone isn't requested or if the app has the permission to be informed in case of incoming or
+     * outgoing calls. Notification bell could not be turned over correctly if muting with phone were requested without permission
+     * granted.
+     */
+    private boolean canSettingsBeSatisfied(PrefsAccessor prefs) {
+        boolean result = !prefs.isSettingMuteOffHook() || ContextCompat.checkSelfPermission(context,
+                Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED;
+        Log.d(TAG, "canSettingsBeSatisfied() -> " + result);
+        return result;
     }
 
     @Override
@@ -270,44 +285,53 @@ public class AndroidContextAccessor extends ContextAccessor {
     }
 
     private void updateStatusNotification(PrefsAccessor prefs, boolean shouldShowMessage) {
-        if (!prefs.isBellActive() || !prefs.doStatusNotification()) { // bell inactive or no notification wanted?
+        if (!prefs.isBellActive() || !prefs.doStatusNotification()) {// bell inactive or no notification wanted?
             Log.i(TAG, "remove status notification because of inactive bell or unwanted notification");
             removeStatusNotification();
-        } else {
-            // Suppose bell is not muted
-            int statusDrawable = R.drawable.ic_stat_bell_active;
-            CharSequence contentTitle = context.getText(R.string.statusTitleBellActive);
-            String contentText = context.getText(R.string.statusTextBellActive).toString();
-            String muteRequestReason = getMuteRequestReason(shouldShowMessage);
-            // Override icon and notification text if bell is muted
-            if (muteRequestReason != null) {
-                statusDrawable = R.drawable.ic_stat_bell_active_but_muted;
-                contentText = muteRequestReason;
-            }
+            return;
+        }
+        // Suppose bell is active and not muted and all settings can be satisfied
+        int statusDrawable = R.drawable.ic_stat_bell_active;
+        CharSequence contentTitle = context.getText(R.string.statusTitleBellActive);
+        String contentText = context.getText(R.string.statusTextBellActive).toString();
+        String muteRequestReason = getMuteRequestReason(shouldShowMessage);
+        // Override icon and notification text if bell is muted or permissions are insufficient
+        if (!canSettingsBeSatisfied(prefs)) { // Insufficient permissions => override icon/text, switch notifications off
+            statusDrawable = R.drawable.ic_stat_warning_white_24px;
+            contentTitle = context.getText(R.string.statusTitleNotificationsDisabled);
+            contentText = context.getText(R.string.statusTextNotificationsDisabled).toString();
+            // Status Notification would not be correct during incoming or outgoing calls because of the missing permission to
+            // listen to phone state changes. Therefore we switch off notification and ask user for permission when he tries
+            // to enable notification again. In this very moment we cannot ask for permission to avoid an ANR in receiver
+            // UpdateStatusNotification.
+            prefs.setStatusNotification(false);
+        } else if (muteRequestReason != null) { // Bell muted => override icon and notification text
+            statusDrawable = R.drawable.ic_stat_bell_active_but_muted;
+            contentText = muteRequestReason;
+        } else { // enrich standard notification by times and days
             contentText = contentText.replace("_STARTTIME_", prefs.getDaytimeStartString())
                     .replace("_ENDTIME_", prefs.getDaytimeEndString()).replace("_WEEKDAYS_", prefs.getActiveOnDaysOfWeekString());
-            // Now do the notification update
-            Log.i(TAG, "Update status notification: " + contentText);
-            NotificationManager notificationManager = (NotificationManager) context
-                    .getSystemService(Context.NOTIFICATION_SERVICE);
-            Intent notificationIntent = new Intent(context, MindBellMain.class);
-            PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-            int visibility = (prefs.makeStatusNotificationVisibilityPublic()) ? NotificationCompat.VISIBILITY_PUBLIC
-                    : NotificationCompat.VISIBILITY_PRIVATE;
-            Notification notif = new NotificationCompat.Builder(context.getApplicationContext()) //
-                    .setCategory(NotificationCompat.CATEGORY_ALARM) //
-                    .setColor(context.getResources().getColor(R.color.notificationBackground)) //
-                    .setContentTitle(contentTitle) //
-                    .setContentText(contentText) //
-                    .setContentIntent(contentIntent) //
-                    .setOngoing(true) //
-                    .setSmallIcon(statusDrawable) //
-                    .setVisibility(visibility) //
-                    .setWhen(System.currentTimeMillis()) //
-                    .build();
-            notificationManager.notify(uniqueNotificationID, notif);
         }
+        // Now do the notification update
+        Log.i(TAG, "Update status notification: " + contentText);
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        Intent notificationIntent = new Intent(context, MindBellMain.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        int visibility = (prefs.makeStatusNotificationVisibilityPublic()) ? NotificationCompat.VISIBILITY_PUBLIC
+                : NotificationCompat.VISIBILITY_PRIVATE;
+        Notification notif = new NotificationCompat.Builder(context.getApplicationContext()) //
+                .setCategory(NotificationCompat.CATEGORY_ALARM) //
+                .setColor(context.getResources().getColor(R.color.notificationBackground)) //
+                .setContentTitle(contentTitle) //
+                .setContentText(contentText) //
+                .setContentIntent(contentIntent) //
+                .setOngoing(true) //
+                .setSmallIcon(statusDrawable) //
+                .setVisibility(visibility) //
+                .setWhen(System.currentTimeMillis()) //
+                .build();
+        notificationManager.notify(uniqueNotificationID, notif);
     }
 
 }

@@ -30,7 +30,7 @@
 	    android:title="@string/prefsStatus"
 	    android:summaryOff="@string/summaryNoStatus"
 	    android:summaryOn="@string/summaryStatus"
-	    android:defaultValue="true"/>
+	    android:defaultValue="false"/>
 	</PreferenceCategory>
 
 </PreferenceScreen>

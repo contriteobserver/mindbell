@@ -23,6 +23,7 @@ package com.googlecode.mindbell.preference;
 
 import java.io.IOException;
 
+import com.googlecode.mindbell.R;
 import com.googlecode.mindbell.util.Utils;
 import com.googlecode.mindbell.util.VolumeConverter;
 
@@ -37,7 +38,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
-import com.googlecode.mindbell.R;
 
 /**
  * @hide
@@ -157,7 +157,7 @@ public class MediaVolumePreference extends SeekBarPreference implements View.OnK
     public static final int DYNAMIC_RANGE_DB = 50;
     public static final int MAX_PROGRESS = 50;
 
-    private static final String TAG = "VolumePreference";
+    private static final String TAG = "MediaVolumePreference";
     private static final String mindfulns = "http://dknapps.de/ns";
 
     private int mStreamType;

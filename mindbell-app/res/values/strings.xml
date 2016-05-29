@@ -78,7 +78,9 @@
 	<string name="title_activity_about">About MindBell</string>
 	<string name="about_html_text_url">file:///android_asset/about.html</string>
 
-    <!-- Status bar notification -->
+    <!-- Status bar notifications -->
+    <string name="statusTitleNotificationsDisabled">Please check settings</string>
+    <string name="statusTextNotificationsDisabled">MindBell turned off \'Show status icon\'</string>
     <string name="statusTitleBellActive">MindBell is active</string>
     <string name="statusTextBellActive">_STARTTIME_ to _ENDTIME_ on _WEEKDAYS_</string>
 
@@ -86,6 +88,22 @@
     <string name="reasonMutedWithPhone">Bell muted with phone</string>
     <string name="reasonMutedOffHook">Bell muted during calls</string>
     <string name="reasonMutedInFlightMode">Bell muted in flight mode</string>
+
+    <!-- Reasons why permission READ_PHONE_STATE should be granted -->
+    <string name="reasonReadPhoneStateTitle">Why this permission?</string>
+    <string name="reasonReadPhoneStateText">\'Show status icon\' and \'Mute during phone calls\' has been
+        selected. That means that MindBell turns over the bell in the notification bar when a phone
+        call is incoming or outgoing. To achieve this, MindBell has to be informed of calls. Only when
+        permission READ_PHONE_STATE is granted MindBell can be kept informed. If the permission is denied
+        either \'Show status icon\' or \'Mute during phone calls\' must be switched off.</string>
+
+    <!-- Permission READ_PHONE_STATE denied but user checked 'never ask again' -->
+    <string name="neverAskAgainReadPhoneStateTitle">Missing permission</string>
+    <string name="neverAskAgainPhoneStateText">Permission READ_PHONE_STATE is not granted. Therefore
+        either \'Show status icon\' or \'Mute during phone calls\' must be switched off.</string>
+
+    <!-- General dialog buttons -->
+    <string name="buttonOk">OK</string>
 
     <!-- Offer popup -->
     <!--

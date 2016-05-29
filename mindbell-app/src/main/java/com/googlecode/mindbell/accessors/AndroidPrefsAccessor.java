@@ -61,7 +61,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     private final boolean defaultActive = false;
     private final boolean defaultShow = true;
-    private final boolean defaultStatus = true;
+    private final boolean defaultStatus = false;
     private final boolean defaultStatusVisibilityPublic = true;
     private final boolean defaultMuteInFlightMode = false;
     private final boolean defaultMuteOffHook = true;
@@ -72,7 +72,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private final String defaultStart = "9";
     private final String defaultEnd = "21";
     private final Set<String> defaultActiveOnDaysOfWeek = new HashSet<String>(
-            Arrays.asList(new String[] { "2", "3", "4", "5", "6" })); // MO-FR
+            Arrays.asList(new String[] { "1", "2", "3", "4", "5", "6", "7" })); // every day
     private final String[] daysOfWeekValues;
     private final String[] weekdayAbbreviations;
 
@@ -367,6 +367,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public void setBellActive(boolean active) {
         settings.edit().putBoolean(keyActive, active).commit();
+    }
+
+    @Override
+    public void setStatusNotification(boolean statusNotification) {
+        settings.edit().putBoolean(keyStatus, statusNotification).commit();
     }
 
 }
