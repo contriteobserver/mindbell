@@ -74,6 +74,8 @@
     <string name="atLeastOneActiveDayNeeded">Mindestens einen Tag angeben</string>
     
     <!-- Status bar notification -->
+    <string name="statusTitleNotificationsDisabled">Bitte Einstellungen überprüfen</string>
+    <string name="statusTextNotificationsDisabled">MindBell hat \'Status-Icon anzeigen\' ausgeschaltet</string>
     <string name="statusTitleBellActive">MindBell ist aktiv</string>
     <string name="statusTextBellActive">_STARTTIME_ bis _ENDTIME_ am _WEEKDAYS_</string>
 
@@ -81,6 +83,23 @@
     <string name="reasonMutedWithPhone">Glocke still wie das Handy</string>
     <string name="reasonMutedOffHook">Glocke still während Telefonaten</string>
     <string name="reasonMutedInFlightMode">Glocke still im Flugmodus</string>
+    
+    <!-- Reasons why permission READ_PHONE_STATE should be granted -->
+    <string name="reasonReadPhoneStateTitle">Wozu diese Berechtigung?</string>
+    <string name="reasonReadPhoneStateText">\'Status-Icon anzeigen\' und \'Beim Telefonieren still\' wurden
+        ausgewählt. Das bedeutet, dass MindBell die Glocke in der Benachrichtigungsleiste umdreht, wenn
+        ein Anruf ein- oder ausgeht. Um das zu erreichen, muss MindBell über Anrufe informiert werden.
+        Nur mit der Berechtigung READ_PHONE_STATE kann MindBell darüber auf dem Laufenden gehalten werden.
+        Wenn die Berechtigung abgelehnt wird, muss daher entweder \'Status-Icon anzeigen\' oder
+        \'Beim Telefonieren still\' abgeschaltet sein.</string>
+
+    <!-- Permission READ_PHONE_STATE denied but user checked 'never ask again' -->
+    <string name="neverAskAgainReadPhoneStateTitle">Fehlende Berechtigung</string>
+    <string name="neverAskAgainPhoneStateText">Die Berechtigung READ_PHONE_STATE wurde nicht erteilt.
+        Daher muss entweder \'Status-Icon anzeigen\' oder \'Beim Telefonieren still\' abgeschaltet sein.</string>
+
+    <!-- General dialog buttons -->
+    <string name="buttonOk">OK</string>
 
     <!-- Offer popup -->
     <string name="main_title_popup">Neu von Mindful Apps</string>

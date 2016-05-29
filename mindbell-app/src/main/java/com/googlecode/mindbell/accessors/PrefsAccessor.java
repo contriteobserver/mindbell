@@ -119,4 +119,6 @@ public abstract class PrefsAccessor {
 
     public abstract void setBellActive(boolean active);
 
+    public abstract void setStatusNotification(boolean statusNotification);
+
 }
