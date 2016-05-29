@@ -72,7 +72,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private final String defaultStart = "9";
     private final String defaultEnd = "21";
     private final Set<String> defaultActiveOnDaysOfWeek = new HashSet<String>(
-            Arrays.asList(new String[] { "1", "2", "3", "4", "5", "6", "7" })); // every day as in 2.4.0
+            Arrays.asList(new String[] { "2", "3", "4", "5", "6" })); // MO-FR
     private final String[] daysOfWeekValues;
     private final String[] weekdayAbbreviations;
 
