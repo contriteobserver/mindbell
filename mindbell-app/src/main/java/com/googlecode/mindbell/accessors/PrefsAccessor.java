@@ -121,4 +121,6 @@ public abstract class PrefsAccessor {
 
     public abstract void setStatusNotification(boolean statusNotification);
 
+    public abstract boolean useStatusIconMaterialDesign();
+
 }

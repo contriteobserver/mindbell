@@ -34,6 +34,8 @@ public class MockPrefsAccessor extends PrefsAccessor {
 
     private final boolean statusNotificationVisibilityPublic = true;
 
+    private final boolean statusIconMaterialDesign = true;
+
     private TimeOfDay daytimeEnd = new TimeOfDay(21, 0);
 
     private String daytimeEndString = "21:00";
@@ -190,6 +192,11 @@ public class MockPrefsAccessor extends PrefsAccessor {
     @Override
     public void setStatusNotification(boolean theStatusNotification) {
         this.statusNotification = theStatusNotification;
+    }
+
+    @Override
+    public boolean useStatusIconMaterialDesign() {
+        return statusIconMaterialDesign;
     }
 
 }

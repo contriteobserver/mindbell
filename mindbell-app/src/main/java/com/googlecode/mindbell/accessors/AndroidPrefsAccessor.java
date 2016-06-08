@@ -47,6 +47,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private final String keyShow;
     private final String keyStatus;
     private final String keyStatusVisibilityPublic;
+    private final String keyStatusIconMaterialDesign;
     private final String keyMuteInFlightMode;
     private final String keyMuteOffHook;
     private final String keyMuteWithPhone;
@@ -63,6 +64,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private final boolean defaultShow = true;
     private final boolean defaultStatus = false;
     private final boolean defaultStatusVisibilityPublic = true;
+    private final boolean defaultStatusIconMaterialDesign = true;
     private final boolean defaultMuteInFlightMode = false;
     private final boolean defaultMuteOffHook = true;
     private final boolean defaultMuteWithPhone = true;
@@ -93,6 +95,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         keyShow = context.getString(R.string.keyShow);
         keyStatus = context.getString(R.string.keyStatus);
         keyStatusVisibilityPublic = context.getString(R.string.keyStatusVisibilityPublic);
+        keyStatusIconMaterialDesign = context.getString(R.string.keyStatusIconMaterialDesign);
         keyMuteInFlightMode = context.getString(R.string.keyMuteInFlightMode);
         keyMuteOffHook = context.getString(R.string.keyMuteOffHook);
         keyMuteWithPhone = context.getString(R.string.keyMuteWithPhone);
@@ -115,8 +118,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
      */
     private void checkSettings() {
         // boolean settings:
-        String[] booleanSettings = new String[] { keyShow, keyStatus, keyStatusVisibilityPublic, keyActive, keyMuteInFlightMode,
-                keyMuteOffHook, keyMuteWithPhone, keyVibrate };
+        String[] booleanSettings = new String[] { keyShow, keyStatus, keyStatusVisibilityPublic, keyStatusIconMaterialDesign,
+                keyActive, keyMuteInFlightMode, keyMuteOffHook, keyMuteWithPhone, keyVibrate };
         for (String s : booleanSettings) {
             try {
                 settings.getBoolean(s, false);
@@ -187,6 +190,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             settings.edit().putBoolean(keyStatusVisibilityPublic, defaultStatusVisibilityPublic).commit();
             Log.w(TAG,
                     "Reset missing setting for '" + keyStatusVisibilityPublic + "' to '" + defaultStatusVisibilityPublic + "'");
+        }
+        if (!settings.contains(keyStatusIconMaterialDesign)) {
+            settings.edit().putBoolean(keyStatusIconMaterialDesign, defaultStatusIconMaterialDesign).commit();
+            Log.w(TAG, "Reset missing setting for '" + keyStatusIconMaterialDesign + "' to '" + defaultStatusIconMaterialDesign
+                    + "'");
         }
         if (!settings.contains(keyMuteInFlightMode)) {
             settings.edit().putBoolean(keyMuteInFlightMode, defaultMuteInFlightMode).commit();
@@ -372,6 +380,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public void setStatusNotification(boolean statusNotification) {
         settings.edit().putBoolean(keyStatus, statusNotification).commit();
+    }
+
+    @Override
+    public boolean useStatusIconMaterialDesign() {
+        return settings.getBoolean(keyStatusIconMaterialDesign, defaultStatusIconMaterialDesign);
     }
 
 }

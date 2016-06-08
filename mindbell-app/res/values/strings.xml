@@ -53,6 +53,9 @@
     <string name="prefsStatusVisibilityPublic">Show text on lock screen</string>
     <string name="summaryStatusVisibilityPrivate">Hide text on lock screen</string>
     <string name="summaryStatusVisibilityPublic">Show text on lock screen</string>
+    <string name="prefsStatusIconMaterialDesign">Status icon in Material Design</string>
+    <string name="summaryStatusIconMaterialDesign">Stylized white bell</string>
+    <string name="summaryStatusIconPreMaterialDesign">Golden bell (just a white splotch on some devices)</string>
     <string name="prefsCategorySound">Sound</string>
     <string name="prefsVolume">Volume</string>
     <string name="prefsVibrate">Vibrate</string>
@@ -120,6 +123,7 @@
     <string name="keyShow" translatable="false">show</string>
     <string name="keyStatus" translatable="false">status</string>
     <string name="keyStatusVisibilityPublic" translatable="false">statusVisiblityPublic</string>
+    <string name="keyStatusIconMaterialDesign" translatable="false">statusIconMaterialDesign</string>
     <string name="keyVolume" translatable="false">volume</string>
     <string name="keyMuteWithPhone" translatable="false">muteWithPhone</string>
     <string name="keyVibrate" translatable="false">vibrate</string>

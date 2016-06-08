@@ -52,6 +52,9 @@
     <string name="prefsStatusVisibilityPublic">Zeige Text auf Sperrbildschirm</string>
     <string name="summaryStatusVisibilityPrivate">Text auf Sperrbildschirm ausblenden</string>
     <string name="summaryStatusVisibilityPublic">Text auf Sperrbildschirm anzeigen</string>
+    <string name="prefsStatusIconMaterialDesign">Status-Icon im Material Design</string>
+    <string name="summaryStatusIconMaterialDesign">Stilisierte weiße Glocke</string>
+    <string name="summaryStatusIconPreMaterialDesign">Goldene Glocke (bei manchen Geräten nur ein weißer Fleck)</string>
     <string name="prefsCategorySound">Klang</string>
     <string name="prefsVolume">Lautstärke</string>
     <string name="prefsVibrate">Vibrieren</string>

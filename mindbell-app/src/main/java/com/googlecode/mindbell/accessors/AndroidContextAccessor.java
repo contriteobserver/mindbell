@@ -290,8 +290,18 @@ public class AndroidContextAccessor extends ContextAccessor {
             removeStatusNotification();
             return;
         }
+        // Choose material design or pre material design status icons
+        int bellActiveDrawable;
+        int bellActiveButMutedDrawable;
+        if (prefs.useStatusIconMaterialDesign()) {
+            bellActiveDrawable = R.drawable.ic_stat_bell_active;
+            bellActiveButMutedDrawable = R.drawable.ic_stat_bell_active_but_muted;
+        } else {
+            bellActiveDrawable = R.drawable.golden_bell_status_active;
+            bellActiveButMutedDrawable = R.drawable.golden_bell_status_active_but_muted;
+        }
         // Suppose bell is active and not muted and all settings can be satisfied
-        int statusDrawable = R.drawable.ic_stat_bell_active;
+        int statusDrawable = bellActiveDrawable;
         CharSequence contentTitle = context.getText(R.string.statusTitleBellActive);
         String contentText = context.getText(R.string.statusTextBellActive).toString();
         String muteRequestReason = getMuteRequestReason(shouldShowMessage);
@@ -306,7 +316,7 @@ public class AndroidContextAccessor extends ContextAccessor {
             // UpdateStatusNotification.
             prefs.setStatusNotification(false);
         } else if (muteRequestReason != null) { // Bell muted => override icon and notification text
-            statusDrawable = R.drawable.ic_stat_bell_active_but_muted;
+            statusDrawable = bellActiveButMutedDrawable;
             contentText = muteRequestReason;
         } else { // enrich standard notification by times and days
             contentText = contentText.replace("_STARTTIME_", prefs.getDaytimeStartString())
