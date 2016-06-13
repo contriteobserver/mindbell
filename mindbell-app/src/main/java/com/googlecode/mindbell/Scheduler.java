@@ -27,6 +27,7 @@ import com.googlecode.mindbell.accessors.AndroidContextAccessor;
 import com.googlecode.mindbell.accessors.AndroidPrefsAccessor;
 import com.googlecode.mindbell.accessors.PrefsAccessor;
 import com.googlecode.mindbell.logic.SchedulerLogic;
+import com.googlecode.mindbell.util.AlarmManagerCompat;
 import com.googlecode.mindbell.util.KeepAlive;
 import com.googlecode.mindbell.util.TimeOfDay;
 
@@ -37,7 +38,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import com.googlecode.mindbell.R;
 
 /**
  * Ring the bell and reschedule.
@@ -52,7 +52,7 @@ public class Scheduler extends BroadcastReceiver {
 
         Log.d(TAG, "random scheduler reached");
 
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        AlarmManagerCompat alarmManager = new AlarmManagerCompat(context);
         PrefsAccessor prefs = new AndroidPrefsAccessor(context);
 
         if (!prefs.isBellActive()) {
@@ -66,7 +66,7 @@ public class Scheduler extends BroadcastReceiver {
         PendingIntent sender = PendingIntent.getBroadcast(context, 0, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         long nowMillis = Calendar.getInstance().getTimeInMillis();
         long nextBellTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowMillis, prefs);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, nextBellTimeMillis, sender);
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextBellTimeMillis, sender);
         TimeOfDay nextBellTime = new TimeOfDay(nextBellTimeMillis);
         Log.d(TAG, "scheduled next bell alarm for " + nextBellTime.hour + ":" + String.format("%02d", nextBellTime.minute)
                 + " on weekday " + nextBellTime.weekday);
