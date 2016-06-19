@@ -26,6 +26,7 @@ import com.googlecode.mindbell.accessors.AndroidContextAccessor;
 import com.googlecode.mindbell.accessors.ContextAccessor;
 import com.googlecode.mindbell.logic.RingingLogic;
 import com.googlecode.mindbell.test.accessors.MockContextAccessor;
+import com.googlecode.mindbell.test.accessors.MockPrefsAccessor;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -108,36 +109,36 @@ public class RingBellTest extends AndroidTestCase {
         // setup
         setContextMuteOffHook(false);
         // exercise
-        ContextAccessor ca = AndroidContextAccessor.get(context);
+        ContextAccessor ca = AndroidContextAccessor.getInstance(context);
         // verify
-        assertFalse(ca.isSettingMuteOffHook());
+        assertFalse(ca.getPrefs().isSettingMuteOffHook());
     }
 
     public void testMuteOffHook_true() {
         // setup
         setContextMuteOffHook(true);
         // exercise
-        ContextAccessor ca = AndroidContextAccessor.get(context);
+        ContextAccessor ca = AndroidContextAccessor.getInstance(context);
         // verify
-        assertTrue(ca.isSettingMuteOffHook());
+        assertTrue(ca.getPrefs().isSettingMuteOffHook());
     }
 
     public void testMuteWithPhone_false() {
         // setup
         setContextMuteWithPhone(false);
         // exercise
-        ContextAccessor ca = AndroidContextAccessor.get(context);
+        ContextAccessor ca = AndroidContextAccessor.getInstance(context);
         // verify
-        assertFalse(ca.isSettingMuteWithPhone());
+        assertFalse(ca.getPrefs().isSettingMuteWithPhone());
     }
 
     public void testMuteWithPhone_true() {
         // setup
         setContextMuteWithPhone(true);
         // exercise
-        ContextAccessor ca = AndroidContextAccessor.get(context);
+        ContextAccessor ca = AndroidContextAccessor.getInstance(context);
         // verify
-        assertTrue(ca.isSettingMuteWithPhone());
+        assertTrue(ca.getPrefs().isSettingMuteWithPhone());
     }
 
     public void testPreconditions() {
@@ -146,9 +147,9 @@ public class RingBellTest extends AndroidTestCase {
 
     public void testRingBell_Mock_false() {
         // setup
-        MockContextAccessor mca = new MockContextAccessor();
+        MockContextAccessor mca = MockContextAccessor.getInstance();
         mca.setPhoneMuted(true);
-        mca.setSettingMuteWithPhone(true);
+        ((MockPrefsAccessor) mca.getPrefs()).setSettingMuteWithPhone(true);
         // exercise
         boolean isRinging = RingingLogic.ringBell(mca, null);
         // verify
@@ -157,7 +158,7 @@ public class RingBellTest extends AndroidTestCase {
 
     public void testRingBell_Mock_true() {
         // setup
-        MockContextAccessor mca = new MockContextAccessor();
+        MockContextAccessor mca = MockContextAccessor.getInstance();
         mca.setPhoneMuted(false);
         mca.setPhoneOffHook(false);
         // exercise
@@ -180,7 +181,7 @@ public class RingBellTest extends AndroidTestCase {
         setContextMuteWithPhone(false);
         setContextMuteOffHook(false);
         // exercise
-        boolean isRinging = RingingLogic.ringBell(AndroidContextAccessor.get(context), null);
+        boolean isRinging = RingingLogic.ringBell(AndroidContextAccessor.getInstance(context), null);
         // verify
         assertTrue(isRinging);
     }

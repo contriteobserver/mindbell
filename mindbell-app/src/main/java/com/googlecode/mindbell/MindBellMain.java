@@ -64,7 +64,7 @@ public class MindBellMain extends Activity {
      * Show hint how to activate the bell.
      */
     private void notifyIfNotActive() {
-        if (!new AndroidPrefsAccessor(this).isBellActive()) {
+        if (!AndroidContextAccessor.getInstance(this).getPrefs().isBellActive()) {
             Toast.makeText(this, R.string.howToSet, Toast.LENGTH_LONG).show();
         }
     }
@@ -90,12 +90,12 @@ public class MindBellMain extends Activity {
         activeItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 
             public boolean onMenuItemClick(MenuItem item) {
-                PrefsAccessor prefsAccessor = new AndroidPrefsAccessor(MindBellMain.this);
-                prefsAccessor.setBellActive(!prefsAccessor.isBellActive()); // toggle active/inactive
+                PrefsAccessor prefs = AndroidContextAccessor.getInstance(MindBellMain.this).getPrefs();
+                prefs.setBellActive(!prefs.isBellActive()); // toggle active/inactive
                 Utils.updateBellSchedule(MindBellMain.this);
                 invalidateOptionsMenu(); // re-call onPrepareOptionsMenu()
                 CharSequence feedback = getText(
-                        (prefsAccessor.isBellActive()) ? R.string.summaryActive : R.string.summaryNotActive);
+                        (prefs.isBellActive()) ? R.string.summaryActive : R.string.summaryNotActive);
                 Toast.makeText(MindBellMain.this, feedback, Toast.LENGTH_SHORT).show();
                 return true;
             }
@@ -105,9 +105,9 @@ public class MindBellMain extends Activity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        PrefsAccessor prefs = AndroidContextAccessor.getInstance(MindBellMain.this).getPrefs();
         MenuItem activeItem = menu.findItem(R.id.active);
-        PrefsAccessor prefsAccessor = new AndroidPrefsAccessor(MindBellMain.this);
-        activeItem.setIcon((prefsAccessor.isBellActive()) ? R.drawable.ic_action_bell_off : R.drawable.ic_action_bell_on);
+        activeItem.setIcon((prefs.isBellActive()) ? R.drawable.ic_action_bell_off : R.drawable.ic_action_bell_on);
         return true;
     }
 
@@ -121,7 +121,7 @@ public class MindBellMain extends Activity {
     public boolean onTouchEvent(MotionEvent e) {
         if (e.getAction() == MotionEvent.ACTION_DOWN) {
             notifyIfNotActive();
-            ContextAccessor ca = AndroidContextAccessor.get(this);
+            ContextAccessor ca = AndroidContextAccessor.getInstance(this);
             RingingLogic.ringBell(ca, null);
         }
         return true;

@@ -22,7 +22,7 @@ package com.googlecode.mindbell;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.googlecode.mindbell.accessors.AndroidPrefsAccessor;
+import com.googlecode.mindbell.accessors.AndroidContextAccessor;
 import com.googlecode.mindbell.util.Utils;
 
 import android.Manifest;
@@ -153,7 +153,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         super.onCreate(savedInstanceState);
 
         // check settings, delete any settings that are not valid
-        new AndroidPrefsAccessor(this);
+        AndroidContextAccessor.getInstance(this).getPrefs();
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences_1);

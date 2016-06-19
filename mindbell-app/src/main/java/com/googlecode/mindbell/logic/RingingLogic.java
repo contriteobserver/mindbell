@@ -22,10 +22,50 @@ package com.googlecode.mindbell.logic;
 import com.googlecode.mindbell.accessors.ContextAccessor;
 
 /**
- * @author marc
- *
+ * This class decides wether to ring the bell and in case kicks off the bell ring.
  */
 public class RingingLogic {
+
+    /**
+     * Instance to start the bell ring and wait for the end of ringing.
+     */
+    public static class KeepAlive {
+
+        private boolean isDone = false;
+
+        private final long timeout;
+
+        private final long sleepDuration;
+
+        private final ContextAccessor ca;
+
+        public KeepAlive(ContextAccessor ca, long timeout) {
+            this.ca = ca;
+            this.timeout = timeout;
+            this.sleepDuration = timeout / 10;
+        }
+
+        public void ringBell() {
+            RingingLogic.ringBell(ca, new Runnable() {
+                public void run() {
+                    setDone();
+                }
+            });
+            long totalSlept = 0;
+            while (!isDone && totalSlept < timeout) {
+                try {
+                    Thread.sleep(sleepDuration);
+                } catch (InterruptedException ie) {
+                }
+                totalSlept += sleepDuration;
+            }
+        }
+
+        private void setDone() {
+            isDone = true;
+        }
+
+    }
 
     /**
      * Trigger the bell's sound. This is the preferred way to play the sound.
@@ -54,6 +94,18 @@ public class RingingLogic {
         // reset built-in if not stopped.
         ca.startBellSound(runWhenDone);
         return true;
+    }
+
+    /**
+     * Trigger the bell's sound and wait till it's done or timeout reached.
+     *
+     * @param context
+     *            the context in which to play the sound.
+     * @param timeout
+     *            the max time to wait in milliseconds.
+     */
+    public static void ringBellAndWait(ContextAccessor ca, long timeout) {
+        new KeepAlive(ca, timeout).ringBell();
     }
 
 }

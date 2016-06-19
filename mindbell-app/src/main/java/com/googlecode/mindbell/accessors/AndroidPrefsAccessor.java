@@ -34,10 +34,6 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-/**
- * @author marc
- *
- */
 public class AndroidPrefsAccessor extends PrefsAccessor {
 
     private final SharedPreferences settings;
@@ -54,6 +50,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private final String keyVibrate;
 
     private final String keyFrequency;
+    private final String keyRandomize;
     private final String keyStart;
     private final String keyEnd;
     private final String keyActiveOnDaysOfWeek;
@@ -71,6 +68,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private final boolean defaultVibrate = false;
 
     private final String defaultFrequency = "3600000";
+    private final boolean defaultRandomize = true;
     private final String defaultStart = "9";
     private final String defaultEnd = "21";
     private final Set<String> defaultActiveOnDaysOfWeek = new HashSet<String>(
@@ -80,7 +78,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     private final float defaultVolume = AndroidContextAccessor.MINUS_SIX_DB;
 
-    public AndroidPrefsAccessor(Context context) {
+    /**
+     * Constructs an accessor for preferences in the given context, please use {@link AndroidContextAccessor#getPrefs()} instead
+     * of calling this directly.
+     */
+    protected AndroidPrefsAccessor(Context context) {
         // From target SDK version 11 (HONEYCOMB) upwards changes made in the settings dialog do not arrive in
         // UpdateStatusNotification if MODE_MULTI_PROCESS is not set, see API docs for MODE_MULTI_PROCESS.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -102,6 +104,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         keyVibrate = context.getString(R.string.keyVibrate);
 
         keyFrequency = context.getString(R.string.keyFrequency);
+        keyRandomize = context.getString(R.string.keyRandomize);
         keyStart = context.getString(R.string.keyStart);
         keyEnd = context.getString(R.string.keyEnd);
         keyActiveOnDaysOfWeek = context.getString(R.string.keyActiveOnDaysOfWeek);
@@ -119,7 +122,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private void checkSettings() {
         // boolean settings:
         String[] booleanSettings = new String[] { keyShow, keyStatus, keyStatusVisibilityPublic, keyStatusIconMaterialDesign,
-                keyActive, keyMuteInFlightMode, keyMuteOffHook, keyMuteWithPhone, keyVibrate };
+                keyActive, keyMuteInFlightMode, keyMuteOffHook, keyMuteWithPhone, keyVibrate, keyRandomize };
         for (String s : booleanSettings) {
             try {
                 settings.getBoolean(s, false);
@@ -216,6 +219,10 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         if (!settings.contains(keyFrequency)) {
             settings.edit().putString(keyFrequency, defaultFrequency).commit();
             Log.w(TAG, "Reset missing setting for '" + keyFrequency + "' to '" + defaultFrequency + "'");
+        }
+        if (!settings.contains(keyRandomize)) {
+            settings.edit().putBoolean(keyRandomize, defaultRandomize).commit();
+            Log.w(TAG, "Reset missing setting for '" + keyRandomize + "' to '" + defaultRandomize + "'");
         }
         if (!settings.contains(keyStart)) {
             settings.edit().putString(keyStart, defaultStart).commit();
@@ -345,6 +352,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public boolean isBellActive() {
         return settings.getBoolean(keyActive, defaultActive);
+    }
+
+    @Override
+    public boolean isRandomize() {
+        return settings.getBoolean(keyRandomize, defaultRandomize);
     }
 
     @Override

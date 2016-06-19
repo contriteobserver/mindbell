@@ -27,7 +27,7 @@ import android.test.AndroidTestCase;
 public class AndroidContextAccessorTest extends AndroidTestCase {
 
     private ContextAccessor createContextAccessor() {
-        return AndroidContextAccessor.get(getContext());
+        return AndroidContextAccessor.getInstance(getContext());
     }
 
     public void testBellVolume() {

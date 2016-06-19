@@ -27,17 +27,26 @@ import com.googlecode.mindbell.accessors.ContextAccessor;
 public class MockContextAccessor extends ContextAccessor {
     private static final int MAX_VOLUME = 7;
     private static final float BELL_VOLUME = 0.5f;
-    private boolean isSettingMuteWithPhone = false;
-    private boolean isSettingMuteOffHook = false;
-    private boolean isSettingMuteInFlightMode = false;
-    private boolean isPhoneMuted = false;
 
+    /**
+     * Returns an accessor for the given context, just in case we want to make this a Singleton.
+     */
+    public static MockContextAccessor getInstance() {
+        return new MockContextAccessor();
+    }
+
+    private boolean isPhoneMuted = false;
     private boolean isPhoneOffHook = false;
+
     private boolean isPhoneInFlightMode = false;
 
     private boolean isPlaying = false;
     private long mockSoundDuration = 1000; // ms
     private int alarmVolume;
+
+    private MockContextAccessor() {
+        this.prefs = new MockPrefsAccessor();
+    }
 
     @Override
     public void finishBellSound() {
@@ -58,6 +67,11 @@ public class MockContextAccessor extends ContextAccessor {
     @Override
     public float getBellVolume() {
         return BELL_VOLUME;
+    }
+
+    @Override
+    public MockPrefsAccessor getPrefs() {
+        return (MockPrefsAccessor) prefs;
     }
 
     public long getSoundDuration() {
@@ -85,21 +99,6 @@ public class MockContextAccessor extends ContextAccessor {
     }
 
     @Override
-    public boolean isSettingMuteInFlightMode() {
-        return isSettingMuteInFlightMode;
-    }
-
-    @Override
-    public boolean isSettingMuteOffHook() {
-        return isSettingMuteOffHook;
-    }
-
-    @Override
-    public boolean isSettingMuteWithPhone() {
-        return isSettingMuteWithPhone;
-    }
-
-    @Override
     public void setAlarmVolume(int volume) {
         alarmVolume = volume;
     }
@@ -114,18 +113,6 @@ public class MockContextAccessor extends ContextAccessor {
 
     public void setPhoneOffHook(boolean value) {
         isPhoneOffHook = value;
-    }
-
-    public void setSettingMuteInFlightMode(boolean isSettingMuteInFlightMode) {
-        this.isSettingMuteInFlightMode = isSettingMuteInFlightMode;
-    }
-
-    public void setSettingMuteOffHook(boolean value) {
-        isSettingMuteOffHook = value;
-    }
-
-    public void setSettingMuteWithPhone(boolean value) {
-        isSettingMuteWithPhone = value;
     }
 
     public void setSoundDuration(long duration) {

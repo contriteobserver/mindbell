@@ -33,6 +33,9 @@ public abstract class ContextAccessor {
     /** Alarm volume before ringing the bell */
     protected int originalVolume;
 
+    /** Accessor to all preferences (may be mocked) */
+    protected PrefsAccessor prefs = null;
+
     public abstract void finishBellSound();
 
     public abstract int getAlarmMaxVolume();
@@ -50,11 +53,11 @@ public abstract class ContextAccessor {
      */
     public String getMuteRequestReason(boolean shouldShowMessage) {
         String reason = null;
-        if (isSettingMuteWithPhone() && isPhoneMuted()) { // Mute bell with phone?
+        if (prefs.isSettingMuteWithPhone() && isPhoneMuted()) { // Mute bell with phone?
             reason = getReasonMutedWithPhone();
-        } else if (isSettingMuteOffHook() && isPhoneOffHook()) { // Mute bell while phone is off hook (or ringing)?
+        } else if (prefs.isSettingMuteOffHook() && isPhoneOffHook()) { // Mute bell while phone is off hook (or ringing)?
             reason = getReasonMutedOffHook();
-        } else if (isSettingMuteInFlightMode() && isPhoneInFlightMode()) { // Mute bell while in flight mode?
+        } else if (prefs.isSettingMuteInFlightMode() && isPhoneInFlightMode()) { // Mute bell while in flight mode?
             reason = getReasonMutedInFlightMode();
         }
         if (reason != null && shouldShowMessage) {
@@ -62,6 +65,8 @@ public abstract class ContextAccessor {
         }
         return reason;
     }
+
+    public abstract PrefsAccessor getPrefs();
 
     /**
      * Returns reason to mute bell as String, override when concrete context is available.
@@ -98,16 +103,6 @@ public abstract class ContextAccessor {
     public abstract boolean isPhoneMuted();
 
     public abstract boolean isPhoneOffHook();
-
-    public abstract boolean isSettingMuteInFlightMode();
-
-    public abstract boolean isSettingMuteOffHook();
-
-    public abstract boolean isSettingMuteWithPhone();
-
-    public boolean isSettingVibrate() {
-        return false;
-    }
 
     public abstract void setAlarmVolume(int volume);
 

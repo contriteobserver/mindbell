@@ -70,7 +70,10 @@
     <string name="summaryNotMutedInFlightMode">Glocke läutet auch im Flugmodus</string>
     <string name="summaryMutedInFlightMode">Glocke läutet nicht im Flugmodus</string>
     <string name="prefsCategoryDetails">Details</string>
-    <string name="prefsFrequency">Glocke läutet etwa alle &#8230;</string>
+    <string name="prefsFrequency">Glocke läutet (etwa) alle &#8230;</string>
+    <string name="prefsRandomize">Nutze Intervallabweichungen</string>
+    <string name="summaryDontRandomize">Glockeninterall variiert</string>
+    <string name="summaryRandomize">Glockenintervall ist konstant</string>
     <string name="prefsStart">Starte Glocke täglich um &#8230;</string>
     <string name="prefsEnd">Beende Glocke täglich um &#8230;</string>
     <string name="prefsActiveOnDaysOfWeek">Tage an denen die Glocke aktiv ist &#8230;</string>

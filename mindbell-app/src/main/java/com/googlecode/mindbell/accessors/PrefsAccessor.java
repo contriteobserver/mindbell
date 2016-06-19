@@ -24,18 +24,7 @@ import java.util.Set;
 
 import com.googlecode.mindbell.util.TimeOfDay;
 
-/**
- * @author marc
- *
- */
 public abstract class PrefsAccessor {
-
-    /**
-     *
-     */
-    public PrefsAccessor() {
-        super();
-    }
 
     public abstract boolean doShowBell();
 
@@ -57,6 +46,9 @@ public abstract class PrefsAccessor {
 
     public abstract long getInterval();
 
+    /**
+     * Return next time to bell at daytime after the given "now" which is lying in the nighttime.
+     */
     public long getNextDaytimeStartInMillis(long nightTimeMillis) {
         TimeOfDay tStart = getDaytimeStart();
         Calendar morning = Calendar.getInstance();
@@ -64,6 +56,7 @@ public abstract class PrefsAccessor {
         morning.set(Calendar.HOUR_OF_DAY, tStart.hour);
         morning.set(Calendar.MINUTE, tStart.minute);
         morning.set(Calendar.SECOND, 0);
+        morning.set(Calendar.MILLISECOND, 0);
         if (morning.getTimeInMillis() <= nightTimeMillis) { // today's start time has already passed
             morning.add(Calendar.DATE, 1); // therefore go to morning of next day
         }
@@ -98,6 +91,8 @@ public abstract class PrefsAccessor {
         }
         return t.isActiveOnThatDay(getActiveOnDaysOfWeek());
     }
+
+    public abstract boolean isRandomize();
 
     public boolean isSettingMuteInFlightMode() {
         return true;

@@ -19,10 +19,10 @@
  *******************************************************************************/
 package com.googlecode.mindbell.test.util;
 
-import junit.framework.TestCase;
-
+import com.googlecode.mindbell.logic.RingingLogic;
 import com.googlecode.mindbell.test.accessors.MockContextAccessor;
-import com.googlecode.mindbell.util.KeepAlive;
+
+import junit.framework.TestCase;
 
 /**
  * @author marc
@@ -31,10 +31,10 @@ import com.googlecode.mindbell.util.KeepAlive;
 public class KeepAliveTest extends TestCase {
 
     public void testExpires() throws InterruptedException {
-        MockContextAccessor mca = new MockContextAccessor();
+        MockContextAccessor mca = MockContextAccessor.getInstance();
         // timeout shorter than sound duration: cannot finish
         long timeout = mca.getSoundDuration() / 10;
-        final KeepAlive keepAlive = new KeepAlive(mca, timeout);
+        final RingingLogic.KeepAlive keepAlive = new RingingLogic.KeepAlive(mca, timeout);
         // exercise: it gets back before the timeout
         Thread th = new Thread() {
             @Override
@@ -50,10 +50,10 @@ public class KeepAliveTest extends TestCase {
     }
 
     public void testReturnsNaturally() throws InterruptedException {
-        MockContextAccessor mca = new MockContextAccessor();
+        MockContextAccessor mca = MockContextAccessor.getInstance();
         // timeout longer than sound duration: finishing is easy
         long timeout = mca.getSoundDuration() * 10;
-        final KeepAlive keepAlive = new KeepAlive(mca, timeout);
+        final RingingLogic.KeepAlive keepAlive = new RingingLogic.KeepAlive(mca, timeout);
         // exercise: it gets back before the timeout
         Thread th = new Thread() {
             @Override

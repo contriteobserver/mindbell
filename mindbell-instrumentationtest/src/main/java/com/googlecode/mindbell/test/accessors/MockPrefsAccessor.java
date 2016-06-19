@@ -36,6 +36,8 @@ public class MockPrefsAccessor extends PrefsAccessor {
 
     private final boolean statusIconMaterialDesign = true;
 
+    private boolean randomize = true;
+
     private TimeOfDay daytimeEnd = new TimeOfDay(21, 0);
 
     private String daytimeEndString = "21:00";
@@ -50,7 +52,20 @@ public class MockPrefsAccessor extends PrefsAccessor {
 
     private long interval = 3600000;
 
+    private boolean isSettingMuteWithPhone = false;
+
+    private boolean isSettingMuteOffHook = false;
+
+    private boolean isSettingMuteInFlightMode = false;
+
     private boolean bellActive = true;
+
+    /**
+     * Constructs an accessor for preferences in the given context, please use {@link MockContextAccessor#getPrefs()} instead of
+     * calling this directly.
+     */
+    protected MockPrefsAccessor() {
+    }
 
     @Override
     public boolean doShowBell() {
@@ -108,88 +123,83 @@ public class MockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
+    public boolean isRandomize() {
+        return randomize;
+    }
+
+    @Override
+    public boolean isSettingMuteInFlightMode() {
+        return isSettingMuteInFlightMode;
+    }
+
+    @Override
+    public boolean isSettingMuteOffHook() {
+        return isSettingMuteOffHook;
+    }
+
+    @Override
+    public boolean isSettingMuteWithPhone() {
+        return isSettingMuteWithPhone;
+    }
+
+    @Override
     public boolean makeStatusNotificationVisibilityPublic() {
         return statusNotificationVisibilityPublic;
     }
 
-    /**
-     * @param activeOnDaysOfWeek
-     *            the activeOnDaysOfWeek to set
-     */
     public void setActiveOnDaysOfWeek(Set<Integer> activeOnDaysOfWeek) {
         this.activeOnDaysOfWeek = activeOnDaysOfWeek;
     }
 
-    /**
-     * @param activeOnDaysOfWeekString
-     *            the activeOnDaysOfWeekString to set
-     */
     public void setActiveOnDaysOfWeekString(String activeOnDaysOfWeekString) {
         this.activeOnDaysOfWeekString = activeOnDaysOfWeekString;
     }
 
-    /**
-     * @param theBellActive
-     *            the bellActive to set
-     */
     @Override
     public void setBellActive(boolean theBellActive) {
         this.bellActive = theBellActive;
     }
 
-    /**
-     * @param theDaytimeEnd
-     *            the daytimeEnd to set
-     */
     public void setDaytimeEnd(TimeOfDay theDaytimeEnd) {
         this.daytimeEnd = theDaytimeEnd;
     }
 
-    /**
-     * @param theDaytimeEndString
-     *            the daytimeEndString to set
-     */
     public void setDaytimeEndString(String theDaytimeEndString) {
         this.daytimeEndString = theDaytimeEndString;
     }
 
-    /**
-     * @param theDaytimeStart
-     *            the daytimeStart to set
-     */
     public void setDaytimeStart(TimeOfDay theDaytimeStart) {
         this.daytimeStart = theDaytimeStart;
     }
 
-    /**
-     * @param theDaytimeStartString
-     *            the daytimeStartString to set
-     */
     public void setDaytimeStartString(String theDaytimeStartString) {
         this.daytimeStartString = theDaytimeStartString;
     }
 
-    /**
-     * @param theInterval
-     *            the interval to set
-     */
     public void setInterval(long theInterval) {
         this.interval = theInterval;
     }
 
-    /**
-     * @param theShowBell
-     *            the showBell to set
-     */
+    public void setRandomize(boolean randomize) {
+        this.randomize = randomize;
+    }
+
+    public void setSettingMuteInFlightMode(boolean isSettingMuteInFlightMode) {
+        this.isSettingMuteInFlightMode = isSettingMuteInFlightMode;
+    }
+
+    public void setSettingMuteOffHook(boolean value) {
+        isSettingMuteOffHook = value;
+    }
+
+    public void setSettingMuteWithPhone(boolean value) {
+        isSettingMuteWithPhone = value;
+    }
+
     public void setShowBell(boolean theShowBell) {
         this.showBell = theShowBell;
     }
 
-    /**
-     * @param theStatusNotification
-     *            the statusNotification to set
-     */
-    @Override
     public void setStatusNotification(boolean theStatusNotification) {
         this.statusNotification = theStatusNotification;
     }

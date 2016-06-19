@@ -27,11 +27,12 @@ import java.util.HashSet;
 
 import com.googlecode.mindbell.accessors.PrefsAccessor;
 import com.googlecode.mindbell.logic.SchedulerLogic;
+import com.googlecode.mindbell.test.accessors.MockContextAccessor;
 import com.googlecode.mindbell.test.accessors.MockPrefsAccessor;
 import com.googlecode.mindbell.util.TimeOfDay;
 
-import junit.framework.TestCase;
 import android.util.Log;
+import junit.framework.TestCase;
 
 /**
  * @author marc
@@ -40,25 +41,44 @@ import android.util.Log;
 public class SchedulerLogicTest extends TestCase {
 
     private PrefsAccessor getDayPrefs() {
-        MockPrefsAccessor dayPrefs = new MockPrefsAccessor();
-        dayPrefs.setDaytimeStart(new TimeOfDay(9, 0));
-        dayPrefs.setDaytimeEnd(new TimeOfDay(21, 0));
-        dayPrefs.setActiveOnDaysOfWeek(new HashSet<Integer>(Arrays.asList(new Integer[] { 2, 3, 4, 5, 6 })));
-        return dayPrefs;
+        MockPrefsAccessor prefs = MockContextAccessor.getInstance().getPrefs();
+        prefs.setDaytimeStart(new TimeOfDay(9, 0));
+        prefs.setDaytimeEnd(new TimeOfDay(21, 0));
+        prefs.setActiveOnDaysOfWeek(new HashSet<Integer>(Arrays.asList(new Integer[] { 2, 3, 4, 5, 6 })));
+        return prefs;
     }
 
+    // private PrefsAccessor getDayPrefsAllDays() {
+    // MockPrefsAccessor dayPrefs = new MockPrefsAccessor();
+    // dayPrefs.setDaytimeStart(new TimeOfDay(9, 0));
+    // dayPrefs.setDaytimeEnd(new TimeOfDay(21, 0));
+    // dayPrefs.setActiveOnDaysOfWeek(new HashSet<Integer>(Arrays.asList(new Integer[] { 1, 2, 3, 4, 5, 6, 7 })));
+    // return dayPrefs;
+    // }
+
     private PrefsAccessor getNightPrefs() {
-        MockPrefsAccessor nightPrefs = new MockPrefsAccessor();
-        nightPrefs.setDaytimeStart(new TimeOfDay(13, 0));
-        nightPrefs.setDaytimeEnd(new TimeOfDay(2, 0));
-        nightPrefs.setActiveOnDaysOfWeek(new HashSet<Integer>(Arrays.asList(new Integer[] { 2, 3, 4, 5, 6 })));
-        return nightPrefs;
+        MockPrefsAccessor prefs = MockContextAccessor.getInstance().getPrefs();
+        prefs.setDaytimeStart(new TimeOfDay(13, 0));
+        prefs.setDaytimeEnd(new TimeOfDay(2, 0));
+        prefs.setActiveOnDaysOfWeek(new HashSet<Integer>(Arrays.asList(new Integer[] { 2, 3, 4, 5, 6 })));
+        return prefs;
     }
+
+    // private long getTimeMillis(int hour, int minute) {
+    // Calendar cal = Calendar.getInstance();
+    // cal.set(Calendar.HOUR_OF_DAY, hour);
+    // cal.set(Calendar.MINUTE, minute);
+    // cal.set(Calendar.SECOND, 0);
+    // cal.set(Calendar.MILLISECOND, 0);
+    // return cal.getTimeInMillis();
+    // }
 
     private long getTimeMillis(int hour, int minute, int weekday) {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, hour);
         cal.set(Calendar.MINUTE, minute);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
         cal.set(Calendar.DAY_OF_WEEK, weekday);
         return cal.getTimeInMillis();
     }
@@ -67,6 +87,63 @@ public class SchedulerLogicTest extends TestCase {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timeMillis);
         return cal.get(Calendar.DAY_OF_WEEK);
+    }
+
+    public void testRescheduleNotRandomized() {
+        PrefsAccessor prefs = getDayPrefs();
+        ((MockPrefsAccessor) prefs).setRandomize(false);
+        // First reschedule from nighttime (05:00, before 09:00) to beginning of daytime (09:00)
+        long nowTimeMillis = getTimeMillis(5, 00, Calendar.FRIDAY);
+        long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
+        Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
+        assertEquals(getTimeMillis(9, 0, Calendar.FRIDAY), targetTimeMillis);
+        // Second reschedule
+        nowTimeMillis = targetTimeMillis;
+        targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
+        Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
+        assertEquals(getTimeMillis(10, 0, Calendar.FRIDAY), targetTimeMillis);
+        // Third reschedule
+        nowTimeMillis = targetTimeMillis;
+        targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
+        Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
+        assertEquals(getTimeMillis(11, 0, Calendar.FRIDAY), targetTimeMillis);
+    }
+
+    public void testRescheduleRandomized() {
+        PrefsAccessor prefs = getDayPrefs();
+        ((MockPrefsAccessor) prefs).setRandomize(true);
+        // First reschedule from nighttime (05:00, before 09:00) to beginning of daytime (09:00)
+        long nowTimeMillis = getTimeMillis(5, 00, Calendar.FRIDAY);
+        int fails = 0;
+        long targetTimeMillis;
+        do {
+            targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
+        } while (getTimeMillis(9, 0, Calendar.FRIDAY) == targetTimeMillis && ++fails < 10); // may fail randomly sometimes
+        Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
+        assertTrue(getTimeMillis(9, 0, Calendar.FRIDAY) != targetTimeMillis);
+        assertTrue(targetTimeMillis >= getTimeMillis(9, 00, Calendar.FRIDAY)); // min(randomizedInterval - meanInterval / 2)
+        assertTrue(targetTimeMillis <= getTimeMillis(10, 00, Calendar.FRIDAY)); // max(randomizedInterval - meanInterval / 2)
+        // Second reschedule
+        nowTimeMillis = targetTimeMillis;
+        targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
+        Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
+        assertTrue(getTimeMillis(10, 0, Calendar.FRIDAY) != targetTimeMillis); // may fail randomly from time to time
+        assertTrue(targetTimeMillis >= nowTimeMillis + prefs.getInterval() * 0.5); // * 0.5 = min(randomizedInterval)
+        assertTrue(targetTimeMillis <= nowTimeMillis + prefs.getInterval() * 1.5); // * 1.5 = max(randomizedInterval)
+        // Third reschedule
+        nowTimeMillis = targetTimeMillis;
+        targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
+        Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
+        assertTrue(getTimeMillis(11, 0, Calendar.FRIDAY) != targetTimeMillis); // may fail randomly from time to time
+        assertTrue(targetTimeMillis >= nowTimeMillis + prefs.getInterval() * 0.5); // * 0.5 = min(randomizedInterval)
+        assertTrue(targetTimeMillis <= nowTimeMillis + prefs.getInterval() * 1.5); // * 1.5 = max(randomizedInterval)
+    }
+
+    public void testRescheduleRandomizedRepeated() {
+        // Retest several times to reduce the risk that it works by chance
+        for (int i = 0; i < 1000; i++) {
+            testRescheduleRandomized();
+        }
     }
 
     public void testRescheduleYieldsDayFriday1() {

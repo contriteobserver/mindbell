@@ -56,7 +56,10 @@ public class AndroidContextAccessor extends ContextAccessor {
 
     private static final int uniqueNotificationID = R.layout.bell;
 
-    public static AndroidContextAccessor get(Context context) {
+    /**
+     * Returns an accessor for the given context, just in case we want to make this a Singleton.
+     */
+    public static AndroidContextAccessor getInstance(Context context) {
         return new AndroidContextAccessor(context);
     }
 
@@ -64,10 +67,9 @@ public class AndroidContextAccessor extends ContextAccessor {
 
     private MediaPlayer mediaPlayer = null;
 
-    private PrefsAccessor prefs = null;
-
     private AndroidContextAccessor(Context context) {
         this.context = context;
+        this.prefs = new AndroidPrefsAccessor(context);
     }
 
     /**
@@ -116,12 +118,14 @@ public class AndroidContextAccessor extends ContextAccessor {
 
     @Override
     public float getBellVolume() {
-        if (prefs == null) {
-            prefs = new AndroidPrefsAccessor(context);
-        }
         float bellVolume = prefs.getBellVolume(getBellDefaultVolume());
         Log.d(TAG, "Bell volume is " + bellVolume);
         return bellVolume;
+    }
+
+    @Override
+    public AndroidPrefsAccessor getPrefs() {
+        return (AndroidPrefsAccessor) prefs;
     }
 
     @Override
@@ -159,38 +163,6 @@ public class AndroidContextAccessor extends ContextAccessor {
     public boolean isPhoneOffHook() {
         TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         return telephonyManager.getCallState() != TelephonyManager.CALL_STATE_IDLE;
-    }
-
-    @Override
-    public boolean isSettingMuteInFlightMode() {
-        if (prefs == null) {
-            prefs = new AndroidPrefsAccessor(context);
-        }
-        return prefs.isSettingMuteInFlightMode();
-    }
-
-    @Override
-    public boolean isSettingMuteOffHook() {
-        if (prefs == null) {
-            prefs = new AndroidPrefsAccessor(context);
-        }
-        return prefs.isSettingMuteOffHook();
-    }
-
-    @Override
-    public boolean isSettingMuteWithPhone() {
-        if (prefs == null) {
-            prefs = new AndroidPrefsAccessor(context);
-        }
-        return prefs.isSettingMuteWithPhone();
-    }
-
-    @Override
-    public boolean isSettingVibrate() {
-        if (prefs == null) {
-            prefs = new AndroidPrefsAccessor(context);
-        }
-        return prefs.isSettingVibrate();
     }
 
     private void removeStatusNotification() {
@@ -245,7 +217,7 @@ public class AndroidContextAccessor extends ContextAccessor {
             mediaPlayer.start();
 
             Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-            if (isSettingVibrate()) {
+            if (prefs.isSettingVibrate()) {
                 long[] pattern = new long[] { 100, 200, 100, 600 };
                 vibrator.vibrate(pattern, -1);
             } else {
@@ -261,7 +233,6 @@ public class AndroidContextAccessor extends ContextAccessor {
     }
 
     public void updateBellSchedule() {
-        PrefsAccessor prefs = new AndroidPrefsAccessor(context);
         updateStatusNotification(prefs, true);
         if (prefs.isBellActive()) {
             Log.d(TAG, "Update bell schedule for active bell");
@@ -280,7 +251,6 @@ public class AndroidContextAccessor extends ContextAccessor {
      * udpateBellSchedule().
      */
     public void updateStatusNotification() {
-        PrefsAccessor prefs = new AndroidPrefsAccessor(context);
         updateStatusNotification(prefs, false);
     }
 

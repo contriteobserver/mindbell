@@ -39,7 +39,7 @@ public class UpdateBellSchedule extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "Update bell schedule reached");
-        AndroidContextAccessor.get(context).updateBellSchedule();
+        AndroidContextAccessor.getInstance(context).updateBellSchedule();
     }
 
 }

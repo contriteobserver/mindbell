@@ -24,11 +24,10 @@ import static com.googlecode.mindbell.MindBellPreferences.TAG;
 import java.util.Calendar;
 
 import com.googlecode.mindbell.accessors.AndroidContextAccessor;
-import com.googlecode.mindbell.accessors.AndroidPrefsAccessor;
 import com.googlecode.mindbell.accessors.PrefsAccessor;
+import com.googlecode.mindbell.logic.RingingLogic;
 import com.googlecode.mindbell.logic.SchedulerLogic;
 import com.googlecode.mindbell.util.AlarmManagerCompat;
-import com.googlecode.mindbell.util.KeepAlive;
 import com.googlecode.mindbell.util.TimeOfDay;
 
 import android.app.AlarmManager;
@@ -53,7 +52,7 @@ public class Scheduler extends BroadcastReceiver {
         Log.d(TAG, "random scheduler reached");
 
         AlarmManagerCompat alarmManager = new AlarmManagerCompat(context);
-        PrefsAccessor prefs = new AndroidPrefsAccessor(context);
+        PrefsAccessor prefs = AndroidContextAccessor.getInstance(context).getPrefs();
 
         if (!prefs.isBellActive()) {
             Log.d(TAG, "bell is not active -- not ringing, not rescheduling.");
@@ -95,7 +94,7 @@ public class Scheduler extends BroadcastReceiver {
 
         } else { // ring audio-only immediately:
             Log.d(TAG, "audio-only ring");
-            new KeepAlive(AndroidContextAccessor.get(context), 15000).ringBell();
+            RingingLogic.ringBellAndWait(AndroidContextAccessor.getInstance(context), 15000);
         }
 
     }
