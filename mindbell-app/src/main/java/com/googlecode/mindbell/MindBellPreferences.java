@@ -92,8 +92,6 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         mslp.setSummary(sb.toString());
     }
 
-    private final Preference.OnPreferenceChangeListener listChangeListener = new ListChangeListener();
-
     private final Preference.OnPreferenceChangeListener multiSelectListChangeListener = new MultiSelectListChangeListener();
 
     private void handleMuteHookOffAndStatusPermissionRequestResult(CheckBoxPreference one, int[] grantResults) {
@@ -160,9 +158,6 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         addPreferencesFromResource(R.xml.preferences_2); // notifications depend on SDK
         addPreferencesFromResource(R.xml.preferences_3);
 
-        setupListPreference(R.string.keyFrequency);
-        setupListPreference(R.string.keyStart);
-        setupListPreference(R.string.keyEnd);
         setupMultiSelectListPreference(R.string.keyActiveOnDaysOfWeek);
 
         final CheckBoxPreference checkBoxPreferenceStatus = (CheckBoxPreference) getPreferenceScreen()
@@ -210,12 +205,6 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         default:
             break;
         }
-    }
-
-    private void setupListPreference(int keyID) {
-        ListPreference lp = (ListPreference) getPreferenceScreen().findPreference(getText(keyID));
-        lp.setSummary(lp.getEntry());
-        lp.setOnPreferenceChangeListener(listChangeListener);
     }
 
     private void setupMultiSelectListPreference(int keyID) {

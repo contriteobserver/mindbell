@@ -62,11 +62,11 @@
 
     <PreferenceCategory
             android:title="@string/prefsCategoryDetails">
-        <ListPreference
+        <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
                 android:key="@string/keyFrequency"
                 android:defaultValue="3600000"
                 android:title="@string/prefsFrequency"
-                android:summary=""
+                android:summary="%s"
                 android:entries="@array/bellFrequencies"
                 android:entryValues="@array/bellFrequencyValues"
                 android:dialogTitle="@string/prefsFrequency" />
@@ -76,19 +76,19 @@
 	            android:summaryOff="@string/summaryDontRandomize"
     	        android:summaryOn="@string/summaryRandomize" 
 				android:defaultValue="true"/>
-        <ListPreference
+        <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
                 android:key="@string/keyStart"
                 android:defaultValue="9"
                 android:title="@string/prefsStart"
-                android:summary=""
+                android:summary="%s"
                 android:entries="@array/hourStrings"
                 android:entryValues="@array/hourValues"
                 android:dialogTitle="@string/prefsStart" />
-        <ListPreference
+        <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
                 android:key="@string/keyEnd"
                 android:defaultValue="21"
                 android:title="@string/prefsEnd"
-                android:summary=""
+                android:summary="%s"
                 android:entries="@array/hourStrings"
                 android:entryValues="@array/hourValues"
                 android:dialogTitle="@string/prefsEnd" />
