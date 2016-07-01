@@ -91,7 +91,7 @@
                 android:entries="@array/hourStrings"
                 android:entryValues="@array/hourValues"
                 android:dialogTitle="@string/prefsEnd" />
-        <MultiSelectListPreference
+        <com.googlecode.mindbell.preference.MultiSelectListPreferenceWithSummary
                 android:key="@string/keyActiveOnDaysOfWeek"
                 android:defaultValue="@array/daysOfWeekValues"
                 android:title="@string/prefsActiveOnDaysOfWeek"

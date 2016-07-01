@@ -19,10 +19,10 @@
  *******************************************************************************/
 package com.googlecode.mindbell;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import com.googlecode.mindbell.accessors.AndroidContextAccessor;
+import com.googlecode.mindbell.preference.MultiSelectListPreferenceWithSummary;
 import com.googlecode.mindbell.util.Utils;
 
 import android.Manifest;
@@ -31,8 +31,6 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
-import android.preference.ListPreference;
-import android.preference.MultiSelectListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
@@ -42,57 +40,11 @@ import android.widget.Toast;
 
 public class MindBellPreferences extends PreferenceActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
-    private static final class ListChangeListener implements Preference.OnPreferenceChangeListener {
-        public boolean onPreferenceChange(Preference preference, Object newValue) {
-            assert preference instanceof ListPreference;
-            ListPreference lp = (ListPreference) preference;
-            int index = lp.findIndexOfValue((String) newValue);
-            if (index != -1) {
-                CharSequence newEntry = lp.getEntries()[index];
-                lp.setSummary(newEntry);
-                return true;
-            }
-            return false;
-        }
-    }
-
-    private static final class MultiSelectListChangeListener implements Preference.OnPreferenceChangeListener {
-        public boolean onPreferenceChange(Preference preference, Object newValues) {
-            assert preference instanceof MultiSelectListPreference;
-            MultiSelectListPreference mslp = (MultiSelectListPreference) preference;
-            if (((Set<?>) newValues).isEmpty()) {
-                Toast.makeText(mslp.getContext(), R.string.atLeastOneActiveDayNeeded, Toast.LENGTH_SHORT).show();
-                return false;
-            }
-            setMultiSelectListPreferenceSummary(mslp, (Set<?>) newValues);
-            return true;
-        }
-    }
-
     public static final String TAG = "MindBell";
 
     private static final int REQUEST_CODE_STATUS = 0;
 
     private static final int REQUEST_CODE_MUTE_OFF_HOOK = 1;
-
-    private static void setMultiSelectListPreferenceSummary(MultiSelectListPreference mslp, Set<?> newValues) {
-        // Warning: Similar code in AndroidPrefsAccessor#getActiveOnDaysOfWeekString()
-        String[] daysOfWeekValues = mslp.getContext().getResources().getStringArray(R.array.daysOfWeekValues);
-        String[] weekdayAbbreviations = mslp.getContext().getResources().getStringArray(R.array.weekdayAbbreviations);
-        StringBuilder sb = new StringBuilder();
-        for (String dayOfWeekValue : daysOfWeekValues) { // internal weekday value in locale oriented order
-            Integer dayOfWeekValueAsInteger = Integer.valueOf(dayOfWeekValue);
-            if (((HashSet<?>) newValues).contains(dayOfWeekValue)) { // is this day selected?
-                if (sb.length() > 0) {
-                    sb.append(", ");
-                }
-                sb.append(weekdayAbbreviations[dayOfWeekValueAsInteger - 1]); // add day to the list of active days
-            }
-        }
-        mslp.setSummary(sb.toString());
-    }
-
-    private final Preference.OnPreferenceChangeListener multiSelectListChangeListener = new MultiSelectListChangeListener();
 
     private void handleMuteHookOffAndStatusPermissionRequestResult(CheckBoxPreference one, int[] grantResults) {
         if (grantResults.length == 0) {
@@ -146,6 +98,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         }
     }
 
+    @SuppressWarnings("deprecation") // deprecation is because MindBell is not fragment-based
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -158,25 +111,38 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         addPreferencesFromResource(R.xml.preferences_2); // notifications depend on SDK
         addPreferencesFromResource(R.xml.preferences_3);
 
-        setupMultiSelectListPreference(R.string.keyActiveOnDaysOfWeek);
-
-        final CheckBoxPreference checkBoxPreferenceStatus = (CheckBoxPreference) getPreferenceScreen()
+        final CheckBoxPreference preferenceStatus = (CheckBoxPreference) getPreferenceScreen()
                 .findPreference(getText(R.string.keyStatus));
-        final CheckBoxPreference checkBoxPreferenceMuteOffHook = (CheckBoxPreference) getPreferenceScreen()
+        final CheckBoxPreference preferenceMuteOffHook = (CheckBoxPreference) getPreferenceScreen()
                 .findPreference(getText(R.string.keyMuteOffHook));
+        final MultiSelectListPreferenceWithSummary preferenceActiveOnDaysOfWeek = (MultiSelectListPreferenceWithSummary) getPreferenceScreen()
+                .findPreference(getText(R.string.keyActiveOnDaysOfWeek));
 
-        checkBoxPreferenceStatus.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+        preferenceStatus.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                return mediateMuteOffHookAndStatus(checkBoxPreferenceMuteOffHook, newValue, REQUEST_CODE_STATUS);
+                return mediateMuteOffHookAndStatus(preferenceMuteOffHook, newValue, REQUEST_CODE_STATUS);
             }
 
         });
 
-        checkBoxPreferenceMuteOffHook.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+        preferenceMuteOffHook.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                return mediateMuteOffHookAndStatus(checkBoxPreferenceStatus, newValue, REQUEST_CODE_MUTE_OFF_HOOK);
+                return mediateMuteOffHookAndStatus(preferenceStatus, newValue, REQUEST_CODE_MUTE_OFF_HOOK);
+            }
+
+        });
+
+        preferenceActiveOnDaysOfWeek.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+            public boolean onPreferenceChange(Preference preference, Object newValues) {
+                if (((Set<?>) newValues).isEmpty()) {
+                    Toast.makeText(preferenceActiveOnDaysOfWeek.getContext(), R.string.atLeastOneActiveDayNeeded,
+                            Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                return true;
             }
 
         });
@@ -189,6 +155,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         Utils.updateBellSchedule(this);
     }
 
+    @SuppressWarnings("deprecation") // deprecation is because MindBell is not fragment-based
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -205,12 +172,6 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         default:
             break;
         }
-    }
-
-    private void setupMultiSelectListPreference(int keyID) {
-        MultiSelectListPreference mslp = (MultiSelectListPreference) getPreferenceScreen().findPreference(getText(keyID));
-        setMultiSelectListPreferenceSummary(mslp, mslp.getValues());
-        mslp.setOnPreferenceChangeListener(multiSelectListChangeListener);
     }
 
 }
