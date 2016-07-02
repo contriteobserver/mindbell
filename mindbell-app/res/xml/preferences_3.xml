@@ -74,7 +74,17 @@
                 android:title="@string/prefsRandomize"
 	            android:summaryOff="@string/summaryDontRandomize"
     	        android:summaryOn="@string/summaryRandomize" 
-				android:defaultValue="true"/>
+				android:defaultValue="true"
+				android:disableDependentsState="true"/>
+        <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
+                android:key="@string/keyNormalize"
+                android:defaultValue="-1"
+                android:title="@string/prefsNormalize"
+                android:summary="%s"
+                android:entries="@array/normalizeEntries"
+                android:entryValues="@array/normalizeEntryValues"
+                android:dialogTitle="@string/prefsNormalize"
+	    		android:dependency="@string/keyRandomize"/> 
         <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
                 android:key="@string/keyStart"
                 android:defaultValue="9"

@@ -22,6 +22,8 @@ package com.googlecode.mindbell;
 import java.util.Set;
 
 import com.googlecode.mindbell.accessors.AndroidContextAccessor;
+import com.googlecode.mindbell.accessors.AndroidPrefsAccessor;
+import com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix;
 import com.googlecode.mindbell.preference.MultiSelectListPreferenceWithSummary;
 import com.googlecode.mindbell.util.Utils;
 
@@ -81,6 +83,21 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
     }
 
     /**
+     * Returns true, if frequency divides an hour in whole numbers, e.g. true for 20 minutes.
+     */
+    private boolean isFrequencyDividesAnHour(String frequencyValue) {
+        long frequencyValueInMinutes = Long.parseLong(frequencyValue) / 60000L;
+        return 60 % frequencyValueInMinutes == 0;
+    }
+
+    /**
+     * Returns true, if normalize - ringing on the minute - is requested
+     */
+    private boolean isNormalize(String normalizeValue) {
+        return !AndroidPrefsAccessor.NORMALIZE_NONE.equals(normalizeValue);
+    }
+
+    /**
      * Ensures that the CheckBoxPreferences checkBoxPreferenceMuteOffHook and checkBoxPreferenceStatus cannot be both "on" without
      * having READ_PHONE_STATE permission by returning false when this rule is violated.
      */
@@ -115,6 +132,12 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                 .findPreference(getText(R.string.keyStatus));
         final CheckBoxPreference preferenceMuteOffHook = (CheckBoxPreference) getPreferenceScreen()
                 .findPreference(getText(R.string.keyMuteOffHook));
+        final ListPreferenceWithSummaryFix preferenceFrequency = (ListPreferenceWithSummaryFix) getPreferenceScreen()
+                .findPreference(getText(R.string.keyFrequency));
+        final CheckBoxPreference preferenceRandomize = (CheckBoxPreference) getPreferenceScreen()
+                .findPreference(getText(R.string.keyRandomize));
+        final ListPreferenceWithSummaryFix preferenceNormalize = (ListPreferenceWithSummaryFix) getPreferenceScreen()
+                .findPreference(getText(R.string.keyNormalize));
         final MultiSelectListPreferenceWithSummary preferenceActiveOnDaysOfWeek = (MultiSelectListPreferenceWithSummary) getPreferenceScreen()
                 .findPreference(getText(R.string.keyActiveOnDaysOfWeek));
 
@@ -130,6 +153,64 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
 
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 return mediateMuteOffHookAndStatus(preferenceStatus, newValue, REQUEST_CODE_MUTE_OFF_HOOK);
+            }
+
+        });
+
+        preferenceRandomize.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                if ((Boolean) newValue) {
+                    // if interval deviation is selected, normalize is disabled on screen but it must be disabled in preferences,
+                    // too. Otherwise the following scenario could happen: set interval 1 h, de-select randomize, set normalize to
+                    // hh:00, select randomize, set interval 2 h, de-select randomize again ... hh:00 would be left in normalize
+                    // erroneously.
+                    preferenceNormalize.setValue(AndroidPrefsAccessor.NORMALIZE_NONE);
+                }
+                return true;
+            }
+
+        });
+
+        preferenceFrequency.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                if (preferenceRandomize.isChecked()) {
+                    // if interval varies randomly, ringing on the minute is disabled and set to "no" anyway
+                    return true;
+                } else if (isFrequencyDividesAnHour((String) newValue)) {
+                    // if frequency is factor of an hour, ringing on the minute may be requested
+                    preferenceNormalize.setEnabled(true);
+                } else {
+                    // if frequency is NOT factor of an hour, ringing on the minute may NOT be set
+                    if (preferenceNormalize.isEnabled() && isNormalize(preferenceNormalize.getValue())) {
+                        Toast.makeText(preferenceActiveOnDaysOfWeek.getContext(), R.string.frequencyDoesNotFitIntoAnHour,
+                                Toast.LENGTH_SHORT).show();
+                        return false;
+                    } else {
+                        preferenceNormalize.setEnabled(false);
+                    }
+                }
+                return true;
+            }
+
+        });
+
+        preferenceNormalize.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                if (!isNormalize((String) newValue)) {
+                    // if normalize - ringing on the minute - is not wanted, it's fine, no more to check here
+                    return true;
+                } else if (isFrequencyDividesAnHour(preferenceFrequency.getValue())) {
+                    // if frequency is factor of an hour, requesting ringing on the minute is allowed
+                    return true;
+                } else {
+                    // if frequency is NOT factor of an hour, ringing on the minute may NOT be set
+                    Toast.makeText(preferenceActiveOnDaysOfWeek.getContext(), R.string.frequencyDoesNotFitIntoAnHour,
+                            Toast.LENGTH_SHORT).show();
+                    return false;
+                }
             }
 
         });

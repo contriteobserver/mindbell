@@ -30,6 +30,22 @@
 	<item>4 Stunden</item>
 </string-array>
 
+<string-array name="normalizeEntries">
+    <item>nein</item>
+    <item>hh:00</item>
+    <item>hh:05</item>
+    <item>hh:10</item>
+    <item>hh:15</item>
+    <item>hh:20</item>
+    <item>hh:25</item>
+    <item>hh:30</item>
+    <item>hh:35</item>
+    <item>hh:40</item>
+    <item>hh:45</item>
+    <item>hh:50</item>
+    <item>hh:55</item>
+</string-array>
+
 <string-array name="hourStrings">
 	<item>Mitternacht</item>
 	<item>1:00</item>

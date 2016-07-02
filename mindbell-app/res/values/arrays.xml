@@ -32,6 +32,22 @@
 		<item>4 hours</item>
 	</string-array>
 	
+	<string-array name="normalizeEntries">
+	    <item>no</item>
+	    <item>hh:00</item>
+	    <item>hh:05</item>
+	    <item>hh:10</item>
+	    <item>hh:15</item>
+	    <item>hh:20</item>
+	    <item>hh:25</item>
+	    <item>hh:30</item>
+	    <item>hh:35</item>
+	    <item>hh:40</item>
+	    <item>hh:45</item>
+	    <item>hh:50</item>
+	    <item>hh:55</item>
+	</string-array>
+	
 	<string-array name="hourStrings">
 		<item>midnight</item>
 		<item>1 am</item>
@@ -72,7 +88,23 @@
 		<item>14400000</item><!-- 4 hours -->
 	</string-array>
 	
-	<string-array name="hourValues" translatable="false">
+	<string-array name="normalizeEntryValues">
+	    <item>-1</item>
+	    <item>0</item>
+	    <item>5</item>
+	    <item>10</item>
+	    <item>15</item>
+	    <item>20</item>
+	    <item>25</item>
+	    <item>30</item>
+	    <item>35</item>
+	    <item>40</item>
+	    <item>45</item>
+	    <item>50</item>
+	    <item>55</item>
+	</string-array>
+	
+		<string-array name="hourValues" translatable="false">
 		<item>0</item>
 		<item>1</item>
 		<item>2</item>

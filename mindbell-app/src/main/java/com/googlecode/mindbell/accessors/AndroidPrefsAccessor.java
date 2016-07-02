@@ -36,6 +36,8 @@ import android.util.Log;
 
 public class AndroidPrefsAccessor extends PrefsAccessor {
 
+    public static final String NORMALIZE_NONE = "-1";
+
     private final SharedPreferences settings;
     private final String[] hours;
 
@@ -51,12 +53,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     private final String keyFrequency;
     private final String keyRandomize;
+    private final String keyNormalize;
     private final String keyStart;
     private final String keyEnd;
     private final String keyActiveOnDaysOfWeek;
 
     private final String keyVolume;
 
+    /**
+     * Preference default values ... must correspond with settings in xml definitions
+     */
     private final boolean defaultActive = false;
     private final boolean defaultShow = true;
     private final boolean defaultStatus = false;
@@ -69,6 +75,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     private final String defaultFrequency = "3600000";
     private final boolean defaultRandomize = true;
+    private final String defaultNormalize = NORMALIZE_NONE;
     private final String defaultStart = "9";
     private final String defaultEnd = "21";
     private final Set<String> defaultActiveOnDaysOfWeek = new HashSet<String>(
@@ -105,6 +112,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
         keyFrequency = context.getString(R.string.keyFrequency);
         keyRandomize = context.getString(R.string.keyRandomize);
+        keyNormalize = context.getString(R.string.keyNormalize);
         keyStart = context.getString(R.string.keyStart);
         keyEnd = context.getString(R.string.keyEnd);
         keyActiveOnDaysOfWeek = context.getString(R.string.keyActiveOnDaysOfWeek);
@@ -132,7 +140,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             }
         }
         // string settings:
-        String[] stringSettings = new String[] { keyStart, keyEnd, keyFrequency };
+        String[] stringSettings = new String[] { keyFrequency, keyNormalize, keyStart, keyEnd };
         for (String s : stringSettings) {
             try {
                 settings.getString(s, null);
@@ -223,6 +231,10 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         if (!settings.contains(keyRandomize)) {
             settings.edit().putBoolean(keyRandomize, defaultRandomize).commit();
             Log.w(TAG, "Reset missing setting for '" + keyRandomize + "' to '" + defaultRandomize + "'");
+        }
+        if (!settings.contains(keyNormalize)) {
+            settings.edit().putString(keyNormalize, defaultNormalize).commit();
+            Log.w(TAG, "Reset missing setting for '" + keyNormalize + "' to '" + defaultNormalize + "'");
         }
         if (!settings.contains(keyStart)) {
             settings.edit().putString(keyStart, defaultStart).commit();

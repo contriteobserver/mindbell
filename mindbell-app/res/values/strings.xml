@@ -73,12 +73,15 @@
     <string name="prefsCategoryDetails">Details</string>
     <string name="prefsFrequency">Ring bell (about) every &#8230;</string>
     <string name="prefsRandomize">Use interval deviation</string>
+    <string name="prefsNormalize">Ring to the minute &#8230;</string>
     <string name="summaryRandomize">Bell ring interval will vary</string>
     <string name="summaryDontRandomize">Bell ring interval is constant</string>
     <string name="prefsStart">Start bell every day at &#8230;</string>
     <string name="prefsEnd">Stop bell every day at &#8230;</string>
     <string name="prefsActiveOnDaysOfWeek">Days of week to be active &#8230;</string>
+    
     <string name="atLeastOneActiveDayNeeded">Specify at least one day</string>
+    <string name="frequencyDoesNotFitIntoAnHour">Ringing on the minute not possible with chosen interval</string>
 
 	<!-- AboutActivity -->
 	<string name="title_activity_about">About MindBell</string>
@@ -134,6 +137,7 @@
     <string name="keyMuteInFlightMode" translatable="false">muteOffInFlightMode</string>
     <string name="keyFrequency" translatable="false">frequency</string>
     <string name="keyRandomize" translatable="false">randomize</string>
+    <string name="keyNormalize" translatable="false">normalize</string>
     <string name="keyStart" translatable="false">start</string>
     <string name="keyEnd" translatable="false">end</string>
     <string name="keyActiveOnDaysOfWeek" translatable="false">activeOnDaysOfWeek</string>

@@ -72,12 +72,15 @@
     <string name="prefsCategoryDetails">Details</string>
     <string name="prefsFrequency">Glocke läutet (etwa) alle &#8230;</string>
     <string name="prefsRandomize">Nutze Intervallabweichungen</string>
+    <string name="prefsNormalize">Läute auf die Minute &#8230;</string>
     <string name="summaryRandomize">Glockeninterall variiert</string>
     <string name="summaryDontRandomize">Glockenintervall ist konstant</string>
     <string name="prefsStart">Starte Glocke täglich um &#8230;</string>
     <string name="prefsEnd">Beende Glocke täglich um &#8230;</string>
     <string name="prefsActiveOnDaysOfWeek">Tage an denen die Glocke aktiv ist &#8230;</string>
+    
     <string name="atLeastOneActiveDayNeeded">Mindestens einen Tag angeben</string>
+    <string name="frequencyDoesNotFitIntoAnHour">Läuten auf die Minute beim gewählten Intervall nicht möglich</string>
     
     <!-- Status bar notification -->
     <string name="statusTitleNotificationsDisabled">Bitte Einstellungen überprüfen</string>
