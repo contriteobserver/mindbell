@@ -24,6 +24,7 @@ import static com.googlecode.mindbell.MindBellPreferences.TAG;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.Random;
 
 import com.googlecode.mindbell.accessors.PrefsAccessor;
 import com.googlecode.mindbell.logic.SchedulerLogic;
@@ -109,6 +110,43 @@ public class SchedulerLogicTest extends TestCase {
         assertEquals(getTimeMillis(11, 0, Calendar.FRIDAY), targetTimeMillis);
     }
 
+    public void testRescheduleNotRandomizedSeeded() {
+        Random previousRandom = SchedulerLogic.random; // save for later restoration
+        try {
+            SchedulerLogic.random = new Random(456789253L);
+            PrefsAccessor prefs = getDayPrefs();
+            ((MockPrefsAccessor) prefs).setRandomize(false);
+            // First reschedule from nighttime (05:00, before 09:00) to beginning of daytime (09:00)
+            long nowTimeMillis = getTimeMillis(5, 00, Calendar.FRIDAY);
+            long differenceTimeMillis = nowTimeMillis - 1467349200000L; // difference to first used Calendar instance
+            assertEquals("TimeOfDay [hour=5, minute=0, weekday=6]", (new TimeOfDay(nowTimeMillis)).toString());
+            long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
+            Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
+            assertEquals("TimeOfDay [hour=9, minute=0, weekday=6]", (new TimeOfDay(targetTimeMillis)).toString());
+            assertEquals(1467363600000L, targetTimeMillis - differenceTimeMillis);
+            // Second reschedule
+            nowTimeMillis = targetTimeMillis;
+            targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
+            Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
+            assertEquals("TimeOfDay [hour=10, minute=0, weekday=6]", (new TimeOfDay(targetTimeMillis)).toString());
+            assertEquals(1467363600000L + 1 * 3600000L, targetTimeMillis - differenceTimeMillis);
+            // Third reschedule
+            nowTimeMillis = targetTimeMillis;
+            targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
+            Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
+            assertEquals("TimeOfDay [hour=11, minute=0, weekday=6]", (new TimeOfDay(targetTimeMillis)).toString());
+            assertEquals(1467363600000L + 2 * 3600000L, targetTimeMillis - differenceTimeMillis);
+            // Fourth reschedule
+            nowTimeMillis = targetTimeMillis;
+            targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
+            Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
+            assertEquals("TimeOfDay [hour=12, minute=0, weekday=6]", (new TimeOfDay(targetTimeMillis)).toString());
+            assertEquals(1467363600000L + 3 * 3600000L, targetTimeMillis - differenceTimeMillis);
+        } finally {
+            SchedulerLogic.random = previousRandom; // restore unseeded generator
+        }
+    }
+
     public void testRescheduleRandomized() {
         PrefsAccessor prefs = getDayPrefs();
         ((MockPrefsAccessor) prefs).setRandomize(true);
@@ -143,6 +181,43 @@ public class SchedulerLogicTest extends TestCase {
         // Retest several times to reduce the risk that it works by chance
         for (int i = 0; i < 1000; i++) {
             testRescheduleRandomized();
+        }
+    }
+
+    public void testRescheduleRandomizedSeeded() {
+        Random previousRandom = SchedulerLogic.random; // save for later restoration
+        try {
+            SchedulerLogic.random = new Random(456789253L);
+            PrefsAccessor prefs = getDayPrefs();
+            ((MockPrefsAccessor) prefs).setRandomize(true);
+            // First reschedule from nighttime (05:00, before 09:00) to beginning of daytime (09:00)
+            long nowTimeMillis = getTimeMillis(5, 00, Calendar.FRIDAY);
+            long differenceTimeMillis = nowTimeMillis - 1467349200000L; // difference to first used Calendar instance
+            assertEquals("TimeOfDay [hour=5, minute=0, weekday=6]", (new TimeOfDay(nowTimeMillis)).toString());
+            long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
+            Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
+            assertEquals("TimeOfDay [hour=9, minute=35, weekday=6]", (new TimeOfDay(targetTimeMillis)).toString());
+            assertEquals(1467365711846L, targetTimeMillis - differenceTimeMillis);
+            // Second reschedule
+            nowTimeMillis = targetTimeMillis;
+            targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
+            Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
+            assertEquals("TimeOfDay [hour=11, minute=2, weekday=6]", (new TimeOfDay(targetTimeMillis)).toString());
+            assertEquals(1467370931607L, targetTimeMillis - differenceTimeMillis);
+            // Third reschedule
+            nowTimeMillis = targetTimeMillis;
+            targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
+            Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
+            assertEquals("TimeOfDay [hour=11, minute=47, weekday=6]", (new TimeOfDay(targetTimeMillis)).toString());
+            assertEquals(1467373635101L, targetTimeMillis - differenceTimeMillis);
+            // Fourth reschedule
+            nowTimeMillis = targetTimeMillis;
+            targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
+            Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
+            assertEquals("TimeOfDay [hour=13, minute=13, weekday=6]", (new TimeOfDay(targetTimeMillis)).toString());
+            assertEquals(1467378815198L, targetTimeMillis - differenceTimeMillis);
+        } finally {
+            SchedulerLogic.random = previousRandom; // restore unseeded generator
         }
     }
 

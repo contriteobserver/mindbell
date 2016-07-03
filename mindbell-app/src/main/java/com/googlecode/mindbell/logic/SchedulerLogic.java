@@ -24,19 +24,18 @@ import java.util.Random;
 import com.googlecode.mindbell.accessors.PrefsAccessor;
 import com.googlecode.mindbell.util.TimeOfDay;
 
-import android.util.Log;
-
 public class SchedulerLogic {
 
-    private static Random random = new Random();
+    /** Random for generation of randomized intervals. Public for JUnit tests only */
+    public static Random random = new Random();
 
-/**
+    /**
      * Return next time to bell after the given "now".
- *
+     *
      * @param nowTimeMillis
      * @param prefs
      * @return
- */
+     */
     public static long getNextTargetTimeMillis(long nowTimeMillis, PrefsAccessor prefs) {
         final long meanInterval = prefs.getInterval();
         final boolean randomize = prefs.isRandomize();
@@ -45,7 +44,6 @@ public class SchedulerLogic {
         if (!prefs.isDaytime(new TimeOfDay(targetTimeMillis))) { // inactive time?
             long dayStartMillis = prefs.getNextDaytimeStartInMillis(targetTimeMillis);
             targetTimeMillis = dayStartMillis + (randomize ? randomizedInterval - meanInterval / 2 : 0);
-            assert targetTimeMillis >= dayStartMillis;
         }
         return targetTimeMillis;
     }
@@ -65,7 +63,6 @@ public class SchedulerLogic {
         if (value > 3 * mean / 2) {
             value = 3 * mean / 2;
         }
-        Log.d(com.googlecode.mindbell.MindBellPreferences.TAG, "value: " + (new TimeOfDay(value)).toString());
         return value;
     }
 }
