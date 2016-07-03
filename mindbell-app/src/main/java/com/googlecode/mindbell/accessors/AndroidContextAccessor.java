@@ -124,11 +124,6 @@ public class AndroidContextAccessor extends ContextAccessor {
     }
 
     @Override
-    public AndroidPrefsAccessor getPrefs() {
-        return (AndroidPrefsAccessor) prefs;
-    }
-
-    @Override
     protected String getReasonMutedInFlightMode() {
         return context.getText(R.string.reasonMutedInFlightMode).toString();
     }

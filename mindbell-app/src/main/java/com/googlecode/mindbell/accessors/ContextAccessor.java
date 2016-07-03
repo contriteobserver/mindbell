@@ -66,7 +66,9 @@ public abstract class ContextAccessor {
         return reason;
     }
 
-    public abstract PrefsAccessor getPrefs();
+    public PrefsAccessor getPrefs() {
+        return prefs;
+    }
 
     /**
      * Returns reason to mute bell as String, override when concrete context is available.
