@@ -21,8 +21,10 @@ package com.googlecode.mindbell.util;
 
 import static com.googlecode.mindbell.MindBellPreferences.TAG;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import com.googlecode.mindbell.UpdateBellSchedule;
 
@@ -35,11 +37,34 @@ import android.content.res.Resources.NotFoundException;
 import android.net.Uri;
 import android.util.Log;
 
-/**
- * @author marc
- *
- */
 public class Utils {
+
+    /**
+     * Read log entries of this application and return them as concatenated string.
+     */
+    public static String getAppLogEntriesAsString() {
+        BufferedReader reader = null;
+        try {
+            Process process = Runtime.getRuntime().exec("logcat -d -v threadtime");
+            reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            StringBuilder sb = new StringBuilder();
+            for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+                sb.append("\n").append(line);
+            }
+            return sb.toString();
+        } catch (IOException e) {
+            Log.e(TAG, "Could not read log " + e);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    Log.w(TAG, "Could not close log output stream" + e);
+                }
+            }
+        }
+        return null;
+    }
 
     public static String getResourceAsString(Context context, int resid) throws NotFoundException {
         Resources resources = context.getResources();
@@ -88,5 +113,4 @@ public class Utils {
             Log.e(TAG, "Could not send: " + e.getMessage());
         }
     }
-
 }

@@ -35,6 +35,11 @@
     <!-- Menu -->
     <string name="menuSettings">Settings</string>
     <string name="menuAbout">About MindBell</string>
+    <string name="menuSendLog">Send log by e-mail</string>
+    
+    <!-- Send log by e-mail -->
+    <string name="emailSubject">Log of MindBell</string>
+    <string name="emailChooseApp">Send mail &#8230;</string>
 
     <!-- Preference window -->
     <string name="preferencesTitle">MindBell Preferences</string>
@@ -137,5 +142,8 @@
     
     <!-- Unique string to be added to a Scheduling Intent to see who sent it (don't localize) -->
     <string name="extraIsRescheduling" translatable="false">com.googlecode.mindbell.Scheduler.IsRescheduling</string>
+
+    <!-- Mail address for send log by e-mail (don't localize) -->
+    <string name="emailAddress" translatable="false">mindbell@dknapps.de</string>
 
 </resources>

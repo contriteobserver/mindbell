@@ -90,16 +90,53 @@ public class MindBellMain extends Activity {
         activeItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 
             public boolean onMenuItemClick(MenuItem item) {
-                PrefsAccessor prefsAccessor = new AndroidPrefsAccessor(MindBellMain.this);
-                prefsAccessor.setBellActive(!prefsAccessor.isBellActive()); // toggle active/inactive
-                Utils.updateBellSchedule(MindBellMain.this);
-                invalidateOptionsMenu(); // re-call onPrepareOptionsMenu()
-                CharSequence feedback = getText(
-                        (prefsAccessor.isBellActive()) ? R.string.summaryActive : R.string.summaryNotActive);
-                Toast.makeText(MindBellMain.this, feedback, Toast.LENGTH_SHORT).show();
-                return true;
+                return onMenuItemClickActive();
             }
+
         });
+        MenuItem sendLogItem = menu.findItem(R.id.sendLog);
+        sendLogItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+
+            public boolean onMenuItemClick(MenuItem item) {
+                return onMenuItemClickSendLog();
+            }
+
+        });
+        return true;
+    }
+
+    /**
+     * Handles click on menu item active.
+     */
+    private boolean onMenuItemClickActive() {
+        PrefsAccessor prefsAccessor = new AndroidPrefsAccessor(MindBellMain.this);
+        prefsAccessor.setBellActive(!prefsAccessor.isBellActive()); // toggle active/inactive
+        Utils.updateBellSchedule(MindBellMain.this);
+        invalidateOptionsMenu(); // re-call onPrepareOptionsMenu()
+        CharSequence feedback = getText((prefsAccessor.isBellActive()) ? R.string.summaryActive : R.string.summaryNotActive);
+        Toast.makeText(this, feedback, Toast.LENGTH_SHORT).show();
+        return true;
+    }
+
+    /**
+     * Handles click on menu item send log.
+     */
+    private boolean onMenuItemClickSendLog() {
+        String appLogEntriesAsString = Utils.getAppLogEntriesAsString();
+        if (appLogEntriesAsString == null) {
+            Toast.makeText(this, "Could not read log entries", Toast.LENGTH_SHORT).show();
+        } else {
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("message/rfc822");
+            i.putExtra(Intent.EXTRA_EMAIL, new String[] { getText(R.string.emailAddress).toString() });
+            i.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.emailSubject));
+            i.putExtra(Intent.EXTRA_TEXT, appLogEntriesAsString);
+            try {
+                startActivity(Intent.createChooser(i, getText(R.string.emailChooseApp)));
+            } catch (android.content.ActivityNotFoundException ex) {
+                Toast.makeText(this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+            }
+        }
         return true;
     }
 
