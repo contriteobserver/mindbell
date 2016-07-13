@@ -38,6 +38,8 @@ public class MockPrefsAccessor extends PrefsAccessor {
 
     private boolean randomize = true;
 
+    private int normalize = -1;
+
     private TimeOfDay daytimeEnd = new TimeOfDay(21, 0);
 
     private String daytimeEndString = "21:00";
@@ -118,6 +120,11 @@ public class MockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
+    public int getNormalize() {
+        return normalize;
+    }
+
+    @Override
     public boolean isBellActive() {
         return bellActive;
     }
@@ -180,6 +187,10 @@ public class MockPrefsAccessor extends PrefsAccessor {
         this.interval = theInterval;
     }
 
+    public void setNormalize(int normalize) {
+        this.normalize = normalize;
+    }
+
     public void setRandomize(boolean randomize) {
         this.randomize = randomize;
     }
@@ -200,6 +211,7 @@ public class MockPrefsAccessor extends PrefsAccessor {
         this.showBell = theShowBell;
     }
 
+    @Override
     public void setStatusNotification(boolean theStatusNotification) {
         this.statusNotification = theStatusNotification;
     }

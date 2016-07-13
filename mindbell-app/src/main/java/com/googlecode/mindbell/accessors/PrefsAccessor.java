@@ -66,6 +66,8 @@ public abstract class PrefsAccessor {
         return morning.getTimeInMillis();
     }
 
+    public abstract int getNormalize();
+
     public abstract boolean isBellActive();
 
     /**
@@ -90,6 +92,14 @@ public abstract class PrefsAccessor {
             return false; // time is before or after active time interval
         }
         return t.isActiveOnThatDay(getActiveOnDaysOfWeek());
+    }
+
+    public boolean isNormalize() {
+        return isNormalize(getNormalize());
+    }
+
+    public boolean isNormalize(int normalizeValue) {
+        return normalizeValue >= 0;
     }
 
     public abstract boolean isRandomize();

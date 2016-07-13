@@ -26,8 +26,8 @@ import com.googlecode.mindbell.util.TimeOfDay;
 
 public class SchedulerLogic {
 
-    /** Random for generation of randomized intervals. Public for JUnit tests only */
-    public static Random random = new Random();
+    /** Random for generation of randomized intervals */
+    private static Random random = new Random();
 
     /**
      * Return next time to bell after the given "now".
@@ -39,11 +39,15 @@ public class SchedulerLogic {
     public static long getNextTargetTimeMillis(long nowTimeMillis, PrefsAccessor prefs) {
         final long meanInterval = prefs.getInterval();
         final boolean randomize = prefs.isRandomize();
+        final int normalizeValue = prefs.getNormalize();
+        final boolean normalize = prefs.isNormalize(normalizeValue);
         long randomizedInterval = randomize ? getRandomInterval(meanInterval) : meanInterval;
         long targetTimeMillis = nowTimeMillis + randomizedInterval;
+        targetTimeMillis = normalize(targetTimeMillis, meanInterval, normalize, normalizeValue);
         if (!prefs.isDaytime(new TimeOfDay(targetTimeMillis))) { // inactive time?
             long dayStartMillis = prefs.getNextDaytimeStartInMillis(targetTimeMillis);
             targetTimeMillis = dayStartMillis + (randomize ? randomizedInterval - meanInterval / 2 : 0);
+            targetTimeMillis = normalize(targetTimeMillis, meanInterval, normalize, normalizeValue);
         }
         return targetTimeMillis;
     }
@@ -65,4 +69,26 @@ public class SchedulerLogic {
         }
         return value;
     }
+
+    /**
+     * If normalize is requested, return the given timeMillis normalized to full intervals from the first ring in an hour on the
+     * minute firstRingMinutes, otherwise return the given timeMillis.
+     *
+     * @param timeMillis
+     * @param interval
+     * @param normalize
+     * @param normalizeValue
+     * @return
+     */
+    private static long normalize(long timeMillis, long interval, boolean normalize, int normalizeValue) {
+        if (!normalize) {
+            return timeMillis;
+        }
+        long normalizeMillis = normalizeValue * 60000L;
+        long hourMillis = (timeMillis / 3600000L) * 3600000L; // milliseconds of all whole hours
+        long minuteMillis = timeMillis - hourMillis; // milliseconds of remaining minutes
+        minuteMillis = Math.round((minuteMillis - normalizeMillis) / interval) * interval + normalizeMillis;
+        return hourMillis + minuteMillis;
+    }
+
 }

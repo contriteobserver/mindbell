@@ -325,9 +325,6 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         return new TimeOfDay(getDaytimeEndHour(), 0);
     }
 
-    /**
-     * @return
-     */
     private int getDaytimeEndHour() {
         return Integer.valueOf(settings.getString(keyEnd, defaultEnd));
     }
@@ -353,12 +350,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     @Override
     public long getInterval() {
-        Log.d(TAG, "frequency: " + settings.getString(keyFrequency, defaultFrequency));
         long interval = Long.valueOf(settings.getString(keyFrequency, defaultFrequency));
         if (interval < 5 * 60000) { // min: 5 minutes
             interval = Long.valueOf(defaultFrequency);
         }
         return interval;
+    }
+
+    @Override
+    public int getNormalize() {
+        return Integer.valueOf(settings.getString(keyNormalize, defaultNormalize));
     }
 
     @Override
