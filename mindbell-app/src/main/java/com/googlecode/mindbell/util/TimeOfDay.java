@@ -76,7 +76,7 @@ public class TimeOfDay {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -109,7 +109,7 @@ public class TimeOfDay {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -154,7 +154,7 @@ public class TimeOfDay {
      */
     public boolean isInInterval(TimeOfDay start, TimeOfDay end) {
         if (this.isSameTime(start)) {
-            return true;
+            return true; // same time means to be active the whole day
         }
         if (start.isBefore(end)) {
             return start.isBefore(this) && this.isBefore(end);

@@ -170,6 +170,13 @@ public class TimeOfDayTest extends TestCase {
         assertTrue(t.isInInterval(start, end));
     }
 
+    public void testInterval10() {
+        TimeOfDay start = new TimeOfDay(23, 0, null);
+        TimeOfDay end = new TimeOfDay(5, 0, null);
+        TimeOfDay t = new TimeOfDay(4, 59, null);
+        assertTrue(t.isInInterval(start, end));
+    }
+
     public void testInterval2() {
         TimeOfDay start = new TimeOfDay(9, 0);
         TimeOfDay end = new TimeOfDay(9, 0);
@@ -216,6 +223,13 @@ public class TimeOfDayTest extends TestCase {
         TimeOfDay start = new TimeOfDay(13, 0, null);
         TimeOfDay end = new TimeOfDay(2, 0, null);
         TimeOfDay t = new TimeOfDay(13, 0, 7);
+        assertTrue(t.isInInterval(start, end));
+    }
+
+    public void testInterval9() {
+        TimeOfDay start = new TimeOfDay(23, 0, null);
+        TimeOfDay end = new TimeOfDay(5, 0, null);
+        TimeOfDay t = new TimeOfDay(23, 0, null);
         assertTrue(t.isInInterval(start, end));
     }
 
@@ -424,6 +438,20 @@ public class TimeOfDayTest extends TestCase {
         TimeOfDay start = new TimeOfDay(9, 0, 7);
         TimeOfDay end = new TimeOfDay(1, 1, 1);
         TimeOfDay t = new TimeOfDay(1, 1, 5);
+        assertFalse(t.isInInterval(start, end));
+    }
+
+    public void testNightInterval8() {
+        TimeOfDay start = new TimeOfDay(23, 0, null);
+        TimeOfDay end = new TimeOfDay(5, 0, null);
+        TimeOfDay t = new TimeOfDay(5, 0, null);
+        assertFalse(t.isInInterval(start, end));
+    }
+
+    public void testNightInterval9() {
+        TimeOfDay start = new TimeOfDay(22, 59, null);
+        TimeOfDay end = new TimeOfDay(5, 0, null);
+        TimeOfDay t = new TimeOfDay(5, 0, null);
         assertFalse(t.isInInterval(start, end));
     }
 
