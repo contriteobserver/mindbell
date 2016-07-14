@@ -43,11 +43,12 @@ public class SchedulerLogic {
         final boolean normalize = prefs.isNormalize(normalizeValue);
         long randomizedInterval = randomize ? getRandomInterval(meanInterval) : meanInterval;
         long targetTimeMillis = nowTimeMillis + randomizedInterval;
-        targetTimeMillis = normalize(targetTimeMillis, meanInterval, normalize, normalizeValue);
+        long normalizeMillis = normalizeValue * 60000L;
+        targetTimeMillis = normalize(targetTimeMillis, meanInterval, normalize, normalizeMillis);
         if (!prefs.isDaytime(new TimeOfDay(targetTimeMillis))) { // inactive time?
-            long dayStartMillis = prefs.getNextDaytimeStartInMillis(targetTimeMillis);
-            targetTimeMillis = dayStartMillis + (randomize ? randomizedInterval - meanInterval / 2 : 0);
-            targetTimeMillis = normalize(targetTimeMillis, meanInterval, normalize, normalizeValue);
+            targetTimeMillis = prefs.getNextDaytimeStartInMillis(targetTimeMillis) // start of next day time millis
+                    + (randomize ? randomizedInterval - meanInterval / 2 : 0) // if wanted randomize but never before start of day
+                    + (normalize ? normalizeMillis : 0); // if wanted normalize to minute of first ring a day
         }
         return targetTimeMillis;
     }
@@ -80,11 +81,10 @@ public class SchedulerLogic {
      * @param normalizeValue
      * @return
      */
-    private static long normalize(long timeMillis, long interval, boolean normalize, int normalizeValue) {
+    private static long normalize(long timeMillis, long interval, boolean normalize, long normalizeMillis) {
         if (!normalize) {
             return timeMillis;
         }
-        long normalizeMillis = normalizeValue * 60000L;
         long hourMillis = (timeMillis / 3600000L) * 3600000L; // milliseconds of all whole hours
         long minuteMillis = timeMillis - hourMillis; // milliseconds of remaining minutes
         minuteMillis = Math.round((minuteMillis - normalizeMillis) / interval) * interval + normalizeMillis;
