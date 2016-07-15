@@ -62,12 +62,13 @@ public class MindBellMain extends Activity {
     /**
      * Return information to be sent by mail.
      */
-    private String getInformation() {
+    private String getInfoMailText() {
         StringBuilder sb = new StringBuilder();
         sb.append("\n\n");
         sb.append(Utils.getApplicationInformation(getPackageManager(), getPackageName())).append("\n");
         sb.append(Utils.getSystemInformation()).append("\n");
-        sb.append(Utils.getAppLogEntriesAsString());
+        // FIXME dkn Too much log entries produce message FAILED BINDER TRANSACTION only
+        // sb.append(Utils.getAppLogEntriesAsString());
         return sb.toString();
     }
 
@@ -105,7 +106,7 @@ public class MindBellMain extends Activity {
             }
 
         });
-        MenuItem sendLogItem = menu.findItem(R.id.sendLog);
+        MenuItem sendLogItem = menu.findItem(R.id.sendInfoMail);
         sendLogItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 
             public boolean onMenuItemClick(MenuItem item) {
@@ -137,7 +138,7 @@ public class MindBellMain extends Activity {
         i.setType("message/rfc822");
         i.putExtra(Intent.EXTRA_EMAIL, new String[] { getText(R.string.emailAddress).toString() });
         i.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.emailSubject));
-        i.putExtra(Intent.EXTRA_TEXT, getInformation());
+        i.putExtra(Intent.EXTRA_TEXT, getInfoMailText());
         try {
             startActivity(Intent.createChooser(i, getText(R.string.emailChooseApp)));
         } catch (android.content.ActivityNotFoundException ex) {

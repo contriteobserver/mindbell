@@ -34,10 +34,10 @@
     <!-- Menu -->
     <string name="menuSettings">Einstellungen</string>
     <string name="menuAbout">Über MindBell</string>
-    <string name="menuSendLog">Info-E-Mail erstellen</string>
+    <string name="menuSendInfoMail">Info-E-Mail erstellen</string>
     
     <!-- Send log by e-mail -->
-    <string name="emailSubject">Systeminformationen und Log von MindBell</string>
+    <string name="emailSubject">Info-E-Mail gesendet von MindBell</string>
     <string name="emailChooseApp">Mail senden &#8230;</string>
 
     <!-- Preference window -->
