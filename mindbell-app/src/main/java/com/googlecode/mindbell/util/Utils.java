@@ -32,6 +32,9 @@ import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.content.res.Resources.NotFoundException;
 import android.net.Uri;
@@ -39,6 +42,25 @@ import android.os.Build;
 import android.util.Log;
 
 public class Utils {
+
+    /**
+     * Read application information and return them as concatenated string.
+     */
+    public static String getApplicationInformation(PackageManager packageManager, String packageName) {
+        try {
+            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
+            StringBuilder sb = new StringBuilder();
+            sb.append("===== beginning of application information =====").append("\n");
+            sb.append("packageName").append("=").append(packageName).append("\n");
+            sb.append("packageInfo.versionName").append("=").append(packageInfo.versionName).append("\n");
+            sb.append("packageInfo.versionCode").append("=").append(packageInfo.versionCode).append("\n");
+            sb.append("===== end of application information =====").append("\n");
+            return sb.toString();
+        } catch (NameNotFoundException e) {
+            Log.e(TAG, "Could not retrieve package information" + e);
+        }
+        return "***** MindBell package information could not be read *****\n";
+    }
 
     /**
      * Read log entries of this application and return them as concatenated string.
@@ -49,14 +71,14 @@ public class Utils {
             Process process = Runtime.getRuntime().exec("logcat -d -v threadtime");
             reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             StringBuilder sb = new StringBuilder();
-            sb.append("===== beginning of logcat output =====").append("\n");
+            sb.append("===== beginning of application log =====").append("\n");
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                 sb.append(line).append("\n");
             }
-            sb.append("===== end of logcat output =====").append("\n");
+            sb.append("===== end of application log =====").append("\n");
             return sb.toString();
         } catch (IOException e) {
-            Log.e(TAG, "Could not read log " + e);
+            Log.e(TAG, "Could not read application log", e);
         } finally {
             if (reader != null) {
                 try {
@@ -66,7 +88,7 @@ public class Utils {
                 }
             }
         }
-        return null;
+        return "***** application log could not be read *****\n";
     }
 
     public static String getResourceAsString(Context context, int resid) throws NotFoundException {
@@ -132,7 +154,7 @@ public class Utils {
         try {
             sender.send();
         } catch (PendingIntent.CanceledException e) {
-            Log.e(TAG, "Could not send: " + e.getMessage());
+            Log.e(TAG, "Could not send message", e);
         }
     }
 }

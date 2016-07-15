@@ -60,6 +60,18 @@ public class MindBellMain extends Activity {
     // }
 
     /**
+     * Return information to be sent by mail.
+     */
+    private String getInformation() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n\n");
+        sb.append(Utils.getApplicationInformation(getPackageManager(), getPackageName())).append("\n");
+        sb.append(Utils.getSystemInformation()).append("\n");
+        sb.append(Utils.getAppLogEntriesAsString());
+        return sb.toString();
+    }
+
+    /**
      * Show hint how to activate the bell.
      */
     private void notifyIfNotActive() {
@@ -97,7 +109,7 @@ public class MindBellMain extends Activity {
         sendLogItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 
             public boolean onMenuItemClick(MenuItem item) {
-                return onMenuItemClickSendLog();
+                return onMenuItemClickSendInfo();
             }
 
         });
@@ -118,23 +130,18 @@ public class MindBellMain extends Activity {
     }
 
     /**
-     * Handles click on menu item send log.
+     * Handles click on menu item send info.
      */
-    private boolean onMenuItemClickSendLog() {
-        String appLogEntriesAsString = Utils.getAppLogEntriesAsString();
-        if (appLogEntriesAsString == null) {
-            Toast.makeText(this, "Could not read log entries", Toast.LENGTH_SHORT).show();
-        } else {
-            Intent i = new Intent(Intent.ACTION_SEND);
-            i.setType("message/rfc822");
-            i.putExtra(Intent.EXTRA_EMAIL, new String[] { getText(R.string.emailAddress).toString() });
-            i.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.emailSubject));
-            i.putExtra(Intent.EXTRA_TEXT, "\n\n" + Utils.getSystemInformation() + "\n" + appLogEntriesAsString);
-            try {
-                startActivity(Intent.createChooser(i, getText(R.string.emailChooseApp)));
-            } catch (android.content.ActivityNotFoundException ex) {
-                Toast.makeText(this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
-            }
+    private boolean onMenuItemClickSendInfo() {
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("message/rfc822");
+        i.putExtra(Intent.EXTRA_EMAIL, new String[] { getText(R.string.emailAddress).toString() });
+        i.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.emailSubject));
+        i.putExtra(Intent.EXTRA_TEXT, getInformation());
+        try {
+            startActivity(Intent.createChooser(i, getText(R.string.emailChooseApp)));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
         }
         return true;
     }
