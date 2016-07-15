@@ -31,4 +31,7 @@
         android:title="@string/menuAbout"
         android:showAsAction="ifRoom"
         android:icon="@drawable/ic_info_white_24dp"/>
+    <item android:id="@+id/sendLog"
+        android:title="@string/menuSendLog"
+        android:showAsAction="never"/>
 </menu>

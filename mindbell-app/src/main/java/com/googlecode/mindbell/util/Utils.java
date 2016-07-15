@@ -21,8 +21,10 @@ package com.googlecode.mindbell.util;
 
 import static com.googlecode.mindbell.MindBellPreferences.TAG;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import com.googlecode.mindbell.UpdateBellSchedule;
 
@@ -33,13 +35,39 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.Resources.NotFoundException;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 
-/**
- * @author marc
- *
- */
 public class Utils {
+
+    /**
+     * Read log entries of this application and return them as concatenated string.
+     */
+    public static String getAppLogEntriesAsString() {
+        BufferedReader reader = null;
+        try {
+            Process process = Runtime.getRuntime().exec("logcat -d -v threadtime");
+            reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            StringBuilder sb = new StringBuilder();
+            sb.append("===== beginning of logcat output =====").append("\n");
+            for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+                sb.append(line).append("\n");
+            }
+            sb.append("===== end of logcat output =====").append("\n");
+            return sb.toString();
+        } catch (IOException e) {
+            Log.e(TAG, "Could not read log " + e);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    Log.w(TAG, "Could not close log output stream" + e);
+                }
+            }
+        }
+        return null;
+    }
 
     public static String getResourceAsString(Context context, int resid) throws NotFoundException {
         Resources resources = context.getResources();
@@ -75,6 +103,25 @@ public class Utils {
     }
 
     /**
+     * Read system information and return them as concatenated string.
+     */
+    public static String getSystemInformation() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("===== beginning of system information =====").append("\n");
+        sb.append("Build.DISPLAY").append("=").append(Build.DISPLAY).append("\n");
+        sb.append("Build.PRODUCT").append("=").append(Build.PRODUCT).append("\n");
+        sb.append("Build.MANUFACTURER").append("=").append(Build.MANUFACTURER).append("\n");
+        sb.append("Build.BRAND").append("=").append(Build.BRAND).append("\n");
+        sb.append("Build.MODEL").append("=").append(Build.MODEL).append("\n");
+        if (Build.VERSION.SDK_INT >= 23) {
+            sb.append("Build.BASE_OS").append("=").append(Build.VERSION.BASE_OS).append("\n");
+        }
+        sb.append("Build.VERSION.SDK_INT").append("=").append(Build.VERSION.SDK_INT).append("\n");
+        sb.append("===== end of system information =====").append("\n");
+        return sb.toString();
+    }
+
+    /**
      * Update bell schedule and notification by using the regularly used BroadcastReceiver UpdateBellSchedule.
      *
      * @param packageContext
@@ -88,5 +135,4 @@ public class Utils {
             Log.e(TAG, "Could not send: " + e.getMessage());
         }
     }
-
 }
