@@ -35,10 +35,10 @@
     <!-- Menu -->
     <string name="menuSettings">Settings</string>
     <string name="menuAbout">About MindBell</string>
-    <string name="menuSendLog">Send log by e-mail</string>
+    <string name="menuSendLog">Send infos by e-mail</string>
     
     <!-- Send log by e-mail -->
-    <string name="emailSubject">Log of MindBell</string>
+    <string name="emailSubject">System information and log of MindBell</string>
     <string name="emailChooseApp">Send mail &#8230;</string>
 
     <!-- Preference window -->

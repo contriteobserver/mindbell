@@ -35,6 +35,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.Resources.NotFoundException;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 
 public class Utils {
@@ -48,9 +49,11 @@ public class Utils {
             Process process = Runtime.getRuntime().exec("logcat -d -v threadtime");
             reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             StringBuilder sb = new StringBuilder();
+            sb.append("===== beginning of logcat output =====").append("\n");
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
-                sb.append("\n").append(line);
+                sb.append(line).append("\n");
             }
+            sb.append("===== end of logcat output =====").append("\n");
             return sb.toString();
         } catch (IOException e) {
             Log.e(TAG, "Could not read log " + e);
@@ -97,6 +100,25 @@ public class Utils {
     public static Uri getResourceUri(Context context, int resid) throws NotFoundException {
         Resources resources = context.getResources();
         return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + resources.getResourcePackageName(resid) + "/" + resid);
+    }
+
+    /**
+     * Read system information and return them as concatenated string.
+     */
+    public static String getSystemInformation() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("===== beginning of system information =====").append("\n");
+        sb.append("Build.DISPLAY").append("=").append(Build.DISPLAY).append("\n");
+        sb.append("Build.PRODUCT").append("=").append(Build.PRODUCT).append("\n");
+        sb.append("Build.MANUFACTURER").append("=").append(Build.MANUFACTURER).append("\n");
+        sb.append("Build.BRAND").append("=").append(Build.BRAND).append("\n");
+        sb.append("Build.MODEL").append("=").append(Build.MODEL).append("\n");
+        if (Build.VERSION.SDK_INT >= 23) {
+            sb.append("Build.BASE_OS").append("=").append(Build.VERSION.BASE_OS).append("\n");
+        }
+        sb.append("Build.VERSION.SDK_INT").append("=").append(Build.VERSION.SDK_INT).append("\n");
+        sb.append("===== end of system information =====").append("\n");
+        return sb.toString();
     }
 
     /**

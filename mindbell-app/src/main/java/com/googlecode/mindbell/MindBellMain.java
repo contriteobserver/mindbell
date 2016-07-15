@@ -130,7 +130,7 @@ public class MindBellMain extends Activity {
             i.setType("message/rfc822");
             i.putExtra(Intent.EXTRA_EMAIL, new String[] { getText(R.string.emailAddress).toString() });
             i.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.emailSubject));
-            i.putExtra(Intent.EXTRA_TEXT, appLogEntriesAsString);
+            i.putExtra(Intent.EXTRA_TEXT, "\n\n" + Utils.getSystemInformation() + "\n" + appLogEntriesAsString);
             try {
                 startActivity(Intent.createChooser(i, getText(R.string.emailChooseApp)));
             } catch (android.content.ActivityNotFoundException ex) {
