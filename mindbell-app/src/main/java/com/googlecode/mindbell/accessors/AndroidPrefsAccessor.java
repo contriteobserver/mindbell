@@ -254,18 +254,18 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         }
         // and report the settings:
         StringBuilder sb = new StringBuilder();
-        sb.append("Effective settings:\n");
+        sb.append("Effective settings: ");
         for (String s : booleanSettings) {
-            sb.append(s).append(" = ").append(settings.getBoolean(s, false)).append("\n");
+            sb.append(s).append("=").append(settings.getBoolean(s, false)).append(", ");
         }
         for (String s : stringSettings) {
-            sb.append(s).append(" = ").append(settings.getString(s, null)).append("\n");
+            sb.append(s).append("=").append(settings.getString(s, null)).append(", ");
         }
         for (String s : stringSetSettings) {
-            sb.append(s).append(" = ").append(settings.getStringSet(s, null)).append("\n");
+            sb.append(s).append("=").append(settings.getStringSet(s, null)).append(", ");
         }
         for (String s : floatSettings) {
-            sb.append(s).append(" = ").append(settings.getFloat(s, -1)).append("\n");
+            sb.append(s).append("=").append(settings.getFloat(s, -1)).append(", ");
         }
         Log.v(TAG, sb.toString());
     }
