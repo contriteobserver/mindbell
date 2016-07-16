@@ -44,6 +44,18 @@ import android.util.Log;
 public class Utils {
 
     /**
+     *
+     */
+    private static final String CUT_OFF_MESSAGE = "[... log to long ... cut off ...]";
+    /**
+     * A TransactionTooLargeException is thrown if extra data transferred by an intent is too large (community is experiencing
+     * 90KB, 500KB, 1MB to be the max, on emulator with API level 16, 100KB is already too much, so 70KB should be enough to
+     * read), this results in a FAILED BINDER TRANSACTION crash of the caller app but exception is thrown in the called app.
+     * Therefore log output is limited to this size.
+     */
+    private static final int MAX_LOG_LENGTH = 70000;
+
+    /**
      * Read application information and return them as concatenated string.
      */
     public static String getApplicationInformation(PackageManager packageManager, String packageName) {
@@ -63,17 +75,24 @@ public class Utils {
     }
 
     /**
-     * Read log entries of this application and return them as concatenated string.
+     * Read log entries of this application and return them as concatenated string but try to avoid a TransactionTooLargeException
+     * by limiting the output.
      */
-    public static String getAppLogEntriesAsString() {
+    public static String getLimitedLogEntriesAsString() {
         BufferedReader reader = null;
         try {
             Process process = Runtime.getRuntime().exec("logcat -d -v threadtime");
             reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             StringBuilder sb = new StringBuilder();
             sb.append("===== beginning of application log =====").append("\n");
+            int headerLength = sb.length();
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                 sb.append(line).append("\n");
+            }
+            Log.i(TAG, "Length of extracted application log is: " + sb.length());
+            if (sb.length() > MAX_LOG_LENGTH) {
+                sb.replace(headerLength, sb.length() - MAX_LOG_LENGTH + headerLength + CUT_OFF_MESSAGE.length(), CUT_OFF_MESSAGE);
+                Log.w(TAG, "Cut off extracted application log to length: " + sb.length());
             }
             sb.append("===== end of application log =====").append("\n");
             return sb.toString();
@@ -135,9 +154,6 @@ public class Utils {
         sb.append("Build.MANUFACTURER").append("=").append(Build.MANUFACTURER).append("\n");
         sb.append("Build.BRAND").append("=").append(Build.BRAND).append("\n");
         sb.append("Build.MODEL").append("=").append(Build.MODEL).append("\n");
-        if (Build.VERSION.SDK_INT >= 23) {
-            sb.append("Build.BASE_OS").append("=").append(Build.VERSION.BASE_OS).append("\n");
-        }
         sb.append("Build.VERSION.SDK_INT").append("=").append(Build.VERSION.SDK_INT).append("\n");
         sb.append("===== end of system information =====").append("\n");
         return sb.toString();

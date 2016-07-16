@@ -70,7 +70,7 @@ public class MindBellMain extends Activity {
         sb.append(Utils.getSystemInformation());
         if (withLog) { // too much log entries may produce FAILED BINDER TRANSACTION => users choice
             sb.append("\n");
-            sb.append(Utils.getAppLogEntriesAsString());
+            sb.append(Utils.getLimitedLogEntriesAsString());
         }
         return sb.toString();
     }
