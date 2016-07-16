@@ -62,13 +62,16 @@ public class MindBellMain extends Activity {
     /**
      * Return information to be sent by mail.
      */
-    private String getInfoMailText() {
+    private String getInfoMailText(boolean withLog) {
         StringBuilder sb = new StringBuilder();
         sb.append("\n\n");
-        sb.append(Utils.getApplicationInformation(getPackageManager(), getPackageName())).append("\n");
-        sb.append(Utils.getSystemInformation()).append("\n");
-        // FIXME dkn Too much log entries produce message FAILED BINDER TRANSACTION only
-        // sb.append(Utils.getAppLogEntriesAsString());
+        sb.append(Utils.getApplicationInformation(getPackageManager(), getPackageName()));
+        sb.append("\n");
+        sb.append(Utils.getSystemInformation());
+        if (withLog) { // too much log entries may produce FAILED BINDER TRANSACTION => users choice
+            sb.append("\n");
+            sb.append(Utils.getAppLogEntriesAsString());
+        }
         return sb.toString();
     }
 
@@ -110,7 +113,15 @@ public class MindBellMain extends Activity {
         sendLogItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 
             public boolean onMenuItemClick(MenuItem item) {
-                return onMenuItemClickSendInfo();
+                return onMenuItemClickSendInfo(false);
+            }
+
+        });
+        MenuItem sendLogAndLogItem = menu.findItem(R.id.sendInfoAndLogMail);
+        sendLogAndLogItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+
+            public boolean onMenuItemClick(MenuItem item) {
+                return onMenuItemClickSendInfo(true);
             }
 
         });
@@ -133,12 +144,12 @@ public class MindBellMain extends Activity {
     /**
      * Handles click on menu item send info.
      */
-    private boolean onMenuItemClickSendInfo() {
+    private boolean onMenuItemClickSendInfo(boolean withLog) {
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("message/rfc822");
         i.putExtra(Intent.EXTRA_EMAIL, new String[] { getText(R.string.emailAddress).toString() });
         i.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.emailSubject));
-        i.putExtra(Intent.EXTRA_TEXT, getInfoMailText());
+        i.putExtra(Intent.EXTRA_TEXT, getInfoMailText(withLog));
         try {
             startActivity(Intent.createChooser(i, getText(R.string.emailChooseApp)));
         } catch (android.content.ActivityNotFoundException ex) {

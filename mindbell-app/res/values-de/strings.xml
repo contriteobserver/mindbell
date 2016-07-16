@@ -35,6 +35,7 @@
     <string name="menuSettings">Einstellungen</string>
     <string name="menuAbout">Über MindBell</string>
     <string name="menuSendInfoMail">Info-E-Mail erstellen</string>
+    <string name="menuSendInfoAndLogMail">Info+Log-E-Mail erstellen</string>
     
     <!-- Send log by e-mail -->
     <string name="emailSubject">Info-E-Mail gesendet von MindBell</string>
