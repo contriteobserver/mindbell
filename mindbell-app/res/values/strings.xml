@@ -152,6 +152,9 @@
     <!-- Unique string to be added to a Scheduling Intent to see who sent it (don't localize) -->
     <string name="extraIsRescheduling" translatable="false">com.googlecode.mindbell.Scheduler.IsRescheduling</string>
 
+    <!-- Unique string to be added to a Scheduling Intent to see for which time the bell was scheduled (don't localize) -->
+    <string name="extraNextTargetTimeMillis" translatable="false">com.googlecode.mindbell.Scheduler.NextTargetTimeMillis</string>
+
     <!-- Mail address for send log by e-mail (don't localize) -->
     <string name="emailAddress" translatable="false">mindbell@dknapps.de</string>
 

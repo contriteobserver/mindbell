@@ -36,6 +36,8 @@ public class TimeOfDay {
     public final int minute;
     public final Integer weekday; // null or 1-Calendar.SUNDAY ... 7-Calendar.SATURDAY
 
+    private final String representation;
+
     /**
      * The current time of day, as provided by the Calendar.getInstance().
      */
@@ -64,6 +66,7 @@ public class TimeOfDay {
         this.hour = hour;
         this.minute = minute;
         this.weekday = weekday;
+        this.representation = String.format("%02d:%02d(%d)", hour, minute, weekday);
     }
 
     public TimeOfDay(long millisecondsSince1970) {
@@ -71,7 +74,10 @@ public class TimeOfDay {
         cal.setTimeInMillis(millisecondsSince1970);
         this.hour = cal.get(Calendar.HOUR_OF_DAY);
         this.minute = cal.get(Calendar.MINUTE);
+        int second = cal.get(Calendar.SECOND);
+        int millisecond = cal.get(Calendar.MILLISECOND);
         this.weekday = cal.get(Calendar.DAY_OF_WEEK);
+        this.representation = String.format("%02d:%02d:%02d.%03d(%d)", hour, minute, second, millisecond, weekday);
     }
 
     /*
@@ -105,6 +111,13 @@ public class TimeOfDay {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Returns a String readably representing this TimeOfDay.
+     */
+    public String getDisplayString() {
+        return representation;
     }
 
     /*
@@ -180,7 +193,7 @@ public class TimeOfDay {
      */
     @Override
     public String toString() {
-        return "TimeOfDay [hour=" + hour + ", minute=" + minute + ", weekday=" + weekday + "]";
+        return "TimeOfDay [representation=" + representation + "]";
     }
 
 }

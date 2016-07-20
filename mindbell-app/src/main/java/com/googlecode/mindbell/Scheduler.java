@@ -59,18 +59,22 @@ public class Scheduler extends BroadcastReceiver {
             return;
         }
 
-        // reschedule
-        Intent nextIntent = new Intent(context, Scheduler.class);
-        nextIntent.putExtra(context.getText(R.string.extraIsRescheduling).toString(), true);
-        PendingIntent sender = PendingIntent.getBroadcast(context, 0, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        long nowMillis = Calendar.getInstance().getTimeInMillis();
-        long nextBellTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowMillis, prefs);
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextBellTimeMillis, sender);
-        TimeOfDay nextBellTime = new TimeOfDay(nextBellTimeMillis);
-        Log.d(TAG, "scheduled next bell alarm for " + nextBellTime.hour + ":" + String.format("%02d", nextBellTime.minute)
-                + " on weekday " + nextBellTime.weekday);
+        // fetch intent argument ids
+        final String extraNextTargetTimeMillis = context.getText(R.string.extraNextTargetTimeMillis).toString();
+        final String extraIsRescheduling = context.getText(R.string.extraIsRescheduling).toString();
 
-        if (!intent.getBooleanExtra(context.getText(R.string.extraIsRescheduling).toString(), false)) {
+        // reschedule (to enable constant precise ringing, the current time is assumed to be the target time of the last intent)
+        long nowMillis = intent.getLongExtra(extraNextTargetTimeMillis, Calendar.getInstance().getTimeInMillis());
+        long nextTargetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowMillis, prefs);
+        Intent nextIntent = new Intent(context, Scheduler.class);
+        nextIntent.putExtra(extraIsRescheduling, true);
+        nextIntent.putExtra(extraNextTargetTimeMillis, nextTargetTimeMillis);
+        PendingIntent sender = PendingIntent.getBroadcast(context, 0, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextTargetTimeMillis, sender);
+        TimeOfDay nextBellTime = new TimeOfDay(nextTargetTimeMillis);
+        Log.d(TAG, "scheduled next bell alarm for " + nextBellTime.getDisplayString());
+
+        if (!intent.getBooleanExtra(extraIsRescheduling, false)) {
             Log.d(TAG, "not ringing, has been called by preferences or activate bell button");
             return;
         }
