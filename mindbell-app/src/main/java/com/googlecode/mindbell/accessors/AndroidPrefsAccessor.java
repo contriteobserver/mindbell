@@ -174,7 +174,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         if (frequencyString != null) {
             try {
                 long interval = Long.valueOf(frequencyString);
-                if (interval < 5 * 60000) { // less than five minutes
+                if (interval < 1 * 60000) { // less than one minute
                     settings.edit().remove(keyFrequency).commit();
                     Log.w(TAG, "Removed setting '" + keyFrequency + "' since value '" + frequencyString + "' was too low");
                 }
@@ -351,7 +351,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public long getInterval() {
         long interval = Long.valueOf(settings.getString(keyFrequency, defaultFrequency));
-        if (interval < 5 * 60000) { // min: 5 minutes
+        if (interval < 1 * 60000) { // min: 1 minute
             interval = Long.valueOf(defaultFrequency);
         }
         return interval;

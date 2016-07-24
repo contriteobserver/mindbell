@@ -20,6 +20,10 @@
  -->
 <resources>
 <string-array name="bellFrequencies">
+    <item>1 Minute</item>
+    <item>2 Minuten</item>
+    <item>3 Minuten</item>
+    <item>4 Minuten</item>
     <item>5 Minuten</item>
     <item>10 Minuten</item>
     <item>Viertelstunde</item>
