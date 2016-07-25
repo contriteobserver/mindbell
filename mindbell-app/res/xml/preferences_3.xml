@@ -40,6 +40,15 @@
 			android:summaryOn="@string/summaryVibrate"
 			android:summaryOff="@string/summaryNoVibrate"
 			android:defaultValue="false"/>
+        <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
+			android:key="@string/keyPattern"
+			android:defaultValue="100:200:100:600"
+			android:title="@string/prefsPattern"
+			android:summary="%s"
+			android:entries="@array/patternEntries"
+			android:entryValues="@array/patternEntryValues"
+			android:dialogTitle="@string/prefsPattern"
+	    	android:dependency="@string/keyVibrate"/> 
 		<CheckBoxPreference android:key="@string/keyMuteWithPhone"
 			android:title="@string/prefsMuteWithPhone"
 			android:summaryOn="@string/summaryMuteWithPhone"

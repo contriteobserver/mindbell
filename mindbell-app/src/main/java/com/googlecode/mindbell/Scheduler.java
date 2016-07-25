@@ -49,7 +49,7 @@ public class Scheduler extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Log.d(TAG, "random scheduler reached");
+        Log.d(TAG, "scheduler received intent");
 
         AlarmManagerCompat alarmManager = new AlarmManagerCompat(context);
         PrefsAccessor prefs = AndroidContextAccessor.getInstance(context).getPrefs();
@@ -86,18 +86,18 @@ public class Scheduler extends BroadcastReceiver {
         }
 
         if (prefs.doShowBell()) {
-            Log.d(TAG, "audio-visual ring");
+            Log.d(TAG, "ring and show bell");
 
             Intent ringBell = new Intent(context, MindBell.class);
             PendingIntent bellIntent = PendingIntent.getActivity(context, -1, ringBell, PendingIntent.FLAG_UPDATE_CURRENT);
             try {
                 bellIntent.send();
             } catch (CanceledException e) {
-                Log.d(TAG, "cannot ring audio-visual bell: " + e.getMessage());
+                Log.d(TAG, "cannot ring and show bell: " + e.getMessage());
             }
 
         } else { // ring audio-only immediately:
-            Log.d(TAG, "audio-only ring");
+            Log.d(TAG, "ring but do not show bell");
             RingingLogic.ringBellAndWait(AndroidContextAccessor.getInstance(context), 15000);
         }
 

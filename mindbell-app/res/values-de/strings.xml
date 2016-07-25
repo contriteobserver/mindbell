@@ -66,6 +66,7 @@
     <string name="prefsVibrate">Vibrieren</string>
     <string name="summaryVibrate">Glocke vibriert beim Läuten</string>
     <string name="summaryNoVibrate">Glocke vibriert nicht beim Läuten</string>
+    <string name="prefsPattern">Vibrationsmuster</string>
     <string name="prefsMuteWithPhone">Mit Telefon stummschalten</string>
     <string name="summaryMuteWithPhone">Glocke läutet nicht im Lautlosmodus</string>
     <string name="summaryNoMuteWithPhone">Glocke läutet auch im Lautlosmodus</string>

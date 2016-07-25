@@ -68,6 +68,17 @@ public abstract class PrefsAccessor {
 
     public abstract int getNormalize();
 
+    public abstract String getPattern();
+
+    public long[] getVibrationPattern() {
+        String[] msAsString = getPattern().split(":");
+        long[] ms = new long[msAsString.length];
+        for (int i = 0; i < ms.length; i++) {
+            ms[i] = Long.valueOf(msAsString[i]);
+        }
+        return ms;
+    }
+
     public abstract boolean isBellActive();
 
     /**

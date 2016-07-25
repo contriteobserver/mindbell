@@ -19,7 +19,7 @@
     limitations under the License.
  -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="34" android:versionName="2.5.14" package="com.googlecode.mindbell">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="35" android:versionName="2.6.0" package="com.googlecode.mindbell">
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>

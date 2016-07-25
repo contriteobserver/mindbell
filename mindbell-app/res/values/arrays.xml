@@ -78,9 +78,21 @@
 		<item>10 pm</item>
 		<item>11 pm</item>
 	</string-array>
+
+	<!-- Vibration patterns - no need to be translated -->	
+	<string-array name="patternEntries">
+	    <item>r</item>
+	    <item>-brrrrrr</item>
+	    <item>-brr-brrrrrr</item>
+	    <item>-brr-brr-brrrrrr</item>
+	    <item>-brr</item>
+	    <item>-brr-brr</item>
+	    <item>-brr-brr-brr</item>
+	</string-array>
 	
 	<!-- Values - don't localize: -->
 	
+	<!-- Intervals in milliseconds -->
 	<string-array name="bellFrequencyValues" translatable="false">
 		<item>60000</item><!-- 1 minute -->
 		<item>120000</item><!-- 2 minutes -->
@@ -96,6 +108,7 @@
 		<item>14400000</item><!-- 4 hours -->
 	</string-array>
 	
+	<!-- First minute in the first hour to ring at -->
 	<string-array name="normalizeEntryValues">
 	    <item>-1</item>
 	    <item>0</item>
@@ -112,7 +125,8 @@
 	    <item>55</item>
 	</string-array>
 	
-		<string-array name="hourValues" translatable="false">
+	<!-- Starting and ending time hours -->
+	<string-array name="hourValues" translatable="false">
 		<item>0</item>
 		<item>1</item>
 		<item>2</item>
@@ -172,4 +186,15 @@
 		<item>Sat</item>
 	</string-array>
 
+	<!-- Vibration patterns -->
+	<string-array name="patternEntryValues">
+		<item>0:20</item> <!-- r -->
+		<item>100:600</item> <!-- -brrrrrr -->
+		<item>100:200:100:600</item> <!-- -brr-brrrrrr -->
+		<item>100:200:100:200:100:600</item> <!-- -brr-brr-brrrrrr -->
+		<item>100:200</item> <!-- -brr -->
+		<item>100:200:100:200</item> <!-- -brr-brr -->
+		<item>100:200:100:200:100:200</item> <!-- -brr-brr-brr -->
+	</string-array>
+	
 </resources>

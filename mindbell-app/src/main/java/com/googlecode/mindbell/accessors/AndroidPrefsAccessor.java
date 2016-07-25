@@ -50,6 +50,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private final String keyMuteOffHook;
     private final String keyMuteWithPhone;
     private final String keyVibrate;
+    private final String keyPattern;
 
     private final String keyFrequency;
     private final String keyRandomize;
@@ -72,7 +73,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private final boolean defaultMuteOffHook = true;
     private final boolean defaultMuteWithPhone = true;
     private final boolean defaultVibrate = false;
-
+    private final String defaultPattern = "100:200:100:600";
     private final String defaultFrequency = "3600000";
     private final boolean defaultRandomize = true;
     private final String defaultNormalize = NORMALIZE_NONE;
@@ -109,7 +110,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         keyMuteOffHook = context.getString(R.string.keyMuteOffHook);
         keyMuteWithPhone = context.getString(R.string.keyMuteWithPhone);
         keyVibrate = context.getString(R.string.keyVibrate);
-
+        keyPattern = context.getString(R.string.keyPattern);
         keyFrequency = context.getString(R.string.keyFrequency);
         keyRandomize = context.getString(R.string.keyRandomize);
         keyNormalize = context.getString(R.string.keyNormalize);
@@ -140,7 +141,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             }
         }
         // string settings:
-        String[] stringSettings = new String[] { keyFrequency, keyNormalize, keyStart, keyEnd };
+        String[] stringSettings = new String[] { keyPattern, keyFrequency, keyNormalize, keyStart, keyEnd };
         for (String s : stringSettings) {
             try {
                 settings.getString(s, null);
@@ -224,6 +225,10 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             Log.w(TAG, "Reset missing setting for '" + keyVibrate + "' to '" + defaultVibrate + "'");
         }
 
+        if (!settings.contains(keyPattern)) {
+            settings.edit().putString(keyPattern, defaultPattern).commit();
+            Log.w(TAG, "Reset missing setting for '" + keyPattern + "' to '" + defaultPattern + "'");
+        }
         if (!settings.contains(keyFrequency)) {
             settings.edit().putString(keyFrequency, defaultFrequency).commit();
             Log.w(TAG, "Reset missing setting for '" + keyFrequency + "' to '" + defaultFrequency + "'");
@@ -360,6 +365,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public int getNormalize() {
         return Integer.valueOf(settings.getString(keyNormalize, defaultNormalize));
+    }
+
+    @Override
+    public String getPattern() {
+        return settings.getString(keyPattern, defaultPattern);
     }
 
     @Override

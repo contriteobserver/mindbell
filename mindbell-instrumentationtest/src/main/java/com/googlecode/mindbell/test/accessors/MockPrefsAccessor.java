@@ -62,6 +62,8 @@ public class MockPrefsAccessor extends PrefsAccessor {
 
     private boolean bellActive = true;
 
+    private final String pattern = "100:200:100:600";
+
     /**
      * Constructs an accessor for preferences in the given context, please use {@link MockContextAccessor#getPrefs()} instead of
      * calling this directly.
@@ -122,6 +124,11 @@ public class MockPrefsAccessor extends PrefsAccessor {
     @Override
     public int getNormalize() {
         return normalize;
+    }
+
+    @Override
+    public String getPattern() {
+        return pattern;
     }
 
     @Override

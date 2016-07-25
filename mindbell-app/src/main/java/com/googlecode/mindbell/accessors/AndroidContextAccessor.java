@@ -211,12 +211,9 @@ public class AndroidContextAccessor extends ContextAccessor {
 
             mediaPlayer.start();
 
-            Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
             if (prefs.isSettingVibrate()) {
-                long[] pattern = new long[] { 100, 200, 100, 600 };
-                vibrator.vibrate(pattern, -1);
-            } else {
-                vibrator.vibrate(20);
+                Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                vibrator.vibrate(prefs.getVibrationPattern(), -1);
             }
 
         } catch (IOException ioe) {
