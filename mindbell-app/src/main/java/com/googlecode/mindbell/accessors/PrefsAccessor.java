@@ -26,6 +26,18 @@ import com.googlecode.mindbell.util.TimeOfDay;
 
 public abstract class PrefsAccessor {
 
+    /**
+     * Return the pattern string as an array of long values.
+     */
+    public static long[] getVibrationPattern(String pattern) {
+        String[] msAsString = pattern.split(":");
+        long[] ms = new long[msAsString.length];
+        for (int i = 0; i < ms.length; i++) {
+            ms[i] = Long.valueOf(msAsString[i]);
+        }
+        return ms;
+    }
+
     public abstract boolean doShowBell();
 
     public abstract boolean doStatusNotification();
@@ -71,12 +83,7 @@ public abstract class PrefsAccessor {
     public abstract String getPattern();
 
     public long[] getVibrationPattern() {
-        String[] msAsString = getPattern().split(":");
-        long[] ms = new long[msAsString.length];
-        for (int i = 0; i < ms.length; i++) {
-            ms[i] = Long.valueOf(msAsString[i]);
-        }
-        return ms;
+        return getVibrationPattern(getPattern());
     }
 
     public abstract boolean isBellActive();

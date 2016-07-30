@@ -23,15 +23,18 @@ import java.util.Set;
 
 import com.googlecode.mindbell.accessors.AndroidContextAccessor;
 import com.googlecode.mindbell.accessors.AndroidPrefsAccessor;
+import com.googlecode.mindbell.accessors.PrefsAccessor;
 import com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix;
 import com.googlecode.mindbell.preference.MultiSelectListPreferenceWithSummary;
 import com.googlecode.mindbell.util.Utils;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -130,6 +133,8 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
 
         final CheckBoxPreference preferenceStatus = (CheckBoxPreference) getPreferenceScreen()
                 .findPreference(getText(R.string.keyStatus));
+        final ListPreferenceWithSummaryFix preferencePattern = (ListPreferenceWithSummaryFix) getPreferenceScreen()
+                .findPreference(getText(R.string.keyPattern));
         final CheckBoxPreference preferenceMuteOffHook = (CheckBoxPreference) getPreferenceScreen()
                 .findPreference(getText(R.string.keyMuteOffHook));
         final ListPreferenceWithSummaryFix preferenceFrequency = (ListPreferenceWithSummaryFix) getPreferenceScreen()
@@ -145,6 +150,16 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
 
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 return mediateMuteOffHookAndStatus(preferenceMuteOffHook, newValue, REQUEST_CODE_STATUS);
+            }
+
+        });
+
+        preferencePattern.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                Vibrator vibrator = (Vibrator) MindBellPreferences.this.getSystemService(Context.VIBRATOR_SERVICE);
+                vibrator.vibrate(PrefsAccessor.getVibrationPattern((String) newValue), -1);
+                return true;
             }
 
         });
