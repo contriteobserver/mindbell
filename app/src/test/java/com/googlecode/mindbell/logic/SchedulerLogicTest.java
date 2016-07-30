@@ -33,17 +33,13 @@ import com.googlecode.mindbell.util.TimeOfDay;
 import android.util.Log;
 import junit.framework.TestCase;
 
-/**
- * @author marc
- *
- */
 public class SchedulerLogicTest extends TestCase {
 
     private MockPrefsAccessor getDayPrefs() {
         MockPrefsAccessor prefs = MockContextAccessor.getInstance().getPrefs();
         prefs.setDaytimeStart(new TimeOfDay(9, 0));
         prefs.setDaytimeEnd(new TimeOfDay(21, 0));
-        prefs.setActiveOnDaysOfWeek(new HashSet<Integer>(Arrays.asList(new Integer[] { 2, 3, 4, 5, 6 })));
+        prefs.setActiveOnDaysOfWeek(new HashSet<>(Arrays.asList(new Integer[]{2, 3, 4, 5, 6})));
         return prefs;
     }
 
@@ -59,7 +55,7 @@ public class SchedulerLogicTest extends TestCase {
         MockPrefsAccessor prefs = MockContextAccessor.getInstance().getPrefs();
         prefs.setDaytimeStart(new TimeOfDay(13, 0));
         prefs.setDaytimeEnd(new TimeOfDay(2, 0));
-        prefs.setActiveOnDaysOfWeek(new HashSet<Integer>(Arrays.asList(new Integer[] { 2, 3, 4, 5, 6 })));
+        prefs.setActiveOnDaysOfWeek(new HashSet<>(Arrays.asList(new Integer[]{2, 3, 4, 5, 6})));
         return prefs;
     }
 
@@ -92,7 +88,7 @@ public class SchedulerLogicTest extends TestCase {
         MockPrefsAccessor prefs = getDayPrefs();
         prefs.setRandomize(false);
         // Current time setting in the middle of the night (05:00)
-        long nowTimeMillis = getTimeMillis(5, 00, Calendar.FRIDAY);
+        long nowTimeMillis = getTimeMillis(5, 0, Calendar.FRIDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         // First reschedule from nighttime (05:00, before 09:00) to beginning of daytime (09:00)
         Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
@@ -125,11 +121,11 @@ public class SchedulerLogicTest extends TestCase {
             // Second reschedule
             targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(targetTimeMillis, prefs);
             Log.d(TAG, "targetTimeMillis=" + (new TimeOfDay(targetTimeMillis)).toString());
-            assertEquals(getTimeMillis(19, 00, Calendar.FRIDAY), targetTimeMillis);
+            assertEquals(getTimeMillis(19, 0, Calendar.FRIDAY), targetTimeMillis);
             // Third reschedule
             targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(targetTimeMillis, prefs);
             Log.d(TAG, "targetTimeMillis=" + (new TimeOfDay(targetTimeMillis)).toString());
-            assertEquals(getTimeMillis(19, 05, Calendar.FRIDAY), targetTimeMillis);
+            assertEquals(getTimeMillis(19, 5, Calendar.FRIDAY), targetTimeMillis);
         }
     }
 
@@ -138,7 +134,7 @@ public class SchedulerLogicTest extends TestCase {
         prefs.setRandomize(false);
         prefs.setNormalize(5);
         // Current time setting in the middle of the night (05:00)
-        long targetTimeMillis = getTimeMillis(5, 00, Calendar.FRIDAY);
+        long targetTimeMillis = getTimeMillis(5, 0, Calendar.FRIDAY);
         assertEquals(getTimeMillis(5, 0, Calendar.FRIDAY), targetTimeMillis);
         // First reschedule from nighttime (05:00, before 09:00) to beginning of daytime (09:00)
         targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(targetTimeMillis, prefs);
@@ -164,7 +160,7 @@ public class SchedulerLogicTest extends TestCase {
         prefs.setNormalize(30);
         prefs.setInterval(20 * 60000L);
         // Current time setting in the middle of the night (05:00)
-        long targetTimeMillis = getTimeMillis(5, 00, Calendar.FRIDAY);
+        long targetTimeMillis = getTimeMillis(5, 0, Calendar.FRIDAY);
         assertEquals(getTimeMillis(5, 0, Calendar.FRIDAY), targetTimeMillis);
         // First reschedule from nighttime (05:00, before 09:00) to beginning of daytime (09:00)
         targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(targetTimeMillis, prefs);
@@ -195,7 +191,7 @@ public class SchedulerLogicTest extends TestCase {
         prefs.setInterval(30 * 60000L);
         {
             // Current time setting in the middle of the night (05:00)
-            long targetTimeMillis = getTimeMillis(5, 00, Calendar.FRIDAY);
+            long targetTimeMillis = getTimeMillis(5, 0, Calendar.FRIDAY);
             assertEquals(getTimeMillis(5, 0, Calendar.FRIDAY), targetTimeMillis);
             // First reschedule from nighttime (05:00, before 09:00) to beginning of daytime (09:00)
             targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(targetTimeMillis, prefs);
@@ -265,7 +261,7 @@ public class SchedulerLogicTest extends TestCase {
         prefs.setNormalize(10);
         prefs.setInterval(20 * 60000L);
         // Current time setting in the middle of the night (05:00)
-        long targetTimeMillis = getTimeMillis(5, 00, Calendar.FRIDAY);
+        long targetTimeMillis = getTimeMillis(5, 0, Calendar.FRIDAY);
         assertEquals(getTimeMillis(5, 0, Calendar.FRIDAY), targetTimeMillis);
         // First reschedule from nighttime (05:00, before 09:00) to beginning of daytime (09:00)
         targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(targetTimeMillis, prefs);
@@ -293,7 +289,7 @@ public class SchedulerLogicTest extends TestCase {
         MockPrefsAccessor prefs = getDayPrefs();
         prefs.setRandomize(true);
         // First reschedule from nighttime (05:00, before 09:00) to beginning of daytime (09:00)
-        long nowTimeMillis = getTimeMillis(5, 00, Calendar.FRIDAY);
+        long nowTimeMillis = getTimeMillis(5, 0, Calendar.FRIDAY);
         int fails = 0;
         long targetTimeMillis;
         do {
@@ -301,8 +297,8 @@ public class SchedulerLogicTest extends TestCase {
         } while (getTimeMillis(9, 0, Calendar.FRIDAY) == targetTimeMillis && ++fails < 10); // may fail randomly sometimes
         Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
         assertTrue(getTimeMillis(9, 0, Calendar.FRIDAY) != targetTimeMillis);
-        assertTrue(targetTimeMillis >= getTimeMillis(9, 00, Calendar.FRIDAY)); // min(randomizedInterval - meanInterval / 2)
-        assertTrue(targetTimeMillis <= getTimeMillis(10, 00, Calendar.FRIDAY)); // max(randomizedInterval - meanInterval / 2)
+        assertTrue(targetTimeMillis >= getTimeMillis(9, 0, Calendar.FRIDAY)); // min(randomizedInterval - meanInterval / 2)
+        assertTrue(targetTimeMillis <= getTimeMillis(10, 0, Calendar.FRIDAY)); // max(randomizedInterval - meanInterval / 2)
         // Second reschedule
         nowTimeMillis = targetTimeMillis;
         targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
@@ -328,7 +324,7 @@ public class SchedulerLogicTest extends TestCase {
 
     public void testRescheduleYieldsDayFriday1() {
         MockPrefsAccessor prefs = getDayPrefs();
-        long nowTimeMillis = getTimeMillis(12, 00, Calendar.FRIDAY);
+        long nowTimeMillis = getTimeMillis(12, 0, Calendar.FRIDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
         assertTrue(targetTimeMillis > nowTimeMillis);
@@ -338,7 +334,7 @@ public class SchedulerLogicTest extends TestCase {
 
     public void testRescheduleYieldsDayFriday2() {
         MockPrefsAccessor prefs = getDayPrefs();
-        long nowTimeMillis = getTimeMillis(01, 00, Calendar.FRIDAY);
+        long nowTimeMillis = getTimeMillis(1, 0, Calendar.FRIDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
         assertTrue(targetTimeMillis > nowTimeMillis);
@@ -348,7 +344,7 @@ public class SchedulerLogicTest extends TestCase {
 
     public void testRescheduleYieldsDayFriday3() {
         MockPrefsAccessor prefs = getDayPrefs();
-        long nowTimeMillis = getTimeMillis(23, 00, Calendar.FRIDAY);
+        long nowTimeMillis = getTimeMillis(23, 0, Calendar.FRIDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
         assertTrue(targetTimeMillis > nowTimeMillis);
@@ -368,7 +364,7 @@ public class SchedulerLogicTest extends TestCase {
 
     public void testRescheduleYieldsDayFriday5() {
         MockPrefsAccessor prefs = getNightPrefs();
-        long nowTimeMillis = getTimeMillis(01, 00, Calendar.FRIDAY);
+        long nowTimeMillis = getTimeMillis(1, 0, Calendar.FRIDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
         assertTrue(targetTimeMillis > nowTimeMillis);
@@ -378,7 +374,7 @@ public class SchedulerLogicTest extends TestCase {
 
     public void testRescheduleYieldsDayFriday6() {
         MockPrefsAccessor prefs = getNightPrefs();
-        long nowTimeMillis = getTimeMillis(12, 00, Calendar.FRIDAY);
+        long nowTimeMillis = getTimeMillis(12, 0, Calendar.FRIDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
         assertTrue(targetTimeMillis > nowTimeMillis);
@@ -388,7 +384,7 @@ public class SchedulerLogicTest extends TestCase {
 
     public void testRescheduleYieldsDayMonday1() {
         MockPrefsAccessor prefs = getDayPrefs();
-        long nowTimeMillis = getTimeMillis(12, 00, Calendar.MONDAY);
+        long nowTimeMillis = getTimeMillis(12, 0, Calendar.MONDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
         assertTrue(targetTimeMillis > nowTimeMillis);
@@ -398,7 +394,7 @@ public class SchedulerLogicTest extends TestCase {
 
     public void testRescheduleYieldsDayMonday2() {
         MockPrefsAccessor prefs = getDayPrefs();
-        long nowTimeMillis = getTimeMillis(01, 00, Calendar.MONDAY);
+        long nowTimeMillis = getTimeMillis(1, 0, Calendar.MONDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
         assertTrue(targetTimeMillis > nowTimeMillis);
@@ -408,7 +404,7 @@ public class SchedulerLogicTest extends TestCase {
 
     public void testRescheduleYieldsDayMonday3() {
         MockPrefsAccessor prefs = getDayPrefs();
-        long nowTimeMillis = getTimeMillis(23, 00, Calendar.MONDAY);
+        long nowTimeMillis = getTimeMillis(23, 0, Calendar.MONDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
         assertTrue(targetTimeMillis > nowTimeMillis);
@@ -428,7 +424,7 @@ public class SchedulerLogicTest extends TestCase {
 
     public void testRescheduleYieldsDayMonday5() {
         MockPrefsAccessor prefs = getNightPrefs();
-        long nowTimeMillis = getTimeMillis(01, 00, Calendar.MONDAY);
+        long nowTimeMillis = getTimeMillis(1, 0, Calendar.MONDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
         assertTrue(targetTimeMillis > nowTimeMillis);
@@ -438,7 +434,7 @@ public class SchedulerLogicTest extends TestCase {
 
     public void testRescheduleYieldsDayMonday6() {
         MockPrefsAccessor prefs = getNightPrefs();
-        long nowTimeMillis = getTimeMillis(12, 00, Calendar.MONDAY);
+        long nowTimeMillis = getTimeMillis(12, 0, Calendar.MONDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
         assertTrue(targetTimeMillis > nowTimeMillis);
@@ -448,7 +444,7 @@ public class SchedulerLogicTest extends TestCase {
 
     public void testRescheduleYieldsDaySaturday1() {
         MockPrefsAccessor prefs = getDayPrefs();
-        long nowTimeMillis = getTimeMillis(12, 00, Calendar.SATURDAY);
+        long nowTimeMillis = getTimeMillis(12, 0, Calendar.SATURDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
         assertTrue(targetTimeMillis > nowTimeMillis);
@@ -458,7 +454,7 @@ public class SchedulerLogicTest extends TestCase {
 
     public void testRescheduleYieldsDaySaturday2() {
         MockPrefsAccessor prefs = getDayPrefs();
-        long nowTimeMillis = getTimeMillis(01, 00, Calendar.SATURDAY);
+        long nowTimeMillis = getTimeMillis(1, 0, Calendar.SATURDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
         assertTrue(targetTimeMillis > nowTimeMillis);
@@ -468,7 +464,7 @@ public class SchedulerLogicTest extends TestCase {
 
     public void testRescheduleYieldsDaySaturday3() {
         MockPrefsAccessor prefs = getDayPrefs();
-        long nowTimeMillis = getTimeMillis(23, 00, Calendar.SATURDAY);
+        long nowTimeMillis = getTimeMillis(23, 0, Calendar.SATURDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
         assertTrue(targetTimeMillis > nowTimeMillis);
@@ -488,7 +484,7 @@ public class SchedulerLogicTest extends TestCase {
 
     public void testRescheduleYieldsDaySaturday5() {
         MockPrefsAccessor prefs = getNightPrefs();
-        long nowTimeMillis = getTimeMillis(01, 00, Calendar.SATURDAY);
+        long nowTimeMillis = getTimeMillis(1, 0, Calendar.SATURDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
         assertTrue(targetTimeMillis > nowTimeMillis);
@@ -498,7 +494,7 @@ public class SchedulerLogicTest extends TestCase {
 
     public void testRescheduleYieldsDaySaturday6() {
         MockPrefsAccessor prefs = getNightPrefs();
-        long nowTimeMillis = getTimeMillis(12, 00, Calendar.SATURDAY);
+        long nowTimeMillis = getTimeMillis(12, 0, Calendar.SATURDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
         assertTrue(targetTimeMillis > nowTimeMillis);
@@ -508,7 +504,7 @@ public class SchedulerLogicTest extends TestCase {
 
     public void testRescheduleYieldsDaySunday1() {
         MockPrefsAccessor prefs = getDayPrefs();
-        long nowTimeMillis = getTimeMillis(12, 00, Calendar.SUNDAY);
+        long nowTimeMillis = getTimeMillis(12, 0, Calendar.SUNDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
         assertTrue(targetTimeMillis > nowTimeMillis);
@@ -518,7 +514,7 @@ public class SchedulerLogicTest extends TestCase {
 
     public void testRescheduleYieldsDaySunday2() {
         MockPrefsAccessor prefs = getDayPrefs();
-        long nowTimeMillis = getTimeMillis(01, 00, Calendar.SUNDAY);
+        long nowTimeMillis = getTimeMillis(1, 0, Calendar.SUNDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
         assertTrue(targetTimeMillis > nowTimeMillis);
@@ -528,7 +524,7 @@ public class SchedulerLogicTest extends TestCase {
 
     public void testRescheduleYieldsDaySunday3() {
         MockPrefsAccessor prefs = getDayPrefs();
-        long nowTimeMillis = getTimeMillis(23, 00, Calendar.SUNDAY);
+        long nowTimeMillis = getTimeMillis(23, 0, Calendar.SUNDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
         assertTrue(targetTimeMillis > nowTimeMillis);
@@ -548,7 +544,7 @@ public class SchedulerLogicTest extends TestCase {
 
     public void testRescheduleYieldsDaySunday5() {
         MockPrefsAccessor prefs = getNightPrefs();
-        long nowTimeMillis = getTimeMillis(01, 00, Calendar.SUNDAY);
+        long nowTimeMillis = getTimeMillis(1, 0, Calendar.SUNDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
         assertTrue(targetTimeMillis > nowTimeMillis);
@@ -558,7 +554,7 @@ public class SchedulerLogicTest extends TestCase {
 
     public void testRescheduleYieldsDaySunday6() {
         MockPrefsAccessor prefs = getNightPrefs();
-        long nowTimeMillis = getTimeMillis(12, 00, Calendar.SUNDAY);
+        long nowTimeMillis = getTimeMillis(12, 0, Calendar.SUNDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         Log.d(TAG, (new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
         assertTrue(targetTimeMillis > nowTimeMillis);
