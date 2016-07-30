@@ -23,61 +23,68 @@ import com.googlecode.mindbell.util.VolumeConverter;
 
 import junit.framework.TestCase;
 
-/**
- * @author marc
- * 
- */
-public class VolumeConverterTest extends TestCase {
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+public class VolumeConverterTest {
 
     VolumeConverter c;
 
-    @Override
+    @Before
     public void setUp() {
         c = new VolumeConverter(40, 100);
     }
 
+    @Test
     public void testMaxIsMax_p2v() {
         int progress = c.mMaxProgress;
         float volume = c.progress2volume(progress);
-        assertEquals(1, volume, 1.e-7);
+        Assert.assertEquals(1, volume, 1.e-7);
     }
 
+    @Test
     public void testMaxIsMax_v2p() {
         float volume = 1;
         int progress = c.volume2progress(volume);
-        assertEquals(c.mMaxProgress, progress);
+        Assert.assertEquals(c.mMaxProgress, progress);
     }
 
+    @Test
     public void testProgressWillNeverBeNegative() {
         float volume = 0.001f;
         int progress = c.volume2progress(volume);
-        assertTrue("Progress should not be negative, but is " + progress, progress >= 0);
+        Assert.assertTrue("Progress should not be negative, but is " + progress, progress >= 0);
     }
 
+    @Test
     public void testRoundtrip_p() {
         int progress = 17;
         float volume = c.progress2volume(progress);
         int result = c.volume2progress(volume);
-        assertEquals(progress, result);
+        Assert.assertEquals(progress, result);
     }
 
+    @Test
     public void testRoundtrip_v() {
         float volume = c.progress2volume(3);
         int progress = c.volume2progress(volume);
         float result = c.progress2volume(progress);
-        assertEquals(volume, result, 1.e-7f);
+        Assert.assertEquals(volume, result, 1.e-7f);
     }
 
+    @Test
     public void testZeroIsZero_p2v() {
         int progress = 0;
         float volume = c.progress2volume(progress);
-        assertEquals(0, volume, 1.e-7);
+        Assert.assertEquals(0, volume, 1.e-7);
     }
 
+    @Test
     public void testZeroIsZero_v2p() {
         float volume = 0;
         int progress = c.volume2progress(volume);
-        assertEquals(0, progress);
+        Assert.assertEquals(0, progress);
     }
 
 }

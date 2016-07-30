@@ -25,26 +25,28 @@ import com.googlecode.mindbell.util.TimeOfDay;
 
 import junit.framework.TestCase;
 
-/**
- * @author marc
- *
- */
-public class TimeOfDayTest extends TestCase {
+import org.junit.Assert;
+import org.junit.Test;
 
+public class TimeOfDayTest {
+
+    @Test
     public void testBefore1() {
         TimeOfDay t1 = new TimeOfDay(9, 1);
         TimeOfDay t2 = new TimeOfDay(9, 2);
-        assertTrue(t1.isBefore(t2));
-        assertFalse(t2.isBefore(t1));
+        Assert.assertTrue(t1.isBefore(t2));
+        Assert.assertFalse(t2.isBefore(t1));
     }
 
+    @Test
     public void testBefore2() {
         TimeOfDay t1 = new TimeOfDay(8, 5);
         TimeOfDay t2 = new TimeOfDay(9, 2);
-        assertTrue(t1.isBefore(t2));
-        assertFalse(t2.isBefore(t1));
+        Assert.assertTrue(t1.isBefore(t2));
+        Assert.assertFalse(t2.isBefore(t1));
     }
 
+    @Test
     public void testCalendarConstructor1() {
         int hour = 13;
         int minute = 17;
@@ -54,9 +56,10 @@ public class TimeOfDayTest extends TestCase {
         cal.set(Calendar.MINUTE, minute);
         cal.set(Calendar.DAY_OF_WEEK, weekday);
         TimeOfDay t = new TimeOfDay(cal);
-        assertEquals(new TimeOfDay(hour, minute, weekday), t);
+        Assert.assertEquals(new TimeOfDay(hour, minute, weekday), t);
     }
 
+    @Test
     public void testCalendarConstructor2() {
         int hour = 13;
         int minute = 17;
@@ -66,9 +69,10 @@ public class TimeOfDayTest extends TestCase {
         cal.set(Calendar.MINUTE, minute);
         cal.set(Calendar.DAY_OF_WEEK, weekday);
         TimeOfDay t = new TimeOfDay(cal);
-        assertEquals(new TimeOfDay(hour, minute, weekday), t);
+        Assert.assertEquals(new TimeOfDay(hour, minute, weekday), t);
     }
 
+    @Test
     public void testCalendarConstructor3() {
         int hour = 13;
         int minute = 17;
@@ -78,9 +82,10 @@ public class TimeOfDayTest extends TestCase {
         cal.set(Calendar.MINUTE, minute);
         cal.set(Calendar.DAY_OF_WEEK, weekday);
         TimeOfDay t = new TimeOfDay(cal);
-        assertEquals(new TimeOfDay(hour, minute, weekday), t);
+        Assert.assertEquals(new TimeOfDay(hour, minute, weekday), t);
     }
 
+    @Test
     public void testCalendarConstructor4() {
         int hour = 13;
         int minute = 17;
@@ -90,9 +95,10 @@ public class TimeOfDayTest extends TestCase {
         cal.set(Calendar.MINUTE, minute);
         cal.set(Calendar.DAY_OF_WEEK, weekday);
         TimeOfDay t = new TimeOfDay(cal);
-        assertEquals(new TimeOfDay(hour, minute, weekday), t);
+        Assert.assertEquals(new TimeOfDay(hour, minute, weekday), t);
     }
 
+    @Test
     public void testCalendarConstructor5() {
         int hour = 13;
         int minute = 17;
@@ -102,9 +108,10 @@ public class TimeOfDayTest extends TestCase {
         cal.set(Calendar.MINUTE, minute);
         cal.set(Calendar.DAY_OF_WEEK, weekday);
         TimeOfDay t = new TimeOfDay(cal);
-        assertEquals(new TimeOfDay(hour, minute, weekday), t);
+        Assert.assertEquals(new TimeOfDay(hour, minute, weekday), t);
     }
 
+    @Test
     public void testCalendarConstructor6() {
         int hour = 13;
         int minute = 17;
@@ -114,9 +121,10 @@ public class TimeOfDayTest extends TestCase {
         cal.set(Calendar.MINUTE, minute);
         cal.set(Calendar.DAY_OF_WEEK, weekday);
         TimeOfDay t = new TimeOfDay(cal);
-        assertEquals(new TimeOfDay(hour, minute, weekday), t);
+        Assert.assertEquals(new TimeOfDay(hour, minute, weekday), t);
     }
 
+    @Test
     public void testCalendarConstructor7() {
         int hour = 13;
         int minute = 17;
@@ -126,113 +134,129 @@ public class TimeOfDayTest extends TestCase {
         cal.set(Calendar.MINUTE, minute);
         cal.set(Calendar.DAY_OF_WEEK, weekday);
         TimeOfDay t = new TimeOfDay(cal);
-        assertEquals(new TimeOfDay(hour, minute, weekday), t);
+        Assert.assertEquals(new TimeOfDay(hour, minute, weekday), t);
     }
 
+    @Test
     public void testGetters1() {
         int hour = 1;
         int minute = 2;
         TimeOfDay t = new TimeOfDay(hour, minute);
-        assertEquals(hour, t.hour);
-        assertEquals(minute, t.minute);
-        assertNull(t.weekday);
+        Assert.assertEquals(hour, t.hour);
+        Assert.assertEquals(minute, t.minute);
+        Assert.assertNull(t.weekday);
     }
 
+    @Test
     public void testGetters2() {
         int hour = 1;
         int minute = 2;
         int weekday = 5;
         TimeOfDay t = new TimeOfDay(hour, minute, weekday);
-        assertEquals(hour, t.hour);
-        assertEquals(minute, t.minute);
-        assertEquals(weekday, t.weekday.intValue());
+        Assert.assertEquals(hour, t.hour);
+        Assert.assertEquals(minute, t.minute);
+        Assert.assertEquals(weekday, t.weekday.intValue());
     }
 
+    @Test
     public void testIdentity1() {
         TimeOfDay time = new TimeOfDay(9, 15);
-        assertEquals(new TimeOfDay(9, 15), time);
+        Assert.assertEquals(new TimeOfDay(9, 15), time);
     }
 
+    @Test
     public void testIdentity2() {
         TimeOfDay time = new TimeOfDay(9, 15, 1);
-        assertEquals(new TimeOfDay(9, 15, 1), time);
+        Assert.assertEquals(new TimeOfDay(9, 15, 1), time);
     }
 
+    @Test
     public void testIdentity3() {
         TimeOfDay time = new TimeOfDay(9, 15, 1);
-        assertFalse(time.equals(new TimeOfDay(9, 15, 2)));
+        Assert.assertFalse(time.equals(new TimeOfDay(9, 15, 2)));
     }
 
+    @Test
     public void testInterval1() {
         TimeOfDay start = new TimeOfDay(9, 0);
         TimeOfDay end = new TimeOfDay(21, 0);
         TimeOfDay t = new TimeOfDay(12, 15);
-        assertTrue(t.isInInterval(start, end));
+        Assert.assertTrue(t.isInInterval(start, end));
     }
 
+    @Test
     public void testInterval10() {
         TimeOfDay start = new TimeOfDay(23, 0, null);
         TimeOfDay end = new TimeOfDay(5, 0, null);
         TimeOfDay t = new TimeOfDay(4, 59, null);
-        assertTrue(t.isInInterval(start, end));
+        Assert.assertTrue(t.isInInterval(start, end));
     }
 
+    @Test
     public void testInterval2() {
         TimeOfDay start = new TimeOfDay(9, 0);
         TimeOfDay end = new TimeOfDay(9, 0);
         TimeOfDay t = new TimeOfDay(9, 0);
-        assertTrue(t.isInInterval(start, end));
+        Assert.assertTrue(t.isInInterval(start, end));
     }
 
+    @Test
     public void testInterval3() {
         TimeOfDay start = new TimeOfDay(9, 0);
         TimeOfDay end = new TimeOfDay(9, 1);
         TimeOfDay t = new TimeOfDay(9, 0);
-        assertTrue(t.isInInterval(start, end));
+        Assert.assertTrue(t.isInInterval(start, end));
     }
 
+    @Test
     public void testInterval4() {
         TimeOfDay start = new TimeOfDay(9, 0);
         TimeOfDay end = new TimeOfDay(9, 1);
         TimeOfDay t = new TimeOfDay(9, 1);
-        assertFalse(t.isInInterval(start, end));
+        Assert.assertFalse(t.isInInterval(start, end));
     }
 
+    @Test
     public void testInterval5() {
         TimeOfDay start = new TimeOfDay(9, 0);
         TimeOfDay end = new TimeOfDay(9, 59);
         TimeOfDay t = new TimeOfDay(10, 37);
-        assertFalse(t.isInInterval(start, end));
+        Assert.assertFalse(t.isInInterval(start, end));
     }
 
+    @Test
     public void testInterval6() {
         TimeOfDay start = new TimeOfDay(9, 0, 2);
         TimeOfDay end = new TimeOfDay(21, 0, 1);
         TimeOfDay t = new TimeOfDay(12, 15, 3);
-        assertTrue(t.isInInterval(start, end));
+        Assert.assertTrue(t.isInInterval(start, end));
     }
 
+    @Test
     public void testInterval7() {
         TimeOfDay start = new TimeOfDay(9, 0, 5);
         TimeOfDay end = new TimeOfDay(9, 59, 6);
         TimeOfDay t = new TimeOfDay(10, 37, 7);
-        assertFalse(t.isInInterval(start, end));
+        Assert.assertFalse(t.isInInterval(start, end));
     }
 
+    @Test
     public void testInterval8() {
         TimeOfDay start = new TimeOfDay(13, 0, null);
         TimeOfDay end = new TimeOfDay(2, 0, null);
         TimeOfDay t = new TimeOfDay(13, 0, 7);
-        assertTrue(t.isInInterval(start, end));
+        Assert.assertTrue(t.isInInterval(start, end));
     }
 
+    @Test
     public void testInterval9() {
         TimeOfDay start = new TimeOfDay(23, 0, null);
         TimeOfDay end = new TimeOfDay(5, 0, null);
         TimeOfDay t = new TimeOfDay(23, 0, null);
-        assertTrue(t.isInInterval(start, end));
+        Assert.assertTrue(t.isInInterval(start, end));
     }
 
+    @Test
     public void testInvalid1() {
         try {
             new TimeOfDay(25, 0);
@@ -240,9 +264,10 @@ public class TimeOfDayTest extends TestCase {
             // expected
             return;
         }
-        fail("Should have thrown an IllegalArgumentException");
+        Assert.fail("Should have thrown an IllegalArgumentException");
     }
 
+    @Test
     public void testInvalid2() {
         try {
             new TimeOfDay(-1, 0);
@@ -250,9 +275,10 @@ public class TimeOfDayTest extends TestCase {
             // expected
             return;
         }
-        fail("Should have thrown an IllegalArgumentException");
+        Assert.fail("Should have thrown an IllegalArgumentException");
     }
 
+    @Test
     public void testInvalid3() {
         try {
             new TimeOfDay(5, 60);
@@ -260,9 +286,10 @@ public class TimeOfDayTest extends TestCase {
             // expected
             return;
         }
-        fail("Should have thrown an IllegalArgumentException");
+        Assert.fail("Should have thrown an IllegalArgumentException");
     }
 
+    @Test
     public void testInvalid4() {
         try {
             new TimeOfDay(5, -1);
@@ -270,9 +297,10 @@ public class TimeOfDayTest extends TestCase {
             // expected
             return;
         }
-        fail("Should have thrown an IllegalArgumentException");
+        Assert.fail("Should have thrown an IllegalArgumentException");
     }
 
+    @Test
     public void testInvalid5() {
         try {
             new TimeOfDay(5, 5, 0);
@@ -280,9 +308,10 @@ public class TimeOfDayTest extends TestCase {
             // expected
             return;
         }
-        fail("Should have thrown an IllegalArgumentException");
+        Assert.fail("Should have thrown an IllegalArgumentException");
     }
 
+    @Test
     public void testInvalid6() {
         try {
             new TimeOfDay(6, 6, 8);
@@ -290,24 +319,28 @@ public class TimeOfDayTest extends TestCase {
             // expected
             return;
         }
-        fail("Should have thrown an IllegalArgumentException");
+        Assert.fail("Should have thrown an IllegalArgumentException");
     }
 
+    @Test
     public void testIsSameTime1() {
         TimeOfDay time = new TimeOfDay(9, 15);
-        assertTrue(time.isSameTime(new TimeOfDay(9, 15)));
+        Assert.assertTrue(time.isSameTime(new TimeOfDay(9, 15)));
     }
 
+    @Test
     public void testIsSameTime2() {
         TimeOfDay time = new TimeOfDay(9, 15, 1);
-        assertTrue(time.isSameTime(new TimeOfDay(9, 15, 2)));
+        Assert.assertTrue(time.isSameTime(new TimeOfDay(9, 15, 2)));
     }
 
+    @Test
     public void testIsSameTime3() {
         TimeOfDay time = new TimeOfDay(9, 15, null);
-        assertTrue(time.isSameTime(new TimeOfDay(9, 15, 2)));
+        Assert.assertTrue(time.isSameTime(new TimeOfDay(9, 15, 2)));
     }
 
+    @Test
     public void testMillisecondConstructor1() {
         int hour = 13;
         int minute = 17;
@@ -317,9 +350,10 @@ public class TimeOfDayTest extends TestCase {
         cal.set(Calendar.MINUTE, minute);
         cal.set(Calendar.DAY_OF_WEEK, weekday);
         TimeOfDay t = new TimeOfDay(cal.getTimeInMillis());
-        assertEquals(new TimeOfDay(hour, minute, weekday), t);
+        Assert.assertEquals(new TimeOfDay(hour, minute, weekday), t);
     }
 
+    @Test
     public void testMillisecondConstructor2() {
         int hour = 13;
         int minute = 17;
@@ -329,9 +363,10 @@ public class TimeOfDayTest extends TestCase {
         cal.set(Calendar.MINUTE, minute);
         cal.set(Calendar.DAY_OF_WEEK, weekday);
         TimeOfDay t = new TimeOfDay(cal.getTimeInMillis());
-        assertEquals(new TimeOfDay(hour, minute, weekday), t);
+        Assert.assertEquals(new TimeOfDay(hour, minute, weekday), t);
     }
 
+    @Test
     public void testMillisecondConstructor3() {
         int hour = 13;
         int minute = 17;
@@ -341,9 +376,10 @@ public class TimeOfDayTest extends TestCase {
         cal.set(Calendar.MINUTE, minute);
         cal.set(Calendar.DAY_OF_WEEK, weekday);
         TimeOfDay t = new TimeOfDay(cal.getTimeInMillis());
-        assertEquals(new TimeOfDay(hour, minute, weekday), t);
+        Assert.assertEquals(new TimeOfDay(hour, minute, weekday), t);
     }
 
+    @Test
     public void testMillisecondConstructor4() {
         int hour = 13;
         int minute = 17;
@@ -353,9 +389,10 @@ public class TimeOfDayTest extends TestCase {
         cal.set(Calendar.MINUTE, minute);
         cal.set(Calendar.DAY_OF_WEEK, weekday);
         TimeOfDay t = new TimeOfDay(cal.getTimeInMillis());
-        assertEquals(new TimeOfDay(hour, minute, weekday), t);
+        Assert.assertEquals(new TimeOfDay(hour, minute, weekday), t);
     }
 
+    @Test
     public void testMillisecondConstructor5() {
         int hour = 13;
         int minute = 17;
@@ -365,9 +402,10 @@ public class TimeOfDayTest extends TestCase {
         cal.set(Calendar.MINUTE, minute);
         cal.set(Calendar.DAY_OF_WEEK, weekday);
         TimeOfDay t = new TimeOfDay(cal.getTimeInMillis());
-        assertEquals(new TimeOfDay(hour, minute, weekday), t);
+        Assert.assertEquals(new TimeOfDay(hour, minute, weekday), t);
     }
 
+    @Test
     public void testMillisecondConstructor6() {
         int hour = 13;
         int minute = 17;
@@ -377,9 +415,10 @@ public class TimeOfDayTest extends TestCase {
         cal.set(Calendar.MINUTE, minute);
         cal.set(Calendar.DAY_OF_WEEK, weekday);
         TimeOfDay t = new TimeOfDay(cal.getTimeInMillis());
-        assertEquals(new TimeOfDay(hour, minute, weekday), t);
+        Assert.assertEquals(new TimeOfDay(hour, minute, weekday), t);
     }
 
+    @Test
     public void testMillisecondConstructor7() {
         int hour = 13;
         int minute = 17;
@@ -389,70 +428,79 @@ public class TimeOfDayTest extends TestCase {
         cal.set(Calendar.MINUTE, minute);
         cal.set(Calendar.DAY_OF_WEEK, weekday);
         TimeOfDay t = new TimeOfDay(cal.getTimeInMillis());
-        assertEquals(new TimeOfDay(hour, minute, weekday), t);
+        Assert.assertEquals(new TimeOfDay(hour, minute, weekday), t);
     }
 
+    @Test
     public void testNightInterval1() {
         TimeOfDay start = new TimeOfDay(9, 0);
         TimeOfDay end = new TimeOfDay(1, 1);
         TimeOfDay t = new TimeOfDay(9, 1);
-        assertTrue(t.isInInterval(start, end));
+        Assert.assertTrue(t.isInInterval(start, end));
     }
 
+    @Test
     public void testNightInterval2() {
         TimeOfDay start = new TimeOfDay(9, 0);
         TimeOfDay end = new TimeOfDay(1, 1);
         TimeOfDay t = new TimeOfDay(0, 1);
-        assertTrue(t.isInInterval(start, end));
+        Assert.assertTrue(t.isInInterval(start, end));
     }
 
+    @Test
     public void testNightInterval3() {
         TimeOfDay start = new TimeOfDay(9, 0);
         TimeOfDay end = new TimeOfDay(1, 1);
         TimeOfDay t = new TimeOfDay(1, 1);
-        assertFalse(t.isInInterval(start, end));
+        Assert.assertFalse(t.isInInterval(start, end));
     }
 
+    @Test
     public void testNightInterval4() {
         TimeOfDay start = new TimeOfDay(23, 59);
         TimeOfDay end = new TimeOfDay(0, 0);
         TimeOfDay t = new TimeOfDay(9, 1);
-        assertFalse(t.isInInterval(start, end));
+        Assert.assertFalse(t.isInInterval(start, end));
     }
 
+    @Test
     public void testNightInterval5() {
         TimeOfDay start = new TimeOfDay(23, 59);
         TimeOfDay end = new TimeOfDay(0, 1);
         TimeOfDay t = new TimeOfDay(0, 0);
-        assertTrue(t.isInInterval(start, end));
+        Assert.assertTrue(t.isInInterval(start, end));
     }
 
+    @Test
     public void testNightInterval6() {
         TimeOfDay start = new TimeOfDay(23, 59, 4);
         TimeOfDay end = new TimeOfDay(0, 1, 2);
         TimeOfDay t = new TimeOfDay(0, 0, 1);
-        assertTrue(t.isInInterval(start, end));
+        Assert.assertTrue(t.isInInterval(start, end));
     }
 
+    @Test
     public void testNightInterval7() {
         TimeOfDay start = new TimeOfDay(9, 0, 7);
         TimeOfDay end = new TimeOfDay(1, 1, 1);
         TimeOfDay t = new TimeOfDay(1, 1, 5);
-        assertFalse(t.isInInterval(start, end));
+        Assert.assertFalse(t.isInInterval(start, end));
     }
 
+    @Test
     public void testNightInterval8() {
         TimeOfDay start = new TimeOfDay(23, 0, null);
         TimeOfDay end = new TimeOfDay(5, 0, null);
         TimeOfDay t = new TimeOfDay(5, 0, null);
-        assertFalse(t.isInInterval(start, end));
+        Assert.assertFalse(t.isInInterval(start, end));
     }
 
+    @Test
     public void testNightInterval9() {
         TimeOfDay start = new TimeOfDay(22, 59, null);
         TimeOfDay end = new TimeOfDay(5, 0, null);
         TimeOfDay t = new TimeOfDay(5, 0, null);
-        assertFalse(t.isInInterval(start, end));
+        Assert.assertFalse(t.isInInterval(start, end));
     }
 
 }

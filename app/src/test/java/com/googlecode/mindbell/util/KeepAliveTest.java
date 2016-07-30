@@ -24,12 +24,12 @@ import com.googlecode.mindbell.accessors.MockContextAccessor;
 
 import junit.framework.TestCase;
 
-/**
- * @author marc
- * 
- */
-public class KeepAliveTest extends TestCase {
+import org.junit.Assert;
+import org.junit.Test;
 
+public class KeepAliveTest {
+
+    @Test
     public void testExpires() throws InterruptedException {
         MockContextAccessor mca = MockContextAccessor.getInstance();
         // timeout shorter than sound duration: cannot finish
@@ -45,10 +45,11 @@ public class KeepAliveTest extends TestCase {
         th.start();
         th.join(2 * timeout);
         if (th.isAlive()) {
-            fail("KeepAlive doesn't expire as it should");
+            Assert.fail("KeepAlive doesn't expire as it should");
         }
     }
 
+    @Test
     public void testReturnsNaturally() throws InterruptedException {
         MockContextAccessor mca = MockContextAccessor.getInstance();
         // timeout longer than sound duration: finishing is easy
@@ -64,7 +65,7 @@ public class KeepAliveTest extends TestCase {
         th.start();
         th.join(2 * timeout);
         if (th.isAlive()) {
-            fail("KeepAlive doesn't return naturally as it should");
+            Assert.fail("KeepAlive doesn't return naturally as it should");
         }
     }
 

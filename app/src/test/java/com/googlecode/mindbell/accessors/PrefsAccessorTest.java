@@ -18,15 +18,17 @@
  *******************************************************************************/
 package com.googlecode.mindbell.accessors;
 
-import com.googlecode.mindbell.accessors.PrefsAccessor;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-public class PrefsAccessorTest extends TestCase {
+public class PrefsAccessorTest {
 
+    @Test
     public void testGetVibrationPattern() {
-        PrefsAccessor prefs = MockContextAccessor.getInstance().getPrefs();
-        long[] ms = prefs.getVibrationPattern();
+        long[] ms = PrefsAccessor.getVibrationPattern("100:200:100:600");
+        assertNotNull(ms);
         int i = 0;
         assertEquals(100, ms[i++]);
         assertEquals(200, ms[i++]);
