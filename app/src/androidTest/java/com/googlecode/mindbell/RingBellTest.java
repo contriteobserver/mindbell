@@ -36,6 +36,7 @@ import com.googlecode.mindbell.accessors.PrefsAccessor;
 import com.googlecode.mindbell.logic.RingingLogic;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -208,6 +209,44 @@ public class RingBellTest {
         boolean isRinging = RingingLogic.ringBell(AndroidContextAccessor.getInstance(context), null);
         // verify
         assertTrue(isRinging);
+    }
+
+    @Test
+    public void testExpires() throws InterruptedException {
+        // timeout shorter than sound duration: cannot finish
+        long timeout = 100L;
+        final RingingLogic.KeepAlive keepAlive = new RingingLogic.KeepAlive(AndroidContextAccessor.getInstance(context), timeout);
+        // exercise: it gets back before the timeout
+        Thread th = new Thread() {
+            @Override
+            public void run() {
+                keepAlive.ringBell();
+            }
+        };
+        th.start();
+        th.join(2 * timeout);
+        if (th.isAlive()) {
+            Assert.fail("KeepAlive doesn't expire as it should");
+        }
+    }
+
+    @Test
+    public void testReturnsNaturally() throws InterruptedException {
+        // timeout longer than sound duration: finishing is easy (15000 as used in Scheduler)
+        long timeout = 15000L;
+        final RingingLogic.KeepAlive keepAlive = new RingingLogic.KeepAlive(AndroidContextAccessor.getInstance(context), timeout);
+        // exercise: it gets back before the timeout
+        Thread th = new Thread() {
+            @Override
+            public void run() {
+                keepAlive.ringBell();
+            }
+        };
+        th.start();
+        th.join(2 * timeout);
+        if (th.isAlive()) {
+            Assert.fail("KeepAlive doesn't return naturally as it should");
+        }
     }
 
 }
