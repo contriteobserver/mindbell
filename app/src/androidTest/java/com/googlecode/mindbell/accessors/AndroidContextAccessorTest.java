@@ -26,6 +26,7 @@ import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -82,6 +83,104 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
         ca.startBellSound(null);
         // verify
         assertTrue(ca.isBellSoundPlaying());
+    }
+
+    @Test
+    public void testInFlightMode_false1() {
+        // setup
+        AndroidTestMockContextAccessor ca = AndroidTestMockContextAccessor.getInstance();
+        ca.setPhoneInFlightMode(true);
+        ca.getPrefs().setSettingMuteInFlightMode(false);
+        // exercise/verify
+        Assert.assertFalse(ca.isMuteRequested(true));
+    }
+
+    @Test
+    public void testInFlightMode_false2() {
+        // setup
+        AndroidTestMockContextAccessor ca = AndroidTestMockContextAccessor.getInstance();
+        ca.setPhoneInFlightMode(false);
+        ca.getPrefs().setSettingMuteInFlightMode(true);
+        // exercise/verify
+        Assert.assertFalse(ca.isMuteRequested(true));
+    }
+
+    @Test
+    public void testInFlightMode_true() {
+        // setup
+        AndroidTestMockContextAccessor ca = AndroidTestMockContextAccessor.getInstance();
+        ca.setPhoneInFlightMode(true);
+        ca.getPrefs().setSettingMuteInFlightMode(true);
+        // exercise/verify
+        Assert.assertTrue(ca.isMuteRequested(true));
+    }
+
+    @Test
+    public void testMuted_false1() {
+        // setup
+        AndroidTestMockContextAccessor ca = AndroidTestMockContextAccessor.getInstance();
+        ca.setPhoneMuted(true);
+        ca.getPrefs().setSettingMuteWithPhone(false);
+        // exercise/verify
+        Assert.assertFalse(ca.isMuteRequested(true));
+    }
+
+    @Test
+    public void testMuted_false2() {
+        // setup
+        AndroidTestMockContextAccessor ca = AndroidTestMockContextAccessor.getInstance();
+        ca.setPhoneMuted(false);
+        ca.getPrefs().setSettingMuteWithPhone(true);
+        // exercise/verify
+        Assert.assertFalse(ca.isMuteRequested(true));
+    }
+
+    @Test
+    public void testMuted_true() {
+        // setup
+        AndroidTestMockContextAccessor ca = AndroidTestMockContextAccessor.getInstance();
+        ca.setPhoneMuted(true);
+        ca.getPrefs().setSettingMuteWithPhone(true);
+        // exercise/verify
+        Assert.assertTrue(ca.isMuteRequested(true));
+    }
+
+    @Test
+    public void testOffHook_false1() {
+        // setup
+        AndroidTestMockContextAccessor ca = AndroidTestMockContextAccessor.getInstance();
+        ca.setPhoneOffHook(true);
+        ca.getPrefs().setSettingMuteOffHook(false);
+        // exercise/verify
+        Assert.assertFalse(ca.isMuteRequested(true));
+    }
+
+    @Test
+    public void testOffHook_false2() {
+        // setup
+        AndroidTestMockContextAccessor ca = AndroidTestMockContextAccessor.getInstance();
+        ca.setPhoneOffHook(false);
+        ca.getPrefs().setSettingMuteOffHook(true);
+        // exercise/verify
+        Assert.assertFalse(ca.isMuteRequested(true));
+    }
+
+    @Test
+    public void testOffHook_true() {
+        // setup
+        AndroidTestMockContextAccessor ca = AndroidTestMockContextAccessor.getInstance();
+        ca.setPhoneOffHook(true);
+        ca.getPrefs().setSettingMuteOffHook(true);
+        // exercise/verify
+        Assert.assertTrue(ca.isMuteRequested(true));
+    }
+
+    @Test
+    public void testReasonableDefault() {
+        ContextAccessor ca = AndroidTestMockContextAccessor.getInstance();
+        float bellDefaultVolume = ca.getBellDefaultVolume();
+        Assert.assertTrue(0 <= bellDefaultVolume);
+        Assert.assertTrue(bellDefaultVolume <= 1);
     }
 
 }
