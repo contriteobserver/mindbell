@@ -21,10 +21,13 @@ package com.googlecode.mindbell.util;
 
 import static com.googlecode.mindbell.MindBellPreferences.TAG;
 
+import java.sql.Time;
 import java.util.Calendar;
 import java.util.Set;
 
 import android.util.Log;
+
+import com.googlecode.mindbell.accessors.PrefsAccessor;
 
 /**
  * @author marc
@@ -133,6 +136,29 @@ public class TimeOfDay {
         result = prime * result + minute;
         result = prime * result + ((weekday == null) ? 0 : weekday.hashCode());
         return result;
+    }
+
+    /**
+     * Returns true if the bell should ring at this TimeOfDay, so it must be in the active time interval and the weekday of it
+     * must be activated. The method name carries the historical meaning.
+     *
+     * @return whether bell should ring
+     */
+    public boolean isDaytime(PrefsAccessor prefs) {
+        return isDaytime(prefs.getDaytimeStart(), prefs.getDaytimeEnd(), prefs.getActiveOnDaysOfWeek());
+    }
+
+    /**
+     * Returns true if the bell should ring at this TimeOfDay, so it must be in the active time interval and the weekday of it
+     * must be activated. The method name carries the historical meaning.
+     *
+     * @return whether bell should ring
+     */
+    public boolean isDaytime(TimeOfDay tStart, TimeOfDay tEnd, Set<Integer> activeOnDaysOfWeek) {
+        if (!isInInterval(tStart, tEnd)) {
+            return false; // time is before or after active time interval
+        }
+        return isActiveOnThatDay(activeOnDaysOfWeek);
     }
 
     /**

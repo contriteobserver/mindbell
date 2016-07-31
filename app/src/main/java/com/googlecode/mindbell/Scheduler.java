@@ -80,7 +80,7 @@ public class Scheduler extends BroadcastReceiver {
         }
 
         // ring if daytime
-        if (!prefs.isDaytime()) {
+        if (!(new TimeOfDay()).isDaytime(prefs)) {
             Log.d(TAG, "not ringing, it is night time");
             return;
         }

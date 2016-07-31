@@ -19,7 +19,9 @@
  *******************************************************************************/
 package com.googlecode.mindbell.logic;
 
+import java.util.Calendar;
 import java.util.Random;
+import java.util.Set;
 
 import com.googlecode.mindbell.accessors.PrefsAccessor;
 import com.googlecode.mindbell.util.TimeOfDay;
@@ -45,8 +47,8 @@ public class SchedulerLogic {
         long targetTimeMillis = nowTimeMillis + randomizedInterval;
         long normalizeMillis = normalizeValue * 60000L;
         targetTimeMillis = normalize(targetTimeMillis, meanInterval, normalize, normalizeMillis);
-        if (!prefs.isDaytime(new TimeOfDay(targetTimeMillis))) { // inactive time?
-            targetTimeMillis = prefs.getNextDaytimeStartInMillis(targetTimeMillis) // start of next day time millis
+        if (!(new TimeOfDay(targetTimeMillis)).isDaytime(prefs)) { // inactive time?
+            targetTimeMillis = getNextDaytimeStartInMillis(targetTimeMillis, prefs.getDaytimeStart(), prefs.getActiveOnDaysOfWeek()) // start of next day time millis
                     + (randomize ? randomizedInterval - meanInterval / 2 : 0) // if wanted randomize but never before start of day
                     + (normalize ? normalizeMillis : 0); // if wanted normalize to minute of first ring a day
         }
@@ -89,6 +91,25 @@ public class SchedulerLogic {
         long minuteMillis = timeMillis - hourMillis; // milliseconds of remaining minutes
         minuteMillis = Math.round((minuteMillis - normalizeMillis) / interval) * interval + normalizeMillis;
         return hourMillis + minuteMillis;
+    }
+
+    /**
+     * Return next time to bell at daytime after the given "now" which is lying in the nighttime.
+     */
+    public static long getNextDaytimeStartInMillis(long nightTimeMillis, TimeOfDay tStart, Set<Integer> activeOnDaysOfWeek) {
+        Calendar morning = Calendar.getInstance();
+        morning.setTimeInMillis(nightTimeMillis);
+        morning.set(Calendar.HOUR_OF_DAY, tStart.hour);
+        morning.set(Calendar.MINUTE, tStart.minute);
+        morning.set(Calendar.SECOND, 0);
+        morning.set(Calendar.MILLISECOND, 0);
+        if (morning.getTimeInMillis() <= nightTimeMillis) { // today's start time has already passed
+            morning.add(Calendar.DATE, 1); // therefore go to morning of next day
+        }
+        while (!(new TimeOfDay(morning)).isActiveOnThatDay(activeOnDaysOfWeek)) { // inactive on that day?
+            morning.add(Calendar.DATE, 1); // therefore go to morning of next day
+        }
+        return morning.getTimeInMillis();
     }
 
 }

@@ -24,15 +24,11 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.googlecode.mindbell.accessors.AndroidContextAccessor;
-import com.googlecode.mindbell.accessors.AndroidTestMockContextAccessor;
-import com.googlecode.mindbell.accessors.AndroidTestMockPrefsAccessor;
 import com.googlecode.mindbell.accessors.ContextAccessor;
-import com.googlecode.mindbell.accessors.PrefsAccessor;
 import com.googlecode.mindbell.logic.RingingLogic;
 
 import org.junit.After;
@@ -164,30 +160,6 @@ public class RingBellTest {
     @Test
     public void testPreconditions() {
         assertNotNull(context);
-    }
-
-    @Test
-    public void testRingBell_Mock_false() {
-        // setup
-        AndroidTestMockContextAccessor ca = AndroidTestMockContextAccessor.getInstance();
-        ca.setPhoneMuted(true);
-        ((AndroidTestMockPrefsAccessor) ca.getPrefs()).setSettingMuteWithPhone(true);
-        // exercise
-        boolean isRinging = RingingLogic.ringBell(ca, null);
-        // verify
-        assertFalse(isRinging);
-    }
-
-    @Test
-    public void testRingBell_Mock_true() {
-        // setup
-        AndroidTestMockContextAccessor ca = AndroidTestMockContextAccessor.getInstance();
-        ca.setPhoneMuted(false);
-        ca.setPhoneOffHook(false);
-        // exercise
-        boolean isRinging = RingingLogic.ringBell(ca, null);
-        // verify
-        assertTrue(isRinging);
     }
 
     @Test

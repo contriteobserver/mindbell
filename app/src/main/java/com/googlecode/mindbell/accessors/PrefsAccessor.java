@@ -27,7 +27,7 @@ import com.googlecode.mindbell.util.TimeOfDay;
 public abstract class PrefsAccessor {
 
     /**
-     * Return the pattern string as an array of long values.
+     * Returns the given pattern string as an array of long values.
      */
     public static long[] getVibrationPattern(String pattern) {
         String[] msAsString = pattern.split(":");
@@ -58,26 +58,6 @@ public abstract class PrefsAccessor {
 
     public abstract long getInterval();
 
-    /**
-     * Return next time to bell at daytime after the given "now" which is lying in the nighttime.
-     */
-    public long getNextDaytimeStartInMillis(long nightTimeMillis) {
-        TimeOfDay tStart = getDaytimeStart();
-        Calendar morning = Calendar.getInstance();
-        morning.setTimeInMillis(nightTimeMillis);
-        morning.set(Calendar.HOUR_OF_DAY, tStart.hour);
-        morning.set(Calendar.MINUTE, tStart.minute);
-        morning.set(Calendar.SECOND, 0);
-        morning.set(Calendar.MILLISECOND, 0);
-        if (morning.getTimeInMillis() <= nightTimeMillis) { // today's start time has already passed
-            morning.add(Calendar.DATE, 1); // therefore go to morning of next day
-        }
-        while (!(new TimeOfDay(morning)).isActiveOnThatDay(getActiveOnDaysOfWeek())) { // inactive on that day?
-            morning.add(Calendar.DATE, 1); // therefore go to morning of next day
-        }
-        return morning.getTimeInMillis();
-    }
-
     public abstract int getNormalize();
 
     public abstract String getPattern();
@@ -88,35 +68,14 @@ public abstract class PrefsAccessor {
 
     public abstract boolean isBellActive();
 
-    /**
-     * Returns true if the bell should ring now, method name carries the historical meaning.
-     *
-     * @return whether bell should ring
-     */
-    public boolean isDaytime() {
-        return isDaytime(new TimeOfDay());
-    }
-
-    /**
-     * Returns true if the bell should ring at the given TimeOfDay, so t must be in the active time interval and the weekday of t
-     * must be activated. The method name carries the historical meaning.
-     *
-     * @return whether bell should ring
-     */
-    public boolean isDaytime(TimeOfDay t) {
-        TimeOfDay tStart = getDaytimeStart();
-        TimeOfDay tEnd = getDaytimeEnd();
-        if (!t.isInInterval(tStart, tEnd)) {
-            return false; // time is before or after active time interval
-        }
-        return t.isActiveOnThatDay(getActiveOnDaysOfWeek());
-    }
-
     public boolean isNormalize() {
         return isNormalize(getNormalize());
     }
 
-    public boolean isNormalize(int normalizeValue) {
+    /**
+     * Returns true if the given normalize value means normalization is on.
+     */
+    public static boolean isNormalize(int normalizeValue) {
         return normalizeValue >= 0;
     }
 

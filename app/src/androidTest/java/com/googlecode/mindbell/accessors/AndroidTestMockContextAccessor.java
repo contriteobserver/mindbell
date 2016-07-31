@@ -19,12 +19,13 @@
  *******************************************************************************/
 package com.googlecode.mindbell.accessors;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 public class AndroidTestMockContextAccessor extends ContextAccessor {
-    private static final int MAX_VOLUME = 7;
-    private static final float BELL_VOLUME = 0.5f;
+
+    private boolean isPhoneMuted = false;
+
+    private boolean isPhoneOffHook = false;
+
+    private boolean isPhoneInFlightMode = false;
 
     /**
      * Returns an accessor for the given context, just in case we want to make this a Singleton.
@@ -33,38 +34,28 @@ public class AndroidTestMockContextAccessor extends ContextAccessor {
         return new AndroidTestMockContextAccessor();
     }
 
-    private boolean isPhoneMuted = false;
-    private boolean isPhoneOffHook = false;
-
-    private boolean isPhoneInFlightMode = false;
-
-    private boolean isPlaying = false;
-    private long mockSoundDuration = 1000; // ms
-    private int alarmVolume;
-
     private AndroidTestMockContextAccessor() {
         this.prefs = new AndroidTestMockPrefsAccessor();
     }
 
     @Override
     public void finishBellSound() {
-        isPlaying = false;
-        setAlarmVolume(originalVolume);
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
     @Override
     public int getAlarmMaxVolume() {
-        return MAX_VOLUME;
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
     @Override
     public int getAlarmVolume() {
-        return alarmVolume;
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
     @Override
     public float getBellVolume() {
-        return BELL_VOLUME;
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
     @Override
@@ -73,12 +64,12 @@ public class AndroidTestMockContextAccessor extends ContextAccessor {
     }
 
     public long getSoundDuration() {
-        return mockSoundDuration;
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
     @Override
     public boolean isBellSoundPlaying() {
-        return isPlaying;
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
     @Override
@@ -98,7 +89,7 @@ public class AndroidTestMockContextAccessor extends ContextAccessor {
 
     @Override
     public void setAlarmVolume(int volume) {
-        alarmVolume = volume;
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
     public void setPhoneInFlightMode(boolean isPhoneInFlightMode) {
@@ -114,7 +105,7 @@ public class AndroidTestMockContextAccessor extends ContextAccessor {
     }
 
     public void setSoundDuration(long duration) {
-        mockSoundDuration = duration;
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
     @Override
@@ -124,20 +115,7 @@ public class AndroidTestMockContextAccessor extends ContextAccessor {
 
     @Override
     public void startBellSound(final Runnable runWhenDone) {
-        originalVolume = getAlarmVolume();
-        setAlarmVolume(MAX_VOLUME);
-        isPlaying = true;
-
-        Timer t = new Timer();
-        t.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                finishBellSound();
-                if (runWhenDone != null) {
-                    runWhenDone.run();
-                }
-            }
-        }, mockSoundDuration);
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
 }
