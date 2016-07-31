@@ -79,8 +79,43 @@
 		<item>11 pm</item>
 	</string-array>
 
-	<!-- Vibration patterns - no need to be translated -->	
-	<string-array name="patternEntries">
+	<!-- Weekdays for selection in MindBellPreferences -->
+	<string-array name="daysOfWeek">
+		<item>Sunday</item>
+		<item>Monday</item>
+		<item>Tuesday</item>
+		<item>Wednesday</item>
+		<item>Thursday</item>
+		<item>Friday</item>
+		<item>Saturday</item>
+	</string-array>
+
+	<!-- Internal value (regarding Calendar) for the weekday selection in MindBellPreferences -->
+	<string-array name="daysOfWeekValues">
+		<item>1</item>
+		<item>2</item>
+		<item>3</item>
+		<item>4</item>
+		<item>5</item>
+		<item>6</item>
+		<item>7</item>
+	</string-array>
+
+	<!-- Abbreviations for weekdays ordered by their internal value -->
+	<string-array name="weekdayAbbreviations">
+		<item>Sun</item>
+		<item>Mon</item>
+		<item>Tue</item>
+		<item>Wed</item>
+		<item>Thu</item>
+		<item>Fri</item>
+		<item>Sat</item>
+	</string-array>
+
+	<!-- ==================== Values - don't localize ==================== -->
+
+	<!-- Vibration patterns -->
+	<string-array name="patternEntries" translatable="false">
 	    <item>r</item>
 	    <item>-brrrrrr</item>
 	    <item>-brr-brrrrrr</item>
@@ -89,8 +124,6 @@
 	    <item>-brr-brr</item>
 	    <item>-brr-brr-brr</item>
 	</string-array>
-	
-	<!-- Values - don't localize: -->
 	
 	<!-- Intervals in milliseconds -->
 	<string-array name="bellFrequencyValues" translatable="false">
@@ -109,7 +142,7 @@
 	</string-array>
 	
 	<!-- First minute in the first hour to ring at -->
-	<string-array name="normalizeEntryValues">
+	<string-array name="normalizeEntryValues" translatable="false">
 	    <item>-1</item>
 	    <item>0</item>
 	    <item>5</item>
@@ -153,41 +186,8 @@
 		<item>23</item>
 	</string-array>
 
-	<!-- Weekdays for selection in MindBellPreferences -->
-	<string-array name="daysOfWeek">
-		<item>Sunday</item>
-		<item>Monday</item>
-		<item>Tuesday</item>
-		<item>Wednesday</item>
-		<item>Thursday</item>
-		<item>Friday</item>
-		<item>Saturday</item>
-	</string-array>
-
-	<!-- Internal value (regarding Calendar) for the weekday selection in MindBellPreferences -->	
-	<string-array name="daysOfWeekValues">
-		<item>1</item>
-		<item>2</item>
-		<item>3</item>
-		<item>4</item>
-		<item>5</item>
-		<item>6</item>
-		<item>7</item>
-	</string-array>
-	
-	<!-- Abbreviations for weekdays ordered by their internal value -->
-	<string-array name="weekdayAbbreviations">
-		<item>Sun</item>
-		<item>Mon</item>
-		<item>Tue</item>
-		<item>Wed</item>
-		<item>Thu</item>
-		<item>Fri</item>
-		<item>Sat</item>
-	</string-array>
-
 	<!-- Vibration patterns -->
-	<string-array name="patternEntryValues">
+	<string-array name="patternEntryValues" translatable="false">
 		<item>0:20</item> <!-- r -->
 		<item>100:600</item> <!-- -brrrrrr -->
 		<item>100:200:100:600</item> <!-- -brr-brrrrrr -->

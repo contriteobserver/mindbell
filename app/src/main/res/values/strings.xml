@@ -92,7 +92,6 @@
 
 	<!-- AboutActivity -->
 	<string name="title_activity_about">About MindBell</string>
-	<string name="about_html_text_url">file:///android_asset/about.html</string>
 
     <!-- Status bar notifications -->
     <string name="statusTitleNotificationsDisabled">Please check settings</string>
@@ -122,14 +121,12 @@
     <string name="buttonOk">OK</string>
 
     <!-- Offer popup -->
-    <!--
     <string name="main_title_popup">New from Mindful Apps</string>
     <string name="main_message1_popup">Nature Sounds Alarm Clock - the alarm that you set with your finger!</string>
     <string name="main_message2_popup">Wake up to pleasant nature sounds.</string>
     <string name="main_yes_popup">Show me</string>
     <string name="main_no_popup">No thanks</string>
     <string name="main_uri_popup" translatable="false">market://details?id=com.mindful_apps.alarm.natural</string>
-    -->
 
     <!-- Preference keys (don't localize) -->
     <string name="keyActive" translatable="false">active</string>
@@ -159,5 +156,8 @@
 
     <!-- Mail address for send log by e-mail (don't localize) -->
     <string name="emailAddress" translatable="false">mindbell@dknapps.de</string>
+
+    <!-- About page url (don't localize) -->
+    <string name="about_html_text_url" translatable="false">file:///android_asset/about.html</string>
 
 </resources>

@@ -88,7 +88,10 @@
     
     <string name="atLeastOneActiveDayNeeded">Mindestens einen Tag angeben</string>
     <string name="frequencyDoesNotFitIntoAnHour">Läuten auf die Minute beim gewählten Intervall nicht möglich</string>
-    
+
+    <!-- AboutActivity -->
+    <string name="title_activity_about">Über MindBell</string>
+
     <!-- Status bar notification -->
     <string name="statusTitleNotificationsDisabled">Bitte Einstellungen überprüfen</string>
     <string name="statusTextNotificationsDisabled">MindBell hat \'Status-Icon anzeigen\' ausgeschaltet</string>
