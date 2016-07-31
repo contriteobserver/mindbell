@@ -19,17 +19,26 @@
  *******************************************************************************/
 package com.googlecode.mindbell.accessors;
 
-import com.googlecode.mindbell.accessors.AndroidContextAccessor;
-import com.googlecode.mindbell.accessors.ContextAccessor;
-
+import android.content.Context;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.runner.AndroidJUnit4;
 import android.test.AndroidTestCase;
+import android.test.RenamingDelegatingContext;
+import android.test.suitebuilder.annotation.SmallTest;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+@RunWith(AndroidJUnit4.class)
+@SmallTest
 public class AndroidContextAccessorTest extends AndroidTestCase {
 
     private ContextAccessor createContextAccessor() {
-        return AndroidContextAccessor.getInstance(getContext());
+        Context context = new RenamingDelegatingContext(InstrumentationRegistry.getTargetContext(), "test_");;
+        return AndroidContextAccessor.getInstance(context);
     }
 
+    @Test
     public void testBellVolume() {
         // setup
         ContextAccessor ca = createContextAccessor();
@@ -39,6 +48,7 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
         assertEquals(ca.getAlarmMaxVolume(), ca.getAlarmVolume());
     }
 
+    @Test
     public void testFinish() {
         // setup
         ContextAccessor ca = createContextAccessor();
@@ -52,6 +62,7 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
         assertEquals(alarmVolume, ca.getAlarmVolume());
     }
 
+    @Test
     public void testOriginalVolume() {
         // setup
         ContextAccessor ca = createContextAccessor();
@@ -63,6 +74,7 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
         assertEquals(originalVolume, ca.getAlarmVolume());
     }
 
+    @Test
     public void testPlay() {
         // setup
         ContextAccessor ca = createContextAccessor();
@@ -71,4 +83,5 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
         // verify
         assertTrue(ca.isBellSoundPlaying());
     }
+
 }

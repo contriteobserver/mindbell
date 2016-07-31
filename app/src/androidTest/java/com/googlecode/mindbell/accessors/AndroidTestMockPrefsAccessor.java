@@ -19,14 +19,13 @@
  *******************************************************************************/
 package com.googlecode.mindbell.accessors;
 
+import com.googlecode.mindbell.util.TimeOfDay;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.googlecode.mindbell.accessors.PrefsAccessor;
-import com.googlecode.mindbell.util.TimeOfDay;
-
-public class MockPrefsAccessor extends PrefsAccessor {
+public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
 
     private boolean showBell = true;
 
@@ -65,10 +64,10 @@ public class MockPrefsAccessor extends PrefsAccessor {
     private final String pattern = "100:200:100:600";
 
     /**
-     * Constructs an accessor for preferences in the given context, please use {@link MockContextAccessor#getPrefs()} instead of
+     * Constructs an accessor for preferences in the given context, please use {@link AndroidTestMockContextAccessor#getPrefs()} instead of
      * calling this directly.
      */
-    protected MockPrefsAccessor() {
+    protected AndroidTestMockPrefsAccessor() {
     }
 
     @Override

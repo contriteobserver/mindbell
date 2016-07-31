@@ -19,11 +19,6 @@
  *******************************************************************************/
 package com.googlecode.mindbell.accessors;
 
-import com.googlecode.mindbell.accessors.ContextAccessor;
-import com.googlecode.mindbell.accessors.MockContextAccessor;
-
-import junit.framework.TestCase;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -32,7 +27,7 @@ public class ContextAccessorTest {
     @Test
     public void testAlarmVolume() {
         // setup
-        ContextAccessor ca = MockContextAccessor.getInstance();
+        ContextAccessor ca = TestMockContextAccessor.getInstance();
         // exercise
         ca.startBellSound(null);
         // verify
@@ -42,7 +37,7 @@ public class ContextAccessorTest {
     @Test
     public void testFinish() {
         // setup
-        ContextAccessor ca = MockContextAccessor.getInstance();
+        ContextAccessor ca = TestMockContextAccessor.getInstance();
         ca.setAlarmVolume(ca.getAlarmMaxVolume() / 2);
         int alarmVolume = ca.getAlarmVolume();
         // exercise
@@ -56,7 +51,7 @@ public class ContextAccessorTest {
     @Test
     public void testInFlightMode_false1() {
         // setup
-        MockContextAccessor ca = MockContextAccessor.getInstance();
+        TestMockContextAccessor ca = TestMockContextAccessor.getInstance();
         ca.setPhoneInFlightMode(true);
         ca.getPrefs().setSettingMuteInFlightMode(false);
         // exercise/verify
@@ -66,7 +61,7 @@ public class ContextAccessorTest {
     @Test
     public void testInFlightMode_false2() {
         // setup
-        MockContextAccessor ca = MockContextAccessor.getInstance();
+        TestMockContextAccessor ca = TestMockContextAccessor.getInstance();
         ca.setPhoneInFlightMode(false);
         ca.getPrefs().setSettingMuteInFlightMode(true);
         // exercise/verify
@@ -76,7 +71,7 @@ public class ContextAccessorTest {
     @Test
     public void testInFlightMode_true() {
         // setup
-        MockContextAccessor ca = MockContextAccessor.getInstance();
+        TestMockContextAccessor ca = TestMockContextAccessor.getInstance();
         ca.setPhoneInFlightMode(true);
         ca.getPrefs().setSettingMuteInFlightMode(true);
         // exercise/verify
@@ -86,7 +81,7 @@ public class ContextAccessorTest {
     @Test
     public void testMuted_false1() {
         // setup
-        MockContextAccessor ca = MockContextAccessor.getInstance();
+        TestMockContextAccessor ca = TestMockContextAccessor.getInstance();
         ca.setPhoneMuted(true);
         ca.getPrefs().setSettingMuteWithPhone(false);
         // exercise/verify
@@ -96,7 +91,7 @@ public class ContextAccessorTest {
     @Test
     public void testMuted_false2() {
         // setup
-        MockContextAccessor ca = MockContextAccessor.getInstance();
+        TestMockContextAccessor ca = TestMockContextAccessor.getInstance();
         ca.setPhoneMuted(false);
         ca.getPrefs().setSettingMuteWithPhone(true);
         // exercise/verify
@@ -106,7 +101,7 @@ public class ContextAccessorTest {
     @Test
     public void testMuted_true() {
         // setup
-        MockContextAccessor ca = MockContextAccessor.getInstance();
+        TestMockContextAccessor ca = TestMockContextAccessor.getInstance();
         ca.setPhoneMuted(true);
         ca.getPrefs().setSettingMuteWithPhone(true);
         // exercise/verify
@@ -116,7 +111,7 @@ public class ContextAccessorTest {
     @Test
     public void testOffHook_false1() {
         // setup
-        MockContextAccessor ca = MockContextAccessor.getInstance();
+        TestMockContextAccessor ca = TestMockContextAccessor.getInstance();
         ca.setPhoneOffHook(true);
         ca.getPrefs().setSettingMuteOffHook(false);
         // exercise/verify
@@ -126,7 +121,7 @@ public class ContextAccessorTest {
     @Test
     public void testOffHook_false2() {
         // setup
-        MockContextAccessor ca = MockContextAccessor.getInstance();
+        TestMockContextAccessor ca = TestMockContextAccessor.getInstance();
         ca.setPhoneOffHook(false);
         ca.getPrefs().setSettingMuteOffHook(true);
         // exercise/verify
@@ -136,7 +131,7 @@ public class ContextAccessorTest {
     @Test
     public void testOffHook_true() {
         // setup
-        MockContextAccessor ca = MockContextAccessor.getInstance();
+        TestMockContextAccessor ca = TestMockContextAccessor.getInstance();
         ca.setPhoneOffHook(true);
         ca.getPrefs().setSettingMuteOffHook(true);
         // exercise/verify
@@ -146,7 +141,7 @@ public class ContextAccessorTest {
     @Test
     public void testOriginalVolume() {
         // setup
-        ContextAccessor ca = MockContextAccessor.getInstance();
+        ContextAccessor ca = TestMockContextAccessor.getInstance();
         int originalVolume = ca.getAlarmVolume();
         // exercise
         ca.startBellSound(null);
@@ -159,7 +154,7 @@ public class ContextAccessorTest {
     @Test
     public void testPlay() {
         // setup
-        ContextAccessor ca = MockContextAccessor.getInstance();
+        ContextAccessor ca = TestMockContextAccessor.getInstance();
         // exercise
         ca.startBellSound(null);
         // verify
@@ -168,7 +163,7 @@ public class ContextAccessorTest {
 
     @Test
     public void testReasonableDefault() {
-        ContextAccessor ca = MockContextAccessor.getInstance();
+        ContextAccessor ca = TestMockContextAccessor.getInstance();
         float bellDefaultVolume = ca.getBellDefaultVolume();
         Assert.assertTrue(0 <= bellDefaultVolume);
         Assert.assertTrue(bellDefaultVolume <= 1);

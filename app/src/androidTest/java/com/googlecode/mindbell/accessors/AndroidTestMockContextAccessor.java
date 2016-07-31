@@ -22,17 +22,15 @@ package com.googlecode.mindbell.accessors;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.googlecode.mindbell.accessors.ContextAccessor;
-
-public class MockContextAccessor extends ContextAccessor {
+public class AndroidTestMockContextAccessor extends ContextAccessor {
     private static final int MAX_VOLUME = 7;
     private static final float BELL_VOLUME = 0.5f;
 
     /**
      * Returns an accessor for the given context, just in case we want to make this a Singleton.
      */
-    public static MockContextAccessor getInstance() {
-        return new MockContextAccessor();
+    public static AndroidTestMockContextAccessor getInstance() {
+        return new AndroidTestMockContextAccessor();
     }
 
     private boolean isPhoneMuted = false;
@@ -44,8 +42,8 @@ public class MockContextAccessor extends ContextAccessor {
     private long mockSoundDuration = 1000; // ms
     private int alarmVolume;
 
-    private MockContextAccessor() {
-        this.prefs = new MockPrefsAccessor();
+    private AndroidTestMockContextAccessor() {
+        this.prefs = new AndroidTestMockPrefsAccessor();
     }
 
     @Override
@@ -70,8 +68,8 @@ public class MockContextAccessor extends ContextAccessor {
     }
 
     @Override
-    public MockPrefsAccessor getPrefs() {
-        return (MockPrefsAccessor) prefs;
+    public AndroidTestMockPrefsAccessor getPrefs() {
+        return (AndroidTestMockPrefsAccessor) prefs;
     }
 
     public long getSoundDuration() {

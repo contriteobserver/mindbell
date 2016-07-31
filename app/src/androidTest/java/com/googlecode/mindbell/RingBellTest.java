@@ -23,10 +23,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.runner.AndroidJUnit4;
+import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.googlecode.mindbell.accessors.AndroidContextAccessor;
+import com.googlecode.mindbell.accessors.AndroidTestMockContextAccessor;
+import com.googlecode.mindbell.accessors.AndroidTestMockPrefsAccessor;
 import com.googlecode.mindbell.accessors.ContextAccessor;
 import com.googlecode.mindbell.accessors.PrefsAccessor;
 import com.googlecode.mindbell.logic.RingingLogic;
@@ -35,7 +39,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,9 +47,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(AndroidJUnit4.class)
 @SmallTest
 public class RingBellTest {
 
@@ -97,12 +99,12 @@ public class RingBellTest {
     }
 
     @Before
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         context = new RenamingDelegatingContext(InstrumentationRegistry.getTargetContext(), "test_");;
     }
 
     @After
-    protected void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor spe = sp.edit();
         for (String key : booleanSettings.keySet()) {
@@ -166,10 +168,9 @@ public class RingBellTest {
     @Test
     public void testRingBell_Mock_false() {
         // setup
-        ContextAccessor ca = mock(ContextAccessor.class);
-        when(ca.isPhoneMuted()).thenReturn(true);
-        PrefsAccessor prefs = mock(PrefsAccessor.class);
-        when(prefs.isSettingMuteWithPhone()).thenReturn(true);
+        AndroidTestMockContextAccessor ca = AndroidTestMockContextAccessor.getInstance();
+        ca.setPhoneMuted(true);
+        ((AndroidTestMockPrefsAccessor) ca.getPrefs()).setSettingMuteWithPhone(true);
         // exercise
         boolean isRinging = RingingLogic.ringBell(ca, null);
         // verify
@@ -178,16 +179,14 @@ public class RingBellTest {
 
     @Test
     public void testRingBell_Mock_true() {
-        /*
         // setup
-        MockContextAccessor mca = MockContextAccessor.getInstance();
-        mca.setPhoneMuted(false);
-        mca.setPhoneOffHook(false);
+        AndroidTestMockContextAccessor ca = AndroidTestMockContextAccessor.getInstance();
+        ca.setPhoneMuted(false);
+        ca.setPhoneOffHook(false);
         // exercise
-        boolean isRinging = RingingLogic.ringBell(mca, null);
+        boolean isRinging = RingingLogic.ringBell(ca, null);
         // verify
         assertTrue(isRinging);
-        */
     }
 
     @Test

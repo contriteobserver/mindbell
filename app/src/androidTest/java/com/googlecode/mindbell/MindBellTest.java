@@ -20,18 +20,25 @@
 /**
  *
  */
-package com.googlecode.mindbell.test;
+package com.googlecode.mindbell;
 
 import com.googlecode.mindbell.MindBell;
 
 import android.app.Activity;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.runner.AndroidJUnit4;
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.suitebuilder.annotation.LargeTest;
+import android.test.suitebuilder.annotation.MediumTest;
+import android.test.suitebuilder.annotation.SmallTest;
 import android.view.View;
 
-/**
- * @author marc
- *
- */
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+@RunWith(AndroidJUnit4.class)
+@LargeTest
 public class MindBellTest extends ActivityInstrumentationTestCase2<MindBell> {
 
     private Activity mActivity;
@@ -41,15 +48,18 @@ public class MindBellTest extends ActivityInstrumentationTestCase2<MindBell> {
         super("com.googlecode.mindbell", MindBell.class);
     }
 
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
+        // Injecting the Instrumentation instance is required for your test to run with AndroidJUnitRunner.
+        injectInstrumentation(InstrumentationRegistry.getInstrumentation());
         mActivity = getActivity();
         mView = mActivity.findViewById(com.googlecode.mindbell.R.id.bell);
 
     }
 
-    public void testPreconditions() {
+    @Test
+    public void tesxtPreconditions() {
         assertNotNull(mView);
     }
 }

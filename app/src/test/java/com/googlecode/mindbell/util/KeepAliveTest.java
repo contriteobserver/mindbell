@@ -20,9 +20,7 @@
 package com.googlecode.mindbell.util;
 
 import com.googlecode.mindbell.logic.RingingLogic;
-import com.googlecode.mindbell.accessors.MockContextAccessor;
-
-import junit.framework.TestCase;
+import com.googlecode.mindbell.accessors.TestMockContextAccessor;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -31,7 +29,7 @@ public class KeepAliveTest {
 
     @Test
     public void testExpires() throws InterruptedException {
-        MockContextAccessor mca = MockContextAccessor.getInstance();
+        TestMockContextAccessor mca = TestMockContextAccessor.getInstance();
         // timeout shorter than sound duration: cannot finish
         long timeout = mca.getSoundDuration() / 10;
         final RingingLogic.KeepAlive keepAlive = new RingingLogic.KeepAlive(mca, timeout);
@@ -51,7 +49,7 @@ public class KeepAliveTest {
 
     @Test
     public void testReturnsNaturally() throws InterruptedException {
-        MockContextAccessor mca = MockContextAccessor.getInstance();
+        TestMockContextAccessor mca = TestMockContextAccessor.getInstance();
         // timeout longer than sound duration: finishing is easy
         long timeout = mca.getSoundDuration() * 10;
         final RingingLogic.KeepAlive keepAlive = new RingingLogic.KeepAlive(mca, timeout);
