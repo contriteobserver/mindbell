@@ -24,7 +24,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:mindful="http://dknapps.de/ns">
 
-	<PreferenceCategory android:title="@string/prefsCategoryNotifications">
+	<PreferenceScreen android:title="@string/prefsCategoryNotifications">
 	  <CheckBoxPreference android:key="@string/keyStatus"
 	    android:title="@string/prefsStatus"
 	    android:summaryOff="@string/summaryNoStatus"
@@ -42,6 +42,6 @@
 	    android:summaryOn="@string/summaryStatusVisibilityPublic"
 	    android:defaultValue="true"
 	    android:dependency="@string/keyStatus"/>
-	</PreferenceCategory>
+	</PreferenceScreen>
 
 </PreferenceScreen>

@@ -43,14 +43,36 @@
 
     <!-- Preference window -->
     <string name="preferencesTitle">MindBell Einstellungen</string>
-    <string name="prefsCategoryGlobal">Globale Einstellungen</string>
+
+    <string name="prefsCategoryActivity">Aktivität</string>
     <string name="prefsActive">Glocke aktivieren</string>
     <string name="summaryActive">Glocke ist derzeit angeschaltet</string>
     <string name="summaryNotActive">Glocke ist derzeit ausgeschaltet</string>
+    <string name="prefsStart">Starte Glocke täglich um &#8230;</string>
+    <string name="prefsEnd">Beende Glocke täglich um &#8230;</string>
+    <string name="prefsActiveOnDaysOfWeek">Tage an denen die Glocke aktiv ist &#8230;</string>
+
+    <string name="prefsCategoryRhythm">Rhythmus</string>
+    <string name="prefsFrequency">Glocke läutet (etwa) alle &#8230;</string>
+    <string name="prefsRandomize">Nutze Intervallabweichungen</string>
+    <string name="prefsNormalize">Läute auf die Minute &#8230;</string>
+    <string name="summaryRandomize">Glockeninterall variiert</string>
+    <string name="summaryDontRandomize">Glockenintervall ist konstant</string>
+
     <string name="prefsCategoryDisplay">Anzeige</string>
     <string name="prefsShow">Glocke beim Läuten zeigen</string>
     <string name="summaryShow">Klang abspielen und Glocke anzeigen</string>
     <string name="summaryDontShow">Klang abspielen, aber Glocke nicht zeigen</string>
+
+    <string name="prefsCategorySound">Klang</string>
+    <string name="prefsVolume">Lautstärke</string>
+
+    <string name="prefsCategoryVibration">Vibration</string>
+    <string name="prefsVibrate">Vibrieren</string>
+    <string name="summaryVibrate">Glocke vibriert beim Läuten</string>
+    <string name="summaryNoVibrate">Glocke vibriert nicht beim Läuten</string>
+    <string name="prefsPattern">Vibrationsmuster</string>
+
     <string name="prefsCategoryNotifications">Benachrichtigungen</string>
     <string name="prefsStatus">Status-Icon anzeigen</string>
     <string name="summaryStatus">Zeige Status-Icon bei aktiver Glocke</string>
@@ -61,12 +83,8 @@
     <string name="prefsStatusIconMaterialDesign">Status-Icon im Material Design</string>
     <string name="summaryStatusIconMaterialDesign">Stilisierte weiße Glocke</string>
     <string name="summaryStatusIconPreMaterialDesign">Goldene Glocke (bei manchen Geräten nur ein weißer Fleck)</string>
-    <string name="prefsCategorySound">Klang</string>
-    <string name="prefsVolume">Lautstärke</string>
-    <string name="prefsVibrate">Vibrieren</string>
-    <string name="summaryVibrate">Glocke vibriert beim Läuten</string>
-    <string name="summaryNoVibrate">Glocke vibriert nicht beim Läuten</string>
-    <string name="prefsPattern">Vibrationsmuster</string>
+
+    <string name="prefsCategoryMuteRules">Stillstellregeln</string>
     <string name="prefsMuteWithPhone">Mit Telefon stummschalten</string>
     <string name="summaryMuteWithPhone">Glocke läutet nicht im Lautlosmodus</string>
     <string name="summaryNoMuteWithPhone">Glocke läutet auch im Lautlosmodus</string>
@@ -76,16 +94,8 @@
     <string name="prefsMuteInFlightMode">Im Flugmodus still</string>
     <string name="summaryMutedInFlightMode">Glocke läutet nicht im Flugmodus</string>
     <string name="summaryNotMutedInFlightMode">Glocke läutet auch im Flugmodus</string>
-    <string name="prefsCategoryDetails">Details</string>
-    <string name="prefsFrequency">Glocke läutet (etwa) alle &#8230;</string>
-    <string name="prefsRandomize">Nutze Intervallabweichungen</string>
-    <string name="prefsNormalize">Läute auf die Minute &#8230;</string>
-    <string name="summaryRandomize">Glockeninterall variiert</string>
-    <string name="summaryDontRandomize">Glockenintervall ist konstant</string>
-    <string name="prefsStart">Starte Glocke täglich um &#8230;</string>
-    <string name="prefsEnd">Beende Glocke täglich um &#8230;</string>
-    <string name="prefsActiveOnDaysOfWeek">Tage an denen die Glocke aktiv ist &#8230;</string>
-    
+
+    <!-- Validation messages -->
     <string name="atLeastOneActiveDayNeeded">Mindestens einen Tag angeben</string>
     <string name="frequencyDoesNotFitIntoAnHour">Läuten auf die Minute beim gewählten Intervall nicht möglich</string>
 

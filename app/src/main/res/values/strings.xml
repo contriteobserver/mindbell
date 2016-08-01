@@ -44,14 +44,36 @@
 
     <!-- Preference window -->
     <string name="preferencesTitle">MindBell Preferences</string>
-    <string name="prefsCategoryGlobal">Global settings</string>
+
+    <string name="prefsCategoryActivity">Activity</string>
     <string name="prefsActive">Activate bell</string>
     <string name="summaryActive">Bell is turned on</string>
     <string name="summaryNotActive">Bell is turned off</string>
+    <string name="prefsStart">Start bell every day at &#8230;</string>
+    <string name="prefsEnd">Stop bell every day at &#8230;</string>
+    <string name="prefsActiveOnDaysOfWeek">Days of week to be active &#8230;</string>
+
+    <string name="prefsCategoryRhythm">Rhythm</string>
+    <string name="prefsFrequency">Ring bell (about) every &#8230;</string>
+    <string name="prefsRandomize">Use interval deviation</string>
+    <string name="prefsNormalize">Ring to the minute &#8230;</string>
+    <string name="summaryRandomize">Bell ring interval will vary</string>
+    <string name="summaryDontRandomize">Bell ring interval is constant</string>
+
     <string name="prefsCategoryDisplay">Display</string>
     <string name="prefsShow">Show bell when ringing</string>
     <string name="summaryShow">Play sound and show bell</string>
     <string name="summaryDontShow">Play sound but do not show bell</string>
+
+    <string name="prefsCategorySound">Sound</string>
+    <string name="prefsVolume">Volume</string>
+
+    <string name="prefsCategoryVibration">Vibration</string>
+    <string name="prefsVibrate">Vibrate</string>
+    <string name="summaryVibrate">Bell vibrates while ringing</string>
+    <string name="summaryNoVibrate">Bell does not vibrate while ringing</string>
+    <string name="prefsPattern">Vibration pattern</string>
+
     <string name="prefsCategoryNotifications">Notifications</string>
     <string name="prefsStatus">Show status icon</string>
     <string name="summaryStatus">Show status icon when bell is active</string>
@@ -62,12 +84,8 @@
     <string name="prefsStatusIconMaterialDesign">Status icon in Material Design</string>
     <string name="summaryStatusIconMaterialDesign">Stylized white bell</string>
     <string name="summaryStatusIconPreMaterialDesign">Golden bell (just a white splotch on some devices)</string>
-    <string name="prefsCategorySound">Sound</string>
-    <string name="prefsVolume">Volume</string>
-    <string name="prefsVibrate">Vibrate</string>
-    <string name="summaryVibrate">Bell vibrates while ringing</string>
-    <string name="summaryNoVibrate">Bell does not vibrate while ringing</string>
-    <string name="prefsPattern">Vibration pattern</string>
+
+    <string name="prefsCategoryMuteRules">Mute rules</string>
     <string name="prefsMuteWithPhone">Mute with phone</string>
     <string name="summaryMuteWithPhone">Bell will not ring when phone is muted</string>
     <string name="summaryNoMuteWithPhone">Ring bell even when phone is muted</string>
@@ -77,16 +95,8 @@
     <string name="prefsMuteInFlightMode">Mute in flight mode</string>
     <string name="summaryMutedInFlightMode">Bell will not ring in flight mode</string>
     <string name="summaryNotMutedInFlightMode">Bell will also ring in flight mode</string>
-    <string name="prefsCategoryDetails">Details</string>
-    <string name="prefsFrequency">Ring bell (about) every &#8230;</string>
-    <string name="prefsRandomize">Use interval deviation</string>
-    <string name="prefsNormalize">Ring to the minute &#8230;</string>
-    <string name="summaryRandomize">Bell ring interval will vary</string>
-    <string name="summaryDontRandomize">Bell ring interval is constant</string>
-    <string name="prefsStart">Start bell every day at &#8230;</string>
-    <string name="prefsEnd">Stop bell every day at &#8230;</string>
-    <string name="prefsActiveOnDaysOfWeek">Days of week to be active &#8230;</string>
-    
+
+    <!-- Validation messages -->
     <string name="atLeastOneActiveDayNeeded">Specify at least one day</string>
     <string name="frequencyDoesNotFitIntoAnHour">Ringing on the minute not possible with chosen interval</string>
 

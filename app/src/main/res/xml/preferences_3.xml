@@ -24,100 +24,24 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:mindful="http://dknapps.de/ns">
 
-	<PreferenceCategory android:title="@string/prefsCategorySound">
-		<!-- 
-		<com.hlidskialf.android.preference.SeekBarPreference android:key="@string/keyVolume"
-	        android:title="@string/prefsVolume"
-			android:dialogTitle="@string/prefsVolume" />
-		-->
-		<com.googlecode.mindbell.preference.MediaVolumePreference  android:key="@string/keyVolume"
-	        android:title="@string/prefsVolume"
-			android:dialogTitle="@string/prefsVolume"
-			mindful:ringtone="@raw/bell10s"
-			mindful:streamType="4" />
-		<CheckBoxPreference android:key="@string/keyVibrate"
-			android:title="@string/prefsVibrate"
-			android:summaryOn="@string/summaryVibrate"
-			android:summaryOff="@string/summaryNoVibrate"
-			android:defaultValue="false"/>
-        <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
-			android:key="@string/keyPattern"
-			android:defaultValue="100:200:100:600"
-			android:title="@string/prefsPattern"
-			android:summary="%s"
-			android:entries="@array/patternEntries"
-			android:entryValues="@array/patternEntryValues"
-			android:dialogTitle="@string/prefsPattern"
-	    	android:dependency="@string/keyVibrate"/> 
+	<PreferenceScreen android:title="@string/prefsCategoryMuteRules">
 		<CheckBoxPreference android:key="@string/keyMuteWithPhone"
 			android:title="@string/prefsMuteWithPhone"
 			android:summaryOn="@string/summaryMuteWithPhone"
 			android:summaryOff="@string/summaryNoMuteWithPhone"
 			android:defaultValue="true"/>
-        <CheckBoxPreference
-            android:key="@string/keyMuteOffHook"
-            android:title="@string/prefsMuteOffHook"
-            android:summaryOff="@string/summaryNotMuted"
-            android:summaryOn="@string/summaryMuted" 
+		<CheckBoxPreference
+			android:key="@string/keyMuteOffHook"
+			android:title="@string/prefsMuteOffHook"
+			android:summaryOff="@string/summaryNotMuted"
+			android:summaryOn="@string/summaryMuted"
 			android:defaultValue="true"/>
-        <CheckBoxPreference
-            android:key="@string/keyMuteInFlightMode"
-            android:title="@string/prefsMuteInFlightMode"
-            android:summaryOff="@string/summaryNotMutedInFlightMode"
-            android:summaryOn="@string/summaryMutedInFlightMode" 
+		<CheckBoxPreference
+			android:key="@string/keyMuteInFlightMode"
+			android:title="@string/prefsMuteInFlightMode"
+			android:summaryOff="@string/summaryNotMutedInFlightMode"
+			android:summaryOn="@string/summaryMutedInFlightMode"
 			android:defaultValue="false"/>
-	</PreferenceCategory>
-
-    <PreferenceCategory
-            android:title="@string/prefsCategoryDetails">
-        <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
-                android:key="@string/keyFrequency"
-                android:defaultValue="3600000"
-                android:title="@string/prefsFrequency"
-                android:summary="%s"
-                android:entries="@array/bellFrequencies"
-                android:entryValues="@array/bellFrequencyValues"
-                android:dialogTitle="@string/prefsFrequency" />
-        <CheckBoxPreference
-                android:key="@string/keyRandomize"
-                android:title="@string/prefsRandomize"
-	            android:summaryOff="@string/summaryDontRandomize"
-    	        android:summaryOn="@string/summaryRandomize" 
-				android:defaultValue="true"
-				android:disableDependentsState="true"/>
-        <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
-                android:key="@string/keyNormalize"
-                android:defaultValue="-1"
-                android:title="@string/prefsNormalize"
-                android:summary="%s"
-                android:entries="@array/normalizeEntries"
-                android:entryValues="@array/normalizeEntryValues"
-                android:dialogTitle="@string/prefsNormalize"
-	    		android:dependency="@string/keyRandomize"/> 
-        <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
-                android:key="@string/keyStart"
-                android:defaultValue="9"
-                android:title="@string/prefsStart"
-                android:summary="%s"
-                android:entries="@array/hourStrings"
-                android:entryValues="@array/hourValues"
-                android:dialogTitle="@string/prefsStart" />
-        <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
-                android:key="@string/keyEnd"
-                android:defaultValue="21"
-                android:title="@string/prefsEnd"
-                android:summary="%s"
-                android:entries="@array/hourStrings"
-                android:entryValues="@array/hourValues"
-                android:dialogTitle="@string/prefsEnd" />
-        <com.googlecode.mindbell.preference.MultiSelectListPreferenceWithSummary
-                android:key="@string/keyActiveOnDaysOfWeek"
-                android:defaultValue="@array/daysOfWeekValues"
-                android:title="@string/prefsActiveOnDaysOfWeek"
-                android:summary="%s"
-                android:entries="@array/daysOfWeek"
-                android:entryValues="@array/daysOfWeekValues"
-                android:dialogTitle="@string/prefsActiveOnDaysOfWeek" />
-	</PreferenceCategory>
+	</PreferenceScreen>
 
 </PreferenceScreen>
