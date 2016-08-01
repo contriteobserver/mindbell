@@ -85,12 +85,12 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private final String defaultNormalize = NORMALIZE_NONE;
     private final String defaultStart = "9";
     private final String defaultEnd = "21";
-    private final Set<String> defaultActiveOnDaysOfWeek = new HashSet<String>(
-            Arrays.asList(new String[] { "1", "2", "3", "4", "5", "6", "7" })); // every day
+    private final Set<String> defaultActiveOnDaysOfWeek = new HashSet<>(
+            Arrays.asList(new String[]{"1", "2", "3", "4", "5", "6", "7"})); // every day
+    private final float defaultVolume = AndroidContextAccessor.MINUS_SIX_DB;
+
     private final String[] daysOfWeekValues;
     private final String[] weekdayAbbreviations;
-
-    private final float defaultVolume = AndroidContextAccessor.MINUS_SIX_DB;
 
     /**
      * Constructs an accessor for preferences in the given context, please use {@link AndroidContextAccessor#getPrefs()} instead
@@ -151,7 +151,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             try {
                 settings.getBoolean(key, false);
             } catch (ClassCastException e) {
-                settings.edit().remove(key).commit();
+                settings.edit().remove(key).apply();
                 Log.w(TAG, "Removed setting '" + key + "' since it had wrong type");
             }
         }
@@ -162,11 +162,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
                 String value = settings.getString(key, null);
                 List<String> entryValues = Arrays.asList(entryValuesMap.get(key));
                 if (value != null && !entryValues.contains(value)) {
-                    settings.edit().remove(key).commit();
+                    settings.edit().remove(key).apply();
                     Log.w(TAG, "Removed setting '" + key + "' since it had wrong value '" + value + "'");
                 }
             } catch (ClassCastException e) {
-                settings.edit().remove(key).commit();
+                settings.edit().remove(key).apply();
                 Log.w(TAG, "Removed setting '" + key + "' since it had wrong type");
             }
         }
@@ -175,16 +175,18 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         for (String key : stringSetSettings) {
             try {
                 Set<String> valueSet = settings.getStringSet(key, null);
-                for (String value : valueSet) {
-                    List<String> entryValues = Arrays.asList(entryValuesMap.get(key));
-                    if (value != null && !entryValues.contains(value)) {
-                        settings.edit().remove(key).commit();
-                        Log.w(TAG, "Removed setting '" + key + "' since it had (at least one) wrong value '" + value + "'");
-                        break;
+                if (valueSet != null) {
+                    for (String value : valueSet) {
+                        List<String> entryValues = Arrays.asList(entryValuesMap.get(key));
+                        if (value != null && !entryValues.contains(value)) {
+                            settings.edit().remove(key).apply();
+                            Log.w(TAG, "Removed setting '" + key + "' since it had (at least one) wrong value '" + value + "'");
+                            break;
+                        }
                     }
                 }
             } catch (ClassCastException e) {
-                settings.edit().remove(key).commit();
+                settings.edit().remove(key).apply();
                 Log.w(TAG, "Removed setting '" + key + "' since it had wrong type");
             }
         }
@@ -194,7 +196,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             try {
                 settings.getFloat(key, 0);
             } catch (ClassCastException e) {
-                settings.edit().remove(key).commit();
+                settings.edit().remove(key).apply();
                 Log.w(TAG, "Removed setting '" + key + "' since it had wrong type");
             }
         }
@@ -205,11 +207,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             try {
                 long interval = Long.valueOf(frequencyString);
                 if (interval < 1 * 60000) { // less than one minute
-                    settings.edit().remove(keyFrequency).commit();
+                    settings.edit().remove(keyFrequency).apply();
                     Log.w(TAG, "Removed setting '" + keyFrequency + "' since value '" + frequencyString + "' was too low");
                 }
             } catch (NumberFormatException e) {
-                settings.edit().remove(keyFrequency).commit();
+                settings.edit().remove(keyFrequency).apply();
                 Log.w(TAG, "Removed setting '" + keyFrequency + "' since value '" + frequencyString + "' is not a number");
             }
         }
@@ -220,69 +222,69 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             Log.w(TAG, "Reset missing setting for '" + keyActive + "' to '" + defaultActive + "'");
         }
         if (!settings.contains(keyShow)) {
-            settings.edit().putBoolean(keyShow, defaultShow).commit();
+            settings.edit().putBoolean(keyShow, defaultShow).apply();
             Log.w(TAG, "Reset missing setting for '" + keyShow + "' to '" + defaultShow + "'");
         }
         if (!settings.contains(keyStatus)) {
-            settings.edit().putBoolean(keyStatus, defaultStatus).commit();
+            settings.edit().putBoolean(keyStatus, defaultStatus).apply();
             Log.w(TAG, "Reset missing setting for '" + keyStatus + "' to '" + defaultStatus + "'");
         }
         if (!settings.contains(keyStatusVisibilityPublic)) {
-            settings.edit().putBoolean(keyStatusVisibilityPublic, defaultStatusVisibilityPublic).commit();
+            settings.edit().putBoolean(keyStatusVisibilityPublic, defaultStatusVisibilityPublic).apply();
             Log.w(TAG,
                     "Reset missing setting for '" + keyStatusVisibilityPublic + "' to '" + defaultStatusVisibilityPublic + "'");
         }
         if (!settings.contains(keyStatusIconMaterialDesign)) {
-            settings.edit().putBoolean(keyStatusIconMaterialDesign, defaultStatusIconMaterialDesign).commit();
+            settings.edit().putBoolean(keyStatusIconMaterialDesign, defaultStatusIconMaterialDesign).apply();
             Log.w(TAG, "Reset missing setting for '" + keyStatusIconMaterialDesign + "' to '" + defaultStatusIconMaterialDesign
                     + "'");
         }
         if (!settings.contains(keyMuteInFlightMode)) {
-            settings.edit().putBoolean(keyMuteInFlightMode, defaultMuteInFlightMode).commit();
+            settings.edit().putBoolean(keyMuteInFlightMode, defaultMuteInFlightMode).apply();
             Log.w(TAG, "Reset missing setting for '" + keyMuteInFlightMode + "' to '" + defaultMuteInFlightMode + "'");
         }
         if (!settings.contains(keyMuteOffHook)) {
-            settings.edit().putBoolean(keyMuteOffHook, defaultMuteOffHook).commit();
+            settings.edit().putBoolean(keyMuteOffHook, defaultMuteOffHook).apply();
             Log.w(TAG, "Reset missing setting for '" + keyMuteOffHook + "' to '" + defaultMuteOffHook + "'");
         }
         if (!settings.contains(keyMuteWithPhone)) {
-            settings.edit().putBoolean(keyMuteWithPhone, defaultMuteWithPhone).commit();
+            settings.edit().putBoolean(keyMuteWithPhone, defaultMuteWithPhone).apply();
             Log.w(TAG, "Reset missing setting for '" + keyMuteWithPhone + "' to '" + defaultMuteWithPhone + "'");
         }
         if (!settings.contains(keyVibrate)) {
-            settings.edit().putBoolean(keyVibrate, defaultVibrate).commit();
+            settings.edit().putBoolean(keyVibrate, defaultVibrate).apply();
             Log.w(TAG, "Reset missing setting for '" + keyVibrate + "' to '" + defaultVibrate + "'");
         }
         if (!settings.contains(keyPattern)) {
-            settings.edit().putString(keyPattern, defaultPattern).commit();
+            settings.edit().putString(keyPattern, defaultPattern).apply();
             Log.w(TAG, "Reset missing setting for '" + keyPattern + "' to '" + defaultPattern + "'");
         }
         if (!settings.contains(keyFrequency)) {
-            settings.edit().putString(keyFrequency, defaultFrequency).commit();
+            settings.edit().putString(keyFrequency, defaultFrequency).apply();
             Log.w(TAG, "Reset missing setting for '" + keyFrequency + "' to '" + defaultFrequency + "'");
         }
         if (!settings.contains(keyRandomize)) {
-            settings.edit().putBoolean(keyRandomize, defaultRandomize).commit();
+            settings.edit().putBoolean(keyRandomize, defaultRandomize).apply();
             Log.w(TAG, "Reset missing setting for '" + keyRandomize + "' to '" + defaultRandomize + "'");
         }
         if (!settings.contains(keyNormalize)) {
-            settings.edit().putString(keyNormalize, defaultNormalize).commit();
+            settings.edit().putString(keyNormalize, defaultNormalize).apply();
             Log.w(TAG, "Reset missing setting for '" + keyNormalize + "' to '" + defaultNormalize + "'");
         }
         if (!settings.contains(keyStart)) {
-            settings.edit().putString(keyStart, defaultStart).commit();
+            settings.edit().putString(keyStart, defaultStart).apply();
             Log.w(TAG, "Reset missing setting for '" + keyStart + "' to '" + defaultStart + "'");
         }
         if (!settings.contains(keyEnd)) {
-            settings.edit().putString(keyEnd, defaultEnd).commit();
+            settings.edit().putString(keyEnd, defaultEnd).apply();
             Log.w(TAG, "Reset missing setting for '" + keyEnd + "' to '" + defaultEnd + "'");
         }
         if (!settings.contains(keyActiveOnDaysOfWeek)) {
-            settings.edit().putStringSet(keyActiveOnDaysOfWeek, defaultActiveOnDaysOfWeek).commit();
+            settings.edit().putStringSet(keyActiveOnDaysOfWeek, defaultActiveOnDaysOfWeek).apply();
             Log.w(TAG, "Reset missing setting for '" + keyActiveOnDaysOfWeek + "' to '" + defaultActiveOnDaysOfWeek + "'");
         }
         if (!settings.contains(keyVolume)) {
-            settings.edit().putFloat(keyVolume, defaultVolume).commit();
+            settings.edit().putFloat(keyVolume, defaultVolume).apply();
             Log.w(TAG, "Reset missing setting for '" + keyVolume + "' to '" + defaultVolume + "'");
         }
         // and report the settings:
@@ -317,7 +319,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public Set<Integer> getActiveOnDaysOfWeek() {
         Set<String> strings = settings.getStringSet(keyActiveOnDaysOfWeek, defaultActiveOnDaysOfWeek);
-        Set<Integer> integers = new HashSet<Integer>();
+        Set<Integer> integers = new HashSet<>();
         for (String string : strings) {
             integers.add(Integer.valueOf(string));
         }
@@ -438,12 +440,12 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     @Override
     public void setBellActive(boolean active) {
-        settings.edit().putBoolean(keyActive, active).commit();
+        settings.edit().putBoolean(keyActive, active).apply();
     }
 
     @Override
     public void setStatusNotification(boolean statusNotification) {
-        settings.edit().putBoolean(keyStatus, statusNotification).commit();
+        settings.edit().putBoolean(keyStatus, statusNotification).apply();
     }
 
     @Override
