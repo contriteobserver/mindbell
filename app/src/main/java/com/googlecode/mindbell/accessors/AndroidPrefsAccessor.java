@@ -22,7 +22,10 @@ package com.googlecode.mindbell.accessors;
 import static com.googlecode.mindbell.MindBellPreferences.TAG;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.googlecode.mindbell.R;
@@ -60,6 +63,9 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private final String keyActiveOnDaysOfWeek;
 
     private final String keyVolume;
+
+    /** Maps preference keys to their allowed entryValues */
+    private final Map<String, String[]> entryValuesMap;
 
     /**
      * Preference default values ... must correspond with settings in xml definitions
@@ -121,6 +127,15 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         weekdayAbbreviations = context.getResources().getStringArray(R.array.weekdayAbbreviations);
 
         keyVolume = context.getString(R.string.keyVolume);
+
+        entryValuesMap = new HashMap<>();
+        entryValuesMap.put(keyPattern, context.getResources().getStringArray(R.array.patternEntryValues));
+        entryValuesMap.put(keyFrequency, context.getResources().getStringArray(R.array.bellFrequencyValues));
+        entryValuesMap.put(keyNormalize, context.getResources().getStringArray(R.array.normalizeEntryValues));
+        entryValuesMap.put(keyStart, context.getResources().getStringArray(R.array.hourValues));
+        entryValuesMap.put(keyEnd, context.getResources().getStringArray(R.array.hourValues));
+        entryValuesMap.put(keyActiveOnDaysOfWeek, context.getResources().getStringArray(R.array.daysOfWeekValues));
+
         checkSettings();
     }
 
@@ -132,45 +147,59 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         // boolean settings:
         String[] booleanSettings = new String[] { keyShow, keyStatus, keyStatusVisibilityPublic, keyStatusIconMaterialDesign,
                 keyActive, keyMuteInFlightMode, keyMuteOffHook, keyMuteWithPhone, keyVibrate, keyRandomize };
-        for (String s : booleanSettings) {
+        for (String key : booleanSettings) {
             try {
-                settings.getBoolean(s, false);
+                settings.getBoolean(key, false);
             } catch (ClassCastException e) {
-                settings.edit().remove(s).commit();
-                Log.w(TAG, "Removed setting '" + s + "' since it had wrong type");
+                settings.edit().remove(key).commit();
+                Log.w(TAG, "Removed setting '" + key + "' since it had wrong type");
             }
         }
         // string settings:
         String[] stringSettings = new String[] { keyPattern, keyFrequency, keyNormalize, keyStart, keyEnd };
-        for (String s : stringSettings) {
+        for (String key : stringSettings) {
             try {
-                settings.getString(s, null);
+                String value = settings.getString(key, null);
+                List<String> entryValues = Arrays.asList(entryValuesMap.get(key));
+                if (value != null && !entryValues.contains(value)) {
+                    settings.edit().remove(key).commit();
+                    Log.w(TAG, "Removed setting '" + key + "' since it had wrong value '" + value + "'");
+                }
             } catch (ClassCastException e) {
-                settings.edit().remove(s).commit();
-                Log.w(TAG, "Removed setting '" + s + "' since it had wrong type");
+                settings.edit().remove(key).commit();
+                Log.w(TAG, "Removed setting '" + key + "' since it had wrong type");
             }
         }
         // string set settings:
         String[] stringSetSettings = new String[] { keyActiveOnDaysOfWeek };
-        for (String s : stringSetSettings) {
+        for (String key : stringSetSettings) {
             try {
-                settings.getStringSet(s, null);
+                Set<String> valueSet = settings.getStringSet(key, null);
+                for (String value : valueSet) {
+                    List<String> entryValues = Arrays.asList(entryValuesMap.get(key));
+                    if (value != null && !entryValues.contains(value)) {
+                        settings.edit().remove(key).commit();
+                        Log.w(TAG, "Removed setting '" + key + "' since it had (at least one) wrong value '" + value + "'");
+                        break;
+                    }
+                }
             } catch (ClassCastException e) {
-                settings.edit().remove(s).commit();
-                Log.w(TAG, "Removed setting '" + s + "' since it had wrong type");
+                settings.edit().remove(key).commit();
+                Log.w(TAG, "Removed setting '" + key + "' since it had wrong type");
             }
         }
         // float settings:
         String[] floatSettings = new String[] { keyVolume };
-        for (String s : floatSettings) {
+        for (String key : floatSettings) {
             try {
-                settings.getFloat(s, 0);
+                settings.getFloat(key, 0);
             } catch (ClassCastException e) {
-                settings.edit().remove(s).commit();
-                Log.w(TAG, "Removed setting '" + s + "' since it had wrong type");
+                settings.edit().remove(key).commit();
+                Log.w(TAG, "Removed setting '" + key + "' since it had wrong type");
             }
         }
 
+        // Now check frequency as it may never fall to a too low value
         String frequencyString = settings.getString(keyFrequency, null);
         if (frequencyString != null) {
             try {
@@ -224,7 +253,6 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             settings.edit().putBoolean(keyVibrate, defaultVibrate).commit();
             Log.w(TAG, "Reset missing setting for '" + keyVibrate + "' to '" + defaultVibrate + "'");
         }
-
         if (!settings.contains(keyPattern)) {
             settings.edit().putString(keyPattern, defaultPattern).commit();
             Log.w(TAG, "Reset missing setting for '" + keyPattern + "' to '" + defaultPattern + "'");
@@ -272,6 +300,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         for (String s : floatSettings) {
             sb.append(s).append("=").append(settings.getFloat(s, -1)).append(", ");
         }
+        sb.setLength(sb.length() - 2); // remove last ", "
         Log.v(TAG, sb.toString());
     }
 
