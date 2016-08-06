@@ -90,7 +90,7 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
         // setup
         AndroidTestMockContextAccessor ca = AndroidTestMockContextAccessor.getInstance();
         ca.setPhoneInFlightMode(true);
-        ca.getPrefs().setSettingMuteInFlightMode(false);
+        ca.getPrefs().setMuteInFlightMode(false);
         // exercise/verify
         Assert.assertFalse(ca.isMuteRequested(true));
     }
@@ -100,7 +100,7 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
         // setup
         AndroidTestMockContextAccessor ca = AndroidTestMockContextAccessor.getInstance();
         ca.setPhoneInFlightMode(false);
-        ca.getPrefs().setSettingMuteInFlightMode(true);
+        ca.getPrefs().setMuteInFlightMode(true);
         // exercise/verify
         Assert.assertFalse(ca.isMuteRequested(true));
     }
@@ -110,7 +110,7 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
         // setup
         AndroidTestMockContextAccessor ca = AndroidTestMockContextAccessor.getInstance();
         ca.setPhoneInFlightMode(true);
-        ca.getPrefs().setSettingMuteInFlightMode(true);
+        ca.getPrefs().setMuteInFlightMode(true);
         // exercise/verify
         Assert.assertTrue(ca.isMuteRequested(true));
     }
@@ -120,7 +120,7 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
         // setup
         AndroidTestMockContextAccessor ca = AndroidTestMockContextAccessor.getInstance();
         ca.setPhoneMuted(true);
-        ca.getPrefs().setSettingMuteWithPhone(false);
+        ca.getPrefs().setMuteWithPhone(false);
         // exercise/verify
         Assert.assertFalse(ca.isMuteRequested(true));
     }
@@ -130,7 +130,7 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
         // setup
         AndroidTestMockContextAccessor ca = AndroidTestMockContextAccessor.getInstance();
         ca.setPhoneMuted(false);
-        ca.getPrefs().setSettingMuteWithPhone(true);
+        ca.getPrefs().setMuteWithPhone(true);
         // exercise/verify
         Assert.assertFalse(ca.isMuteRequested(true));
     }
@@ -140,7 +140,7 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
         // setup
         AndroidTestMockContextAccessor ca = AndroidTestMockContextAccessor.getInstance();
         ca.setPhoneMuted(true);
-        ca.getPrefs().setSettingMuteWithPhone(true);
+        ca.getPrefs().setMuteWithPhone(true);
         // exercise/verify
         Assert.assertTrue(ca.isMuteRequested(true));
     }
@@ -150,7 +150,7 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
         // setup
         AndroidTestMockContextAccessor ca = AndroidTestMockContextAccessor.getInstance();
         ca.setPhoneOffHook(true);
-        ca.getPrefs().setSettingMuteOffHook(false);
+        ca.getPrefs().setMuteOffHook(false);
         // exercise/verify
         Assert.assertFalse(ca.isMuteRequested(true));
     }
@@ -160,7 +160,7 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
         // setup
         AndroidTestMockContextAccessor ca = AndroidTestMockContextAccessor.getInstance();
         ca.setPhoneOffHook(false);
-        ca.getPrefs().setSettingMuteOffHook(true);
+        ca.getPrefs().setMuteOffHook(true);
         // exercise/verify
         Assert.assertFalse(ca.isMuteRequested(true));
     }
@@ -170,7 +170,7 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
         // setup
         AndroidTestMockContextAccessor ca = AndroidTestMockContextAccessor.getInstance();
         ca.setPhoneOffHook(true);
-        ca.getPrefs().setSettingMuteOffHook(true);
+        ca.getPrefs().setMuteOffHook(true);
         // exercise/verify
         Assert.assertTrue(ca.isMuteRequested(true));
     }

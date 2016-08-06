@@ -89,8 +89,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             Arrays.asList(new String[]{"1", "2", "3", "4", "5", "6", "7"})); // every day
     private final float defaultVolume = AndroidContextAccessor.MINUS_SIX_DB;
 
-    private final String[] daysOfWeekValues;
-    private final String[] weekdayAbbreviations;
+    private final String[] weekdayEntryValues;
+    private final String[] weekdayAbbreviationEntries;
 
     /**
      * Constructs an accessor for preferences in the given context, please use {@link AndroidContextAccessor#getPrefs()} instead
@@ -105,7 +105,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             this.settings = PreferenceManager.getDefaultSharedPreferences(context);
         }
 
-        hours = context.getResources().getStringArray(R.array.hourStrings);
+        hours = context.getResources().getStringArray(R.array.hourEntries);
 
         keyActive = context.getString(R.string.keyActive);
         keyShow = context.getString(R.string.keyShow);
@@ -123,18 +123,18 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         keyStart = context.getString(R.string.keyStart);
         keyEnd = context.getString(R.string.keyEnd);
         keyActiveOnDaysOfWeek = context.getString(R.string.keyActiveOnDaysOfWeek);
-        daysOfWeekValues = context.getResources().getStringArray(R.array.daysOfWeekValues);
-        weekdayAbbreviations = context.getResources().getStringArray(R.array.weekdayAbbreviations);
+        weekdayEntryValues = context.getResources().getStringArray(R.array.weekdayEntryValues);
+        weekdayAbbreviationEntries = context.getResources().getStringArray(R.array.weekdayAbbreviationEntries);
 
         keyVolume = context.getString(R.string.keyVolume);
 
         entryValuesMap = new HashMap<>();
         entryValuesMap.put(keyPattern, context.getResources().getStringArray(R.array.patternEntryValues));
-        entryValuesMap.put(keyFrequency, context.getResources().getStringArray(R.array.bellFrequencyValues));
+        entryValuesMap.put(keyFrequency, context.getResources().getStringArray(R.array.frequencyEntryValues));
         entryValuesMap.put(keyNormalize, context.getResources().getStringArray(R.array.normalizeEntryValues));
-        entryValuesMap.put(keyStart, context.getResources().getStringArray(R.array.hourValues));
-        entryValuesMap.put(keyEnd, context.getResources().getStringArray(R.array.hourValues));
-        entryValuesMap.put(keyActiveOnDaysOfWeek, context.getResources().getStringArray(R.array.daysOfWeekValues));
+        entryValuesMap.put(keyStart, context.getResources().getStringArray(R.array.hourEntryValues));
+        entryValuesMap.put(keyEnd, context.getResources().getStringArray(R.array.hourEntryValues));
+        entryValuesMap.put(keyActiveOnDaysOfWeek, context.getResources().getStringArray(R.array.weekdayEntryValues));
 
         checkSettings();
     }
@@ -218,7 +218,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
         // Now set default values for those that are missing
         if (!settings.contains(keyActive)) {
-            setBellActive(defaultActive);
+            isActive(defaultActive);
             Log.w(TAG, "Reset missing setting for '" + keyActive + "' to '" + defaultActive + "'");
         }
         if (!settings.contains(keyShow)) {
@@ -307,12 +307,12 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public boolean doShowBell() {
+    public boolean isShow() {
         return settings.getBoolean(keyShow, defaultShow);
     }
 
     @Override
-    public boolean doStatusNotification() {
+    public boolean isStatus() {
         return settings.getBoolean(keyStatus, defaultStatus);
     }
 
@@ -331,20 +331,20 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         // Warning: Similar code in MindBellPreferences#setMultiSelectListPreferenceSummary()
         Set<Integer> activeOnDaysOfWeek = getActiveOnDaysOfWeek();
         StringBuilder sb = new StringBuilder();
-        for (String dayOfWeekValue : daysOfWeekValues) { // internal weekday value in locale oriented order
+        for (String dayOfWeekValue : weekdayEntryValues) { // internal weekday value in locale oriented order
             Integer dayOfWeekValueAsInteger = Integer.valueOf(dayOfWeekValue);
             if (activeOnDaysOfWeek.contains(dayOfWeekValueAsInteger)) { // active on this day?
                 if (sb.length() > 0) {
                     sb.append(", ");
                 }
-                sb.append(weekdayAbbreviations[dayOfWeekValueAsInteger - 1]); // add day to the list of active days
+                sb.append(weekdayAbbreviationEntries[dayOfWeekValueAsInteger - 1]); // add day to the list of active days
             }
         }
         return sb.toString();
     }
 
     @Override
-    public float getBellVolume(float defaultVolume) {
+    public float getVolume(float defaultVolume) {
         if (defaultVolume > 1f) {
             throw new IllegalArgumentException("Default volume out of range: " + defaultVolume);
         }
@@ -404,7 +404,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public boolean isBellActive() {
+    public boolean isActive() {
         return settings.getBoolean(keyActive, defaultActive);
     }
 
@@ -414,37 +414,37 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public boolean isSettingMuteInFlightMode() {
+    public boolean isMuteInFlightMode() {
         return settings.getBoolean(keyMuteInFlightMode, defaultMuteInFlightMode);
     }
 
     @Override
-    public boolean isSettingMuteOffHook() {
+    public boolean isMuteOffHook() {
         return settings.getBoolean(keyMuteOffHook, defaultMuteOffHook);
     }
 
     @Override
-    public boolean isSettingMuteWithPhone() {
+    public boolean isMuteWithPhone() {
         return settings.getBoolean(keyMuteWithPhone, defaultMuteWithPhone);
     }
 
     @Override
-    public boolean isSettingVibrate() {
+    public boolean isVibrate() {
         return settings.getBoolean(keyVibrate, defaultVibrate);
     }
 
     @Override
-    public boolean makeStatusNotificationVisibilityPublic() {
+    public boolean isStatusNotificationVisibilityPublic() {
         return settings.getBoolean(keyStatusVisibilityPublic, defaultStatusVisibilityPublic);
     }
 
     @Override
-    public void setBellActive(boolean active) {
+    public void isActive(boolean active) {
         settings.edit().putBoolean(keyActive, active).apply();
     }
 
     @Override
-    public void setStatusNotification(boolean statusNotification) {
+    public void setStatus(boolean statusNotification) {
         settings.edit().putBoolean(keyStatus, statusNotification).apply();
     }
 

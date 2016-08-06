@@ -79,7 +79,7 @@ public class MindBellMain extends Activity {
      * Show hint how to activate the bell.
      */
     private void notifyIfNotActive() {
-        if (!AndroidContextAccessor.getInstance(this).getPrefs().isBellActive()) {
+        if (!AndroidContextAccessor.getInstance(this).getPrefs().isActive()) {
             Toast.makeText(this, R.string.howToSet, Toast.LENGTH_LONG).show();
         }
     }
@@ -133,10 +133,10 @@ public class MindBellMain extends Activity {
      */
     private boolean onMenuItemClickActive() {
         PrefsAccessor prefsAccessor = AndroidContextAccessor.getInstance(MindBellMain.this).getPrefs();
-        prefsAccessor.setBellActive(!prefsAccessor.isBellActive()); // toggle active/inactive
+        prefsAccessor.isActive(!prefsAccessor.isActive()); // toggle active/inactive
         Utils.updateBellSchedule(MindBellMain.this);
         invalidateOptionsMenu(); // re-call onPrepareOptionsMenu()
-        CharSequence feedback = getText((prefsAccessor.isBellActive()) ? R.string.summaryActive : R.string.summaryNotActive);
+        CharSequence feedback = getText((prefsAccessor.isActive()) ? R.string.summaryActive : R.string.summaryNotActive);
         Toast.makeText(this, feedback, Toast.LENGTH_SHORT).show();
         return true;
     }
@@ -162,7 +162,7 @@ public class MindBellMain extends Activity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         PrefsAccessor prefs = AndroidContextAccessor.getInstance(MindBellMain.this).getPrefs();
         MenuItem activeItem = menu.findItem(R.id.active);
-        activeItem.setIcon((prefs.isBellActive()) ? R.drawable.ic_action_bell_off : R.drawable.ic_action_bell_on);
+        activeItem.setIcon((prefs.isActive()) ? R.drawable.ic_action_bell_off : R.drawable.ic_action_bell_on);
         return true;
     }
 

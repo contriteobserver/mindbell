@@ -38,15 +38,15 @@ public abstract class PrefsAccessor {
         return ms;
     }
 
-    public abstract boolean doShowBell();
+    public abstract boolean isShow();
 
-    public abstract boolean doStatusNotification();
+    public abstract boolean isStatus();
 
     public abstract Set<Integer> getActiveOnDaysOfWeek();
 
     public abstract String getActiveOnDaysOfWeekString();
 
-    public abstract float getBellVolume(float defaultVolume);
+    public abstract float getVolume(float defaultVolume);
 
     public abstract TimeOfDay getDaytimeEnd();
 
@@ -66,7 +66,7 @@ public abstract class PrefsAccessor {
         return getVibrationPattern(getPattern());
     }
 
-    public abstract boolean isBellActive();
+    public abstract boolean isActive();
 
     public boolean isNormalize() {
         return isNormalize(getNormalize());
@@ -81,27 +81,27 @@ public abstract class PrefsAccessor {
 
     public abstract boolean isRandomize();
 
-    public boolean isSettingMuteInFlightMode() {
+    public boolean isMuteInFlightMode() {
         return true;
     }
 
-    public boolean isSettingMuteOffHook() {
+    public boolean isMuteOffHook() {
         return true;
     }
 
-    public boolean isSettingMuteWithPhone() {
+    public boolean isMuteWithPhone() {
         return true;
     }
 
-    public boolean isSettingVibrate() {
+    public boolean isVibrate() {
         return false;
     }
 
-    public abstract boolean makeStatusNotificationVisibilityPublic();
+    public abstract boolean isStatusNotificationVisibilityPublic();
 
-    public abstract void setBellActive(boolean active);
+    public abstract void isActive(boolean active);
 
-    public abstract void setStatusNotification(boolean statusNotification);
+    public abstract void setStatus(boolean statusNotification);
 
     public abstract boolean useStatusIconMaterialDesign();
 

@@ -18,10 +18,9 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  -->
- 
 <resources>
 
-	<string-array name="bellFrequencies">
+	<string-array name="frequencyEntries">
 	    <item>1 minute</item>
 	    <item>2 minutes</item>
 	    <item>3 minutes</item>
@@ -53,7 +52,7 @@
 	    <item>hh:55</item>
 	</string-array>
 	
-	<string-array name="hourStrings">
+	<string-array name="hourEntries">
 		<item>midnight</item>
 		<item>1 am</item>
 		<item>2 am</item>
@@ -81,7 +80,7 @@
 	</string-array>
 
 	<!-- Weekdays for selection in MindBellPreferences -->
-	<string-array name="daysOfWeek">
+	<string-array name="weekdayEntries">
 		<item>Sunday</item>
 		<item>Monday</item>
 		<item>Tuesday</item>
@@ -91,8 +90,8 @@
 		<item>Saturday</item>
 	</string-array>
 
-	<!-- Internal value (regarding Calendar) for the weekday selection in MindBellPreferences -->
-	<string-array name="daysOfWeekValues">
+	<!-- Internal value (ordered regarding Calendar) for the weekday selection in MindBellPreferences -->
+	<string-array name="weekdayEntryValues">
 		<item>1</item>
 		<item>2</item>
 		<item>3</item>
@@ -103,7 +102,7 @@
 	</string-array>
 
 	<!-- Abbreviations for weekdays ordered by their internal value -->
-	<string-array name="weekdayAbbreviations">
+	<string-array name="weekdayAbbreviationEntries">
 		<item>Sun</item>
 		<item>Mon</item>
 		<item>Tue</item>
@@ -113,7 +112,7 @@
 		<item>Sat</item>
 	</string-array>
 
-	<!-- ==================== Values - don't localize ==================== -->
+	<!-- ==================== don't localize ==================== -->
 
 	<!-- Vibration patterns -->
 	<string-array name="patternEntries" translatable="false">
@@ -127,7 +126,7 @@
 	</string-array>
 	
 	<!-- Intervals in milliseconds -->
-	<string-array name="bellFrequencyValues" translatable="false">
+	<string-array name="frequencyEntryValues" translatable="false">
 		<item>60000</item><!-- 1 minute -->
 		<item>120000</item><!-- 2 minutes -->
 		<item>180000</item><!-- 3 minutes -->
@@ -161,7 +160,7 @@
 	</string-array>
 	
 	<!-- Starting and ending time hours -->
-	<string-array name="hourValues" translatable="false">
+	<string-array name="hourEntryValues" translatable="false">
 		<item>0</item>
 		<item>1</item>
 		<item>2</item>

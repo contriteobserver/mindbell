@@ -51,7 +51,7 @@ public class Scheduler extends BroadcastReceiver {
         AlarmManagerCompat alarmManager = new AlarmManagerCompat(context);
         PrefsAccessor prefs = AndroidContextAccessor.getInstance(context).getPrefs();
 
-        if (!prefs.isBellActive()) {
+        if (!prefs.isActive()) {
             Log.d(TAG, "bell is not active -- not ringing, not rescheduling.");
             return;
         }
@@ -82,7 +82,7 @@ public class Scheduler extends BroadcastReceiver {
             return;
         }
 
-        if (prefs.doShowBell()) {
+        if (prefs.isShow()) {
             Log.d(TAG, "ring and show bell");
 
             Intent ringBell = new Intent(context, MindBell.class);

@@ -50,11 +50,11 @@ public abstract class ContextAccessor {
      */
     public String getMuteRequestReason(boolean shouldShowMessage) {
         String reason = null;
-        if (prefs.isSettingMuteWithPhone() && isPhoneMuted()) { // Mute bell with phone?
+        if (prefs.isMuteWithPhone() && isPhoneMuted()) { // Mute bell with phone?
             reason = getReasonMutedWithPhone();
-        } else if (prefs.isSettingMuteOffHook() && isPhoneOffHook()) { // Mute bell while phone is off hook (or ringing)?
+        } else if (prefs.isMuteOffHook() && isPhoneOffHook()) { // Mute bell while phone is off hook (or ringing)?
             reason = getReasonMutedOffHook();
-        } else if (prefs.isSettingMuteInFlightMode() && isPhoneInFlightMode()) { // Mute bell while in flight mode?
+        } else if (prefs.isMuteInFlightMode() && isPhoneInFlightMode()) { // Mute bell while in flight mode?
             reason = getReasonMutedInFlightMode();
         }
         if (reason != null && shouldShowMessage) {

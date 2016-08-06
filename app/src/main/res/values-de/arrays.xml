@@ -19,67 +19,68 @@
     limitations under the License.
  -->
 <resources>
-<string-array name="bellFrequencies">
-    <item>1 Minute</item>
-    <item>2 Minuten</item>
-    <item>3 Minuten</item>
-    <item>4 Minuten</item>
-    <item>5 Minuten</item>
-    <item>10 Minuten</item>
-    <item>Viertelstunde</item>
-	<item>halbe Stunde</item>
-	<item>Dreiviertelstunde</item>
-	<item>Stunde</item>
-	<item>2 Stunden</item>
-	<item>3 Stunden</item>
-	<item>4 Stunden</item>
-</string-array>
 
-<string-array name="normalizeEntries">
-    <item>nein</item>
-    <item>hh:00</item>
-    <item>hh:05</item>
-    <item>hh:10</item>
-    <item>hh:15</item>
-    <item>hh:20</item>
-    <item>hh:25</item>
-    <item>hh:30</item>
-    <item>hh:35</item>
-    <item>hh:40</item>
-    <item>hh:45</item>
-    <item>hh:50</item>
-    <item>hh:55</item>
-</string-array>
+	<string-array name="frequencyEntries">
+		<item>1 Minute</item>
+		<item>2 Minuten</item>
+		<item>3 Minuten</item>
+		<item>4 Minuten</item>
+		<item>5 Minuten</item>
+		<item>10 Minuten</item>
+		<item>Viertelstunde</item>
+		<item>halbe Stunde</item>
+		<item>Dreiviertelstunde</item>
+		<item>Stunde</item>
+		<item>2 Stunden</item>
+		<item>3 Stunden</item>
+		<item>4 Stunden</item>
+	</string-array>
 
-<string-array name="hourStrings">
-	<item>Mitternacht</item>
-	<item>1:00</item>
-	<item>2:00</item>
-	<item>3:00</item>
-	<item>4:00</item>
-	<item>5:00</item>
-	<item>6:00</item>
-	<item>7:00</item>
-	<item>8:00</item>
-	<item>9:00</item>
-	<item>10:00</item>
-	<item>11:00</item>
-	<item>Mittag</item>
-	<item>13:00</item>
-	<item>14:00</item>
-	<item>15:00</item>
-	<item>16:00</item>
-	<item>17:00</item>
-	<item>18:00</item>
-	<item>19:00</item>
-	<item>20:00</item>
-	<item>21:00</item>
-	<item>22:00</item>
-	<item>23:00</item>
-</string-array>
+	<string-array name="normalizeEntries">
+		<item>nein</item>
+		<item>hh:00</item>
+		<item>hh:05</item>
+		<item>hh:10</item>
+		<item>hh:15</item>
+		<item>hh:20</item>
+		<item>hh:25</item>
+		<item>hh:30</item>
+		<item>hh:35</item>
+		<item>hh:40</item>
+		<item>hh:45</item>
+		<item>hh:50</item>
+		<item>hh:55</item>
+	</string-array>
+
+	<string-array name="hourEntries">
+		<item>Mitternacht</item>
+		<item>1:00</item>
+		<item>2:00</item>
+		<item>3:00</item>
+		<item>4:00</item>
+		<item>5:00</item>
+		<item>6:00</item>
+		<item>7:00</item>
+		<item>8:00</item>
+		<item>9:00</item>
+		<item>10:00</item>
+		<item>11:00</item>
+		<item>Mittag</item>
+		<item>13:00</item>
+		<item>14:00</item>
+		<item>15:00</item>
+		<item>16:00</item>
+		<item>17:00</item>
+		<item>18:00</item>
+		<item>19:00</item>
+		<item>20:00</item>
+		<item>21:00</item>
+		<item>22:00</item>
+		<item>23:00</item>
+	</string-array>
 
 	<!-- Weekdays for selection in MindBellPreferences -->
-	<string-array name="daysOfWeek">
+	<string-array name="weekdayEntries">
 		<item>Montag</item>
 		<item>Dienstag</item>
 		<item>Mittwoch</item>
@@ -89,8 +90,8 @@
 		<item>Sonntag</item>
 	</string-array>
 	
-	<!-- Internal value (regarding Calendar) for the weekday selection in MindBellPreferences -->	
-	<string-array name="daysOfWeekValues">
+	<!-- Internal value (ordered regarding Calendar) for the weekday selection in MindBellPreferences -->
+	<string-array name="weekdayEntryValues">
 		<item>2</item>
 		<item>3</item>
 		<item>4</item>
@@ -101,7 +102,7 @@
 	</string-array>
 
 	<!-- Abbreviations for weekdays ordered by their internal value -->
-	<string-array name="weekdayAbbreviations">
+	<string-array name="weekdayAbbreviationEntries">
 		<item>SO</item>
 		<item>MO</item>
 		<item>DI</item>

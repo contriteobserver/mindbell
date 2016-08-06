@@ -21,17 +21,15 @@ package com.googlecode.mindbell.accessors;
 
 import com.googlecode.mindbell.util.TimeOfDay;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
 
-    private boolean isSettingMuteWithPhone = false;
+    private boolean muteWithPhone = false;
 
-    private boolean isSettingMuteOffHook = false;
+    private boolean muteOffHook = false;
 
-    private boolean isSettingMuteInFlightMode = false;
+    private boolean muteInFlightMode = false;
 
     /**
      * Constructs an accessor for preferences in the given context, please use {@link AndroidTestMockContextAccessor#getPrefs()} instead of
@@ -41,12 +39,12 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public boolean doShowBell() {
+    public boolean isShow() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
     @Override
-    public boolean doStatusNotification() {
+    public boolean isStatus() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
@@ -61,7 +59,7 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public float getBellVolume(float defaultVolume) {
+    public float getVolume(float defaultVolume) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
@@ -101,7 +99,7 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public boolean isBellActive() {
+    public boolean isActive() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
@@ -111,22 +109,22 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public boolean isSettingMuteInFlightMode() {
-        return isSettingMuteInFlightMode;
+    public boolean isMuteInFlightMode() {
+        return muteInFlightMode;
     }
 
     @Override
-    public boolean isSettingMuteOffHook() {
-        return isSettingMuteOffHook;
+    public boolean isMuteOffHook() {
+        return muteOffHook;
     }
 
     @Override
-    public boolean isSettingMuteWithPhone() {
-        return isSettingMuteWithPhone;
+    public boolean isMuteWithPhone() {
+        return muteWithPhone;
     }
 
     @Override
-    public boolean makeStatusNotificationVisibilityPublic() {
+    public boolean isStatusNotificationVisibilityPublic() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
@@ -139,7 +137,7 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public void setBellActive(boolean theBellActive) {
+    public void isActive(boolean theBellActive) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
@@ -171,16 +169,16 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
-    public void setSettingMuteInFlightMode(boolean isSettingMuteInFlightMode) {
-        this.isSettingMuteInFlightMode = isSettingMuteInFlightMode;
+    public void setMuteInFlightMode(boolean muteInFlightMode) {
+        this.muteInFlightMode = muteInFlightMode;
     }
 
-    public void setSettingMuteOffHook(boolean value) {
-        isSettingMuteOffHook = value;
+    public void setMuteOffHook(boolean muteOffHook) {
+        this.muteOffHook = muteOffHook;
     }
 
-    public void setSettingMuteWithPhone(boolean value) {
-        isSettingMuteWithPhone = value;
+    public void setMuteWithPhone(boolean muteWithPhone) {
+        this.muteWithPhone = muteWithPhone;
     }
 
     public void setShowBell(boolean theShowBell) {
@@ -188,7 +186,7 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public void setStatusNotification(boolean theStatusNotification) {
+    public void setStatus(boolean theStatusNotification) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 

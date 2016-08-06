@@ -78,7 +78,7 @@ public class AndroidContextAccessor extends ContextAccessor {
      * granted.
      */
     private boolean canSettingsBeSatisfied(PrefsAccessor prefs) {
-        boolean result = !prefs.isSettingMuteOffHook() || ContextCompat.checkSelfPermission(context,
+        boolean result = !prefs.isMuteOffHook() || ContextCompat.checkSelfPermission(context,
                 Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED;
         Log.d(TAG, "canSettingsBeSatisfied() -> " + result);
         return result;
@@ -118,7 +118,7 @@ public class AndroidContextAccessor extends ContextAccessor {
 
     @Override
     public float getBellVolume() {
-        float bellVolume = prefs.getBellVolume(getBellDefaultVolume());
+        float bellVolume = prefs.getVolume(getBellDefaultVolume());
         Log.d(TAG, "Bell volume is " + bellVolume);
         return bellVolume;
     }
@@ -211,7 +211,7 @@ public class AndroidContextAccessor extends ContextAccessor {
 
             mediaPlayer.start();
 
-            if (prefs.isSettingVibrate()) {
+            if (prefs.isVibrate()) {
                 Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
                 vibrator.vibrate(prefs.getVibrationPattern(), -1);
             }
@@ -226,7 +226,7 @@ public class AndroidContextAccessor extends ContextAccessor {
 
     public void updateBellSchedule() {
         updateStatusNotification(prefs, true);
-        if (prefs.isBellActive()) {
+        if (prefs.isActive()) {
             Log.d(TAG, "Update bell schedule for active bell");
             Intent intent = new Intent(context, Scheduler.class);
             PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -247,7 +247,7 @@ public class AndroidContextAccessor extends ContextAccessor {
     }
 
     private void updateStatusNotification(PrefsAccessor prefs, boolean shouldShowMessage) {
-        if (!prefs.isBellActive() || !prefs.doStatusNotification()) {// bell inactive or no notification wanted?
+        if (!prefs.isActive() || !prefs.isStatus()) {// bell inactive or no notification wanted?
             Log.i(TAG, "remove status notification because of inactive bell or unwanted notification");
             removeStatusNotification();
             return;
@@ -276,7 +276,7 @@ public class AndroidContextAccessor extends ContextAccessor {
             // listen to phone state changes. Therefore we switch off notification and ask user for permission when he tries
             // to enable notification again. In this very moment we cannot ask for permission to avoid an ANR in receiver
             // UpdateStatusNotification.
-            prefs.setStatusNotification(false);
+            prefs.setStatus(false);
         } else if (muteRequestReason != null) { // Bell muted => override icon and notification text
             statusDrawable = bellActiveButMutedDrawable;
             contentText = muteRequestReason;
@@ -290,7 +290,7 @@ public class AndroidContextAccessor extends ContextAccessor {
         Intent notificationIntent = new Intent(context, MindBellMain.class);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
-        int visibility = (prefs.makeStatusNotificationVisibilityPublic()) ? NotificationCompat.VISIBILITY_PUBLIC
+        int visibility = (prefs.isStatusNotificationVisibilityPublic()) ? NotificationCompat.VISIBILITY_PUBLIC
                 : NotificationCompat.VISIBILITY_PRIVATE;
         Notification notif = new NotificationCompat.Builder(context.getApplicationContext()) //
                 .setCategory(NotificationCompat.CATEGORY_ALARM) //

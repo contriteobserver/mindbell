@@ -124,7 +124,7 @@ public class RingBellTest {
         // exercise
         ContextAccessor ca = AndroidContextAccessor.getInstance(context);
         // verify
-        assertFalse(ca.getPrefs().isSettingMuteOffHook());
+        assertFalse(ca.getPrefs().isMuteOffHook());
     }
 
     @Test
@@ -134,7 +134,7 @@ public class RingBellTest {
         // exercise
         ContextAccessor ca = AndroidContextAccessor.getInstance(context);
         // verify
-        assertTrue(ca.getPrefs().isSettingMuteOffHook());
+        assertTrue(ca.getPrefs().isMuteOffHook());
     }
 
     @Test
@@ -144,7 +144,7 @@ public class RingBellTest {
         // exercise
         ContextAccessor ca = AndroidContextAccessor.getInstance(context);
         // verify
-        assertFalse(ca.getPrefs().isSettingMuteWithPhone());
+        assertFalse(ca.getPrefs().isMuteWithPhone());
     }
 
     @Test
@@ -154,7 +154,7 @@ public class RingBellTest {
         // exercise
         ContextAccessor ca = AndroidContextAccessor.getInstance(context);
         // verify
-        assertTrue(ca.getPrefs().isSettingMuteWithPhone());
+        assertTrue(ca.getPrefs().isMuteWithPhone());
     }
 
     @Test

@@ -37,24 +37,24 @@
 			android:defaultValue="9"
 			android:title="@string/prefsStart"
 			android:summary="%s"
-			android:entries="@array/hourStrings"
-			android:entryValues="@array/hourValues"
+			android:entries="@array/hourEntries"
+			android:entryValues="@array/hourEntryValues"
 			android:dialogTitle="@string/prefsStart" />
 		<com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
 			android:key="@string/keyEnd"
 			android:defaultValue="21"
 			android:title="@string/prefsEnd"
 			android:summary="%s"
-			android:entries="@array/hourStrings"
-			android:entryValues="@array/hourValues"
+			android:entries="@array/hourEntries"
+			android:entryValues="@array/hourEntryValues"
 			android:dialogTitle="@string/prefsEnd" />
 		<com.googlecode.mindbell.preference.MultiSelectListPreferenceWithSummary
 			android:key="@string/keyActiveOnDaysOfWeek"
-			android:defaultValue="@array/daysOfWeekValues"
+			android:defaultValue="@array/weekdayEntryValues"
 			android:title="@string/prefsActiveOnDaysOfWeek"
 			android:summary="%s"
-			android:entries="@array/daysOfWeek"
-			android:entryValues="@array/daysOfWeekValues"
+			android:entries="@array/weekdayEntries"
+			android:entryValues="@array/weekdayEntryValues"
 			android:dialogTitle="@string/prefsActiveOnDaysOfWeek" />
     </PreferenceScreen>
 
@@ -98,8 +98,8 @@
 			android:defaultValue="3600000"
 			android:title="@string/prefsFrequency"
 			android:summary="%s"
-			android:entries="@array/bellFrequencies"
-			android:entryValues="@array/bellFrequencyValues"
+			android:entries="@array/frequencyEntries"
+			android:entryValues="@array/frequencyEntryValues"
 			android:dialogTitle="@string/prefsFrequency" />
 		<CheckBoxPreference
 			android:key="@string/keyRandomize"
