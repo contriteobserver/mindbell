@@ -21,9 +21,6 @@ package com.googlecode.mindbell.accessors;
 
 /**
  * Convenience access to information from the context. Can be replaced by test implementation.
- *
- * @author marc
- *
  */
 public abstract class ContextAccessor {
     public static final float MINUS_ONE_DB = 0.891250938f;

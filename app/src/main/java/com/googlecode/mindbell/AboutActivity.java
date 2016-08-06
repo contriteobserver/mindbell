@@ -25,10 +25,6 @@ import android.webkit.WebView;
 import com.googlecode.mindbell.R;
 
 /**
- * @author marc
- * 
- */
-/**
  * <p>
  * Diese Activity stellt einen About-Dialog dar, der z.B. die Lizenz anzeigt.
  * </p>

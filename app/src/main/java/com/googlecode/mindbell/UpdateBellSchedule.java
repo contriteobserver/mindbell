@@ -30,9 +30,6 @@ import android.util.Log;
 
 /**
  * Ring the bell and reschedule.
- * 
- * @author marc
- * 
  */
 public class UpdateBellSchedule extends BroadcastReceiver {
 

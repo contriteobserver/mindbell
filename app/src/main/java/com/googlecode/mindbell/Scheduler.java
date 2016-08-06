@@ -40,9 +40,6 @@ import android.util.Log;
 
 /**
  * Ring the bell and reschedule.
- *
- * @author marc
- *
  */
 public class Scheduler extends BroadcastReceiver {
 

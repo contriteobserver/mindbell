@@ -30,8 +30,7 @@ import android.util.Log;
 import com.googlecode.mindbell.accessors.PrefsAccessor;
 
 /**
- * @author marc
- *
+ * Represents a time of day by storing only hour, minute and weekday.
  */
 public class TimeOfDay {
 

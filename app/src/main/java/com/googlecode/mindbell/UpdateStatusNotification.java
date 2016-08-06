@@ -30,8 +30,6 @@ import android.util.Log;
 
 /**
  * Update status notification on changes in system settings to display an active icon or active but muted icon or no icon at all.
- * 
- * @author uwe
  */
 public class UpdateStatusNotification extends BroadcastReceiver {
 

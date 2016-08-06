@@ -20,8 +20,7 @@
 package com.googlecode.mindbell.util;
 
 /**
- * @author marc
- * 
+ * Converts volume setting from linear to decibel and vice versa.
  */
 public class VolumeConverter {
     public static final float MINUS_ONE_DB = 0.891250938f;
