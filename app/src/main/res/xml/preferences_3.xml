@@ -25,7 +25,9 @@
         xmlns:mindful="http://dknapps.de/ns">
 
 	<PreferenceScreen android:title="@string/prefsCategoryMuteRules">
-		<CheckBoxPreference android:key="@string/keyMuteWithPhone"
+
+		<CheckBoxPreference
+            android:key="@string/keyMuteWithPhone"
 			android:title="@string/prefsMuteWithPhone"
 			android:summaryOn="@string/summaryMuteWithPhone"
 			android:summaryOff="@string/summaryNoMuteWithPhone"

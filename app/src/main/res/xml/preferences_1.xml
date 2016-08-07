@@ -25,6 +25,7 @@
         xmlns:mindful="http://dknapps.de/ns">
 
     <PreferenceScreen android:title="@string/prefsCategoryActivity">
+
         <CheckBoxPreference
 			android:key="@string/keyActive"
 			android:title="@string/prefsActive"
@@ -55,28 +56,32 @@
 			android:entries="@array/weekdayEntries"
 			android:entryValues="@array/weekdayEntryValues"
 			android:dialogTitle="@string/prefsActiveOnDaysOfWeek" />
+
     </PreferenceScreen>
 
 	<PreferenceScreen android:title="@string/prefsCategoryRingingActions">
 
 		<PreferenceCategory android:title="@string/prefsCategoryDisplay">
 
-		  <CheckBoxPreference android:key="@string/keyShow"
-			android:title="@string/prefsShow"
-			android:summaryOff="@string/summaryDontShow"
-			android:summaryOn="@string/summaryShow"
-			android:defaultValue="true"/>
+            <CheckBoxPreference
+                android:key="@string/keyShow"
+                android:title="@string/prefsShow"
+                android:summaryOff="@string/summaryDontShow"
+                android:summaryOn="@string/summaryShow"
+                android:defaultValue="true"/>
 
 		</PreferenceCategory>
 
 		<PreferenceCategory android:title="@string/prefsCategorySound">
 
-			<CheckBoxPreference android:key="@string/keySound"
+			<CheckBoxPreference
+                android:key="@string/keySound"
 				android:title="@string/prefsSound"
 				android:summaryOff="@string/summaryDontSound"
 				android:summaryOn="@string/summarySound"
 				android:defaultValue="true"/>
-			<com.googlecode.mindbell.preference.MediaVolumePreference  android:key="@string/keyVolume"
+			<com.googlecode.mindbell.preference.MediaVolumePreference
+                android:key="@string/keyVolume"
 				android:title="@string/prefsVolume"
 				android:dialogTitle="@string/prefsVolume"
 				mindful:ringtone="@raw/bell10s"
@@ -87,7 +92,8 @@
 
 		<PreferenceCategory android:title="@string/prefsCategoryVibration">
 
-			<CheckBoxPreference android:key="@string/keyVibrate"
+			<CheckBoxPreference
+                android:key="@string/keyVibrate"
 				android:title="@string/prefsVibrate"
 				android:summaryOn="@string/summaryVibrate"
 				android:summaryOff="@string/summaryNoVibrate"
@@ -107,6 +113,7 @@
 	</PreferenceScreen>
 
 	<PreferenceScreen android:title="@string/prefsCategoryRhythm">
+
 		<com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
 			android:key="@string/keyFrequency"
 			android:defaultValue="3600000"
@@ -131,6 +138,7 @@
 			android:entryValues="@array/normalizeEntryValues"
 			android:dialogTitle="@string/prefsNormalize"
 			android:dependency="@string/keyRandomize"/>
+
 	</PreferenceScreen>
 
 </PreferenceScreen>

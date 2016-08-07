@@ -25,23 +25,28 @@
         xmlns:mindful="http://dknapps.de/ns">
 
 	<PreferenceScreen android:title="@string/prefsCategoryNotifications">
-	  <CheckBoxPreference android:key="@string/keyStatus"
-	    android:title="@string/prefsStatus"
-	    android:summaryOff="@string/summaryNoStatus"
-	    android:summaryOn="@string/summaryStatus"
-	    android:defaultValue="false"/>
-	  <CheckBoxPreference android:key="@string/keyStatusIconMaterialDesign"
-	    android:title="@string/prefsStatusIconMaterialDesign"
-	    android:summaryOff="@string/summaryStatusIconPreMaterialDesign"
-	    android:summaryOn="@string/summaryStatusIconMaterialDesign"
-	    android:defaultValue="true"
-	    android:dependency="@string/keyStatus"/>
-	  <CheckBoxPreference android:key="@string/keyStatusVisibilityPublic"
-	    android:title="@string/prefsStatusVisibilityPublic"
-	    android:summaryOff="@string/summaryStatusVisibilityPrivate"
-	    android:summaryOn="@string/summaryStatusVisibilityPublic"
-	    android:defaultValue="true"
-	    android:dependency="@string/keyStatus"/>
+
+		<CheckBoxPreference
+			android:key="@string/keyStatus"
+			android:title="@string/prefsStatus"
+			android:summaryOff="@string/summaryNoStatus"
+			android:summaryOn="@string/summaryStatus"
+			android:defaultValue="false"/>
+		<CheckBoxPreference
+			android:key="@string/keyStatusIconMaterialDesign"
+			android:title="@string/prefsStatusIconMaterialDesign"
+			android:summaryOff="@string/summaryStatusIconPreMaterialDesign"
+			android:summaryOn="@string/summaryStatusIconMaterialDesign"
+			android:defaultValue="true"
+			android:dependency="@string/keyStatus"/>
+		<CheckBoxPreference
+			android:key="@string/keyStatusVisibilityPublic"
+			android:title="@string/prefsStatusVisibilityPublic"
+			android:summaryOff="@string/summaryStatusVisibilityPrivate"
+			android:summaryOn="@string/summaryStatusVisibilityPublic"
+			android:defaultValue="true"
+			android:dependency="@string/keyStatus"/>
+
 	</PreferenceScreen>
 
 </PreferenceScreen>
