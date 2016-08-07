@@ -46,7 +46,7 @@ public abstract class ContextAccessor {
     public abstract float getBellVolume();
 
     /**
-     * Check whether bell should be muted, show reason if wanted, and return reason, null otherwise.
+     * Check whether bell should be muted, show reason if requested, and return reason, null otherwise.
      */
     public String getMuteRequestReason(boolean shouldShowMessage) {
         String reason = null;
@@ -91,7 +91,7 @@ public abstract class ContextAccessor {
     public abstract boolean isBellSoundPlaying();
 
     /**
-     * Return whether bell should be muted and show reason message if wanted.
+     * Return whether bell should be muted and show reason message if shouldShowMessage is true.
      */
     public boolean isMuteRequested(boolean shouldShowMessage) {
         return getMuteRequestReason(shouldShowMessage) != null;
@@ -107,6 +107,6 @@ public abstract class ContextAccessor {
 
     public abstract void showMessage(String message);
 
-    public abstract void startBellSound(final Runnable runWhenDone);
+    public abstract void startPlayingSoundAndVibrate(final Runnable runWhenDone);
 
 }

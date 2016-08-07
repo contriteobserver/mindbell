@@ -40,6 +40,8 @@ public abstract class PrefsAccessor {
 
     public abstract boolean isShow();
 
+    public abstract boolean isSound();
+
     public abstract boolean isStatus();
 
     public abstract Set<Integer> getActiveOnDaysOfWeek();

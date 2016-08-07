@@ -114,7 +114,7 @@ public class AndroidTestMockContextAccessor extends ContextAccessor {
     }
 
     @Override
-    public void startBellSound(final Runnable runWhenDone) {
+    public void startPlayingSoundAndVibrate(final Runnable runWhenDone) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 

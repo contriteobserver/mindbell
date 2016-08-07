@@ -83,19 +83,19 @@ public class Scheduler extends BroadcastReceiver {
         }
 
         if (prefs.isShow()) {
-            Log.d(TAG, "ring and show bell");
+            Log.d(TAG, "show bell, then play sound and vibrate if requested");
 
             Intent ringBell = new Intent(context, MindBell.class);
             PendingIntent bellIntent = PendingIntent.getActivity(context, -1, ringBell, PendingIntent.FLAG_UPDATE_CURRENT);
             try {
-                bellIntent.send();
+                bellIntent.send(); // show MindBell activity and call RingingLogic.ringBellAndWait()
             } catch (CanceledException e) {
-                Log.d(TAG, "cannot ring and show bell: " + e.getMessage());
+                Log.d(TAG, "cannot show bell, play sound and vibrate: " + e.getMessage(), e);
             }
 
         } else { // ring audio-only immediately:
-            Log.d(TAG, "ring but do not show bell");
-            RingingLogic.ringBellAndWait(AndroidContextAccessor.getInstance(context), 15000);
+            Log.d(TAG, "play sound and vibrate if requested but do not show bell");
+            RingingLogic.ringBellAndWait(AndroidContextAccessor.getInstance(context));
         }
 
     }

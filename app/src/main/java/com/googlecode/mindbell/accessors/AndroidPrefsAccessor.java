@@ -46,6 +46,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     private final String keyActive;
     private final String keyShow;
+    private final String keySound;
     private final String keyStatus;
     private final String keyStatusVisibilityPublic;
     private final String keyStatusIconMaterialDesign;
@@ -72,6 +73,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
      */
     private final boolean defaultActive = false;
     private final boolean defaultShow = true;
+    private final boolean defaultSound = true;
     private final boolean defaultStatus = false;
     private final boolean defaultStatusVisibilityPublic = true;
     private final boolean defaultStatusIconMaterialDesign = true;
@@ -109,6 +111,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
         keyActive = context.getString(R.string.keyActive);
         keyShow = context.getString(R.string.keyShow);
+        keySound = context.getString(R.string.keySound);
         keyStatus = context.getString(R.string.keyStatus);
         keyStatusVisibilityPublic = context.getString(R.string.keyStatusVisibilityPublic);
         keyStatusIconMaterialDesign = context.getString(R.string.keyStatusIconMaterialDesign);
@@ -145,7 +148,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
      */
     private void checkSettings() {
         // boolean settings:
-        String[] booleanSettings = new String[] { keyShow, keyStatus, keyStatusVisibilityPublic, keyStatusIconMaterialDesign,
+        String[] booleanSettings = new String[] { keyShow, keySound, keyStatus, keyStatusVisibilityPublic, keyStatusIconMaterialDesign,
                 keyActive, keyMuteInFlightMode, keyMuteOffHook, keyMuteWithPhone, keyVibrate, keyRandomize };
         for (String key : booleanSettings) {
             try {
@@ -224,6 +227,10 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         if (!settings.contains(keyShow)) {
             settings.edit().putBoolean(keyShow, defaultShow).apply();
             Log.w(TAG, "Reset missing setting for '" + keyShow + "' to '" + defaultShow + "'");
+        }
+        if (!settings.contains(keySound)) {
+            settings.edit().putBoolean(keySound, defaultSound).apply();
+            Log.w(TAG, "Reset missing setting for '" + keySound + "' to '" + defaultSound + "'");
         }
         if (!settings.contains(keyStatus)) {
             settings.edit().putBoolean(keyStatus, defaultStatus).apply();
@@ -309,6 +316,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public boolean isShow() {
         return settings.getBoolean(keyShow, defaultShow);
+    }
+
+    @Override
+    public boolean isSound() {
+        return settings.getBoolean(keySound, defaultSound);
     }
 
     @Override

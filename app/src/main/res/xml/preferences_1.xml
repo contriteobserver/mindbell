@@ -67,11 +67,17 @@
 	</PreferenceScreen>
 
 	<PreferenceScreen android:title="@string/prefsCategorySound">
+		<CheckBoxPreference android:key="@string/keySound"
+			android:title="@string/prefsSound"
+			android:summaryOff="@string/summaryDontSound"
+			android:summaryOn="@string/summarySound"
+			android:defaultValue="true"/>
 		<com.googlecode.mindbell.preference.MediaVolumePreference  android:key="@string/keyVolume"
 			android:title="@string/prefsVolume"
 			android:dialogTitle="@string/prefsVolume"
 			mindful:ringtone="@raw/bell10s"
-			mindful:streamType="4" />
+			mindful:streamType="4"
+			android:dependency="@string/keySound"/>
 	</PreferenceScreen>
 
 	<PreferenceScreen android:title="@string/prefsCategoryVibration">

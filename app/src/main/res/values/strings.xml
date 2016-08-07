@@ -61,17 +61,20 @@
     <string name="summaryDontRandomize">Bell ring interval is constant</string>
 
     <string name="prefsCategoryDisplay">Display</string>
-    <string name="prefsShow">Show bell when ringing</string>
-    <string name="summaryShow">Play sound and show bell</string>
-    <string name="summaryDontShow">Play sound but do not show bell</string>
+    <string name="prefsShow">Show bell</string>
+    <string name="summaryShow">Show bell while ringing</string>
+    <string name="summaryDontShow">Don\'t show bell while ringing</string>
 
     <string name="prefsCategorySound">Sound</string>
+    <string name="prefsSound">Play sound</string>
+    <string name="summarySound">Play sound while ringing</string>
+    <string name="summaryDontSound">Don\'t play sound while ringing</string>
     <string name="prefsVolume">Volume</string>
 
     <string name="prefsCategoryVibration">Vibration</string>
     <string name="prefsVibrate">Vibrate</string>
-    <string name="summaryVibrate">Bell vibrates while ringing</string>
-    <string name="summaryNoVibrate">Bell does not vibrate while ringing</string>
+    <string name="summaryVibrate">Vibrate while ringing</string>
+    <string name="summaryNoVibrate">Don\'t vibrate while ringing</string>
     <string name="prefsPattern">Vibration pattern</string>
 
     <string name="prefsCategoryNotifications">Notifications</string>
@@ -141,6 +144,7 @@
     <!-- Preference keys (don't localize) -->
     <string name="keyActive" translatable="false">active</string>
     <string name="keyShow" translatable="false">show</string>
+    <string name="keySound" translatable="false">sound</string>
     <string name="keyStatus" translatable="false">status</string>
     <string name="keyStatusVisibilityPublic" translatable="false">statusVisiblityPublic</string>
     <string name="keyStatusIconMaterialDesign" translatable="false">statusIconMaterialDesign</string>

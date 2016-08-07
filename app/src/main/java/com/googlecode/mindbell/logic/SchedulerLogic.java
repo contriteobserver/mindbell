@@ -49,8 +49,8 @@ public class SchedulerLogic {
         targetTimeMillis = normalize(targetTimeMillis, meanInterval, normalize, normalizeMillis);
         if (!(new TimeOfDay(targetTimeMillis)).isDaytime(prefs)) { // inactive time?
             targetTimeMillis = getNextDaytimeStartInMillis(targetTimeMillis, prefs.getDaytimeStart(), prefs.getActiveOnDaysOfWeek()) // start of next day time millis
-                    + (randomize ? randomizedInterval - meanInterval / 2 : 0) // if wanted randomize but never before start of day
-                    + (normalize ? normalizeMillis : 0); // if wanted normalize to minute of first ring a day
+                    + (randomize ? randomizedInterval - meanInterval / 2 : 0) // if requested randomize but never before start of day
+                    + (normalize ? normalizeMillis : 0); // if requested normalize to minute of first ring a day
         }
         return targetTimeMillis;
     }

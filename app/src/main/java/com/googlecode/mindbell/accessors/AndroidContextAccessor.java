@@ -27,6 +27,7 @@ import com.googlecode.mindbell.MindBell;
 import com.googlecode.mindbell.MindBellMain;
 import com.googlecode.mindbell.R;
 import com.googlecode.mindbell.Scheduler;
+import com.googlecode.mindbell.logic.RingingLogic;
 import com.googlecode.mindbell.util.Utils;
 
 import android.Manifest;
@@ -49,9 +50,11 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class AndroidContextAccessor extends ContextAccessor {
+
     public static final int KEYMUTEINFLIGHTMODE = R.string.keyMuteInFlightMode;
 
     public static final int KEYMUTEOFFHOOK = R.string.keyMuteOffHook;
+
     public static final int KEYMUTEWITHPHONE = R.string.keyMuteWithPhone;
 
     private static final int uniqueNotificationID = R.layout.bell;
@@ -112,14 +115,12 @@ public class AndroidContextAccessor extends ContextAccessor {
     public int getAlarmVolume() {
         AudioManager audioMan = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         int alarmVolume = audioMan.getStreamVolume(AudioManager.STREAM_ALARM);
-        Log.d(TAG, "Alarm volume is " + alarmVolume);
         return alarmVolume;
     }
 
     @Override
     public float getBellVolume() {
         float bellVolume = prefs.getVolume(getBellDefaultVolume());
-        Log.d(TAG, "Bell volume is " + bellVolume);
         return bellVolume;
     }
 
@@ -168,7 +169,6 @@ public class AndroidContextAccessor extends ContextAccessor {
     @Override
     public void setAlarmVolume(int volume) {
         AudioManager audioMan = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        Log.d(TAG, "Setting alarm volume to " + volume);
         audioMan.setStreamVolume(AudioManager.STREAM_ALARM, volume, 0);
 
     }
@@ -180,18 +180,42 @@ public class AndroidContextAccessor extends ContextAccessor {
     }
 
     @Override
-    public void startBellSound(final Runnable runWhenDone) {
+    public void startPlayingSoundAndVibrate(final Runnable runWhenDone) {
+        // Start playing sound if requested by preferences
+        if (prefs.isSound()) {
+            startPlayingSound(runWhenDone);
+        }
+        // Vibrate if requested by preferences
+        if (prefs.isVibrate()) {
+            startVibration();
+        }
+        // If displaying the bell is requested by the preferences but playing a sound is not, then
+        // we are currently in MindBell.onStart(), so the bell has not been displayed yet. So this
+        // method must end to bring the bell to front. But after a while someone has to send the
+        // bell to the back again. So a new thread is created that waits and calls the runWhenDone
+        // which sends the bell to background. As it's a new thread this method ends after starting
+        // the thread which leads to the end of MindBell.onStart() which shows the bell.
+        if (prefs.isShow() && !prefs.isSound()) {
+            startWaiting(runWhenDone);
+        }
+    }
+
+    /**
+     * Start playing bell sound and call runWhenDone when playing finishes.
+     *
+     * @param runWhenDone
+     */
+    private void startPlayingSound(final Runnable runWhenDone) {
         originalVolume = getAlarmVolume();
         int alarmMaxVolume = getAlarmMaxVolume();
         if (originalVolume == alarmMaxVolume) { // "someone" else set it to max, so we don't touch it
             MindBell.logDebug(
-                    "startBellSound() found originalVolume " + originalVolume + " to be max, alarm volume left untouched");
+                    "startPlayingSound() found originalVolume " + originalVolume + " to be max, alarm volume left untouched");
         } else {
-            MindBell.logDebug("startBellSound() found originalVolume " + originalVolume + ", setting alarm volume to max");
+            MindBell.logDebug("startPlayingSound() found originalVolume " + originalVolume + ", setting alarm volume to max");
             setAlarmVolume(alarmMaxVolume);
         }
         float bellVolume = getBellVolume();
-        MindBell.logDebug("Ringing bell with volume " + bellVolume);
         Uri bellUri = Utils.getResourceUri(context, R.raw.bell10s);
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
@@ -201,27 +225,45 @@ public class AndroidContextAccessor extends ContextAccessor {
             mediaPlayer.prepare();
             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 public void onCompletion(MediaPlayer mp) {
-                    MindBell.logDebug("Upon completion, originalVolume is " + originalVolume);
                     finishBellSound();
                     if (runWhenDone != null) {
                         runWhenDone.run();
                     }
                 }
             });
-
             mediaPlayer.start();
-
-            if (prefs.isVibrate()) {
-                Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-                vibrator.vibrate(prefs.getVibrationPattern(), -1);
-            }
-
-        } catch (IOException ioe) {
-            Log.e(TAG, "Cannot set up bell sound", ioe);
+        } catch (IOException e) {
+            Log.e(TAG, "could not set up bell sound: " + e.getMessage(), e);
             if (runWhenDone != null) {
                 runWhenDone.run();
             }
         }
+    }
+
+    /**
+     * Vibrate with the requested vibration pattern.
+     */
+    private void startVibration() {
+        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator.vibrate(prefs.getVibrationPattern(), -1);
+    }
+
+    /**
+     * Start waiting for a specific time period and call runWhenDone when time is over.
+     *
+     * @param runWhenDone
+     */
+    private void startWaiting(final Runnable runWhenDone) {
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Thread.sleep(RingingLogic.WAITING_TIME);
+                } catch (InterruptedException e) {
+                    // doesn't care if sleep was interrupted, just move on
+                }
+                runWhenDone.run();
+            }
+        }).start();
     }
 
     public void updateBellSchedule() {
@@ -233,7 +275,7 @@ public class AndroidContextAccessor extends ContextAccessor {
             try {
                 sender.send();
             } catch (PendingIntent.CanceledException e) {
-                Log.e(TAG, "Could not send: " + e.getMessage());
+                Log.e(TAG, "Could not send: " + e.getMessage(), e);
             }
         }
     }

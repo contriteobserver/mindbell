@@ -26,6 +26,9 @@ import com.googlecode.mindbell.accessors.ContextAccessor;
  */
 public class RingingLogic {
 
+    /** Time to wait for bell sound to finish or for displayed bell to be send back */
+    public static final long WAITING_TIME = 15000L;
+
     /**
      * Instance to start the bell ring and wait for the end of ringing.
      */
@@ -33,7 +36,7 @@ public class RingingLogic {
 
         private boolean isDone = false;
 
-        private final long timeout;
+        private final long time;
 
         private final long sleepDuration;
 
@@ -41,7 +44,7 @@ public class RingingLogic {
 
         public KeepAlive(ContextAccessor ca, long timeout) {
             this.ca = ca;
-            this.timeout = timeout;
+            this.time = timeout;
             this.sleepDuration = timeout / 10;
         }
 
@@ -52,7 +55,7 @@ public class RingingLogic {
                 }
             });
             long totalSlept = 0;
-            while (!isDone && totalSlept < timeout) {
+            while (!isDone && totalSlept < time) {
                 try {
                     Thread.sleep(sleepDuration);
                 } catch (InterruptedException ie) {
@@ -68,7 +71,7 @@ public class RingingLogic {
     }
 
     /**
-     * Trigger the bell's sound. This is the preferred way to play the sound.
+     * Start playing bell sound and vibration if requested.
      *
      * @param context
      *            the context in which to play the sound.
@@ -86,26 +89,24 @@ public class RingingLogic {
             return false;
         }
         // 2. Stop any ongoing ring, and manually reset volume to original.
-        if (ca.isBellSoundPlaying()) { // probably false, as context is (probably) different from that for startBellSound()
+        if (ca.isBellSoundPlaying()) { // probably false, as context is (probably) different from that for startPlayingSoundAndVibrate()
             ca.finishBellSound();
         }
 
         // 3. Kick off the playback of the bell sound, with an automatic volume
         // reset built-in if not stopped.
-        ca.startBellSound(runWhenDone);
+        ca.startPlayingSoundAndVibrate(runWhenDone);
         return true;
     }
 
     /**
-     * Trigger the bell's sound and wait till it's done or timeout reached.
+     * Play sound and vibrate if requested and wait till it's done or time reached.
      *
      * @param context
      *            the context in which to play the sound.
-     * @param timeout
-     *            the max time to wait in milliseconds.
      */
-    public static void ringBellAndWait(ContextAccessor ca, long timeout) {
-        new KeepAlive(ca, timeout).ringBell();
+    public static void ringBellAndWait(ContextAccessor ca) {
+        new KeepAlive(ca, WAITING_TIME).ringBell();
     }
 
 }

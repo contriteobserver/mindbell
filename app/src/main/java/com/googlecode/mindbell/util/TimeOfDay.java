@@ -168,7 +168,6 @@ public class TimeOfDay {
      */
     public boolean isActiveOnThatDay(Set<Integer> activeOnDaysOfWeek) {
         boolean result = activeOnDaysOfWeek.contains(Integer.valueOf(weekday));
-        Log.d(TAG, "  isActiveOnThatDay(" + toString() + ") -> " + result);
         return result;
     }
 

@@ -60,17 +60,20 @@
     <string name="summaryDontRandomize">Glockenintervall ist konstant</string>
 
     <string name="prefsCategoryDisplay">Anzeige</string>
-    <string name="prefsShow">Glocke beim Läuten zeigen</string>
-    <string name="summaryShow">Klang abspielen und Glocke anzeigen</string>
-    <string name="summaryDontShow">Klang abspielen, aber Glocke nicht zeigen</string>
+    <string name="prefsShow">Glocke anzeigen</string>
+    <string name="summaryShow">Glocke anzeigen beim Läuten</string>
+    <string name="summaryDontShow">Glocke beim Läuten nicht anzeigen</string>
 
     <string name="prefsCategorySound">Klang</string>
+    <string name="prefsSound">Klang abspielen</string>
+    <string name="summarySound">Klang abspielen beim Läuten</string>
+    <string name="summaryDontSound">Beim Läuten keinen Klang abspielen</string>
     <string name="prefsVolume">Lautstärke</string>
 
     <string name="prefsCategoryVibration">Vibration</string>
     <string name="prefsVibrate">Vibrieren</string>
-    <string name="summaryVibrate">Glocke vibriert beim Läuten</string>
-    <string name="summaryNoVibrate">Glocke vibriert nicht beim Läuten</string>
+    <string name="summaryVibrate">Vibrieren beim Läuten</string>
+    <string name="summaryNoVibrate">Beim Läuten nicht vibrieren</string>
     <string name="prefsPattern">Vibrationsmuster</string>
 
     <string name="prefsCategoryNotifications">Benachrichtigungen</string>
