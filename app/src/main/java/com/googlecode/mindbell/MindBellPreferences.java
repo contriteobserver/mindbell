@@ -118,6 +118,19 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         }
     }
 
+    /**
+     * Ensures that the CheckBoxPreferences checkBoxPreferenceShow, checkBoxPreferenceSound and
+     * checkBoxPreferenceVibrate cannot be all "off", at least one must be checked.
+     */
+    private boolean mediateShowSoundVibrate(CheckBoxPreference firstOther, CheckBoxPreference secondOther, Object newValue) {
+        if (!firstOther.isChecked() && !secondOther.isChecked() && !((Boolean) newValue)) {
+            Toast.makeText(MindBellPreferences.this, R.string.atLeastOneRingingActionNeeded,
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
     @SuppressWarnings("deprecation") // deprecation is because MindBell is not fragment-based
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +146,12 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
 
         final CheckBoxPreference preferenceStatus = (CheckBoxPreference) getPreferenceScreen()
                 .findPreference(getText(R.string.keyStatus));
+        final CheckBoxPreference preferenceShow = (CheckBoxPreference) getPreferenceScreen()
+                .findPreference(getText(R.string.keyShow));
+        final CheckBoxPreference preferenceSound = (CheckBoxPreference) getPreferenceScreen()
+                .findPreference(getText(R.string.keySound));
+        final CheckBoxPreference preferenceVibrate = (CheckBoxPreference) getPreferenceScreen()
+                .findPreference(getText(R.string.keyVibrate));
         final ListPreferenceWithSummaryFix preferencePattern = (ListPreferenceWithSummaryFix) getPreferenceScreen()
                 .findPreference(getText(R.string.keyPattern));
         final CheckBoxPreference preferenceMuteOffHook = (CheckBoxPreference) getPreferenceScreen()
@@ -150,6 +169,30 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
 
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 return mediateMuteOffHookAndStatus(preferenceMuteOffHook, newValue, REQUEST_CODE_STATUS);
+            }
+
+        });
+
+        preferenceShow.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                return mediateShowSoundVibrate(preferenceSound, preferenceVibrate, newValue);
+            }
+
+        });
+
+        preferenceSound.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                return mediateShowSoundVibrate(preferenceShow, preferenceVibrate, newValue);
+            }
+
+        });
+
+        preferenceVibrate.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                return mediateShowSoundVibrate(preferenceShow, preferenceSound, newValue);
             }
 
         });
@@ -199,7 +242,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                 } else {
                     // if frequency is NOT factor of an hour, ringing on the minute may NOT be set
                     if (preferenceNormalize.isEnabled() && isNormalize(preferenceNormalize.getValue())) {
-                        Toast.makeText(preferenceActiveOnDaysOfWeek.getContext(), R.string.frequencyDoesNotFitIntoAnHour,
+                        Toast.makeText(MindBellPreferences.this, R.string.frequencyDoesNotFitIntoAnHour,
                                 Toast.LENGTH_SHORT).show();
                         return false;
                     } else {
@@ -222,7 +265,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                     return true;
                 } else {
                     // if frequency is NOT factor of an hour, ringing on the minute may NOT be set
-                    Toast.makeText(preferenceActiveOnDaysOfWeek.getContext(), R.string.frequencyDoesNotFitIntoAnHour,
+                    Toast.makeText(MindBellPreferences.this, R.string.frequencyDoesNotFitIntoAnHour,
                             Toast.LENGTH_SHORT).show();
                     return false;
                 }
@@ -234,7 +277,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
 
             public boolean onPreferenceChange(Preference preference, Object newValues) {
                 if (((Set<?>) newValues).isEmpty()) {
-                    Toast.makeText(preferenceActiveOnDaysOfWeek.getContext(), R.string.atLeastOneActiveDayNeeded,
+                    Toast.makeText(MindBellPreferences.this, R.string.atLeastOneActiveDayNeeded,
                             Toast.LENGTH_SHORT).show();
                     return false;
                 }

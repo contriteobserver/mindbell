@@ -24,8 +24,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:mindful="http://dknapps.de/ns">
 
-    <PreferenceScreen
-            android:title="@string/prefsCategoryActivity">
+    <PreferenceScreen android:title="@string/prefsCategoryActivity">
         <CheckBoxPreference
 			android:key="@string/keyActive"
 			android:title="@string/prefsActive"
@@ -58,47 +57,56 @@
 			android:dialogTitle="@string/prefsActiveOnDaysOfWeek" />
     </PreferenceScreen>
 
-	<PreferenceScreen android:title="@string/prefsCategoryDisplay">
-	  <CheckBoxPreference android:key="@string/keyShow"
-	    android:title="@string/prefsShow"
-	    android:summaryOff="@string/summaryDontShow"
-	    android:summaryOn="@string/summaryShow"
-	    android:defaultValue="true"/>
-	</PreferenceScreen>
+	<PreferenceScreen android:title="@string/prefsCategoryRingingActions">
 
-	<PreferenceScreen android:title="@string/prefsCategorySound">
-		<CheckBoxPreference android:key="@string/keySound"
-			android:title="@string/prefsSound"
-			android:summaryOff="@string/summaryDontSound"
-			android:summaryOn="@string/summarySound"
+		<PreferenceCategory android:title="@string/prefsCategoryDisplay">
+
+		  <CheckBoxPreference android:key="@string/keyShow"
+			android:title="@string/prefsShow"
+			android:summaryOff="@string/summaryDontShow"
+			android:summaryOn="@string/summaryShow"
 			android:defaultValue="true"/>
-		<com.googlecode.mindbell.preference.MediaVolumePreference  android:key="@string/keyVolume"
-			android:title="@string/prefsVolume"
-			android:dialogTitle="@string/prefsVolume"
-			mindful:ringtone="@raw/bell10s"
-			mindful:streamType="4"
-			android:dependency="@string/keySound"/>
+
+		</PreferenceCategory>
+
+		<PreferenceCategory android:title="@string/prefsCategorySound">
+
+			<CheckBoxPreference android:key="@string/keySound"
+				android:title="@string/prefsSound"
+				android:summaryOff="@string/summaryDontSound"
+				android:summaryOn="@string/summarySound"
+				android:defaultValue="true"/>
+			<com.googlecode.mindbell.preference.MediaVolumePreference  android:key="@string/keyVolume"
+				android:title="@string/prefsVolume"
+				android:dialogTitle="@string/prefsVolume"
+				mindful:ringtone="@raw/bell10s"
+				mindful:streamType="4"
+				android:dependency="@string/keySound"/>
+
+		</PreferenceCategory>
+
+		<PreferenceCategory android:title="@string/prefsCategoryVibration">
+
+			<CheckBoxPreference android:key="@string/keyVibrate"
+				android:title="@string/prefsVibrate"
+				android:summaryOn="@string/summaryVibrate"
+				android:summaryOff="@string/summaryNoVibrate"
+				android:defaultValue="false"/>
+			<com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
+				android:key="@string/keyPattern"
+				android:defaultValue="100:200:100:600"
+				android:title="@string/prefsPattern"
+				android:summary="%s"
+				android:entries="@array/patternEntries"
+				android:entryValues="@array/patternEntryValues"
+				android:dialogTitle="@string/prefsPattern"
+				android:dependency="@string/keyVibrate"/>
+
+		</PreferenceCategory>
+
 	</PreferenceScreen>
 
-	<PreferenceScreen android:title="@string/prefsCategoryVibration">
-		<CheckBoxPreference android:key="@string/keyVibrate"
-			android:title="@string/prefsVibrate"
-			android:summaryOn="@string/summaryVibrate"
-			android:summaryOff="@string/summaryNoVibrate"
-			android:defaultValue="false"/>
-		<com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
-			android:key="@string/keyPattern"
-			android:defaultValue="100:200:100:600"
-			android:title="@string/prefsPattern"
-			android:summary="%s"
-			android:entries="@array/patternEntries"
-			android:entryValues="@array/patternEntryValues"
-			android:dialogTitle="@string/prefsPattern"
-			android:dependency="@string/keyVibrate"/>
-	</PreferenceScreen>
-
-	<PreferenceScreen
-		android:title="@string/prefsCategoryRhythm">
+	<PreferenceScreen android:title="@string/prefsCategoryRhythm">
 		<com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
 			android:key="@string/keyFrequency"
 			android:defaultValue="3600000"

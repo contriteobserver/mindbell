@@ -59,10 +59,12 @@
     <string name="summaryRandomize">Glockeninterall variiert</string>
     <string name="summaryDontRandomize">Glockenintervall ist konstant</string>
 
+    <string name="prefsCategoryRingingActions">Aktionen beim Läuten</string>
+
     <string name="prefsCategoryDisplay">Anzeige</string>
     <string name="prefsShow">Glocke anzeigen</string>
     <string name="summaryShow">Glocke anzeigen beim Läuten</string>
-    <string name="summaryDontShow">Glocke beim Läuten nicht anzeigen</string>
+    <string name="summaryDontShow">Beim Läuten Glocke nicht anzeigen</string>
 
     <string name="prefsCategorySound">Klang</string>
     <string name="prefsSound">Klang abspielen</string>
@@ -99,6 +101,7 @@
     <string name="summaryNotMutedInFlightMode">Glocke läutet auch im Flugmodus</string>
 
     <!-- Validation messages -->
+    <string name="atLeastOneRingingActionNeeded">Mindestens eine Aktion beim Läuten auswählen</string>
     <string name="atLeastOneActiveDayNeeded">Mindestens einen Tag angeben</string>
     <string name="frequencyDoesNotFitIntoAnHour">Läuten auf die Minute beim gewählten Intervall nicht möglich</string>
 

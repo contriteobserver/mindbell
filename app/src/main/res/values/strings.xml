@@ -60,21 +60,23 @@
     <string name="summaryRandomize">Bell ring interval will vary</string>
     <string name="summaryDontRandomize">Bell ring interval is constant</string>
 
+    <string name="prefsCategoryRingingActions">Actions when ringing</string>
+
     <string name="prefsCategoryDisplay">Display</string>
     <string name="prefsShow">Show bell</string>
-    <string name="summaryShow">Show bell while ringing</string>
-    <string name="summaryDontShow">Don\'t show bell while ringing</string>
+    <string name="summaryShow">Show bell when ringing</string>
+    <string name="summaryDontShow">Don\'t show bell when ringing</string>
 
     <string name="prefsCategorySound">Sound</string>
     <string name="prefsSound">Play sound</string>
-    <string name="summarySound">Play sound while ringing</string>
-    <string name="summaryDontSound">Don\'t play sound while ringing</string>
+    <string name="summarySound">Play sound when ringing</string>
+    <string name="summaryDontSound">Don\'t play sound when ringing</string>
     <string name="prefsVolume">Volume</string>
 
     <string name="prefsCategoryVibration">Vibration</string>
     <string name="prefsVibrate">Vibrate</string>
-    <string name="summaryVibrate">Vibrate while ringing</string>
-    <string name="summaryNoVibrate">Don\'t vibrate while ringing</string>
+    <string name="summaryVibrate">Vibrate when ringing</string>
+    <string name="summaryNoVibrate">Don\'t vibrate when ringing</string>
     <string name="prefsPattern">Vibration pattern</string>
 
     <string name="prefsCategoryNotifications">Notifications</string>
@@ -100,6 +102,7 @@
     <string name="summaryNotMutedInFlightMode">Bell will also ring in flight mode</string>
 
     <!-- Validation messages -->
+    <string name="atLeastOneRingingActionNeeded">Specify at least one ringing action</string>
     <string name="atLeastOneActiveDayNeeded">Specify at least one day</string>
     <string name="frequencyDoesNotFitIntoAnHour">Ringing on the minute not possible with chosen interval</string>
 
