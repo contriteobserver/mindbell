@@ -71,6 +71,11 @@
     <string name="prefsSound">Play sound</string>
     <string name="summarySound">Play sound when ringing</string>
     <string name="summaryDontSound">Don\'t play sound when ringing</string>
+    <string name="prefsUseStandardBell">Use standard bell</string>
+    <string name="summaryUseStandardBell">Play standard bell sound when ringing</string>
+    <string name="summaryDontUseStandardBell">Play chosen ringtone sound when ringing</string>
+    <string name="prefsRingtone">Ringtone</string>
+    <string name="summaryRingtoneNotSet">No ringtone selected, play standard bell sound</string>
     <string name="prefsVolume">Volume</string>
 
     <string name="prefsCategoryVibration">Vibration</string>
@@ -148,6 +153,8 @@
     <string name="keyActive" translatable="false">active</string>
     <string name="keyShow" translatable="false">show</string>
     <string name="keySound" translatable="false">sound</string>
+    <string name="keyUseStandardBell" translatable="false">useStandardBell</string>
+    <string name="keyRingtone" translatable="false">ringtone</string>
     <string name="keyStatus" translatable="false">status</string>
     <string name="keyStatusVisibilityPublic" translatable="false">statusVisiblityPublic</string>
     <string name="keyStatusIconMaterialDesign" translatable="false">statusIconMaterialDesign</string>

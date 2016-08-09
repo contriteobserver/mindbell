@@ -30,9 +30,11 @@ import java.util.Set;
 
 import com.googlecode.mindbell.R;
 import com.googlecode.mindbell.util.TimeOfDay;
+import com.googlecode.mindbell.util.Utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -46,6 +48,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     private final String keyActive;
     private final String keyShow;
+    private final String keyUseStandardBell;
+    private final String keyRingtone;
     private final String keySound;
     private final String keyStatus;
     private final String keyStatusVisibilityPublic;
@@ -68,12 +72,15 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     /** Maps preference keys to their allowed entryValues */
     private final Map<String, String[]> entryValuesMap;
 
+    private final Context context;
+
     /**
      * Preference default values ... must correspond with settings in xml definitions
      */
     private final boolean defaultActive = false;
     private final boolean defaultShow = true;
     private final boolean defaultSound = true;
+    private final boolean defaultUseStandardBell = true;
     private final boolean defaultStatus = false;
     private final boolean defaultStatusVisibilityPublic = true;
     private final boolean defaultStatusIconMaterialDesign = true;
@@ -81,6 +88,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private final boolean defaultMuteOffHook = true;
     private final boolean defaultMuteWithPhone = true;
     private final boolean defaultVibrate = false;
+    // private final String defaultRingtone = ""; // there is no really useful default ringtone
     private final String defaultPattern = "100:200:100:600";
     private final String defaultFrequency = "3600000";
     private final boolean defaultRandomize = true;
@@ -99,6 +107,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
      * of calling this directly.
      */
     protected AndroidPrefsAccessor(Context context) {
+        this.context = context;
         // From target SDK version 11 (HONEYCOMB) upwards changes made in the settings dialog do not arrive in
         // UpdateStatusNotification if MODE_MULTI_PROCESS is not set, see API docs for MODE_MULTI_PROCESS.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -112,6 +121,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         keyActive = context.getString(R.string.keyActive);
         keyShow = context.getString(R.string.keyShow);
         keySound = context.getString(R.string.keySound);
+        keyUseStandardBell = context.getString(R.string.keyUseStandardBell);
+        keyRingtone = context.getString(R.string.keyRingtone);
         keyStatus = context.getString(R.string.keyStatus);
         keyStatusVisibilityPublic = context.getString(R.string.keyStatusVisibilityPublic);
         keyStatusIconMaterialDesign = context.getString(R.string.keyStatusIconMaterialDesign);
@@ -132,6 +143,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         keyVolume = context.getString(R.string.keyVolume);
 
         entryValuesMap = new HashMap<>();
+        entryValuesMap.put(keyRingtone, new String[] {}); // we don't need to know the possible ringtone values
         entryValuesMap.put(keyPattern, context.getResources().getStringArray(R.array.patternEntryValues));
         entryValuesMap.put(keyFrequency, context.getResources().getStringArray(R.array.frequencyEntryValues));
         entryValuesMap.put(keyNormalize, context.getResources().getStringArray(R.array.normalizeEntryValues));
@@ -148,7 +160,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
      */
     private void checkSettings() {
         // boolean settings:
-        String[] booleanSettings = new String[] { keyShow, keySound, keyStatus, keyStatusVisibilityPublic, keyStatusIconMaterialDesign,
+        String[] booleanSettings = new String[] { keyShow, keySound, keyUseStandardBell, keyStatus, keyStatusVisibilityPublic, keyStatusIconMaterialDesign,
                 keyActive, keyMuteInFlightMode, keyMuteOffHook, keyMuteWithPhone, keyVibrate, keyRandomize };
         for (String key : booleanSettings) {
             try {
@@ -159,14 +171,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             }
         }
         // string settings:
-        String[] stringSettings = new String[] { keyPattern, keyFrequency, keyNormalize, keyStart, keyEnd };
+        String[] stringSettings = new String[] { keyRingtone, keyPattern, keyFrequency, keyNormalize, keyStart, keyEnd };
         for (String key : stringSettings) {
             try {
                 String value = settings.getString(key, null);
-                List<String> entryValues = Arrays.asList(entryValuesMap.get(key));
-                if (value != null && !entryValues.contains(value)) {
-                    settings.edit().remove(key).apply();
-                    Log.w(TAG, "Removed setting '" + key + "' since it had wrong value '" + value + "'");
+                if (value != null) {
+                    List<String> entryValues = Arrays.asList(entryValuesMap.get(key));
+                    if (entryValues != null && !entryValues.isEmpty() && !entryValues.contains(value)) {
+                        settings.edit().remove(key).apply();
+                        Log.w(TAG, "Removed setting '" + key + "' since it had wrong value '" + value + "'");
+                    }
                 }
             } catch (ClassCastException e) {
                 settings.edit().remove(key).apply();
@@ -232,6 +246,10 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             settings.edit().putBoolean(keySound, defaultSound).apply();
             Log.w(TAG, "Reset missing setting for '" + keySound + "' to '" + defaultSound + "'");
         }
+        if (!settings.contains(keyUseStandardBell)) {
+            settings.edit().putBoolean(keyUseStandardBell, defaultUseStandardBell).apply();
+            Log.w(TAG, "Reset missing setting for '" + keyUseStandardBell + "' to '" + defaultUseStandardBell + "'");
+        }
         if (!settings.contains(keyStatus)) {
             settings.edit().putBoolean(keyStatus, defaultStatus).apply();
             Log.w(TAG, "Reset missing setting for '" + keyStatus + "' to '" + defaultStatus + "'");
@@ -262,6 +280,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             settings.edit().putBoolean(keyVibrate, defaultVibrate).apply();
             Log.w(TAG, "Reset missing setting for '" + keyVibrate + "' to '" + defaultVibrate + "'");
         }
+        // due to lack of a useful default ringtone the preference might be null, see getSoundUri()
+//        if (!settings.contains(keyRingtone)) {
+//            settings.edit().putString(keyRingtone, defaultRingtone).apply();
+//            Log.w(TAG, "Reset missing setting for '" + keyRingtone + "' to '" + defaultRingtone + "'");
+//        }
         if (!settings.contains(keyPattern)) {
             settings.edit().putString(keyPattern, defaultPattern).apply();
             Log.w(TAG, "Reset missing setting for '" + keyPattern + "' to '" + defaultPattern + "'");
@@ -365,6 +388,21 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         } catch (ClassCastException e) {
             Log.e(TAG, "Not a float for volume", e);
             return defaultVolume;
+        }
+    }
+
+    @Override
+    public String getRingtone() {
+        return settings.getString(keyRingtone, null);
+    }
+
+    @Override
+    public Uri getSoundUri() {
+        String ringtone = getRingtone();
+        if (settings.getBoolean(keyUseStandardBell, defaultUseStandardBell) || ringtone == null) {
+            return Utils.getResourceUri(context, R.raw.bell10s);
+        } else {
+            return Uri.parse(ringtone);
         }
     }
 

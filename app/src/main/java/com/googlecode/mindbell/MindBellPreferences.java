@@ -33,12 +33,16 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
+import android.preference.RingtonePreference;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
@@ -122,7 +126,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
      * Ensures that the CheckBoxPreferences checkBoxPreferenceShow, checkBoxPreferenceSound and
      * checkBoxPreferenceVibrate cannot be all "off", at least one must be checked.
      */
-    private boolean mediateShowSoundVibrate(CheckBoxPreference firstOther, CheckBoxPreference secondOther, Object newValue) {
+    private boolean mediateShowAndSoundAndVibrate(CheckBoxPreference firstOther, CheckBoxPreference secondOther, Object newValue) {
         if (!firstOther.isChecked() && !secondOther.isChecked() && !((Boolean) newValue)) {
             Toast.makeText(MindBellPreferences.this, R.string.atLeastOneRingingActionNeeded,
                     Toast.LENGTH_SHORT).show();
@@ -137,7 +141,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         super.onCreate(savedInstanceState);
 
         // check settings, delete any settings that are not valid
-        AndroidContextAccessor.getInstance(this).getPrefs();
+        PrefsAccessor prefs = AndroidContextAccessor.getInstance(this).getPrefs();
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences_1);
@@ -150,6 +154,10 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                 .findPreference(getText(R.string.keyShow));
         final CheckBoxPreference preferenceSound = (CheckBoxPreference) getPreferenceScreen()
                 .findPreference(getText(R.string.keySound));
+        final CheckBoxPreference preferenceUseStandardBell = (CheckBoxPreference) getPreferenceScreen()
+                .findPreference(getText(R.string.keyUseStandardBell));
+        final RingtonePreference preferenceRingtone = (RingtonePreference) getPreferenceScreen()
+                .findPreference(getText(R.string.keyRingtone));
         final CheckBoxPreference preferenceVibrate = (CheckBoxPreference) getPreferenceScreen()
                 .findPreference(getText(R.string.keyVibrate));
         final ListPreferenceWithSummaryFix preferencePattern = (ListPreferenceWithSummaryFix) getPreferenceScreen()
@@ -176,7 +184,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         preferenceShow.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                return mediateShowSoundVibrate(preferenceSound, preferenceVibrate, newValue);
+                return mediateShowAndSoundAndVibrate(preferenceSound, preferenceVibrate, newValue);
             }
 
         });
@@ -184,7 +192,29 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         preferenceSound.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                return mediateShowSoundVibrate(preferenceShow, preferenceVibrate, newValue);
+                boolean isChecked = (Boolean) newValue;
+                preferenceUseStandardBell.setEnabled(isChecked);
+                preferenceRingtone.setEnabled(isChecked && !preferenceUseStandardBell.isChecked());
+                return mediateShowAndSoundAndVibrate(preferenceShow, preferenceVibrate, newValue);
+            }
+
+        });
+
+        preferenceUseStandardBell.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                boolean isChecked = (Boolean) newValue;
+                preferenceRingtone.setEnabled(preferenceSound.isChecked() && !isChecked);
+                return mediateShowAndSoundAndVibrate(preferenceShow, preferenceVibrate, newValue);
+            }
+
+        });
+
+        preferenceRingtone.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                setPreferenceRingtoneSummary(preferenceRingtone, (String) newValue);
+                return true;
             }
 
         });
@@ -192,7 +222,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         preferenceVibrate.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                return mediateShowSoundVibrate(preferenceShow, preferenceSound, newValue);
+                return mediateShowAndSoundAndVibrate(preferenceShow, preferenceSound, newValue);
             }
 
         });
@@ -286,6 +316,24 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
 
         });
 
+        // As no PreferenceChangeListener is called without change, some settings have to be made explicitely
+        preferenceUseStandardBell.setEnabled(preferenceSound.isChecked());
+        preferenceRingtone.setEnabled(preferenceSound.isChecked() && !preferenceUseStandardBell.isChecked());
+        // Weird, but ringtone cannot be retrieved from RingtonePreference, only from SharedPreference
+        setPreferenceRingtoneSummary(preferenceRingtone, prefs.getRingtone());
+
+    }
+
+    private void setPreferenceRingtoneSummary(RingtonePreference preferenceRingtone, String uriString) {
+        CharSequence summary;
+        if (uriString == null || uriString.isEmpty()) {
+            summary = getText(R.string.summaryRingtoneNotSet);
+        } else {
+            Uri ringtoneUri = Uri.parse(uriString);
+            Ringtone ringtone = RingtoneManager.getRingtone(MindBellPreferences.this, ringtoneUri);
+            summary = ringtone.getTitle(MindBellPreferences.this);
+        }
+        preferenceRingtone.setSummary(summary);
     }
 
     @Override

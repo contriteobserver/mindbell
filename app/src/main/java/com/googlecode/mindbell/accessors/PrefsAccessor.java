@@ -19,6 +19,8 @@
  *******************************************************************************/
 package com.googlecode.mindbell.accessors;
 
+import android.net.Uri;
+
 import java.util.Calendar;
 import java.util.Set;
 
@@ -43,6 +45,10 @@ public abstract class PrefsAccessor {
     public abstract boolean isSound();
 
     public abstract boolean isStatus();
+
+    public abstract String getRingtone();
+
+    public abstract Uri getSoundUri();
 
     public abstract Set<Integer> getActiveOnDaysOfWeek();
 

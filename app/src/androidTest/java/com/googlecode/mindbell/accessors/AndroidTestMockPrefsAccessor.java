@@ -19,6 +19,8 @@
  *******************************************************************************/
 package com.googlecode.mindbell.accessors;
 
+import android.net.Uri;
+
 import com.googlecode.mindbell.util.TimeOfDay;
 
 import java.util.Set;
@@ -44,7 +46,17 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
+    public String getRingtone() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
     public boolean isSound() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public Uri getSoundUri() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 

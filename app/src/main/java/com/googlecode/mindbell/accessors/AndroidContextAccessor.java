@@ -28,7 +28,6 @@ import com.googlecode.mindbell.MindBellMain;
 import com.googlecode.mindbell.R;
 import com.googlecode.mindbell.Scheduler;
 import com.googlecode.mindbell.logic.RingingLogic;
-import com.googlecode.mindbell.util.Utils;
 
 import android.Manifest;
 import android.app.Notification;
@@ -195,7 +194,7 @@ public class AndroidContextAccessor extends ContextAccessor {
         // bell to the back again. So a new thread is created that waits and calls the runWhenDone
         // which sends the bell to background. As it's a new thread this method ends after starting
         // the thread which leads to the end of MindBell.onStart() which shows the bell.
-        if (prefs.isShow() && !prefs.isSound()) {
+        if (prefs.isShow() && !prefs.isSound() && runWhenDone != null) {
             startWaiting(runWhenDone);
         }
     }
@@ -216,7 +215,7 @@ public class AndroidContextAccessor extends ContextAccessor {
             setAlarmVolume(alarmMaxVolume);
         }
         float bellVolume = getBellVolume();
-        Uri bellUri = Utils.getResourceUri(context, R.raw.bell10s);
+        Uri bellUri = prefs.getSoundUri();
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
         mediaPlayer.setVolume(bellVolume, bellVolume);

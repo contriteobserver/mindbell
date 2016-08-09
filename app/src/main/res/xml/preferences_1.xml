@@ -80,6 +80,20 @@
 				android:summaryOff="@string/summaryDontSound"
 				android:summaryOn="@string/summarySound"
 				android:defaultValue="true"/>
+			<CheckBoxPreference
+                android:key="@string/keyUseStandardBell"
+				android:title="@string/prefsUseStandardBell"
+				android:summaryOff="@string/summaryDontUseStandardBell"
+				android:summaryOn="@string/summaryUseStandardBell"
+				android:defaultValue="true"
+                android:dependency="@string/keySound"/>
+            <RingtonePreference
+                android:key="@string/keyRingtone"
+                android:title="@string/prefsRingtone"
+                android:ringtoneType="notification"
+                android:showDefault="false"
+                android:showSilent="false"
+				android:defaultValue=""/>
 			<com.googlecode.mindbell.preference.MediaVolumePreference
                 android:key="@string/keyVolume"
 				android:title="@string/prefsVolume"
