@@ -50,12 +50,6 @@ import android.widget.Toast;
 
 public class AndroidContextAccessor extends ContextAccessor {
 
-    public static final int KEYMUTEINFLIGHTMODE = R.string.keyMuteInFlightMode;
-
-    public static final int KEYMUTEOFFHOOK = R.string.keyMuteOffHook;
-
-    public static final int KEYMUTEWITHPHONE = R.string.keyMuteWithPhone;
-
     private static final int uniqueNotificationID = R.layout.bell;
 
     /**
@@ -82,7 +76,7 @@ public class AndroidContextAccessor extends ContextAccessor {
     private boolean canSettingsBeSatisfied(PrefsAccessor prefs) {
         boolean result = !prefs.isMuteOffHook() || ContextCompat.checkSelfPermission(context,
                 Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED;
-        Log.d(TAG, "canSettingsBeSatisfied() -> " + result);
+        Log.d(TAG, "Can settings be satisfied? -> " + result);
         return result;
     }
 
@@ -97,9 +91,9 @@ public class AndroidContextAccessor extends ContextAccessor {
         int alarmMaxVolume = getAlarmMaxVolume();
         if (originalVolume == alarmMaxVolume) { // "someone" else set it to max, so we don't touch it
             MindBell.logDebug(
-                    "finishBellSound() found originalVolume " + originalVolume + " to be max, alarm volume left untouched");
+                    "Finish bell sound found originalVolume " + originalVolume + " to be max, alarm volume left untouched");
         } else {
-            MindBell.logDebug("finishBellSound() found originalVolume " + originalVolume + ", setting alarm volume to it");
+            MindBell.logDebug("Finish bell sound found originalVolume " + originalVolume + ", setting alarm volume to it");
             setAlarmVolume(originalVolume);
         }
     }
@@ -180,14 +174,17 @@ public class AndroidContextAccessor extends ContextAccessor {
 
     @Override
     public void startPlayingSoundAndVibrate(final Runnable runWhenDone) {
+
         // Start playing sound if requested by preferences
         if (prefs.isSound()) {
             startPlayingSound(runWhenDone);
         }
+
         // Vibrate if requested by preferences
         if (prefs.isVibrate()) {
             startVibration();
         }
+
         // If displaying the bell is requested by the preferences but playing a sound is not, then
         // we are currently in MindBell.onStart(), so the bell has not been displayed yet. So this
         // method must end to bring the bell to front. But after a while someone has to send the
@@ -197,6 +194,7 @@ public class AndroidContextAccessor extends ContextAccessor {
         if (prefs.isShow() && !prefs.isSound() && runWhenDone != null) {
             startWaiting(runWhenDone);
         }
+
     }
 
     /**
@@ -209,9 +207,9 @@ public class AndroidContextAccessor extends ContextAccessor {
         int alarmMaxVolume = getAlarmMaxVolume();
         if (originalVolume == alarmMaxVolume) { // "someone" else set it to max, so we don't touch it
             MindBell.logDebug(
-                    "startPlayingSound() found originalVolume " + originalVolume + " to be max, alarm volume left untouched");
+                    "Start playing sound found originalVolume " + originalVolume + " to be max, alarm volume left untouched");
         } else {
-            MindBell.logDebug("startPlayingSound() found originalVolume " + originalVolume + ", setting alarm volume to max");
+            MindBell.logDebug("Start playing sound found originalVolume " + originalVolume + ", setting alarm volume to max");
             setAlarmVolume(alarmMaxVolume);
         }
         float bellVolume = getBellVolume();
@@ -232,7 +230,7 @@ public class AndroidContextAccessor extends ContextAccessor {
             });
             mediaPlayer.start();
         } catch (IOException e) {
-            Log.e(TAG, "could not set up bell sound: " + e.getMessage(), e);
+            Log.e(TAG, "Could not start playing sound: " + e.getMessage(), e);
             if (runWhenDone != null) {
                 runWhenDone.run();
             }
@@ -265,31 +263,28 @@ public class AndroidContextAccessor extends ContextAccessor {
         }).start();
     }
 
+    /**
+     * Send an intent to Scheduler to update notification and to (re-)schedule the bell.
+     */
+    @Override
     public void updateBellSchedule() {
-        updateStatusNotification(prefs, true);
-        if (prefs.isActive()) {
-            Log.d(TAG, "Update bell schedule for active bell");
-            Intent intent = new Intent(context, Scheduler.class);
-            PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            try {
-                sender.send();
-            } catch (PendingIntent.CanceledException e) {
-                Log.e(TAG, "Could not send: " + e.getMessage(), e);
-            }
+        Log.d(TAG, "Update bell schedule for active bell");
+        Intent intent = new Intent(context, Scheduler.class);
+        PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        try {
+            sender.send();
+        } catch (PendingIntent.CanceledException e) {
+            Log.e(TAG, "Could not update bell schedule: " + e.getMessage(), e);
         }
     }
 
     /**
-     * This is about updating status notifcation on changes in system settings, removal of notification is done by
-     * udpateBellSchedule().
+     * This is about updating status notifcation on changes in system settings or when ringing the bell.
      */
+    @Override
     public void updateStatusNotification() {
-        updateStatusNotification(prefs, false);
-    }
-
-    private void updateStatusNotification(PrefsAccessor prefs, boolean shouldShowMessage) {
         if (!prefs.isActive() || !prefs.isStatus()) {// bell inactive or no notification wanted?
-            Log.i(TAG, "remove status notification because of inactive bell or unwanted notification");
+            Log.i(TAG, "Remove status notification because of inactive bell or unwanted notification");
             removeStatusNotification();
             return;
         }
@@ -307,7 +302,7 @@ public class AndroidContextAccessor extends ContextAccessor {
         int statusDrawable = bellActiveDrawable;
         CharSequence contentTitle = context.getText(R.string.statusTitleBellActive);
         String contentText = context.getText(R.string.statusTextBellActive).toString();
-        String muteRequestReason = getMuteRequestReason(shouldShowMessage);
+        String muteRequestReason = getMuteRequestReason(false);
         // Override icon and notification text if bell is muted or permissions are insufficient
         if (!canSettingsBeSatisfied(prefs)) { // Insufficient permissions => override icon/text, switch notifications off
             statusDrawable = R.drawable.ic_stat_warning_white_24px;

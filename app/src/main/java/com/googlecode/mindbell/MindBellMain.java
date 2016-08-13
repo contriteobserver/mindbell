@@ -132,9 +132,10 @@ public class MindBellMain extends Activity {
      * Handles click on menu item active.
      */
     private boolean onMenuItemClickActive() {
-        PrefsAccessor prefsAccessor = AndroidContextAccessor.getInstance(MindBellMain.this).getPrefs();
+        ContextAccessor contextAccessor = AndroidContextAccessor.getInstance(MindBellMain.this);
+        PrefsAccessor prefsAccessor = contextAccessor.getPrefs();
         prefsAccessor.isActive(!prefsAccessor.isActive()); // toggle active/inactive
-        Utils.updateBellSchedule(MindBellMain.this);
+        contextAccessor.updateBellSchedule();
         invalidateOptionsMenu(); // re-call onPrepareOptionsMenu()
         CharSequence feedback = getText((prefsAccessor.isActive()) ? R.string.summaryActive : R.string.summaryNotActive);
         Toast.makeText(this, feedback, Toast.LENGTH_SHORT).show();
@@ -176,8 +177,9 @@ public class MindBellMain extends Activity {
     public boolean onTouchEvent(MotionEvent e) {
         if (e.getAction() == MotionEvent.ACTION_DOWN) {
             notifyIfNotActive();
-            ContextAccessor ca = AndroidContextAccessor.getInstance(this);
-            RingingLogic.ringBell(ca, null);
+            ContextAccessor contextAccessor = AndroidContextAccessor.getInstance(this);
+            contextAccessor.updateStatusNotification();
+            RingingLogic.ringBell(contextAccessor, null);
         }
         return true;
     }

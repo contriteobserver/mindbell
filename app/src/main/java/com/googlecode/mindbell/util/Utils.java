@@ -26,8 +26,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import com.googlecode.mindbell.UpdateBellSchedule;
-
 import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -40,6 +38,8 @@ import android.content.res.Resources.NotFoundException;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
+
+import com.googlecode.mindbell.Scheduler;
 
 public class Utils {
 
@@ -159,18 +159,4 @@ public class Utils {
         return sb.toString();
     }
 
-    /**
-     * Update bell schedule and notification by using the regularly used BroadcastReceiver UpdateBellSchedule.
-     *
-     * @param packageContext
-     */
-    public static void updateBellSchedule(Context packageContext) {
-        Intent intent = new Intent(packageContext, UpdateBellSchedule.class);
-        PendingIntent sender = PendingIntent.getBroadcast(packageContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        try {
-            sender.send();
-        } catch (PendingIntent.CanceledException e) {
-            Log.e(TAG, "Could not send message", e);
-        }
-    }
 }

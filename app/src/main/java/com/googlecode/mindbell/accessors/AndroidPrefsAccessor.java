@@ -44,12 +44,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     public static final String NORMALIZE_NONE = "-1";
 
     private final SharedPreferences settings;
-    private final String[] hours;
-
     private final String keyActive;
-    private final String keyShow;
+
     private final String keyUseStandardBell;
     private final String keyRingtone;
+    private final String keyShow;
     private final String keySound;
     private final String keyStatus;
     private final String keyStatusVisibilityPublic;
@@ -71,8 +70,6 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     /** Maps preference keys to their allowed entryValues */
     private final Map<String, String[]> entryValuesMap;
-
-    private final Context context;
 
     /**
      * Preference default values ... must correspond with settings in xml definitions
@@ -100,14 +97,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private final float defaultVolume = AndroidContextAccessor.MINUS_SIX_DB;
 
     private final String[] weekdayEntryValues;
+    private final String[] hourEntries;
     private final String[] weekdayAbbreviationEntries;
+
+    private final Uri bellRessourceUri;
 
     /**
      * Constructs an accessor for preferences in the given context, please use {@link AndroidContextAccessor#getPrefs()} instead
      * of calling this directly.
      */
     protected AndroidPrefsAccessor(Context context) {
-        this.context = context;
         // From target SDK version 11 (HONEYCOMB) upwards changes made in the settings dialog do not arrive in
         // UpdateStatusNotification if MODE_MULTI_PROCESS is not set, see API docs for MODE_MULTI_PROCESS.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -116,7 +115,6 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             this.settings = PreferenceManager.getDefaultSharedPreferences(context);
         }
 
-        hours = context.getResources().getStringArray(R.array.hourEntries);
 
         keyActive = context.getString(R.string.keyActive);
         keyShow = context.getString(R.string.keyShow);
@@ -129,6 +127,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         keyMuteInFlightMode = context.getString(R.string.keyMuteInFlightMode);
         keyMuteOffHook = context.getString(R.string.keyMuteOffHook);
         keyMuteWithPhone = context.getString(R.string.keyMuteWithPhone);
+        keyVolume = context.getString(R.string.keyVolume);
         keyVibrate = context.getString(R.string.keyVibrate);
         keyPattern = context.getString(R.string.keyPattern);
         keyFrequency = context.getString(R.string.keyFrequency);
@@ -137,10 +136,12 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         keyStart = context.getString(R.string.keyStart);
         keyEnd = context.getString(R.string.keyEnd);
         keyActiveOnDaysOfWeek = context.getString(R.string.keyActiveOnDaysOfWeek);
+
+        hourEntries = context.getResources().getStringArray(R.array.hourEntries);
         weekdayEntryValues = context.getResources().getStringArray(R.array.weekdayEntryValues);
         weekdayAbbreviationEntries = context.getResources().getStringArray(R.array.weekdayAbbreviationEntries);
 
-        keyVolume = context.getString(R.string.keyVolume);
+        bellRessourceUri = Utils.getResourceUri(context, R.raw.bell10s);
 
         entryValuesMap = new HashMap<>();
         entryValuesMap.put(keyRingtone, new String[] {}); // we don't need to know the possible ringtone values
@@ -400,7 +401,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     public Uri getSoundUri() {
         String ringtone = getRingtone();
         if (settings.getBoolean(keyUseStandardBell, defaultUseStandardBell) || ringtone == null) {
-            return Utils.getResourceUri(context, R.raw.bell10s);
+            return bellRessourceUri;
         } else {
             return Uri.parse(ringtone);
         }
@@ -417,7 +418,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     @Override
     public String getDaytimeEndString() {
-        return hours[getDaytimeEndHour()];
+        return hourEntries[getDaytimeEndHour()];
     }
 
     @Override
@@ -431,7 +432,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     @Override
     public String getDaytimeStartString() {
-        return hours[getDaytimeStartHour()];
+        return hourEntries[getDaytimeStartHour()];
     }
 
     @Override

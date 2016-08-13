@@ -118,4 +118,14 @@ public class AndroidTestMockContextAccessor extends ContextAccessor {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
+    @Override
+    public void updateStatusNotification() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public void updateBellSchedule() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
 }

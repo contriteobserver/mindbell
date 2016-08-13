@@ -23,6 +23,7 @@ import java.util.Set;
 
 import com.googlecode.mindbell.accessors.AndroidContextAccessor;
 import com.googlecode.mindbell.accessors.AndroidPrefsAccessor;
+import com.googlecode.mindbell.accessors.ContextAccessor;
 import com.googlecode.mindbell.accessors.PrefsAccessor;
 import com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix;
 import com.googlecode.mindbell.preference.MultiSelectListPreferenceWithSummary;
@@ -339,7 +340,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
     @Override
     public void onPause() {
         super.onPause();
-        Utils.updateBellSchedule(this);
+        AndroidContextAccessor.getInstance(this).updateBellSchedule();
     }
 
     @SuppressWarnings("deprecation") // deprecation is because MindBell is not fragment-based

@@ -62,15 +62,11 @@
         
         <!-- Do NOT change android:name ... http://android-developers.blogspot.de/2011/06/things-that-cannot-change.html -->
         <receiver android:name="Scheduler" android:process=":remote">
-        </receiver>
-        
-        <!-- Do NOT change android:name ... http://android-developers.blogspot.de/2011/06/things-that-cannot-change.html -->
-        <receiver android:name="UpdateBellSchedule" android:process=":remote">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
-        
+
         <!-- Do NOT change android:name ... http://android-developers.blogspot.de/2011/06/things-that-cannot-change.html -->
         <receiver android:name="UpdateStatusNotification" android:process=":remote">
             <intent-filter>

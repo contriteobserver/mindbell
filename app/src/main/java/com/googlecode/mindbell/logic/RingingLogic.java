@@ -73,40 +73,41 @@ public class RingingLogic {
     /**
      * Start playing bell sound and vibration if requested.
      *
-     * @param context
-     *            the context in which to play the sound.
+     * @param contextAccessor
+     *            the ContextAccessor to be used to ring the bell.
      * @param runWhenDone
-     *            an optional Runnable to call on completion of the sound, or null.
+     *            an optional Runnable to call on completion of all ringing activities, or null.
      * @return true if bell started ringing, false otherwise
      */
-    public static boolean ringBell(ContextAccessor ca, final Runnable runWhenDone) {
+    public static boolean ringBell(ContextAccessor contextAccessor, final Runnable runWhenDone) {
 
-        // 1. Verify if we should be muted
-        if (ca.isMuteRequested(true)) {
+        // Verify if we should be muted
+        if (contextAccessor.isMuteRequested(true)) {
             if (runWhenDone != null) {
                 runWhenDone.run();
             }
             return false;
         }
-        // 2. Stop any ongoing ring, and manually reset volume to original.
-        if (ca.isBellSoundPlaying()) { // probably false, as context is (probably) different from that for startPlayingSoundAndVibrate()
-            ca.finishBellSound();
+        // Stop any ongoing ring, and manually reset volume to original.
+        if (contextAccessor.isBellSoundPlaying()) { // probably false, as context is (probably) different from that for startPlayingSoundAndVibrate()
+            contextAccessor.finishBellSound();
         }
 
-        // 3. Kick off the playback of the bell sound, with an automatic volume
-        // reset built-in if not stopped.
-        ca.startPlayingSoundAndVibrate(runWhenDone);
+        // Kick off the playback of the bell sound, with an automatic volume reset built-in if not stopped.
+        contextAccessor.startPlayingSoundAndVibrate(runWhenDone);
+
         return true;
     }
 
     /**
-     * Play sound and vibrate if requested and wait till it's done or time reached.
+     * Ring the bell if requested and wait till it's done or time reached. Ringing the bell means executing all requested activities,
+     * such as showing the bell, playing a sound and vibrating.
      *
-     * @param context
-     *            the context in which to play the sound.
+     * @param contextAccessor
+     *            the ContextAccessor to be used to ring the bell.
      */
-    public static void ringBellAndWait(ContextAccessor ca) {
-        new KeepAlive(ca, WAITING_TIME).ringBell();
+    public static void ringBellAndWait(ContextAccessor contextAccessor) {
+        new KeepAlive(contextAccessor, WAITING_TIME).ringBell();
     }
 
 }

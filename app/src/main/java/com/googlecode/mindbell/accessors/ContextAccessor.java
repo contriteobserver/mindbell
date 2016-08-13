@@ -109,4 +109,8 @@ public abstract class ContextAccessor {
 
     public abstract void startPlayingSoundAndVibrate(final Runnable runWhenDone);
 
+    public abstract void updateStatusNotification();
+
+    public abstract void updateBellSchedule();
+
 }

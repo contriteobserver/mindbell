@@ -24,6 +24,7 @@ import static com.googlecode.mindbell.MindBellPreferences.TAG;
 import java.util.Calendar;
 
 import com.googlecode.mindbell.accessors.AndroidContextAccessor;
+import com.googlecode.mindbell.accessors.ContextAccessor;
 import com.googlecode.mindbell.accessors.PrefsAccessor;
 import com.googlecode.mindbell.logic.RingingLogic;
 import com.googlecode.mindbell.logic.SchedulerLogic;
@@ -46,13 +47,17 @@ public class Scheduler extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Log.d(TAG, "scheduler received intent");
+        Log.d(TAG, "Scheduler received intent");
 
         AlarmManagerCompat alarmManager = new AlarmManagerCompat(context);
-        PrefsAccessor prefs = AndroidContextAccessor.getInstance(context).getPrefs();
+        ContextAccessor contextAccessor = AndroidContextAccessor.getInstance(context);
+        PrefsAccessor prefs = contextAccessor.getPrefs();
+
+        // Update notification, just in case MindBell wasn't informed about any muting
+        contextAccessor.updateStatusNotification();
 
         if (!prefs.isActive()) {
-            Log.d(TAG, "bell is not active -- not ringing, not rescheduling.");
+            Log.d(TAG, "Bell is not active -- not ringing, not rescheduling.");
             return;
         }
 
@@ -69,33 +74,33 @@ public class Scheduler extends BroadcastReceiver {
         PendingIntent sender = PendingIntent.getBroadcast(context, 0, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextTargetTimeMillis, sender);
         TimeOfDay nextBellTime = new TimeOfDay(nextTargetTimeMillis);
-        Log.d(TAG, "scheduled next bell alarm for " + nextBellTime.getDisplayString());
+        Log.d(TAG, "Scheduled next bell alarm for " + nextBellTime.getDisplayString());
 
         if (!intent.getBooleanExtra(extraIsRescheduling, false)) {
-            Log.d(TAG, "not ringing, has been called by preferences or activate bell button");
+            Log.d(TAG, "Not ringing, has been called by preferences, activate bell button or when boot completed");
             return;
         }
 
         // ring if daytime
         if (!(new TimeOfDay()).isDaytime(prefs)) {
-            Log.d(TAG, "not ringing, it is night time");
+            Log.d(TAG, "Not ringing, it is night time");
             return;
         }
 
         if (prefs.isShow()) {
-            Log.d(TAG, "show bell, then play sound and vibrate if requested");
+            Log.d(TAG, "Show bell, then play sound and vibrate if requested");
 
             Intent ringBell = new Intent(context, MindBell.class);
             PendingIntent bellIntent = PendingIntent.getActivity(context, -1, ringBell, PendingIntent.FLAG_UPDATE_CURRENT);
             try {
                 bellIntent.send(); // show MindBell activity and call RingingLogic.ringBellAndWait()
             } catch (CanceledException e) {
-                Log.d(TAG, "cannot show bell, play sound and vibrate: " + e.getMessage(), e);
+                Log.d(TAG, "Cannot show bell, play sound and vibrate: " + e.getMessage(), e);
             }
 
         } else { // ring audio-only immediately:
-            Log.d(TAG, "play sound and vibrate if requested but do not show bell");
-            RingingLogic.ringBellAndWait(AndroidContextAccessor.getInstance(context));
+            Log.d(TAG, "Play sound and vibrate if requested but do not show bell");
+            RingingLogic.ringBellAndWait(contextAccessor);
         }
 
     }

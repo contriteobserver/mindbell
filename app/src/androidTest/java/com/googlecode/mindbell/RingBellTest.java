@@ -84,15 +84,15 @@ public class RingBellTest {
     }
 
     private void setContextMuteInFlightMode(boolean value) {
-        setBooleanContext(AndroidContextAccessor.KEYMUTEINFLIGHTMODE, value);
+        setBooleanContext(R.string.keyMuteInFlightMode, value);
     }
 
     private void setContextMuteOffHook(boolean value) {
-        setBooleanContext(AndroidContextAccessor.KEYMUTEOFFHOOK, value);
+        setBooleanContext(R.string.keyMuteOffHook, value);
     }
 
     private void setContextMuteWithPhone(boolean value) {
-        setBooleanContext(AndroidContextAccessor.KEYMUTEWITHPHONE, value);
+        setBooleanContext(R.string.keyMuteWithPhone, value);
     }
 
     @Before
