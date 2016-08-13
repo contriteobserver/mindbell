@@ -73,6 +73,7 @@
                 <action android:name="android.intent.action.AIRPLANE_MODE"/>
                 <action android:name="android.intent.action.PHONE_STATE"/>
                 <action android:name="android.media.RINGER_MODE_CHANGED"/>
+                <action android:name="com.googlecode.mindbell.UPDATE_STATUS_NOTIFICATION"/>
             </intent-filter>
         </receiver>
         

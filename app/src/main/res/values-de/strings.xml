@@ -118,6 +118,7 @@
     <string name="statusTextNotificationsDisabled">MindBell hat \'Status-Icon anzeigen\' ausgeschaltet</string>
     <string name="statusTitleBellActive">MindBell ist aktiv</string>
     <string name="statusTextBellActive">_STARTTIME_ bis _ENDTIME_ am _WEEKDAYS_</string>
+    <string name="statusActionRefreshStatus">Status aktualisieren</string>
 
     <!-- Reasons why bell is muted -->
     <string name="reasonMutedWithPhone">Glocke still wie das Handy</string>

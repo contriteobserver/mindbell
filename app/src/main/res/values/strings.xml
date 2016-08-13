@@ -119,6 +119,7 @@
     <string name="statusTextNotificationsDisabled">MindBell turned off \'Show status icon\'</string>
     <string name="statusTitleBellActive">MindBell is active</string>
     <string name="statusTextBellActive">_STARTTIME_ to _ENDTIME_ on _WEEKDAYS_</string>
+    <string name="statusActionRefreshStatus">Refresh status</string>
 
     <!-- Reasons why bell is muted -->
     <string name="reasonMutedWithPhone">Bell muted with phone</string>

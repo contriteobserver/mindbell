@@ -27,6 +27,7 @@ import com.googlecode.mindbell.MindBell;
 import com.googlecode.mindbell.MindBellMain;
 import com.googlecode.mindbell.R;
 import com.googlecode.mindbell.Scheduler;
+import com.googlecode.mindbell.UpdateStatusNotification;
 import com.googlecode.mindbell.logic.RingingLogic;
 
 import android.Manifest;
@@ -323,23 +324,23 @@ public class AndroidContextAccessor extends ContextAccessor {
         // Now do the notification update
         Log.i(TAG, "Update status notification: " + contentText);
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        Intent notificationIntent = new Intent(context, MindBellMain.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent openAppIntent = PendingIntent.getActivity(context, 0, new Intent(context, MindBellMain.class), PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent refreshIntent = PendingIntent.getBroadcast(context, 1, new Intent("com.googlecode.mindbell.UPDATE_STATUS_NOTIFICATION"), PendingIntent.FLAG_UPDATE_CURRENT);
         int visibility = (prefs.isStatusNotificationVisibilityPublic()) ? NotificationCompat.VISIBILITY_PUBLIC
                 : NotificationCompat.VISIBILITY_PRIVATE;
-        Notification notif = new NotificationCompat.Builder(context.getApplicationContext()) //
+        Notification notification = new NotificationCompat.Builder(context.getApplicationContext()) //
                 .setCategory(NotificationCompat.CATEGORY_ALARM) //
                 .setColor(context.getResources().getColor(R.color.notificationBackground)) //
                 .setContentTitle(contentTitle) //
                 .setContentText(contentText) //
-                .setContentIntent(contentIntent) //
+                .setContentIntent(openAppIntent) //
                 .setOngoing(true) //
                 .setSmallIcon(statusDrawable) //
                 .setVisibility(visibility) //
                 .setWhen(System.currentTimeMillis()) //
+                .addAction(R.drawable.ic_action_refresh_status, context.getText(R.string.statusActionRefreshStatus), refreshIntent) //
                 .build();
-        notificationManager.notify(uniqueNotificationID, notif);
+        notificationManager.notify(uniqueNotificationID, notification);
     }
 
 }
