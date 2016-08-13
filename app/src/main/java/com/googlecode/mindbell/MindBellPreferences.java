@@ -193,10 +193,14 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         preferenceSound.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                boolean isChecked = (Boolean) newValue;
-                preferenceUseStandardBell.setEnabled(isChecked);
-                preferenceRingtone.setEnabled(isChecked && !preferenceUseStandardBell.isChecked());
-                return mediateShowAndSoundAndVibrate(preferenceShow, preferenceVibrate, newValue);
+                if (mediateShowAndSoundAndVibrate(preferenceShow, preferenceVibrate, newValue)) {
+                    boolean isChecked = (Boolean) newValue;
+                    preferenceUseStandardBell.setEnabled(isChecked);
+                    preferenceRingtone.setEnabled(isChecked && !preferenceUseStandardBell.isChecked());
+                    return true;
+                } else {
+                    return false;
+                }
             }
 
         });
@@ -206,7 +210,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 boolean isChecked = (Boolean) newValue;
                 preferenceRingtone.setEnabled(preferenceSound.isChecked() && !isChecked);
-                return mediateShowAndSoundAndVibrate(preferenceShow, preferenceVibrate, newValue);
+                return true;
             }
 
         });
