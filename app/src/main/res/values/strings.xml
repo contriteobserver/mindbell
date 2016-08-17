@@ -35,11 +35,10 @@
     <!-- Menu -->
     <string name="menuSettings">Settings</string>
     <string name="menuAbout">About MindBell</string>
-    <string name="menuSendInfoMail">Create info e-mail</string>
-    <string name="menuSendInfoAndLogMail">Create info+log e-mail</string>
-    
+    <string name="menuHelp">Help</string>
+
     <!-- Send log by e-mail -->
-    <string name="emailSubject">Info e-mail sent by MindBell</string>
+    <string name="emailSubject">E-mail sent by MindBell</string>
     <string name="emailChooseApp">Send mail &#8230;</string>
 
     <!-- Preference window -->
@@ -142,13 +141,14 @@
     <!-- General dialog buttons -->
     <string name="buttonOk">OK</string>
 
-    <!-- Offer popup -->
-    <string name="main_title_popup">New from Mindful Apps</string>
-    <string name="main_message1_popup">Nature Sounds Alarm Clock - the alarm that you set with your finger!</string>
-    <string name="main_message2_popup">Wake up to pleasant nature sounds.</string>
-    <string name="main_yes_popup">Show me</string>
-    <string name="main_no_popup">No thanks</string>
-    <string name="main_uri_popup" translatable="false">market://details?id=com.mindful_apps.alarm.natural</string>
+    <!-- Help popup -->
+    <string name="main_message1_popup">To see this information again please choose \'Help\' from the menu.</string>
+    <string name="main_message2_popup">MindBell does not ring periodically? Have you activated the bell in the settings? Maybe you have to exclude MindBell from battery saver options that depend on your device. If it doesn\'t work anyway please consult this checklist: http://dknapps.de/mindbell-notringing</string>
+    <string name="main_message3_popup">To find out what has been changed recently please take a look at the changelog: http://dknapps.de/mindbell-changelog</string>
+    <string name="main_message4_popup">If you have any further questions please check the FAQ: http://dknapps.de/mindbell</string>
+    <string name="main_message5_popup">In case of other questions or if the problem persists please send me an e-mail by clicking \'Send e-mail\' below. The generated e-mail text contains your MindBell and Android version and some device information and all log entries produced by MindBell to help finding a possible bug - it does not contain any sensitive data. Please add your question or a description of the problem you are experiencing.</string>
+    <string name="main_yes_popup">OK</string>
+    <string name="main_no_popup">Send e-mail</string>
 
     <!-- Preference keys (don't localize) -->
     <string name="keyActive" translatable="false">active</string>

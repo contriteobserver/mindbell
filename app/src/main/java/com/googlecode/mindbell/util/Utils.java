@@ -59,24 +59,44 @@ public class Utils {
      * Read application information and return them as concatenated string.
      */
     public static String getApplicationInformation(PackageManager packageManager, String packageName) {
-        try {
-            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
             StringBuilder sb = new StringBuilder();
             sb.append("===== beginning of application information =====").append("\n");
             sb.append("packageName").append("=").append(packageName).append("\n");
-            sb.append("packageInfo.versionName").append("=").append(packageInfo.versionName).append("\n");
-            sb.append("packageInfo.versionCode").append("=").append(packageInfo.versionCode).append("\n");
+            sb.append("packageInfo.versionName").append("=").append(getApplicationVersionName(packageManager, packageName)).append("\n");
+            sb.append("packageInfo.versionCode").append("=").append(getApplicationVersionCode(packageManager, packageName)).append("\n");
             sb.append("===== end of application information =====").append("\n");
             return sb.toString();
+    }
+
+    /**
+     * Return name of the applications version.
+     */
+    public static String getApplicationVersionName(PackageManager packageManager, String packageName) {
+        try {
+        PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
+        return packageInfo.versionName;
         } catch (NameNotFoundException e) {
             Log.e(TAG, "Could not retrieve package information" + e);
+            return ("N/A");
         }
-        return "***** MindBell package information could not be read *****\n";
+    }
+
+    /**
+     * Return code of the applications version.
+     */
+    public static int getApplicationVersionCode(PackageManager packageManager, String packageName) {
+        try {
+        PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
+        return packageInfo.versionCode;
+        } catch (NameNotFoundException e) {
+            Log.e(TAG, "Could not retrieve package information" + e);
+            return 0;
+        }
     }
 
     /**
      * Read log entries of this application and return them as concatenated string but try to avoid a TransactionTooLargeException
-     * by limiting the output.
+     * (which may produce a FAILED BINDER TRANSACTION) by limiting the output.
      */
     public static String getLimitedLogEntriesAsString() {
         BufferedReader reader = null;

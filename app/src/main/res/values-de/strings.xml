@@ -34,11 +34,10 @@
     <!-- Menu -->
     <string name="menuSettings">Einstellungen</string>
     <string name="menuAbout">Über MindBell</string>
-    <string name="menuSendInfoMail">Info-E-Mail erstellen</string>
-    <string name="menuSendInfoAndLogMail">Info+Log-E-Mail erstellen</string>
+    <string name="menuHelp">Hilfe</string>
     
     <!-- Send log by e-mail -->
-    <string name="emailSubject">Info-E-Mail gesendet von MindBell</string>
+    <string name="emailSubject">E-Mail gesendet von MindBell</string>
     <string name="emailChooseApp">Mail senden &#8230;</string>
 
     <!-- Preference window -->
@@ -142,11 +141,13 @@
     <!-- General dialog buttons -->
     <string name="buttonOk">OK</string>
 
-    <!-- Offer popup -->
-    <string name="main_title_popup">Neu von Mindful Apps</string>
-    <string name="main_message1_popup">Naturklang-Wecker - der Wecker, den du mit dem Finger stellst!</string>
-    <string name="main_message2_popup">Sanftes Wecken mit Naturklängen.</string>
-    <string name="main_yes_popup">Ansehen</string>
-    <string name="main_no_popup">Nein danke</string>
+    <!-- Help popup -->
+    <string name="main_message1_popup">Diese Information kann über \'Hilfe\' im Menü erneut angezeigt werden.</string>
+    <string name="main_message2_popup">MindBell läutet nicht regelmäßig? Haben Sie die Glocke in den Einstellungen aktiviert? Eventuell müssen Sie MindBell aus geräteabhängigen Akkusparoptionen herausnehmen. Wenn es dann immer noch nicht geht, hilft vielleicht diese Check-Liste: http://dknapps.de/mindbell-notringing</string>
+    <string name="main_message3_popup">Anhand der folgenden Änderungshistorie ist einsehbar, was zuletzt an MindBell geändert wurde: http://dknapps.de/mindbell-changelog</string>
+    <string name="main_message4_popup">Konsultieren Sie bitte zunächst die FAQ für weitere Fragen: http://dknapps.de/mindbell</string>
+    <string name="main_message5_popup">Für andere Fragen oder wenn das Problem bestehen bleibt, senden Sie mir bitte ein E-Mail, indem sie unten \'E-Mail senden\' anklicken. Der generierte E-Mail-Text enthält Ihre MindBell und Android Version und ein paar Geräteinformationen und alle von MindBell erzeugten Log-Einträge, die bei der Fehlersuche helfen sollen - der Text enthält keine sensiblen Daten. Bitte ergänzen Sie Ihre Frage oder eine Beschreibung des Problems.</string>
+    <string name="main_yes_popup">OK</string>
+    <string name="main_no_popup">E-Mail senden</string>
 
 </resources>

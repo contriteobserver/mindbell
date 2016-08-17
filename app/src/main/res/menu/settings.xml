@@ -27,14 +27,12 @@
         android:title="@string/menuSettings"
         android:showAsAction="ifRoom"
         android:icon="@drawable/ic_settings_white_24dp"/>
+    <item android:id="@+id/help"
+        android:title="@string/menuHelp"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_help_white_24px"/>
     <item android:id="@+id/about"
         android:title="@string/menuAbout"
         android:showAsAction="ifRoom"
         android:icon="@drawable/ic_info_white_24dp"/>
-    <item android:id="@+id/sendInfoMail"
-        android:title="@string/menuSendInfoMail"
-        android:showAsAction="never"/>
-    <item android:id="@+id/sendInfoAndLogMail"
-        android:title="@string/menuSendInfoAndLogMail"
-        android:showAsAction="never"/>
 </menu>

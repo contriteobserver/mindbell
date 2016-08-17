@@ -1,16 +1,16 @@
 /*******************************************************************************
  * MindBell - Aims to give you a support for staying mindful in a busy life -
- *            for remembering what really counts
- *
- *     Copyright (C) 2010-2014 Marc Schroeder
- *     Copyright (C) 2014-2016 Uwe Damken
- *
+ * for remembering what really counts
+ * <p/>
+ * Copyright (C) 2010-2014 Marc Schroeder
+ * Copyright (C) 2014-2016 Uwe Damken
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,38 +26,49 @@ import com.googlecode.mindbell.logic.RingingLogic;
 import com.googlecode.mindbell.util.Utils;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Toast;
+
+import static com.googlecode.mindbell.MindBellPreferences.TAG;
 
 public class MindBellMain extends Activity {
 
-    // TODO dkn For the time being there is no need to show a popup on first startup
-    // private static final String POPUP_PREFS_FILE = "popup-prefs";
+    private static final String POPUP_PREFS_FILE = "popup-prefs";
 
-    // TODO dkn For the time being there is no need to show a popup on first startup
-    // private static final String KEY_POPUP = "popup";
+    private static final String KEY_POPUP = "popup";
 
-    // TODO dkn For the time being there is no need to show a popup on first startup
-    // private SharedPreferences popupPrefs;
+    private SharedPreferences popupPrefs;
 
-    // TODO dkn For the time being there is no need to show a popup on first startup
-    // private void checkWhetherToShowPopup() {
-    // if (!hasShownPopup()) {
-    // setPopupShown(true);
-    // showPopup();
-    // }
-    // }
+    private void checkWhetherToShowPopup() {
+        if (!hasShownPopup()) {
+            setPopupShown(true);
+            onMenuItemClickHelp();
+        }
+    }
 
-    // TODO dkn For the time being there is no need to show a popup on first startup
-    // private boolean hasShownPopup() {
-    // return popupPrefs.getBoolean(KEY_POPUP, false);
-    // }
+    private boolean hasShownPopup() {
+        try {
+            int versionCode = Utils.getApplicationVersionCode(getPackageManager(), getPackageName());
+            int versionCodePopupShownFor = popupPrefs.getInt(KEY_POPUP, 0);
+            return versionCode == versionCodePopupShownFor;
+        } catch (ClassCastException e) {
+            setPopupShown(false);
+            Log.w(TAG, "Removed setting '" + KEY_POPUP + "' since it had wrong type");
+            return false;
+        }
+    }
 
     /**
      * Return information to be sent by mail.
@@ -68,7 +79,7 @@ public class MindBellMain extends Activity {
         sb.append(Utils.getApplicationInformation(getPackageManager(), getPackageName()));
         sb.append("\n");
         sb.append(Utils.getSystemInformation());
-        if (withLog) { // too much log entries may produce FAILED BINDER TRANSACTION => users choice
+        if (withLog) {
             sb.append("\n");
             sb.append(Utils.getLimitedLogEntriesAsString());
         }
@@ -87,8 +98,9 @@ public class MindBellMain extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // TODO dkn For the time being there is no need to show a popup on first startup
-        // popupPrefs = getSharedPreferences(POPUP_PREFS_FILE, MODE_PRIVATE);
+        popupPrefs = getSharedPreferences(POPUP_PREFS_FILE, MODE_PRIVATE);
+        // Use the following line to show popup dialog on every start
+        // setPopupShown(false);
         setContentView(R.layout.main);
     }
 
@@ -101,27 +113,19 @@ public class MindBellMain extends Activity {
         settingsItem.setIntent(new Intent(this, MindBellPreferences.class));
         MenuItem aboutItem = menu.findItem(R.id.about);
         aboutItem.setIntent(new Intent(this, AboutActivity.class));
+        MenuItem helpItem = menu.findItem(R.id.help);
+        helpItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+
+            public boolean onMenuItemClick(MenuItem item) {
+                return onMenuItemClickHelp();
+            }
+
+        });
         MenuItem activeItem = menu.findItem(R.id.active);
         activeItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 
             public boolean onMenuItemClick(MenuItem item) {
                 return onMenuItemClickActive();
-            }
-
-        });
-        MenuItem sendLogItem = menu.findItem(R.id.sendInfoMail);
-        sendLogItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-
-            public boolean onMenuItemClick(MenuItem item) {
-                return onMenuItemClickSendInfo(false);
-            }
-
-        });
-        MenuItem sendLogAndLogItem = menu.findItem(R.id.sendInfoAndLogMail);
-        sendLogAndLogItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-
-            public boolean onMenuItemClick(MenuItem item) {
-                return onMenuItemClickSendInfo(true);
             }
 
         });
@@ -148,7 +152,7 @@ public class MindBellMain extends Activity {
     private boolean onMenuItemClickSendInfo(boolean withLog) {
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("message/rfc822");
-        i.putExtra(Intent.EXTRA_EMAIL, new String[] { getText(R.string.emailAddress).toString() });
+        i.putExtra(Intent.EXTRA_EMAIL, new String[]{getText(R.string.emailAddress).toString()});
         i.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.emailSubject));
         i.putExtra(Intent.EXTRA_TEXT, getInfoMailText(withLog));
         try {
@@ -184,37 +188,39 @@ public class MindBellMain extends Activity {
         return true;
     }
 
-    // TODO dkn For the time being there is no need to show a popup on first startup
-    // @Override
-    // public void onWindowFocusChanged(boolean hasFocus) {
-    // super.onWindowFocusChanged(hasFocus);
-    // if (hasFocus) {
-    // checkWhetherToShowPopup();
-    // }
-    // }
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            checkWhetherToShowPopup();
+        }
+    }
 
-    // TODO dkn For the time being there is no need to show a popup on first startup
-    // private void setPopupShown(boolean shown) {
-    // popupPrefs.edit().putBoolean(KEY_POPUP, shown).commit();
-    // }
+    private void setPopupShown(boolean shown) {
+        if (shown) {
+            int versionCode = Utils.getApplicationVersionCode(getPackageManager(), getPackageName());
+            popupPrefs.edit().putInt(KEY_POPUP, versionCode).commit();
+        } else {
+            popupPrefs.edit().remove(KEY_POPUP).apply();
+        }
+    }
 
-    // TODO dkn For the time being there is no need to show a popup on first startup
-    // private void showPopup() {
-    // DialogInterface.OnClickListener yesListener = new DialogInterface.OnClickListener() {
-    // public void onClick(DialogInterface dialog, int which) {
-    // dialog.dismiss();
-    // takeUserToOffer();
-    // }
-    // };
-    //
-    // View popupView = LayoutInflater.from(this).inflate(R.layout.popup_dialog, null);
-    // new AlertDialog.Builder(this).setTitle(R.string.main_title_popup).setIcon(R.drawable.alarm_natural_icon)
-    // .setView(popupView).setPositiveButton(R.string.main_yes_popup, yesListener)
-    // .setNegativeButton(R.string.main_no_popup, null).show();
-    // }
+    private boolean onMenuItemClickHelp() {
+        View popupView = LayoutInflater.from(this).inflate(R.layout.popup_dialog, null);
+        String versionName = Utils.getApplicationVersionName(getPackageManager(), getPackageName());
+        new AlertDialog.Builder(this) //
+                .setTitle(getText(R.string.app_name) + " " + versionName) //
+                .setIcon(R.drawable.icon) //
+                .setView(popupView) //
+                .setPositiveButton(R.string.main_yes_popup, null) //
+                .setNegativeButton(R.string.main_no_popup, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        onMenuItemClickSendInfo(true);
+                    }
+                }) //
+                .show();
+        return true;
+    }
 
-    // TODO dkn For the time being there is no need to show a popup on first startup
-    // private void takeUserToOffer() {
-    // startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_uri_popup))));
-    // }
 }
