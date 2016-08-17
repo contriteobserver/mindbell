@@ -30,6 +30,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -75,6 +76,10 @@ public class MindBellMain extends Activity {
      */
     private String getInfoMailText(boolean withLog) {
         StringBuilder sb = new StringBuilder();
+        sb.append("\n");
+        sb.append(getText(R.string.main_message6_popup));
+        sb.append("\n\n");
+        sb.append(getText(R.string.main_message7_popup));
         sb.append("\n\n");
         sb.append(Utils.getApplicationInformation(getPackageManager(), getPackageName()));
         sb.append("\n");
@@ -150,9 +155,8 @@ public class MindBellMain extends Activity {
      * Handles click on menu item send info.
      */
     private boolean onMenuItemClickSendInfo(boolean withLog) {
-        Intent i = new Intent(Intent.ACTION_SEND);
-        i.setType("message/rfc822");
-        i.putExtra(Intent.EXTRA_EMAIL, new String[]{getText(R.string.emailAddress).toString()});
+        Intent i = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                "mailto", getText(R.string.emailAddress).toString(), null));
         i.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.emailSubject));
         i.putExtra(Intent.EXTRA_TEXT, getInfoMailText(withLog));
         try {
