@@ -26,6 +26,7 @@ import com.googlecode.mindbell.accessors.AndroidPrefsAccessor;
 import com.googlecode.mindbell.accessors.ContextAccessor;
 import com.googlecode.mindbell.accessors.PrefsAccessor;
 import com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix;
+import com.googlecode.mindbell.preference.MediaVolumePreference;
 import com.googlecode.mindbell.preference.MultiSelectListPreferenceWithSummary;
 import com.googlecode.mindbell.util.Utils;
 
@@ -55,6 +56,9 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
     private static final int REQUEST_CODE_STATUS = 0;
 
     private static final int REQUEST_CODE_MUTE_OFF_HOOK = 1;
+
+    // Weird, but ringtone cannot be retrieved from RingtonePreference, only from SharedPreference or in ChangeListener
+    private String preferenceRingtoneValue;
 
     private void handleMuteHookOffAndStatusPermissionRequestResult(CheckBoxPreference one, int[] grantResults) {
         if (grantResults.length == 0) {
@@ -142,7 +146,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         super.onCreate(savedInstanceState);
 
         // check settings, delete any settings that are not valid
-        PrefsAccessor prefs = AndroidContextAccessor.getInstance(this).getPrefs();
+        final PrefsAccessor prefs = AndroidContextAccessor.getInstance(this).getPrefs();
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences_1);
@@ -157,6 +161,8 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                 .findPreference(getText(R.string.keySound));
         final CheckBoxPreference preferenceUseStandardBell = (CheckBoxPreference) getPreferenceScreen()
                 .findPreference(getText(R.string.keyUseStandardBell));
+        final MediaVolumePreference preferenceVolume = (MediaVolumePreference) getPreferenceScreen()
+                .findPreference(getText(R.string.keyVolume));
         final RingtonePreference preferenceRingtone = (RingtonePreference) getPreferenceScreen()
                 .findPreference(getText(R.string.keyRingtone));
         final CheckBoxPreference preferenceVibrate = (CheckBoxPreference) getPreferenceScreen()
@@ -210,6 +216,8 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 boolean isChecked = (Boolean) newValue;
                 preferenceRingtone.setEnabled(preferenceSound.isChecked() && !isChecked);
+                // Weird, but ringtone cannot be retrieved from RingtonePreference, only from SharedPreference
+                setPreferenceVolumeSoundUri(preferenceVolume, isChecked, preferenceRingtoneValue);
                 return true;
             }
 
@@ -218,7 +226,9 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         preferenceRingtone.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                setPreferenceRingtoneSummary(preferenceRingtone, (String) newValue);
+                preferenceRingtoneValue = (String) newValue;
+                setPreferenceRingtoneSummary(preferenceRingtone, preferenceRingtoneValue );
+                setPreferenceVolumeSoundUri(preferenceVolume, preferenceUseStandardBell.isChecked(), preferenceRingtoneValue );
                 return true;
             }
 
@@ -324,9 +334,28 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         // As no PreferenceChangeListener is called without change, some settings have to be made explicitely
         preferenceUseStandardBell.setEnabled(preferenceSound.isChecked());
         preferenceRingtone.setEnabled(preferenceSound.isChecked() && !preferenceUseStandardBell.isChecked());
-        // Weird, but ringtone cannot be retrieved from RingtonePreference, only from SharedPreference
-        setPreferenceRingtoneSummary(preferenceRingtone, prefs.getRingtone());
+        preferenceRingtoneValue = prefs.getRingtone(); // cannot be retrieved from preference
+        setPreferenceRingtoneSummary(preferenceRingtone, preferenceRingtoneValue );
+        setPreferenceVolumeSoundUri(preferenceVolume, preferenceUseStandardBell.isChecked(), preferenceRingtoneValue );
 
+    }
+
+    /**
+     * Set sound uri in preferenceVolume depending on preferenceUseStandardBell and preferenceRingtone, so real sound is used for volume setting.
+     *
+     * @param preferenceVolume
+     * @param useStandardBell
+     * @param ringtoneUriString
+     */
+    private void setPreferenceVolumeSoundUri(MediaVolumePreference preferenceVolume, boolean useStandardBell, String ringtoneUriString) {
+        Uri soundUri;
+        // This implementation is almost the same as AndroidPrefsAccessor#getSoundUri()
+        if (useStandardBell || ringtoneUriString == null) {
+            soundUri = Utils.getResourceUri(this, R.raw.bell10s);
+        } else {
+            soundUri = Uri.parse(ringtoneUriString);
+        }
+        preferenceVolume.setSoundUri(soundUri);
     }
 
     private void setPreferenceRingtoneSummary(RingtonePreference preferenceRingtone, String uriString) {

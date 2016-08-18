@@ -24,6 +24,7 @@ package com.googlecode.mindbell.preference;
 import java.io.IOException;
 
 import com.googlecode.mindbell.R;
+import com.googlecode.mindbell.accessors.AndroidContextAccessor;
 import com.googlecode.mindbell.util.Utils;
 import com.googlecode.mindbell.util.VolumeConverter;
 
@@ -94,13 +95,11 @@ public class MediaVolumePreference extends SeekBarPreference implements View.OnK
             seekBar.setProgress(converter.volume2progress(volume));
             seekBar.setOnSeekBarChangeListener(this);
 
-            if (mRingtoneResId != -1) {
-                Uri defaultUri = null;
-                defaultUri = Utils.getResourceUri(mContext, mRingtoneResId);
+            if (mSoundUri != null) {
                 mPlayer = new MediaPlayer();
                 mPlayer.setAudioStreamType(mStreamType);
                 try {
-                    mPlayer.setDataSource(mContext, defaultUri);
+                    mPlayer.setDataSource(mContext, mSoundUri);
                     mPlayer.prepare();
                 } catch (IOException e) {
                     Log.e(TAG, "Cannot load ringtone", e);
@@ -161,7 +160,8 @@ public class MediaVolumePreference extends SeekBarPreference implements View.OnK
     private static final String mindfulns = "http://dknapps.de/ns";
 
     private int mStreamType;
-    private int mRingtoneResId;
+
+    private Uri mSoundUri;
 
     /** May be null if the dialog isn't visible. */
     private SeekBarVolumizer mSeekBarVolumizer;
@@ -173,7 +173,10 @@ public class MediaVolumePreference extends SeekBarPreference implements View.OnK
         // Log.d(TAG, "Attr " + i + ": " + attrs.getAttributeName(i) + "=" + attrs.getAttributeValue(i));
         // }
         mStreamType = attrs.getAttributeIntValue(mindfulns, "streamType", AudioManager.STREAM_NOTIFICATION);
-        mRingtoneResId = attrs.getAttributeResourceValue(mindfulns, "ringtone", -1);
+        int mRingtoneResId = attrs.getAttributeResourceValue(mindfulns, "ringtone", -1);
+        if (mRingtoneResId != -1) {
+            mSoundUri = Utils.getResourceUri(context, mRingtoneResId);
+        }
     }
 
     // public void onActivityStop() {
@@ -265,11 +268,12 @@ public class MediaVolumePreference extends SeekBarPreference implements View.OnK
         }
     }
 
-    public void setRingtoneResId(int resid) {
-        mRingtoneResId = resid;
-    }
-
     public void setStreamType(int streamType) {
         mStreamType = streamType;
     }
+
+    public void setSoundUri(Uri soundUri) {
+        this.mSoundUri = soundUri;
+    }
+
 }

@@ -399,9 +399,10 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     @Override
     public Uri getSoundUri() {
+        // This implementation is almost the same as MindBellPreferences#setPreferenceVolumeSoundUri()
         String ringtone = getRingtone();
         if (settings.getBoolean(keyUseStandardBell, defaultUseStandardBell) || ringtone == null) {
-            return bellRessourceUri;
+            return bellRessourceUri; // set initially in constructor because that needs a context
         } else {
             return Uri.parse(ringtone);
         }
