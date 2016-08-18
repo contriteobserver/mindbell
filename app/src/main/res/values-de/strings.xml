@@ -147,7 +147,7 @@
     <string name="main_message3_popup">Anhand der folgenden Änderungshistorie ist einsehbar, was zuletzt an MindBell geändert wurde: http://dknapps.de/mindbell-changelog</string>
     <string name="main_message4_popup">Konsultieren Sie bitte zunächst die FAQ für weitere Fragen: http://dknapps.de/mindbell</string>
     <string name="main_message5_popup">Für andere Fragen oder wenn das Problem bestehen bleibt, senden Sie mir bitte eine E-Mail, indem sie unten \'E-Mail senden\' anklicken.</string>
-    <string name="main_message6_popup">Der generierte E-Mail-Text enthält Ihre MindBell und Android Version und ein paar Geräteinformationen und alle von MindBell erzeugten Log-Einträge, die bei der Fehlersuche helfen sollen - der Text enthält keine sensiblen Daten.</string>
+    <string name="main_message6_popup">Der generierte E-Mail-Text enthält Ihre MindBell- und Android-Version plus ein paar Geräteinformationen und alle von MindBell erzeugten Log-Einträge, die bei der Fehlersuche helfen sollen - der Text enthält keine sensiblen Daten.</string>
     <string name="main_message7_popup">Bitte ergänzen Sie im E-Mail-Text Ihre Frage oder eine Beschreibung des Problems.</string>
     <string name="main_yes_popup">OK</string>
     <string name="main_no_popup">E-Mail senden</string>
