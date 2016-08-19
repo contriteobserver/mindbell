@@ -109,6 +109,7 @@
     <string name="atLeastOneActiveDayNeeded">Mindestens einen Tag angeben</string>
     <string name="frequencyDoesNotFitIntoAnHour">Läuten auf die Minute beim gewählten Intervall nicht möglich</string>
     <string name="ringtoneNotAccessible">MindBell kann auf den ausgewählten Systemklang nicht zugreifen (vermutlich auf externem Speicher)</string>
+    <string name="ringtoneDurationTooLongOrInvalid">Dauer des ausgewählten Systemklangs ist zu lang</string>
 
     <!-- AboutActivity -->
     <string name="title_activity_about">Über MindBell</string>

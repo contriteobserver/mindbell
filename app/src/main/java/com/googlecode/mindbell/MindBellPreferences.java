@@ -25,6 +25,7 @@ import com.googlecode.mindbell.accessors.AndroidContextAccessor;
 import com.googlecode.mindbell.accessors.AndroidPrefsAccessor;
 import com.googlecode.mindbell.accessors.ContextAccessor;
 import com.googlecode.mindbell.accessors.PrefsAccessor;
+import com.googlecode.mindbell.logic.RingingLogic;
 import com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix;
 import com.googlecode.mindbell.preference.MediaVolumePreference;
 import com.googlecode.mindbell.preference.MultiSelectListPreferenceWithSummary;
@@ -378,6 +379,11 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
             } catch (Exception e) {
                 Log.w(TAG, "Sound <" + uriString + "> not accessible", e);
                 Toast.makeText(this, R.string.ringtoneNotAccessible, Toast.LENGTH_SHORT).show();
+                return false;
+            }
+            String durationString = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+            if (durationString == null || Long.parseLong(durationString) > (RingingLogic.WAITING_TIME - 1000L)) {
+                Toast.makeText(this, R.string.ringtoneDurationTooLongOrInvalid, Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
