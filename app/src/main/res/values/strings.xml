@@ -108,6 +108,7 @@
     <string name="atLeastOneRingingActionNeeded">Specify at least one ringing action</string>
     <string name="atLeastOneActiveDayNeeded">Specify at least one day</string>
     <string name="frequencyDoesNotFitIntoAnHour">Ringing on the minute not possible with chosen interval</string>
+    <string name="ringtoneNotAccessible">MindBell can not access the chosen ringtone (probably on external storage)</string>
 
 	<!-- AboutActivity -->
 	<string name="title_activity_about">About MindBell</string>

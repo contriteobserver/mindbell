@@ -35,6 +35,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.media.MediaMetadataRetriever;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -47,6 +48,7 @@ import android.preference.PreferenceActivity;
 import android.preference.RingtonePreference;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 public class MindBellPreferences extends PreferenceActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
@@ -114,13 +116,13 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
      * having READ_PHONE_STATE permission by returning false when this rule is violated.
      */
     private boolean mediateMuteOffHookAndStatus(CheckBoxPreference other, Object newValue, int requestCode) {
-        if (!other.isChecked() || !((Boolean) newValue) || ContextCompat.checkSelfPermission(MindBellPreferences.this,
+        if (!other.isChecked() || !((Boolean) newValue) || ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
             // Allow setting this option to "on" if other option is "off" or permission is granted
             return true;
         } else {
             // Ask for permission if other option is "on" and this option shall be set to "on" but permission is missing
-            ActivityCompat.requestPermissions(MindBellPreferences.this, new String[] { Manifest.permission.READ_PHONE_STATE },
+            ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.READ_PHONE_STATE },
                     requestCode);
             // As the permission request is asynchronous we habe to deny setting this option (to "on")
             return false;
@@ -133,7 +135,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
      */
     private boolean mediateShowAndSoundAndVibrate(CheckBoxPreference firstOther, CheckBoxPreference secondOther, Object newValue) {
         if (!firstOther.isChecked() && !secondOther.isChecked() && !((Boolean) newValue)) {
-            Toast.makeText(MindBellPreferences.this, R.string.atLeastOneRingingActionNeeded,
+            Toast.makeText(this, R.string.atLeastOneRingingActionNeeded,
                     Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -227,8 +229,11 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
 
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 preferenceRingtoneValue = (String) newValue;
-                setPreferenceRingtoneSummary(preferenceRingtone, preferenceRingtoneValue );
-                setPreferenceVolumeSoundUri(preferenceVolume, preferenceUseStandardBell.isChecked(), preferenceRingtoneValue );
+                if (!validatePreferenceRingtone(preferenceRingtoneValue)) {
+                    return false;
+                }
+                setPreferenceRingtoneSummary(preferenceRingtone, preferenceRingtoneValue);
+                setPreferenceVolumeSoundUri(preferenceVolume, preferenceUseStandardBell.isChecked(), preferenceRingtoneValue);
                 return true;
             }
 
@@ -358,14 +363,41 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         preferenceVolume.setSoundUri(soundUri);
     }
 
+    /**
+     * Returns true if the ringtone specified by uriString is unset, empty or accessible.
+     *
+     * @param uriString
+     * @return
+     */
+    private boolean validatePreferenceRingtone(String uriString) {
+        if (uriString != null && !uriString.isEmpty()) {
+            Uri uri = Uri.parse(uriString);
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            try {
+                mmr.setDataSource(this, uri);
+            } catch (Exception e) {
+                Log.w(TAG, "Sound <" + uriString + "> not accessible", e);
+                Toast.makeText(this, R.string.ringtoneNotAccessible, Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Sets the ringtone title into the summary of the ringtone preference.
+     *
+     * @param preferenceRingtone
+     * @param uriString
+     */
     private void setPreferenceRingtoneSummary(RingtonePreference preferenceRingtone, String uriString) {
         CharSequence summary;
         if (uriString == null || uriString.isEmpty()) {
             summary = getText(R.string.summaryRingtoneNotSet);
         } else {
             Uri ringtoneUri = Uri.parse(uriString);
-            Ringtone ringtone = RingtoneManager.getRingtone(MindBellPreferences.this, ringtoneUri);
-            summary = ringtone.getTitle(MindBellPreferences.this);
+            Ringtone ringtone = RingtoneManager.getRingtone(this, ringtoneUri);
+            summary = ringtone.getTitle(this);
         }
         preferenceRingtone.setSummary(summary);
     }
