@@ -8,8 +8,8 @@ android {
         applicationId "com.googlecode.mindbell"
         minSdkVersion 16 // API level 16 (4.1.1, JELLY_BEAN) is the lowest to get an Genymotion image for
         targetSdkVersion 23
-        versionCode 35
-        versionName "2.6.0"
+        versionCode 36
+        versionName "2.6.1"
     }
     buildTypes {
         release {

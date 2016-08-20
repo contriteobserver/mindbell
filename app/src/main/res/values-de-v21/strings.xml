@@ -19,8 +19,8 @@
  -->
 <resources>
 
-    <!-- Override names of do-not-disturb modes introduced with Android Lollipop -->
-    <string name="summaryMuteWithPhone">Still (kein/e Anzeige/Klang/Vibration) im Lautlos- und Nur-Wecker-Modus und bei 0-Lautstärke, nicht still (daher Anzeige/Klang/Vibration) im Nur-wichtige-Modus</string>
-    <string name="summaryNoMuteWithPhone">Kein Klang, aber Anzeige/Vibration im Lautlos- und Nur-Wecker-Modus, nicht still (daher Anzeige/Klang/Vibration) im Nur-wichtige-Modus und bei 0-Lautstärke</string>
+    <!-- Override description regarding do-not-disturb modes introduced with Android Lollipop -->
+    <string name="summaryMuteWithPhone">Kein/e Anzeige/Klang/Vibration im \"Keine\"-Modus sowie bei 0-Lautstärke im \"Wichtig\"- und \"Alle\"-Modus, Anzeige/Klang/Vibration im \"Wichtig\"- und \"Alle\"-Modus bei Nicht-0-Lautstärke; s.a. Menü&gt;Hilfe&gt;FAQ</string>
+    <string name="summaryNoMuteWithPhone">Kein Klang, aber Anzeige/Vibration im \"Keine\"-Modus, Anzeige/Klang/Vibration im \"Prio\"- und \"Alle\"-Modus; see also Help&gt;FAQ</string>
 
 </resources>

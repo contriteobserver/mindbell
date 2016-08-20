@@ -19,8 +19,8 @@
  -->
 <resources>
 
-    <!-- Override names of do-not-disturb modes introduced with Android Lollipop -->
-    <string name="summaryMuteWithPhone">Muted (no display/sound/vibration) in modes total-silence and alarms-only and with 0-volume, not muted (therefore display/sound/vibration) in priority-only mode</string>
-    <string name="summaryNoMuteWithPhone">No sound but display/vibration in modes total-silence and alarms-only, not muted (therefore display/sound/vibration) in priority-only mode and with 0-volume</string>
+    <!-- Override description regarding do-not-disturb modes introduced with Android Lollipop -->
+    <string name="summaryMuteWithPhone">No display/sound/vibration in mode \"none\" and with zero-volume in modes \"prio\" and \"all\", display/sound/vibration in modes \"prio\" and \"all\" with non-zero-volume; see also Menu&gt;Help&gt;FAQ</string>
+    <string name="summaryNoMuteWithPhone">No sound but display/vibration in mode \"none\", display/sound/vibration in modes \"prio\" and \"all\"; see also Help&gt;FAQ</string>
 
 </resources>
