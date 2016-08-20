@@ -20,7 +20,7 @@
 <resources>
 
     <!-- Override description regarding do-not-disturb modes introduced with Android Marshmallow -->
-    <string name="summaryMuteWithPhone">No display/sound/vibration in modes \"total-silence\" and \"alarms-only\" and with zero-volume in modes \"priority-only\" and \"do-not-disturb-off\", display/sound/vibration in modes \"priority-only\" and \"do-not-disturb-off\" with non-zero-volume; see also Menu&gt;Help&gt;FAQ</string>
-    <string name="summaryNoMuteWithPhone">No sound but display/vibration in mode \"total-silence\", display/sound/vibration in modes \"alarms-only\", \"priority-only\" and \"do-not-disturb-off\"; see also Help&gt;FAQ</string>
+    <string name="summaryMuteWithPhone">No display/sound/vibration in modes \'total-silence\' and \'alarms-only\' and with zero-volume in modes \'priority-only\' and \'do-not-disturb-off\', display/sound/vibration in modes \'priority-only\' and \'do-not-disturb-off\' with non-zero-volume; see also Menu&gt;Help&gt;FAQ</string>
+    <string name="summaryNoMuteWithPhone">No sound but display/vibration in mode \'total-silence\', display/sound/vibration in modes \'alarms-only\', \'priority-only\' and \'do-not-disturb-off\'; see also Menu&gt;Help&gt;FAQ</string>
 
 </resources>
