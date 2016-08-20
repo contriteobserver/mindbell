@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    MindBell - Aims to give you a support for staying mindful in a busy life -
+               for remembering what really counts
+
+        Copyright (C) 2016-2016 Uwe Damken
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+<resources>
+
+    <!-- Override description regarding do-not-disturb modes introduced with Android Marshmallow -->
+    <string name="summaryMuteWithPhone">No display/sound/vibration in modes \"total-silence\" and \"alarms-only\" and with zero-volume in modes \"priority-only\" and \"do-not-disturb-off\", display/sound/vibration in modes \"priority-only\" and \"do-not-disturb-off\" with non-zero-volume; see also Menu&gt;Help&gt;FAQ</string>
+    <string name="summaryNoMuteWithPhone">No sound but display/vibration in mode \"total-silence\", display/sound/vibration in modes \"alarms-only\", \"priority-only\" and \"do-not-disturb-off\"; see also Help&gt;FAQ</string>
+
+</resources>
