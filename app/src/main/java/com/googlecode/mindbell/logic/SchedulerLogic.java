@@ -19,12 +19,12 @@
  *******************************************************************************/
 package com.googlecode.mindbell.logic;
 
+import com.googlecode.mindbell.accessors.PrefsAccessor;
+import com.googlecode.mindbell.util.TimeOfDay;
+
 import java.util.Calendar;
 import java.util.Random;
 import java.util.Set;
-
-import com.googlecode.mindbell.accessors.PrefsAccessor;
-import com.googlecode.mindbell.util.TimeOfDay;
 
 public class SchedulerLogic {
 

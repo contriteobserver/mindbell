@@ -22,7 +22,7 @@
 
     <string name="app_name">MindBell</string>
 
-    <!-- Main window -->
+    <!-- MindBellMain -->
     <string name="explanation">MindBell erklingt regelmäßig als Achtsamkeitsglocke im
 	    Laufe des Tages. Dadurch können wir kurz innehalten und uns bewusst werden, was wir
 	    gerade tun, und in welchem Geisteszustand wir das angehen, was wir gerade tun. Gemäß
@@ -31,7 +31,7 @@
     <string name="howToRing">Tippen zum Läuten</string>
     <string name="howToSet">Mit dem Glocke-Ein-Icon oder über die Einstellungen im Menü können Sie die Glocke aktivieren.</string>
 
-    <!-- Menu -->
+    <!-- Menu of MindBellMain -->
     <string name="menuSettings">Einstellungen</string>
     <string name="menuAbout">Über MindBell</string>
     <string name="menuHelp">Hilfe</string>
@@ -40,7 +40,7 @@
     <string name="emailSubject">E-Mail gesendet von MindBell</string>
     <string name="emailChooseApp">Mail senden &#8230;</string>
 
-    <!-- Preference window -->
+    <!-- MindBellPreferences -->
     <string name="preferencesTitle">MindBell Einstellungen</string>
 
     <string name="prefsCategoryActivity">Aktivität</string>
@@ -109,6 +109,12 @@
     <string name="summaryMeditating">Meditation läuft</string>
     <string name="summaryNotMeditating">Meditation ist gestoppt</string>
 
+    <!-- MeditationDialog Preferences -->
+    <string name="title_meditation_dialog">Meditation starten</string>
+    <string name="prefsRampUpTime">Vorbereitungszeit</string>
+    <string name="prefsNumberOfPeriods">Anzahl der Abschnitte</string>
+    <string name="prefsMeditationDuration">Meditationsdauer</string>
+
     <!-- Validation messages -->
     <string name="atLeastOneRingingActionNeeded">Mindestens eine Aktion beim Läuten auswählen</string>
     <string name="atLeastOneActiveDayNeeded">Mindestens einen Tag angeben</string>
@@ -125,7 +131,7 @@
     <string name="statusTitleBellActive">MindBell ist aktiv</string>
     <string name="statusTextBellActive">_STARTTIME_ bis _ENDTIME_ am _WEEKDAYS_</string>
     <string name="statusTitleBellMeditating">MindBell meditiert</string>
-    <string name="statusTextBellMeditating">_STARTTIME_ to _ENDTIME_</string>
+    <string name="statusTextBellMeditating">Nach _RAMPUPTIME_ Sekunden für _MEDITATIONDURATION_ Minuten</string>
     <string name="statusActionRefreshStatus">Status aktualisieren</string>
 
     <!-- Reasons why bell is muted -->

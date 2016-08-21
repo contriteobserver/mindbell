@@ -116,4 +116,22 @@ public abstract class PrefsAccessor {
 
     public abstract boolean useStatusIconMaterialDesign();
 
-}
+    public abstract long getRampUpTimeMillis();
+
+    public abstract String getRampUpTime();
+
+    public abstract void setRampUpTime(String rampUpTime);
+
+    public abstract int getNumberOfPeriodsAsInteger();
+
+    public abstract String getNumberOfPeriods();
+
+    public abstract void setNumberOfPeriods(String numberOfPeriods);
+
+    public abstract long getMeditationDurationMillis();
+
+    public abstract String getMeditationDuration();
+
+    public abstract void setMeditationDuration(String meditationDuration);
+
+    }

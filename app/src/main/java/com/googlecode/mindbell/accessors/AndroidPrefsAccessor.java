@@ -19,7 +19,16 @@
  *******************************************************************************/
 package com.googlecode.mindbell.accessors;
 
-import static com.googlecode.mindbell.MindBellPreferences.TAG;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Build;
+import android.preference.PreferenceManager;
+import android.util.Log;
+
+import com.googlecode.mindbell.R;
+import com.googlecode.mindbell.util.TimeOfDay;
+import com.googlecode.mindbell.util.Utils;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,16 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.googlecode.mindbell.R;
-import com.googlecode.mindbell.util.TimeOfDay;
-import com.googlecode.mindbell.util.Utils;
-
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.net.Uri;
-import android.os.Build;
-import android.preference.PreferenceManager;
-import android.util.Log;
+import static com.googlecode.mindbell.MindBellPreferences.TAG;
 
 public class AndroidPrefsAccessor extends PrefsAccessor {
 
@@ -66,6 +66,10 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private final String keyStart;
     private final String keyEnd;
     private final String keyActiveOnDaysOfWeek;
+    
+    private final String keyRampUpTime;
+    private final String keyNumberOfPeriods;
+    private final String keyMeditationDuration;
 
     private final String keyVolume;
 
@@ -94,6 +98,9 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private final String defaultNormalize = NORMALIZE_NONE;
     private final String defaultStart = "9";
     private final String defaultEnd = "21";
+    private final String defaultRampUpTime = "30"; // seconds
+    private final String defaultNumberOfPeriods = "1";
+    private final String defaultMeditationDuration = "25"; // minutes
     private final Set<String> defaultActiveOnDaysOfWeek = new HashSet<>(
             Arrays.asList(new String[]{"1", "2", "3", "4", "5", "6", "7"})); // every day
     private final float defaultVolume = AndroidContextAccessor.MINUS_SIX_DB;
@@ -138,6 +145,9 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         keyNormalize = context.getString(R.string.keyNormalize);
         keyStart = context.getString(R.string.keyStart);
         keyEnd = context.getString(R.string.keyEnd);
+        keyRampUpTime = context.getString(R.string.keyRampUpTime);
+        keyNumberOfPeriods = context.getString(R.string.keyNumberOfPeriods);
+        keyMeditationDuration = context.getString(R.string.keyMeditationDuration);
         keyActiveOnDaysOfWeek = context.getString(R.string.keyActiveOnDaysOfWeek);
 
         hourEntries = context.getResources().getStringArray(R.array.hourEntries);
@@ -153,6 +163,9 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         entryValuesMap.put(keyNormalize, context.getResources().getStringArray(R.array.normalizeEntryValues));
         entryValuesMap.put(keyStart, context.getResources().getStringArray(R.array.hourEntryValues));
         entryValuesMap.put(keyEnd, context.getResources().getStringArray(R.array.hourEntryValues));
+        entryValuesMap.put(keyRampUpTime, new String[] {}); // FIXME dkn Wie das prüfen mit NumberPickers
+        entryValuesMap.put(keyNumberOfPeriods, new String[] {}); // FIXME dkn Wie das prüfen mit NumberPickers
+        entryValuesMap.put(keyMeditationDuration, new String[] {}); // FIXME dkn Wie das prüfen mit NumberPickers
         entryValuesMap.put(keyActiveOnDaysOfWeek, context.getResources().getStringArray(R.array.weekdayEntryValues));
 
         checkSettings();
@@ -175,7 +188,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             }
         }
         // string settings:
-        String[] stringSettings = new String[] { keyRingtone, keyPattern, keyFrequency, keyNormalize, keyStart, keyEnd };
+        String[] stringSettings = new String[] { keyRingtone, keyPattern, keyFrequency, keyNormalize, keyStart, keyEnd, keyRampUpTime, keyNumberOfPeriods, keyMeditationDuration};
         for (String key : stringSettings) {
             try {
                 String value = settings.getString(key, null);
@@ -316,6 +329,18 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         if (!settings.contains(keyEnd)) {
             settings.edit().putString(keyEnd, defaultEnd).apply();
             Log.w(TAG, "Reset missing setting for '" + keyEnd + "' to '" + defaultEnd + "'");
+        }
+        if (!settings.contains(keyRampUpTime)) {
+            settings.edit().putString(keyRampUpTime, defaultRampUpTime).apply();
+            Log.w(TAG, "Reset missing setting for '" + keyRampUpTime + "' to '" + defaultRampUpTime + "'");
+        }
+        if (!settings.contains(keyNumberOfPeriods)) {
+            settings.edit().putString(keyNumberOfPeriods, defaultNumberOfPeriods).apply();
+            Log.w(TAG, "Reset missing setting for '" + keyNumberOfPeriods + "' to '" + defaultNumberOfPeriods + "'");
+        }
+        if (!settings.contains(keyMeditationDuration)) {
+            settings.edit().putString(keyMeditationDuration, defaultMeditationDuration).apply();
+            Log.w(TAG, "Reset missing setting for '" + keyMeditationDuration + "' to '" + defaultMeditationDuration + "'");
         }
         if (!settings.contains(keyActiveOnDaysOfWeek)) {
             settings.edit().putStringSet(keyActiveOnDaysOfWeek, defaultActiveOnDaysOfWeek).apply();
@@ -507,6 +532,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         settings.edit().putBoolean(keyActive, active).apply();
     }
 
+    // FIXME dkn Setter mit Getter-Namen :-) ... setPrefXXX getPrefXXX getXXX umgerechnet o.ä
     @Override
     public void isMeditating(boolean meditating) {
         settings.edit().putBoolean(keyMeditating, meditating).apply();
@@ -520,6 +546,51 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public boolean useStatusIconMaterialDesign() {
         return settings.getBoolean(keyStatusIconMaterialDesign, defaultStatusIconMaterialDesign);
+    }
+
+    @Override
+    public long getRampUpTimeMillis() {
+        return Integer.parseInt(getRampUpTime()) * 1000L;
+    }
+
+    @Override
+    public String getRampUpTime() {
+        return settings.getString(keyRampUpTime, defaultRampUpTime);
+    }
+
+    @Override
+    public void setRampUpTime(String rampUpTime) {
+        settings.edit().putString(keyRampUpTime, rampUpTime).apply();
+    }
+
+    @Override
+    public int getNumberOfPeriodsAsInteger() {
+        return Integer.parseInt(getNumberOfPeriods());
+    }
+
+    @Override
+    public String getNumberOfPeriods() {
+        return settings.getString(keyNumberOfPeriods, defaultNumberOfPeriods);
+    }
+
+    @Override
+    public void setNumberOfPeriods(String numberOfPeriods) {
+        settings.edit().putString(keyNumberOfPeriods, numberOfPeriods).apply();
+    }
+
+    @Override
+    public long getMeditationDurationMillis() {
+        return Integer.parseInt(getMeditationDuration()) * 60000L;
+    }
+
+    @Override
+    public String getMeditationDuration() {
+        return settings.getString(keyMeditationDuration, defaultMeditationDuration);
+    }
+
+    @Override
+    public void setMeditationDuration(String meditationDuration) {
+        settings.edit().putString(keyMeditationDuration, meditationDuration).apply();
     }
 
 }

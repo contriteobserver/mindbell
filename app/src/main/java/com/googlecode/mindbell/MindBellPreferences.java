@@ -19,18 +19,6 @@
  *******************************************************************************/
 package com.googlecode.mindbell;
 
-import java.util.Set;
-
-import com.googlecode.mindbell.accessors.AndroidContextAccessor;
-import com.googlecode.mindbell.accessors.AndroidPrefsAccessor;
-import com.googlecode.mindbell.accessors.ContextAccessor;
-import com.googlecode.mindbell.accessors.PrefsAccessor;
-import com.googlecode.mindbell.logic.RingingLogic;
-import com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix;
-import com.googlecode.mindbell.preference.MediaVolumePreference;
-import com.googlecode.mindbell.preference.MultiSelectListPreferenceWithSummary;
-import com.googlecode.mindbell.util.Utils;
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -51,6 +39,17 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.googlecode.mindbell.accessors.AndroidContextAccessor;
+import com.googlecode.mindbell.accessors.AndroidPrefsAccessor;
+import com.googlecode.mindbell.accessors.PrefsAccessor;
+import com.googlecode.mindbell.logic.RingingLogic;
+import com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix;
+import com.googlecode.mindbell.preference.MediaVolumePreference;
+import com.googlecode.mindbell.preference.MultiSelectListPreferenceWithSummary;
+import com.googlecode.mindbell.util.Utils;
+
+import java.util.Set;
 
 public class MindBellPreferences extends PreferenceActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 

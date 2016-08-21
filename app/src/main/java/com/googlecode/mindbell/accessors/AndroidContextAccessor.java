@@ -1,16 +1,16 @@
 /*******************************************************************************
  * MindBell - Aims to give you a support for staying mindful in a busy life -
- *            for remembering what really counts
- *
- *     Copyright (C) 2010-2014 Marc Schroeder
- *     Copyright (C) 2014-2016 Uwe Damken
- *
+ * for remembering what really counts
+ * <p/>
+ * Copyright (C) 2010-2014 Marc Schroeder
+ * Copyright (C) 2014-2016 Uwe Damken
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,18 +19,8 @@
  *******************************************************************************/
 package com.googlecode.mindbell.accessors;
 
-import static com.googlecode.mindbell.MindBellPreferences.TAG;
-
-import java.io.IOException;
-
-import com.googlecode.mindbell.MindBell;
-import com.googlecode.mindbell.MindBellMain;
-import com.googlecode.mindbell.R;
-import com.googlecode.mindbell.Scheduler;
-import com.googlecode.mindbell.UpdateStatusNotification;
-import com.googlecode.mindbell.logic.RingingLogic;
-
 import android.Manifest;
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -48,6 +38,18 @@ import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.googlecode.mindbell.MindBell;
+import com.googlecode.mindbell.MindBellMain;
+import com.googlecode.mindbell.R;
+import com.googlecode.mindbell.Scheduler;
+import com.googlecode.mindbell.logic.RingingLogic;
+import com.googlecode.mindbell.util.AlarmManagerCompat;
+import com.googlecode.mindbell.util.TimeOfDay;
+
+import java.io.IOException;
+
+import static com.googlecode.mindbell.MindBellPreferences.TAG;
 
 public class AndroidContextAccessor extends ContextAccessor {
 
@@ -203,7 +205,8 @@ public class AndroidContextAccessor extends ContextAccessor {
      *
      * @param runWhenDone
      */
-    private void startPlayingSound(final Runnable runWhenDone) {
+    @Override
+    public void startPlayingSound(final Runnable runWhenDone) {
         originalVolume = getAlarmVolume();
         int alarmMaxVolume = getAlarmMaxVolume();
         if (originalVolume == alarmMaxVolume) { // "someone" else set it to max, so we don't touch it
@@ -265,17 +268,89 @@ public class AndroidContextAccessor extends ContextAccessor {
     }
 
     /**
-     * Send an intent to Scheduler to update notification and to (re-)schedule the bell.
+     * Send a newly created intent to Scheduler to update notification and setup a new bell schedule.
      */
     @Override
     public void updateBellSchedule() {
-        Log.d(TAG, "Update bell schedule for active bell");
-        Intent intent = new Intent(context, Scheduler.class);
+        Log.d(TAG, "Update bell schedule requested");
+        Intent intent = createSchedulerIntent(false, null, null);
         PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         try {
             sender.send();
         } catch (PendingIntent.CanceledException e) {
             Log.e(TAG, "Could not update bell schedule: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Send a newly created intent to Scheduler to update notification and setup a new bell schedule for meditation.
+     *
+     * @param nextTargetTimeMillis Millis to be given to Scheduler as now (or nextTargetTimeMillis from the perspective of the previous call)
+     */
+    @Override
+    public void updateBellSchedule(long nextTargetTimeMillis) {
+        Log.d(TAG, "Update bell schedule requested, nextTargetTimeMillis=" + nextTargetTimeMillis);
+        Intent intent = createSchedulerIntent(false, nextTargetTimeMillis, 0);
+        PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        try {
+            sender.send();
+        } catch (PendingIntent.CanceledException e) {
+            Log.e(TAG, "Could not update bell schedule: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Reschedule the bell by letting AlarmManager send an intent to Scheduler.
+     *
+     * @param nextTargetTimeMillis Millis to be given to Scheduler as now (or nextTargetTimeMillis from the perspective of the previous call)
+     * @param nextMeditationPeriod null if not meditating, otherwise 0: ramp-up, 1-(n-1): intermediate period, n: last period, n+1: beyond end
+     */
+    @Override
+    public void reschedule(long nextTargetTimeMillis, Integer nextMeditationPeriod) {
+        Intent nextIntent = createSchedulerIntent(true, nextTargetTimeMillis, nextMeditationPeriod);
+        PendingIntent sender = PendingIntent.getBroadcast(context, 0, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManagerCompat alarmManager = new AlarmManagerCompat(context);
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextTargetTimeMillis, sender);
+        TimeOfDay nextBellTime = new TimeOfDay(nextTargetTimeMillis);
+        Log.d(TAG, "Scheduled next bell alarm for " + nextBellTime.getDisplayString());
+    }
+
+    /**
+     * Create an intent to be send to Scheduler to update notification and to (re-)schedule the bell.
+     *
+     * @param isRescheduling True if the intents is meant for rescheduling instead of updating bell schedule.
+     * @param nowTimeMillis If not null millis to be given to Scheduler as now (or nextTargetTimeMillis from the perspective of the previous call)
+     * @param meditationPeriod Zero: ramp-up, 1-(n-1): intermediate period, n: last period, n+1: beyond end
+     */
+    private Intent createSchedulerIntent(boolean isRescheduling, Long nowTimeMillis, Integer meditationPeriod) {
+        Log.d(TAG, "Creating scheduler intent: isRescheduling=" + isRescheduling + ", nowTimeMillis=" + nowTimeMillis + ", meditationPeriod=" + meditationPeriod);
+        Intent intent = new Intent(context, Scheduler.class);
+        if (isRescheduling) {
+            final String extraIsRescheduling = context.getText(R.string.extraIsRescheduling).toString();
+            intent.putExtra(extraIsRescheduling, true);
+        }
+        if (nowTimeMillis != null) {
+            final String extraNowTimeMillis = context.getText(R.string.extraNowTimeMillis).toString();
+            intent.putExtra(extraNowTimeMillis, nowTimeMillis);
+        }
+        if (meditationPeriod != null) {
+            final String extraMeditationPeriod = context.getText(R.string.extraMeditationPeriod).toString();
+            intent.putExtra(extraMeditationPeriod, meditationPeriod);
+        }
+        return intent;
+    }
+
+    /**
+     * Shows bell by bringing activity MindBell to the front
+     */
+    @Override
+    public void showBell() {
+        Intent ringBell = new Intent(context, MindBell.class);
+        PendingIntent bellIntent = PendingIntent.getActivity(context, -1, ringBell, PendingIntent.FLAG_UPDATE_CURRENT);
+        try {
+            bellIntent.send(); // show MindBell activity and call RingingLogic.ringBellAndWait()
+        } catch (PendingIntent.CanceledException e) {
+            Log.d(TAG, "Cannot show bell, play sound and vibrate: " + e.getMessage(), e);
         }
     }
 
@@ -302,7 +377,7 @@ public class AndroidContextAccessor extends ContextAccessor {
         // Suppose bell is active and not muted and all settings can be satisfied
         int statusDrawable = bellActiveDrawable;
         CharSequence contentTitle = context.getText(R.string.statusTitleBellActive);
-        String contentText = context.getText(R.string.statusTextBellActive).toString();
+        String contentText;
         String muteRequestReason = getMuteRequestReason(false);
         // Override icon and notification text if bell is muted or permissions are insufficient
         if (!canSettingsBeSatisfied(prefs)) { // Insufficient permissions => override icon/text, switch notifications off
@@ -317,13 +392,17 @@ public class AndroidContextAccessor extends ContextAccessor {
         } else if (prefs.isMeditating()) {// Bell meditation => override icon and notification text
             statusDrawable = R.drawable.ic_stat_bell_meditating;
             contentTitle = context.getText(R.string.statusTitleBellMeditating);
-            contentText = context.getText(R.string.statusTextBellMeditating).toString();
+            contentText = context.getText(R.string.statusTextBellMeditating).toString() //
+                    .replace("_RAMPUPTIME_", prefs.getRampUpTime()) //
+                    .replace("_MEDITATIONDURATION_", prefs.getMeditationDuration());
         } else if (muteRequestReason != null) { // Bell muted => override icon and notification text
             statusDrawable = bellActiveButMutedDrawable;
             contentText = muteRequestReason;
         } else { // enrich standard notification by times and days
-            contentText = contentText.replace("_STARTTIME_", prefs.getDaytimeStartString())
-                    .replace("_ENDTIME_", prefs.getDaytimeEndString()).replace("_WEEKDAYS_", prefs.getActiveOnDaysOfWeekString());
+            contentText = context.getText(R.string.statusTextBellActive).toString() //
+                    .replace("_STARTTIME_", prefs.getDaytimeStartString()) //
+                    .replace("_ENDTIME_", prefs.getDaytimeEndString()) //
+                    .replace("_WEEKDAYS_", prefs.getActiveOnDaysOfWeekString());
         }
         // Now do the notification update
         Log.i(TAG, "Update status notification: " + contentText);
@@ -341,7 +420,6 @@ public class AndroidContextAccessor extends ContextAccessor {
                 .setOngoing(true) //
                 .setSmallIcon(statusDrawable) //
                 .setVisibility(visibility) //
-                .setWhen(System.currentTimeMillis()) //
                 .addAction(R.drawable.ic_action_refresh_status, context.getText(R.string.statusActionRefreshStatus), refreshIntent) //
                 .build();
         notificationManager.notify(uniqueNotificationID, notification);

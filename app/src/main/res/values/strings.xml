@@ -22,7 +22,7 @@
 
     <string name="app_name">MindBell</string>
 
-    <!-- Main window -->
+    <!-- MindBellMain -->
     <string name="explanation">MindBell rings periodically during the day as a mindfulness
     	bell, to give you the opportunity to hold on for a moment and consider what you are 
 		currently doing, and in what state of mind you are while you are doing it. 
@@ -31,7 +31,7 @@
     <string name="howToRing">Tap to ring</string>
     <string name="howToSet">Use bell-on icon or settings in menu to activate the bell.</string>
 
-    <!-- Menu -->
+    <!-- Menu of MindBellMain -->
     <string name="menuSettings">Settings</string>
     <string name="menuAbout">About MindBell</string>
     <string name="menuHelp">Help</string>
@@ -40,7 +40,7 @@
     <string name="emailSubject">E-mail sent by MindBell</string>
     <string name="emailChooseApp">Send mail &#8230;</string>
 
-    <!-- Preference window -->
+    <!-- MindBellPreferences -->
     <string name="preferencesTitle">MindBell Preferences</string>
 
     <string name="prefsCategoryActivity">Activity</string>
@@ -109,6 +109,12 @@
     <string name="summaryNotMeditating">Meditation is stopped</string>
     <string name="summaryMeditating">Meditation is running</string>
 
+    <!-- MeditationDialog Preferences -->
+    <string name="title_meditation_dialog">Start meditation</string>
+    <string name="prefsRampUpTime">Ramp-up time</string>
+    <string name="prefsNumberOfPeriods">Number of periods</string>
+    <string name="prefsMeditationDuration">Duration of meditation</string>
+
     <!-- Validation messages -->
     <string name="atLeastOneRingingActionNeeded">Specify at least one ringing action</string>
     <string name="atLeastOneActiveDayNeeded">Specify at least one day</string>
@@ -125,7 +131,7 @@
     <string name="statusTitleBellActive">MindBell is active</string>
     <string name="statusTextBellActive">_STARTTIME_ to _ENDTIME_ on _WEEKDAYS_</string>
     <string name="statusTitleBellMeditating">MindBell is meditating</string>
-    <string name="statusTextBellMeditating">_STARTTIME_ to _ENDTIME_</string>
+    <string name="statusTextBellMeditating">After _RAMPUPTIME_ seconds for _MEDITATIONDURATION_ minutes</string>
     <string name="statusActionRefreshStatus">Refresh status</string>
 
     <!-- Reasons why bell is muted -->
@@ -183,13 +189,18 @@
     <string name="keyStart" translatable="false">start</string>
     <string name="keyEnd" translatable="false">end</string>
     <string name="keyActiveOnDaysOfWeek" translatable="false">activeOnDaysOfWeek</string>
-    <string name="keyTry" translatable="false">try</string>
-    
+    <string name="keyRampUpTime" translatable="false">rampUpTime</string>
+    <string name="keyNumberOfPeriods" translatable="false">numberOfPeriods</string>
+    <string name="keyMeditationDuration" translatable="false">meditationDuration</string>
+
+    <!-- Unique string to be added to a Scheduling Intent to see which meditation period the bell is in (don't localize) -->
+    <string name="extraMeditationPeriod" translatable="false">com.googlecode.mindbell.Scheduler.MeditationPeriod</string>
+
     <!-- Unique string to be added to a Scheduling Intent to see who sent it (don't localize) -->
     <string name="extraIsRescheduling" translatable="false">com.googlecode.mindbell.Scheduler.IsRescheduling</string>
 
     <!-- Unique string to be added to a Scheduling Intent to see for which time the bell was scheduled (don't localize) -->
-    <string name="extraNextTargetTimeMillis" translatable="false">com.googlecode.mindbell.Scheduler.NextTargetTimeMillis</string>
+    <string name="extraNowTimeMillis" translatable="false">com.googlecode.mindbell.Scheduler.NowTimeMillis</string>
 
     <!-- Mail address for send log by e-mail (don't localize) -->
     <string name="emailAddress" translatable="false">mindbell@dknapps.de</string>

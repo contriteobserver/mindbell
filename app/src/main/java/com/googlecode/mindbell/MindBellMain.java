@@ -19,12 +19,6 @@
  *******************************************************************************/
 package com.googlecode.mindbell;
 
-import com.googlecode.mindbell.accessors.AndroidContextAccessor;
-import com.googlecode.mindbell.accessors.ContextAccessor;
-import com.googlecode.mindbell.accessors.PrefsAccessor;
-import com.googlecode.mindbell.logic.RingingLogic;
-import com.googlecode.mindbell.util.Utils;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -40,17 +34,28 @@ import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
+
+import com.googlecode.mindbell.accessors.AndroidContextAccessor;
+import com.googlecode.mindbell.accessors.ContextAccessor;
+import com.googlecode.mindbell.accessors.PrefsAccessor;
+import com.googlecode.mindbell.logic.RingingLogic;
+import com.googlecode.mindbell.util.Utils;
 
 import static com.googlecode.mindbell.MindBellPreferences.TAG;
 
 public class MindBellMain extends Activity {
 
+    // FIXME dkn Warum sind die hier und nicht in den SharedPreferences?
     private static final String POPUP_PREFS_FILE = "popup-prefs";
 
     private static final String KEY_POPUP = "popup";
 
     private SharedPreferences popupPrefs;
+
+    private ContextAccessor contextAccessor;
 
     private void checkWhetherToShowPopup() {
         if (!hasShownPopup()) {
@@ -95,7 +100,7 @@ public class MindBellMain extends Activity {
      * Show hint how to activate the bell.
      */
     private void notifyIfNotActive() {
-        if (!AndroidContextAccessor.getInstance(this).getPrefs().isActive()) {
+        if (!contextAccessor.getPrefs().isActive()) {
             Toast.makeText(this, R.string.howToSet, Toast.LENGTH_LONG).show();
         }
     }
@@ -104,6 +109,7 @@ public class MindBellMain extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         popupPrefs = getSharedPreferences(POPUP_PREFS_FILE, MODE_PRIVATE);
+        contextAccessor = AndroidContextAccessor.getInstance(this);
         // Use the following line to show popup dialog on every start
         // setPopupShown(false);
         setContentView(R.layout.main);
@@ -148,7 +154,6 @@ public class MindBellMain extends Activity {
      * Handles click on menu item active.
      */
     private boolean onMenuItemClickActive() {
-        ContextAccessor contextAccessor = AndroidContextAccessor.getInstance(MindBellMain.this);
         PrefsAccessor prefsAccessor = contextAccessor.getPrefs();
         prefsAccessor.isActive(!prefsAccessor.isActive()); // toggle active/inactive
         contextAccessor.updateBellSchedule();
@@ -162,14 +167,72 @@ public class MindBellMain extends Activity {
      * Handles click on menu item active.
      */
     private boolean onMenuItemClickMeditating() {
-        ContextAccessor contextAccessor = AndroidContextAccessor.getInstance(MindBellMain.this);
-        PrefsAccessor prefsAccessor = contextAccessor.getPrefs();
-        prefsAccessor.isMeditating(!prefsAccessor.isMeditating()); // toggle active/inactive
-        contextAccessor.updateBellSchedule();
-        invalidateOptionsMenu(); // re-call onPrepareOptionsMenu()
-        CharSequence feedback = getText((prefsAccessor.isMeditating()) ? R.string.summaryMeditating : R.string.summaryNotMeditating);
-        Toast.makeText(this, feedback, Toast.LENGTH_SHORT).show();
+        final PrefsAccessor prefs = contextAccessor.getPrefs();
+        if (!prefs.isMeditating()) {
+            View view = getLayoutInflater().inflate(R.layout.meditation_dialog, null);
+            final EditText editTextRampUpTime = (EditText) view.findViewById(R.id.rampUpTime);
+            editTextRampUpTime.setText(prefs.getRampUpTime());
+            final EditText editTextNumberOfPeriods = (EditText) view.findViewById(R.id.numberOfPeriods);
+            editTextNumberOfPeriods.setText(prefs.getNumberOfPeriods());
+            final EditText editTextMeditationDuration = (EditText) view.findViewById(R.id.meditationDuration);
+            editTextMeditationDuration.setText(prefs.getMeditationDuration());
+            new AlertDialog.Builder(this) //
+                    .setTitle(R.string.title_meditation_dialog) //
+                    .setView(view) //
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            // FIXME dkn Durch NumberPicker ersetzen, darum hier keine Prüfungen
+                            prefs.setRampUpTime(editTextRampUpTime.getText().toString());
+                            prefs.setNumberOfPeriods(editTextNumberOfPeriods.getText().toString());
+                            prefs.setMeditationDuration(editTextMeditationDuration.getText().toString());
+                            toggleMeditating();
+                        }
+                    }) //
+                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            //Put actions for CANCEL button here, or leave in blank
+                        }
+                    })//
+                    .show();
+        } else {
+            toggleMeditating();
+        }
         return true;
+    }
+
+    /**
+     * Toggle meditating state, update view if requested and show information to user.
+     */
+    private void toggleMeditating() {
+        PrefsAccessor prefs = contextAccessor.getPrefs();
+        prefs.isMeditating(!prefs.isMeditating()); // toggle active/inactive
+        CountdownView countdownView = (CountdownView) findViewById(R.id.countdown);
+        if (prefs.isMeditating()) {
+            long nowTimeMillis = System.currentTimeMillis();
+            long startingTimeMillis = nowTimeMillis + prefs.getRampUpTimeMillis();
+            long endingTimeMillis = startingTimeMillis + prefs.getMeditationDurationMillis();
+            contextAccessor.updateBellSchedule(nowTimeMillis);
+            countdownView.startMeditation(nowTimeMillis, startingTimeMillis, endingTimeMillis);
+            // FIXME dkn Abhängig vom Benutzerwunsch
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        } else {
+            countdownView.stopDisplayUpdateTimer();
+            contextAccessor.updateBellSchedule();
+            // FIXME dkn Abhängig vom Benutzerwunsch
+//            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+        flipToAppropriateView();
+        invalidateOptionsMenu(); // re-call onPrepareOptionsMenu()
+        CharSequence feedback = getText((prefs.isMeditating()) ? R.string.summaryMeditating : R.string.summaryNotMeditating);
+        Toast.makeText(this, feedback, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Flip to meditation view if isMeditating is true, to bell view otherwise.
+     */
+    private void flipToAppropriateView() {
+        ViewFlipper viewFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
+        viewFlipper.setDisplayedChild(contextAccessor.getPrefs().isMeditating() ? 1 : 2);
     }
 
     /**
@@ -190,25 +253,38 @@ public class MindBellMain extends Activity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        PrefsAccessor prefs = AndroidContextAccessor.getInstance(MindBellMain.this).getPrefs();
         MenuItem activeItem = menu.findItem(R.id.active);
-        activeItem.setIcon((prefs.isActive()) ? R.drawable.ic_action_bell_off : R.drawable.ic_action_bell_on);
+        activeItem.setIcon((contextAccessor.getPrefs().isActive()) ? R.drawable.ic_action_bell_off : R.drawable.ic_action_bell_on);
         MenuItem meditatingItem = menu.findItem(R.id.meditating);
-        meditatingItem.setIcon((prefs.isMeditating()) ? R.drawable.ic_action_meditating_off : R.drawable.ic_action_meditating_on);
+        meditatingItem.setIcon((contextAccessor.getPrefs().isMeditating()) ? R.drawable.ic_action_meditating_off : R.drawable.ic_action_meditating_on);
         return true;
     }
 
     @Override
     protected void onResume() {
+        flipToAppropriateView();
+        if (contextAccessor.getPrefs().isMeditating()) {
+            CountdownView countdownView = (CountdownView) findViewById(R.id.countdown);
+            countdownView.startDisplayUpdateTimer();
+        }
         invalidateOptionsMenu(); // Maybe active setting has been changed via MindBellPreferences
         super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        // Stop meditation when screen is rotated, otherwise timer states had to be saved
+        if (contextAccessor.getPrefs().isMeditating()) {
+            CountdownView countdownView = (CountdownView) findViewById(R.id.countdown);
+            countdownView.stopDisplayUpdateTimer();
+        }
+        super.onPause();
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
         if (e.getAction() == MotionEvent.ACTION_DOWN) {
             notifyIfNotActive();
-            ContextAccessor contextAccessor = AndroidContextAccessor.getInstance(this);
             contextAccessor.updateStatusNotification();
             RingingLogic.ringBell(contextAccessor, null);
         }

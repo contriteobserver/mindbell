@@ -222,4 +222,49 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
+    @Override
+    public long getRampUpTimeMillis() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public String getRampUpTime() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public void setRampUpTime(String rampUpTime) {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public int getNumberOfPeriodsAsInteger() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public String getNumberOfPeriods() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public void setNumberOfPeriods(String numberOfPeriods) {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public long getMeditationDurationMillis() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public String getMeditationDuration() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public void setMeditationDuration(String meditationDuration) {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
 }

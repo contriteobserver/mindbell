@@ -93,7 +93,7 @@ public abstract class ContextAccessor {
     /**
      * Return whether bell should be muted and show reason message if shouldShowMessage is true.
      */
-    public boolean isMuteRequested(boolean shouldShowMessage) {
+    public boolean isMuteRequested(boolean shouldShowMessage) { // FIXME dkn Always called with true
         return getMuteRequestReason(shouldShowMessage) != null;
     }
 
@@ -109,8 +109,16 @@ public abstract class ContextAccessor {
 
     public abstract void startPlayingSoundAndVibrate(final Runnable runWhenDone);
 
+    public abstract void showBell();
+
     public abstract void updateStatusNotification();
 
+    public abstract void startPlayingSound(final Runnable runWhenDone);
+
     public abstract void updateBellSchedule();
+
+    public abstract void updateBellSchedule(long nowTimeMillis);
+
+    public abstract void reschedule(long nextTargetTimeMillis, Integer nextMeditationPeriod);
 
 }
