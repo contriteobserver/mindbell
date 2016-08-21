@@ -104,6 +104,11 @@
     <string name="summaryMutedInFlightMode">Glocke läutet nicht im Flugmodus</string>
     <string name="summaryNotMutedInFlightMode">Glocke läutet auch im Flugmodus</string>
 
+    <string name="prefsCategoryMeditation">Meditation</string>
+    <string name="prefsMeditating">Laufende Meditation</string>
+    <string name="summaryMeditating">Meditation läuft</string>
+    <string name="summaryNotMeditating">Meditation ist gestoppt</string>
+
     <!-- Validation messages -->
     <string name="atLeastOneRingingActionNeeded">Mindestens eine Aktion beim Läuten auswählen</string>
     <string name="atLeastOneActiveDayNeeded">Mindestens einen Tag angeben</string>
@@ -119,6 +124,8 @@
     <string name="statusTextNotificationsDisabled">MindBell hat \'Status-Icon anzeigen\' ausgeschaltet</string>
     <string name="statusTitleBellActive">MindBell ist aktiv</string>
     <string name="statusTextBellActive">_STARTTIME_ bis _ENDTIME_ am _WEEKDAYS_</string>
+    <string name="statusTitleBellMeditating">MindBell meditiert</string>
+    <string name="statusTextBellMeditating">_STARTTIME_ to _ENDTIME_</string>
     <string name="statusActionRefreshStatus">Status aktualisieren</string>
 
     <!-- Reasons why bell is muted -->

@@ -44,6 +44,18 @@
 			android:summaryOff="@string/summaryNotMutedInFlightMode"
 			android:summaryOn="@string/summaryMutedInFlightMode"
 			android:defaultValue="false"/>
+
+	</PreferenceScreen>
+
+	<PreferenceScreen android:title="@string/prefsCategoryMeditation">
+
+		<CheckBoxPreference
+			android:key="@string/keyMeditating"
+			android:title="@string/prefsMeditating"
+			android:summaryOff="@string/summaryNotMeditating"
+			android:summaryOn="@string/summaryMeditating"
+			android:defaultValue="false" />
+
 	</PreferenceScreen>
 
 </PreferenceScreen>

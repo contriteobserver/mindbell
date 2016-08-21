@@ -21,10 +21,9 @@ package com.googlecode.mindbell.accessors;
 
 import android.net.Uri;
 
-import java.util.Calendar;
-import java.util.Set;
-
 import com.googlecode.mindbell.util.TimeOfDay;
+
+import java.util.Set;
 
 public abstract class PrefsAccessor {
 
@@ -76,6 +75,8 @@ public abstract class PrefsAccessor {
 
     public abstract boolean isActive();
 
+    public abstract boolean isMeditating();
+
     public boolean isNormalize() {
         return isNormalize(getNormalize());
     }
@@ -108,6 +109,8 @@ public abstract class PrefsAccessor {
     public abstract boolean isStatusNotificationVisibilityPublic();
 
     public abstract void isActive(boolean active);
+
+    public abstract void isMeditating(boolean meditating);
 
     public abstract void setStatus(boolean statusNotification);
 

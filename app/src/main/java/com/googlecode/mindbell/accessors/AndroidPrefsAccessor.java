@@ -45,6 +45,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     private final SharedPreferences settings;
     private final String keyActive;
+    private final String keyMeditating;
 
     private final String keyUseStandardBell;
     private final String keyRingtone;
@@ -75,6 +76,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
      * Preference default values ... must correspond with settings in xml definitions
      */
     private final boolean defaultActive = false;
+    private final boolean defaultMeditating = false;
     private final boolean defaultShow = true;
     private final boolean defaultSound = true;
     private final boolean defaultUseStandardBell = true;
@@ -117,6 +119,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
 
         keyActive = context.getString(R.string.keyActive);
+        keyMeditating = context.getString(R.string.keyMeditating);
         keyShow = context.getString(R.string.keyShow);
         keySound = context.getString(R.string.keySound);
         keyUseStandardBell = context.getString(R.string.keyUseStandardBell);
@@ -161,7 +164,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
      */
     private void checkSettings() {
         // boolean settings:
-        String[] booleanSettings = new String[] { keyShow, keySound, keyUseStandardBell, keyStatus, keyStatusVisibilityPublic, keyStatusIconMaterialDesign,
+        String[] booleanSettings = new String[] { keyShow, keySound, keyUseStandardBell, keyStatus, keyMeditating, keyStatusVisibilityPublic, keyStatusIconMaterialDesign,
                 keyActive, keyMuteInFlightMode, keyMuteOffHook, keyMuteWithPhone, keyVibrate, keyRandomize };
         for (String key : booleanSettings) {
             try {
@@ -238,6 +241,10 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         if (!settings.contains(keyActive)) {
             isActive(defaultActive);
             Log.w(TAG, "Reset missing setting for '" + keyActive + "' to '" + defaultActive + "'");
+        }
+        if (!settings.contains(keyMeditating)) {
+            isMeditating(defaultMeditating);
+            Log.w(TAG, "Reset missing setting for '" + keyMeditating + "' to '" + defaultMeditating + "'");
         }
         if (!settings.contains(keyShow)) {
             settings.edit().putBoolean(keyShow, defaultShow).apply();
@@ -461,6 +468,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
+    public boolean isMeditating() {
+        return settings.getBoolean(keyMeditating, defaultMeditating);
+    }
+
+    @Override
     public boolean isRandomize() {
         return settings.getBoolean(keyRandomize, defaultRandomize);
     }
@@ -493,6 +505,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public void isActive(boolean active) {
         settings.edit().putBoolean(keyActive, active).apply();
+    }
+
+    @Override
+    public void isMeditating(boolean meditating) {
+        settings.edit().putBoolean(keyMeditating, meditating).apply();
     }
 
     @Override

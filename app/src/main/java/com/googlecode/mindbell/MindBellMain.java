@@ -126,6 +126,13 @@ public class MindBellMain extends Activity {
             }
 
         });
+        MenuItem meditatingItem = menu.findItem(R.id.meditating);
+        meditatingItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+
+            public boolean onMenuItemClick(MenuItem item) {
+                return onMenuItemClickMeditating();
+            }
+        });
         MenuItem activeItem = menu.findItem(R.id.active);
         activeItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 
@@ -152,6 +159,20 @@ public class MindBellMain extends Activity {
     }
 
     /**
+     * Handles click on menu item active.
+     */
+    private boolean onMenuItemClickMeditating() {
+        ContextAccessor contextAccessor = AndroidContextAccessor.getInstance(MindBellMain.this);
+        PrefsAccessor prefsAccessor = contextAccessor.getPrefs();
+        prefsAccessor.isMeditating(!prefsAccessor.isMeditating()); // toggle active/inactive
+        contextAccessor.updateBellSchedule();
+        invalidateOptionsMenu(); // re-call onPrepareOptionsMenu()
+        CharSequence feedback = getText((prefsAccessor.isMeditating()) ? R.string.summaryMeditating : R.string.summaryNotMeditating);
+        Toast.makeText(this, feedback, Toast.LENGTH_SHORT).show();
+        return true;
+    }
+
+    /**
      * Handles click on menu item send info.
      */
     private boolean onMenuItemClickSendInfo(boolean withLog) {
@@ -172,6 +193,8 @@ public class MindBellMain extends Activity {
         PrefsAccessor prefs = AndroidContextAccessor.getInstance(MindBellMain.this).getPrefs();
         MenuItem activeItem = menu.findItem(R.id.active);
         activeItem.setIcon((prefs.isActive()) ? R.drawable.ic_action_bell_off : R.drawable.ic_action_bell_on);
+        MenuItem meditatingItem = menu.findItem(R.id.meditating);
+        meditatingItem.setIcon((prefs.isMeditating()) ? R.drawable.ic_action_meditating_off : R.drawable.ic_action_meditating_on);
         return true;
     }
 

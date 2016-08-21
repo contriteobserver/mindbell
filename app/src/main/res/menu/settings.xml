@@ -22,10 +22,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/active"
         android:title="@string/prefsActive"
-        android:showAsAction="always"/>
+        android:showAsAction="always"/> <!-- icon to be set in MindBellMain#onPrepareOptionsMenu() -->
+    <item android:id="@+id/meditating"
+        android:title="@string/prefsMeditating"
+        android:showAsAction="always"/> <!-- icon to be set in MindBellMain#onPrepareOptionsMenu() -->
     <item android:id="@+id/settings"
         android:title="@string/menuSettings"
-        android:showAsAction="ifRoom"
+        android:showAsAction="always"
         android:icon="@drawable/ic_settings_white_24dp"/>
     <item android:id="@+id/help"
         android:title="@string/menuHelp"
