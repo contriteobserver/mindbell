@@ -23,6 +23,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.text.TextPaint;
 import android.util.AttributeSet;
@@ -44,13 +45,14 @@ public class CountdownView extends View {
     private long meditationStartingTimeMillis;
     private long meditationEndingTimeMillis;
 
-    private String mExampleString; // TODO: use a default from R.string...
-
     // Style information about the time slice to be drawn
     private Paint timeSlicePaint = new Paint();
 
     // Style information about the text to be displayed
     private TextPaint textPaint;
+
+    // Bound of the text to be displayed
+    Rect textBounds = new Rect();
 
     // Time to update the display with a time slice drawing regularly
     private Timer displayUpdateTimer;
@@ -83,7 +85,6 @@ public class CountdownView extends View {
         // Set up a TextPaint object for writing the remaining time onto the time slice
         textPaint = new TextPaint();
         textPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-        textPaint.setTextAlign(Paint.Align.LEFT);
         textPaint.setColor(a.getColor(R.styleable.CountdownView_textColor, Color.RED));
         textPaint.setTextSize(a.getDimension(R.styleable.CountdownView_textSize, 100));
     }
@@ -182,6 +183,7 @@ public class CountdownView extends View {
         int centerX = paddedLeft + contentWidth / 2;
         int centerY = paddedTop + contentHeight / 2;
         canvas.drawLine(centerX, centerY, centerX, paddedTop, timeSlicePaint);
+
         // Draw sector that represents the elapsed seconds versus the total number of seconds
         if (!rampUp && elapsedMeditationSeconds > 0) {
             RectF oval = new RectF(paddedLeft, paddedTop, paddedRight, paddedBottom);
@@ -190,16 +192,10 @@ public class CountdownView extends View {
 
         // Draw the text on top of the circle
         String countdownString = getCountdownString(meditationSeconds, elapsedMeditationSeconds, !rampUp);
-        float mTextWidth = textPaint.measureText(countdownString);
-
-        Paint.FontMetrics fontMetrics = textPaint.getFontMetrics();
-        float mTextHeight = fontMetrics.bottom;
-
-        canvas.drawText(countdownString,
-                paddingLeft + (contentWidth - mTextWidth) / 2,
-                paddingTop + (contentHeight + mTextHeight) / 2,
-                textPaint);
-
+        textPaint.getTextBounds(countdownString, 0, countdownString.length(), textBounds);
+        float textX = centerX - textBounds.exactCenterX();
+        float textY = centerY - textBounds.exactCenterY();
+        canvas.drawText(countdownString, textX, textY, textPaint);
     }
 
     /**
