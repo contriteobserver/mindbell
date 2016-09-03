@@ -181,7 +181,7 @@ public class MindBellMain extends Activity {
                     .setView(view) //
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
-                            // FIXME dkn Durch NumberPicker ersetzen, darum hier keine Prüfungen
+                            // FIXME dkn Durch NumberPicker ersetzen, darum hier keine Prüfungen (RampUpTime >= 5s, sonst kommt der Ton zu spät)
                             prefs.setRampUpTime(editTextRampUpTime.getText().toString());
                             prefs.setNumberOfPeriods(editTextNumberOfPeriods.getText().toString());
                             prefs.setMeditationDuration(editTextMeditationDuration.getText().toString());
