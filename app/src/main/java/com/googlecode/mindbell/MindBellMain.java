@@ -208,11 +208,15 @@ public class MindBellMain extends Activity {
         prefs.isMeditating(!prefs.isMeditating()); // toggle active/inactive
         CountdownView countdownView = (CountdownView) findViewById(R.id.countdown);
         if (prefs.isMeditating()) {
-            long nowTimeMillis = System.currentTimeMillis();
-            long startingTimeMillis = nowTimeMillis + prefs.getRampUpTimeMillis();
-            long endingTimeMillis = startingTimeMillis + prefs.getMeditationDurationMillis();
-            contextAccessor.updateBellSchedule(nowTimeMillis);
-            countdownView.startMeditation(nowTimeMillis, startingTimeMillis, endingTimeMillis);
+            long rampUpStartingTimeMillis = System.currentTimeMillis();
+            long meditationStartingTimeMillis = rampUpStartingTimeMillis + prefs.getRampUpTimeMillis();
+            long meditationEndingTimeMillis = meditationStartingTimeMillis + prefs.getMeditationDurationMillis();
+            // put values into preferences to make them survive an app termination because alarm goes on anyway
+            prefs.setRampUpStartingTimeMillis(rampUpStartingTimeMillis);
+            prefs.setMeditationStartingTimeMillis(meditationStartingTimeMillis);
+            prefs.setMeditationEndingTimeMillis(meditationEndingTimeMillis);
+            contextAccessor.updateBellSchedule(rampUpStartingTimeMillis);
+            countdownView.startDisplayUpdateTimer(contextAccessor);
             // FIXME dkn Abhängig vom Benutzerwunsch
 //            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         } else {
@@ -265,7 +269,7 @@ public class MindBellMain extends Activity {
         flipToAppropriateView();
         if (contextAccessor.getPrefs().isMeditating()) {
             CountdownView countdownView = (CountdownView) findViewById(R.id.countdown);
-            countdownView.startDisplayUpdateTimer();
+            countdownView.startDisplayUpdateTimer(contextAccessor);
         }
         invalidateOptionsMenu(); // Maybe active setting has been changed via MindBellPreferences
         super.onResume();

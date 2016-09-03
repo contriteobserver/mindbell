@@ -192,6 +192,9 @@
     <string name="keyRampUpTime" translatable="false">rampUpTime</string>
     <string name="keyNumberOfPeriods" translatable="false">numberOfPeriods</string>
     <string name="keyMeditationDuration" translatable="false">meditationDuration</string>
+    <string name="keyRampUpStartingTimeMillis" translatable="false">rampUpStartingTimeMillis</string>
+    <string name="keyMeditationStartingTimeMillis" translatable="false">meditationStartingTimeMillis</string>
+    <string name="keyMeditationEndingTimeMillis" translatable="false">meditationEndingTimeMillis</string>
 
     <!-- Unique string to be added to a Scheduling Intent to see which meditation period the bell is in (don't localize) -->
     <string name="extraMeditationPeriod" translatable="false">com.googlecode.mindbell.Scheduler.MeditationPeriod</string>

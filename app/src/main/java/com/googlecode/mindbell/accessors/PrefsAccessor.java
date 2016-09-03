@@ -134,4 +134,15 @@ public abstract class PrefsAccessor {
 
     public abstract void setMeditationDuration(String meditationDuration);
 
-    }
+    public abstract long getRampUpStartingTimeMillis();
+
+    public abstract void setRampUpStartingTimeMillis(long rampUpStartingTimeMillis);
+
+    public abstract long getMeditationStartingTimeMillis();
+
+    public abstract void setMeditationStartingTimeMillis(long meditationStartingTimeMillis);
+
+    public abstract long getMeditationEndingTimeMillis();
+
+    public abstract void setMeditationEndingTimeMillis(long meditationEndingTimeMillis);
+}

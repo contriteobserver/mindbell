@@ -24,44 +24,38 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
-import android.os.PowerManager;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.googlecode.mindbell.accessors.AndroidContextAccessor;
+import com.googlecode.mindbell.accessors.ContextAccessor;
+import com.googlecode.mindbell.accessors.PrefsAccessor;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * TODO: document your custom view class.
+ * Regularly show current state of meditation by updating a time slice drawing regularly.
  */
 public class CountdownView extends View {
     public static final long ONE_SECOND = 1000;
-    public static final long ONE_MINUTE = 60 * ONE_SECOND;
 
-    private static long nowTimeMillis;
-    private static long startingTimeMillis;
-    private static long endingTimeMillis;
+    private long rampUpStartingTimeMillis;
+    private long meditationStartingTimeMillis;
+    private long meditationEndingTimeMillis;
 
-    private long meditationSeconds;
-    private long elapsedMeditationSeconds;
-    private long rampUpSeconds;
-    private long elapsedRampUpSeconds;
     private String mExampleString; // TODO: use a default from R.string...
-    private int mExampleColor = Color.RED; // TODO: use a default from R.color...
-    private float mExampleDimension = 0; // TODO: use a default from R.dimen...
-    private Drawable mExampleDrawable;
 
-    private TextPaint mTextPaint;
-    private float mTextWidth;
-    private float mTextHeight;
+    // Style information about the time slice to be drawn
+    private Paint timeSlicePaint = new Paint();
 
+    // Style information about the text to be displayed
+    private TextPaint textPaint;
+
+    // Time to update the display with a time slice drawing regularly
     private Timer displayUpdateTimer;
 
-    private PowerManager.WakeLock wakeLock;
+    // FIXME dkn private PowerManager.WakeLock wakeLock;
 
     public CountdownView(Context context) {
         super(context);
@@ -79,49 +73,30 @@ public class CountdownView extends View {
     }
 
     private void init(AttributeSet attrs, int defStyle) {
+
         // Load attributes
-        final TypedArray a = getContext().obtainStyledAttributes(
-                attrs, R.styleable.CountdownView, defStyle, 0);
+        final TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.CountdownView, defStyle, 0);
 
-        mExampleString = a.getString(
-                R.styleable.CountdownView_exampleString);
-        mExampleColor = a.getColor(
-                R.styleable.CountdownView_exampleColor,
-                mExampleColor);
-        // Use getDimensionPixelSize or getDimensionPixelOffset when dealing with
-        // values that should fall on pixel boundaries.
-        mExampleDimension = a.getDimension(
-                R.styleable.CountdownView_exampleDimension,
-                mExampleDimension);
+        // Set up a TextPaint object for writing the remaining time onto the time slice
+        timeSlicePaint.setColor(Color.WHITE);
 
-        if (a.hasValue(R.styleable.CountdownView_exampleDrawable)) {
-            mExampleDrawable = a.getDrawable(
-                    R.styleable.CountdownView_exampleDrawable);
-            mExampleDrawable.setCallback(this);
-        }
-
-        a.recycle();
-
-        // Set up a default TextPaint object
-        mTextPaint = new TextPaint();
-        mTextPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-        mTextPaint.setTextAlign(Paint.Align.LEFT);
-
+        // Set up a TextPaint object for writing the remaining time onto the time slice
+        textPaint = new TextPaint();
+        textPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+        textPaint.setTextAlign(Paint.Align.LEFT);
+        textPaint.setColor(a.getColor(R.styleable.CountdownView_textColor, Color.RED));
+        textPaint.setTextSize(a.getDimension(R.styleable.CountdownView_textSize, 100));
     }
 
     /**
-     * Starts a meditation by resetting times and starting timers.
+     * Starts displaying state of meditation by resetting and starting timers.
      */
-    public void startMeditation(long nowTimeMillis, long startingTimeMillis, long endingTimeMillis) {
+    public void startDisplayUpdateTimer(ContextAccessor contextAccessor) {
 
-        this.nowTimeMillis = nowTimeMillis;
-        this.startingTimeMillis = startingTimeMillis;
-        this.endingTimeMillis = endingTimeMillis;
-
-        startDisplayUpdateTimer();
-    }
-
-    public void startDisplayUpdateTimer() {
+        PrefsAccessor prefs = contextAccessor.getPrefs();
+        this.rampUpStartingTimeMillis = prefs.getRampUpStartingTimeMillis();
+        this.meditationStartingTimeMillis = prefs.getMeditationStartingTimeMillis();
+        this.meditationEndingTimeMillis = prefs.getMeditationEndingTimeMillis();
 
         // FIXME dkn Nur wenn der Bildschirm anbleiben soll
 //        PowerManager pm = (PowerManager) getContext().getSystemService(Context.POWER_SERVICE);
@@ -129,7 +104,6 @@ public class CountdownView extends View {
 //        wakeLock.acquire();
 //        MindBell.logDebug("Meditation started, wake lock acquired");
 
-        final AndroidContextAccessor contextAccessor = AndroidContextAccessor.getInstance(getContext());
         displayUpdateTimer = new Timer();
 
         displayUpdateTimer.scheduleAtFixedRate(new TimerTask() {
@@ -138,25 +112,6 @@ public class CountdownView extends View {
                 postInvalidate(); // => onDraw()
             }
         }, ONE_SECOND, ONE_SECOND);
-    }
-
-    /**
-     * Updates the string to be displayed with the remaining time.
-     */
-    private void updateExampleString(long seconds, long elapsedSeconds, boolean showMinutes) {
-        StringBuilder sb = new StringBuilder();
-        if (showMinutes) {
-            long remainingBeganMinutes = (long) Math.ceil((seconds - elapsedSeconds) / 60d);
-            sb.append(remainingBeganMinutes);
-        } else {
-            long remainingCompleteMinutes = (seconds - elapsedSeconds) / 60;
-            if (remainingCompleteMinutes  > 0) {
-                sb.append(remainingCompleteMinutes );
-            }
-            sb.append(":");
-            sb.append(seconds - elapsedSeconds - remainingCompleteMinutes * 60);
-        }
-        setExampleString(sb.toString());
     }
 
     /**
@@ -177,37 +132,25 @@ public class CountdownView extends View {
 //        }
     }
 
-    private void invalidateTextPaintAndMeasurements() {
-        mTextPaint.setTextSize(mExampleDimension);
-        mTextPaint.setColor(mExampleColor);
-        mTextWidth = mTextPaint.measureText(mExampleString);
-
-        Paint.FontMetrics fontMetrics = mTextPaint.getFontMetrics();
-        mTextHeight = fontMetrics.bottom;
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
         boolean rampUp;
-        long currentTimeMillis = Math.min(System.currentTimeMillis(), endingTimeMillis);
-        if (currentTimeMillis < startingTimeMillis) {
+        long currentTimeMillis = Math.min(System.currentTimeMillis(), meditationEndingTimeMillis);
+        long meditationSeconds;
+        long elapsedMeditationSeconds;
+        if (currentTimeMillis < meditationStartingTimeMillis) {
             rampUp = true;
-            // FIXME dkn Vielleicht gleich remaining ausrechnen?
-            meditationSeconds = (startingTimeMillis - nowTimeMillis) / ONE_SECOND;
-            elapsedMeditationSeconds = (currentTimeMillis - nowTimeMillis) / ONE_SECOND;
-            updateExampleString(meditationSeconds, elapsedMeditationSeconds, false);
+            meditationSeconds = (meditationStartingTimeMillis - rampUpStartingTimeMillis) / ONE_SECOND;
+            elapsedMeditationSeconds = (currentTimeMillis - rampUpStartingTimeMillis) / ONE_SECOND;
         } else  {
             rampUp = false;
-            // FIXME dkn Vielleicht gleich remaining ausrechnen?
-            meditationSeconds = (endingTimeMillis - startingTimeMillis) / ONE_SECOND;
-            elapsedMeditationSeconds = (currentTimeMillis - startingTimeMillis) / ONE_SECOND;
-            updateExampleString(meditationSeconds, elapsedMeditationSeconds, true);
+            meditationSeconds = (meditationEndingTimeMillis - meditationStartingTimeMillis) / ONE_SECOND;
+            elapsedMeditationSeconds = (currentTimeMillis - meditationStartingTimeMillis) / ONE_SECOND;
         }
 
-        // TODO: consider storing these as member variables to reduce
-        // allocations per draw cycle.
+        // Get view dimensions
         int paddingLeft = getPaddingLeft();
         int paddingTop = getPaddingTop();
         int paddingRight = getPaddingRight();
@@ -235,104 +178,47 @@ public class CountdownView extends View {
         int paddedRight = getRight() - paddingRight;
         int paddedBottom = getBottom() - paddingBottom;
 
-        Paint paint = new Paint();
-        paint.setColor(Color.WHITE);
-
         // Always draw a vertical line just in case elapsedMeditationSeconds doesn't make a sector with more than zero degrees
         int centerX = paddedLeft + contentWidth / 2;
         int centerY = paddedTop + contentHeight / 2;
-        canvas.drawLine(centerX, centerY, centerX, paddedTop, paint);
+        canvas.drawLine(centerX, centerY, centerX, paddedTop, timeSlicePaint);
         // Draw sector that represents the elapsed seconds versus the total number of seconds
         if (!rampUp && elapsedMeditationSeconds > 0) {
             RectF oval = new RectF(paddedLeft, paddedTop, paddedRight, paddedBottom);
-            canvas.drawArc(oval, -90, elapsedMeditationSeconds * 360 / (float) meditationSeconds, true, paint);
+            canvas.drawArc(oval, -90, elapsedMeditationSeconds * 360 / (float) meditationSeconds, true, timeSlicePaint);
         }
 
         // Draw the text on top of the circle
-        canvas.drawText(mExampleString,
+        String countdownString = getCountdownString(meditationSeconds, elapsedMeditationSeconds, !rampUp);
+        float mTextWidth = textPaint.measureText(countdownString);
+
+        Paint.FontMetrics fontMetrics = textPaint.getFontMetrics();
+        float mTextHeight = fontMetrics.bottom;
+
+        canvas.drawText(countdownString,
                 paddingLeft + (contentWidth - mTextWidth) / 2,
                 paddingTop + (contentHeight + mTextHeight) / 2,
-                mTextPaint);
+                textPaint);
 
     }
 
     /**
-     * Gets the example string attribute value.
-     *
-     * @return The example string attribute value.
+     * Returns the string with the remaining time to be displayed.
      */
-    public String getExampleString() {
-        return mExampleString;
-    }
-
-    /**
-     * Sets the view's example string attribute value. In the example view, this string
-     * is the text to draw.
-     *
-     * @param exampleString The example string attribute value to use.
-     */
-    public void setExampleString(String exampleString) {
-        mExampleString = exampleString;
-        invalidateTextPaintAndMeasurements();
-    }
-
-    /**
-     * Gets the example color attribute value.
-     *
-     * @return The example color attribute value.
-     */
-    public int getExampleColor() {
-        return mExampleColor;
-    }
-
-    /**
-     * Sets the view's example color attribute value. In the example view, this color
-     * is the font color.
-     *
-     * @param exampleColor The example color attribute value to use.
-     */
-    public void setExampleColor(int exampleColor) {
-        mExampleColor = exampleColor;
-        invalidateTextPaintAndMeasurements();
-    }
-
-    /**
-     * Gets the example dimension attribute value.
-     *
-     * @return The example dimension attribute value.
-     */
-    public float getExampleDimension() {
-        return mExampleDimension;
-    }
-
-    /**
-     * Sets the view's example dimension attribute value. In the example view, this dimension
-     * is the font size.
-     *
-     * @param exampleDimension The example dimension attribute value to use.
-     */
-    public void setExampleDimension(float exampleDimension) {
-        mExampleDimension = exampleDimension;
-        invalidateTextPaintAndMeasurements();
-    }
-
-    /**
-     * Gets the example drawable attribute value.
-     *
-     * @return The example drawable attribute value.
-     */
-    public Drawable getExampleDrawable() {
-        return mExampleDrawable;
-    }
-
-    /**
-     * Sets the view's example drawable attribute value. In the example view, this drawable is
-     * drawn above the text.
-     *
-     * @param exampleDrawable The example drawable attribute value to use.
-     */
-    public void setExampleDrawable(Drawable exampleDrawable) {
-        mExampleDrawable = exampleDrawable;
+    private String getCountdownString(long seconds, long elapsedSeconds, boolean showMinutes) {
+        StringBuilder sb = new StringBuilder();
+        if (showMinutes) {
+            long remainingBeganMinutes = (long) Math.ceil((seconds - elapsedSeconds) / 60d);
+            sb.append(remainingBeganMinutes);
+        } else {
+            long remainingCompleteMinutes = (seconds - elapsedSeconds) / 60;
+            if (remainingCompleteMinutes  > 0) {
+                sb.append(remainingCompleteMinutes );
+            }
+            sb.append(":");
+            sb.append(seconds - elapsedSeconds - remainingCompleteMinutes * 60);
+        }
+        return sb.toString();
     }
 
 }

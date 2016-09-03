@@ -23,7 +23,7 @@
     android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:mindbell="http://schemas.android.com/apk/res-auto">
 
     <ViewFlipper
         android:id="@+id/viewFlipper"
@@ -75,10 +75,8 @@
             android:paddingRight="10dp"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
-            app:exampleColor="#33b5e5"
-            app:exampleDimension="24sp"
-            app:exampleDrawable="@android:drawable/ic_menu_add"
-            app:exampleString="Hello, Countdown" />
+            mindbell:textColor="#FF6600"
+            mindbell:textSize="96sp" />
 
     </ViewFlipper>
 

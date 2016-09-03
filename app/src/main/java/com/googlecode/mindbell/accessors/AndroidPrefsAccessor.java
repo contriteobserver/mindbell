@@ -66,10 +66,13 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private final String keyStart;
     private final String keyEnd;
     private final String keyActiveOnDaysOfWeek;
-    
+
     private final String keyRampUpTime;
     private final String keyNumberOfPeriods;
     private final String keyMeditationDuration;
+    private final String keyRampUpStartingTimeMillis;
+    private final String keyMeditationStartingTimeMillis;
+    private final String keyMeditationEndingTimeMillis;
 
     private final String keyVolume;
 
@@ -101,6 +104,9 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private final String defaultRampUpTime = "30"; // seconds
     private final String defaultNumberOfPeriods = "1";
     private final String defaultMeditationDuration = "25"; // minutes
+    private final long defaultRampUpStartingTimeMillis = -1;
+    private final long defaultMeditationStartingTimeMillis = -1;
+    private final long defaultMeditationEndingTimeMillis = -1;
     private final Set<String> defaultActiveOnDaysOfWeek = new HashSet<>(
             Arrays.asList(new String[]{"1", "2", "3", "4", "5", "6", "7"})); // every day
     private final float defaultVolume = AndroidContextAccessor.MINUS_SIX_DB;
@@ -148,6 +154,9 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         keyRampUpTime = context.getString(R.string.keyRampUpTime);
         keyNumberOfPeriods = context.getString(R.string.keyNumberOfPeriods);
         keyMeditationDuration = context.getString(R.string.keyMeditationDuration);
+        keyRampUpStartingTimeMillis = context.getString(R.string.keyRampUpStartingTimeMillis);
+        keyMeditationStartingTimeMillis = context.getString(R.string.keyMeditationStartingTimeMillis);
+        keyMeditationEndingTimeMillis = context.getString(R.string.keyMeditationEndingTimeMillis);
         keyActiveOnDaysOfWeek = context.getString(R.string.keyActiveOnDaysOfWeek);
 
         hourEntries = context.getResources().getStringArray(R.array.hourEntries);
@@ -188,7 +197,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             }
         }
         // string settings:
-        String[] stringSettings = new String[] { keyRingtone, keyPattern, keyFrequency, keyNormalize, keyStart, keyEnd, keyRampUpTime, keyNumberOfPeriods, keyMeditationDuration};
+        String[] stringSettings = new String[] { keyRingtone, keyPattern, keyFrequency, keyNormalize, keyStart, keyEnd, keyRampUpTime, keyNumberOfPeriods, keyMeditationDuration };
         for (String key : stringSettings) {
             try {
                 String value = settings.getString(key, null);
@@ -219,6 +228,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
                         }
                     }
                 }
+            } catch (ClassCastException e) {
+                settings.edit().remove(key).apply();
+                Log.w(TAG, "Removed setting '" + key + "' since it had wrong type");
+            }
+        }
+        // long settings:
+        String[] longSettings = new String[] { keyRampUpStartingTimeMillis, keyMeditationStartingTimeMillis, keyMeditationEndingTimeMillis };
+        for (String key : longSettings) {
+            try {
+                settings.getLong(key, 0);
             } catch (ClassCastException e) {
                 settings.edit().remove(key).apply();
                 Log.w(TAG, "Removed setting '" + key + "' since it had wrong type");
@@ -342,6 +361,18 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             settings.edit().putString(keyMeditationDuration, defaultMeditationDuration).apply();
             Log.w(TAG, "Reset missing setting for '" + keyMeditationDuration + "' to '" + defaultMeditationDuration + "'");
         }
+        if (!settings.contains(keyRampUpStartingTimeMillis)) {
+            settings.edit().putLong(keyRampUpStartingTimeMillis, defaultRampUpStartingTimeMillis).apply();
+            Log.w(TAG, "Reset missing setting for '" + keyRampUpStartingTimeMillis + "' to '" + defaultRampUpStartingTimeMillis + "'");
+        }
+        if (!settings.contains(keyMeditationStartingTimeMillis)) {
+            settings.edit().putLong(keyMeditationStartingTimeMillis, defaultMeditationStartingTimeMillis).apply();
+            Log.w(TAG, "Reset missing setting for '" + keyMeditationStartingTimeMillis + "' to '" + defaultMeditationStartingTimeMillis + "'");
+        }
+        if (!settings.contains(keyMeditationEndingTimeMillis)) {
+            settings.edit().putLong(keyMeditationEndingTimeMillis, defaultMeditationEndingTimeMillis).apply();
+            Log.w(TAG, "Reset missing setting for '" + keyMeditationEndingTimeMillis + "' to '" + defaultMeditationEndingTimeMillis + "'");
+        }
         if (!settings.contains(keyActiveOnDaysOfWeek)) {
             settings.edit().putStringSet(keyActiveOnDaysOfWeek, defaultActiveOnDaysOfWeek).apply();
             Log.w(TAG, "Reset missing setting for '" + keyActiveOnDaysOfWeek + "' to '" + defaultActiveOnDaysOfWeek + "'");
@@ -361,6 +392,9 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         }
         for (String s : stringSetSettings) {
             sb.append(s).append("=").append(settings.getStringSet(s, null)).append(", ");
+        }
+        for (String s : longSettings) {
+            sb.append(s).append("=").append(settings.getLong(s, -1)).append(", ");
         }
         for (String s : floatSettings) {
             sb.append(s).append("=").append(settings.getFloat(s, -1)).append(", ");
@@ -591,6 +625,36 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public void setMeditationDuration(String meditationDuration) {
         settings.edit().putString(keyMeditationDuration, meditationDuration).apply();
+    }
+
+    @Override
+    public long getRampUpStartingTimeMillis() {
+        return settings.getLong(keyRampUpStartingTimeMillis, defaultRampUpStartingTimeMillis);
+    }
+
+    @Override
+    public void setRampUpStartingTimeMillis(long rampUpStartingTimeMillis) {
+        settings.edit().putLong(keyRampUpStartingTimeMillis, rampUpStartingTimeMillis).apply();
+    }
+
+    @Override
+    public long getMeditationStartingTimeMillis() {
+        return settings.getLong(keyMeditationStartingTimeMillis, defaultMeditationStartingTimeMillis);
+    }
+
+    @Override
+    public void setMeditationStartingTimeMillis(long meditationStartingTimeMillis) {
+        settings.edit().putLong(keyMeditationStartingTimeMillis, meditationStartingTimeMillis).apply();
+    }
+
+    @Override
+    public long getMeditationEndingTimeMillis() {
+        return settings.getLong(keyMeditationEndingTimeMillis, defaultMeditationEndingTimeMillis);
+    }
+
+    @Override
+    public void setMeditationEndingTimeMillis(long meditationEndingTimeMillis) {
+        settings.edit().putLong(keyMeditationEndingTimeMillis, meditationEndingTimeMillis).apply();
     }
 
 }
