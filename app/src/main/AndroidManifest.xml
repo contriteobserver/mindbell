@@ -26,53 +26,41 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <application android:allowBackup="true" android:icon="@drawable/icon" android:label="@string/app_name">
-    	
-        <!-- Do NOT change android:name ... http://android-developers.blogspot.de/2011/06/things-that-cannot-change.html -->
-        <activity android:label="@string/app_name" android:name="MindBellMain">
+
+        <activity android:name=".MindBellMain" android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        
-        <!-- Do NOT change android:name ... http://android-developers.blogspot.de/2011/06/things-that-cannot-change.html -->
-        <activity android:label="@string/preferencesTitle" android:name="MindBellPreferences">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
-        </activity>
-        
-        <!-- Do NOT change android:name ... http://android-developers.blogspot.de/2011/06/things-that-cannot-change.html -->
-        <activity android:label="@string/app_name" android:name="MindBell">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
-        </activity>
-        
-        <!-- Do NOT change android:name ... http://android-developers.blogspot.de/2011/06/things-that-cannot-change.html -->
 
-        <!-- Do NOT change android:name ... http://android-developers.blogspot.de/2011/06/things-that-cannot-change.html -->
-        <activity
-            android:name="com.googlecode.mindbell.AboutActivity"
-            android:label="@string/title_activity_about"
-			android:parentActivityName="MindBellMain" >
+        <activity android:name=".MindBellPreferences" android:label="@string/preferencesTitle">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
+        
+        <activity android:name=".MindBell" android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
+        
+        <activity android:name=".AboutActivity" android:label="@string/title_activity_about" android:parentActivityName="MindBellMain" >
 			<!-- Parent activity meta-data to support 4.0 and lower -->
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
 				android:value="MindBellMain" />
         </activity>
         
-        <!-- Do NOT change android:name ... http://android-developers.blogspot.de/2011/06/things-that-cannot-change.html -->
-        <receiver android:name="Scheduler" android:process=":remote">
+        <receiver android:name=".Scheduler">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
             </intent-filter>
         </receiver>
 
-        <!-- Do NOT change android:name ... http://android-developers.blogspot.de/2011/06/things-that-cannot-change.html -->
-        <receiver android:name="UpdateStatusNotification" android:process=":remote">
+        <receiver android:name=".UpdateStatusNotification">
             <intent-filter>
                 <action android:name="android.intent.action.AIRPLANE_MODE"/>
                 <action android:name="android.intent.action.PHONE_STATE"/>

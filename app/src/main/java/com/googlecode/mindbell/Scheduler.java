@@ -89,7 +89,7 @@ public class Scheduler extends BroadcastReceiver {
 
         if (!isRescheduling) {
 
-            Log.d(TAG, "Not ringing, has been called by preferences, activate bell button or when boot completed");
+            Log.d(TAG, "Not ringing, has been called by preferences, activate bell button, when boot completed or after updating");
 
         } else if (!(new TimeOfDay()).isDaytime(prefs)) {
 

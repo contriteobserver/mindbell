@@ -22,8 +22,6 @@ package com.googlecode.mindbell.accessors;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.googlecode.mindbell.MindBell;
@@ -130,13 +128,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
      * of calling this directly.
      */
     protected AndroidPrefsAccessor(Context context) {
-        // From target SDK version 11 (HONEYCOMB) upwards changes made in the settings dialog do not arrive in
-        // UpdateStatusNotification if MODE_MULTI_PROCESS is not set, see API docs for MODE_MULTI_PROCESS.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            this.settings = context.getSharedPreferences(context.getPackageName() + "_preferences", Context.MODE_MULTI_PROCESS);
-        } else {
-            this.settings = PreferenceManager.getDefaultSharedPreferences(context);
-        }
+        settings = context.getSharedPreferences(context.getPackageName() + "_preferences", Context.MODE_PRIVATE);
 
         // Define all preference keys
         keyPopup = context.getString(R.string.keyPopup);
