@@ -113,21 +113,27 @@ public class Scheduler extends BroadcastReceiver {
     private void handleMeditatingBell(ContextAccessor contextAccessor, long nowTimeMillis, int meditationPeriod) {
         PrefsAccessor prefs = contextAccessor.getPrefs();
 
-        if (meditationPeriod == 0) { // begin of ramp-up period?
+        if (meditationPeriod == 0) { // beginning of ramp-up period?
 
             long nextTargetTimeMillis = nowTimeMillis + prefs.getRampUpTimeMillis();
             contextAccessor.reschedule(nextTargetTimeMillis, meditationPeriod + 1);
 
-        } else if (meditationPeriod <= prefs.getNumberOfPeriodsAsInteger()) { // meditation period 1..n
+        } else if (meditationPeriod == 1) { // beginning of meditation period 1
 
             long nextTargetTimeMillis = nowTimeMillis + prefs.getMeditationDurationMillis() / prefs.getNumberOfPeriodsAsInteger();
             contextAccessor.reschedule(nextTargetTimeMillis, meditationPeriod + 1);
-            contextAccessor.startPlayingSound(null); // FIXME dkn Use different ringtone for starting/intermediate ... sound stop into this method?
+            contextAccessor.startPlayingSoundAndVibrate(prefs.forMeditationBeginning(), null);
+
+        } else if (meditationPeriod <= prefs.getNumberOfPeriodsAsInteger()) { // beginning of meditation period 2..n
+
+            long nextTargetTimeMillis = nowTimeMillis + prefs.getMeditationDurationMillis() / prefs.getNumberOfPeriodsAsInteger();
+            contextAccessor.reschedule(nextTargetTimeMillis, meditationPeriod + 1);
+            contextAccessor.startPlayingSoundAndVibrate(prefs.forMeditationInterrupting(), null);
 
         } else { // end of last meditation period
 
             Log.d(TAG, "Meditation is over -- not rescheduling.");
-            contextAccessor.startPlayingSound(null); // FIXME dkn Use ending ringtone ... sound stop into this method?
+            contextAccessor.startPlayingSoundAndVibrate(prefs.forMeditationEnding(), null);
 
         }
     }

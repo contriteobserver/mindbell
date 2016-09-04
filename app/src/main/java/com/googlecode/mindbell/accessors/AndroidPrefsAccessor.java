@@ -109,13 +109,21 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private final long defaultMeditationEndingTimeMillis = -1;
     private final Set<String> defaultActiveOnDaysOfWeek = new HashSet<>(
             Arrays.asList(new String[]{"1", "2", "3", "4", "5", "6", "7"})); // every day
-    private final float defaultVolume = AndroidContextAccessor.MINUS_SIX_DB;
+    private final float defaultVolume = 0.501187234f;
 
     private final String[] weekdayEntryValues;
     private final String[] hourEntries;
     private final String[] weekdayAbbreviationEntries;
 
     private final Uri bellRessourceUri;
+
+    private ActivityPrefsAccessor activityPrefsForRegularOperation = new ActivityPrefsAccessorForRegularOperation();
+
+    private ActivityPrefsAccessor activityPrefsForMeditationBeginning = new ActivityPrefsAccessorForMeditationBeginning();
+
+    private ActivityPrefsAccessor activityPrefsForMeditationInterrupting = new ActivityPrefsAccessorForMeditationInterrupting();
+
+    private ActivityPrefsAccessor activityPrefsForMeditationEnding = new ActivityPrefsAccessorForMeditationEnding();
 
     /**
      * Constructs an accessor for preferences in the given context, please use {@link AndroidContextAccessor#getPrefs()} instead
@@ -511,10 +519,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public float getVolume(float defaultVolume) {
-        if (defaultVolume > 1f) {
-            throw new IllegalArgumentException("Default volume out of range: " + defaultVolume);
-        }
+    public float getVolume() {
         try {
             return settings.getFloat(keyVolume, defaultVolume);
         } catch (ClassCastException e) {
@@ -735,6 +740,95 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public void resetPopup() {
         settings.edit().putInt(keyPopup, defaultPopup).apply();
+    }
+
+    @Override
+    public ActivityPrefsAccessor forRegularOperation() {
+       return activityPrefsForRegularOperation;
+    }
+
+    @Override
+    public ActivityPrefsAccessor forMeditationBeginning() {
+       return activityPrefsForMeditationBeginning;
+    }
+
+    @Override
+    public ActivityPrefsAccessor forMeditationInterrupting() {
+        return activityPrefsForMeditationInterrupting;
+    }
+
+    @Override
+    public ActivityPrefsAccessor forMeditationEnding() {
+        return activityPrefsForMeditationEnding;
+    }
+
+    private class ActivityPrefsAccessorForRegularOperation implements ActivityPrefsAccessor {
+
+        @Override
+        public boolean isShow() {
+            return AndroidPrefsAccessor.this.isShow();
+        }
+
+        @Override
+        public boolean isSound() {
+            return AndroidPrefsAccessor.this.isSound();
+        }
+
+        @Override
+        public boolean isVibrate() {
+            return AndroidPrefsAccessor.this.isVibrate();
+        }
+
+        @Override
+        public Uri getSoundUri() {
+            return AndroidPrefsAccessor.this.getSoundUri();
+        }
+
+        @Override
+        public float getVolume() {
+            return AndroidPrefsAccessor.this.getVolume();
+        }
+    }
+
+    private class ActivityPrefsAccessorForMeditation implements ActivityPrefsAccessor {
+
+        @Override
+        public boolean isShow() {
+            return false;
+        }
+
+        @Override
+        public boolean isSound() {
+            return true;
+        }
+
+        @Override
+        public boolean isVibrate() {
+            return false;
+        }
+
+        @Override
+        public Uri getSoundUri() {
+            return bellRessourceUri;
+        }
+
+        @Override
+        public float getVolume() {
+            return AndroidPrefsAccessor.this.getVolume();
+        }
+
+    }
+
+    private class ActivityPrefsAccessorForMeditationBeginning extends ActivityPrefsAccessorForMeditation {
+
+    }
+
+    private class ActivityPrefsAccessorForMeditationInterrupting extends ActivityPrefsAccessorForMeditation {
+
+    }
+
+    private class ActivityPrefsAccessorForMeditationEnding extends ActivityPrefsAccessorForMeditation {
+
     }
 
 }

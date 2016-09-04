@@ -54,11 +54,6 @@ public class AndroidTestMockContextAccessor extends ContextAccessor {
     }
 
     @Override
-    public float getBellVolume() {
-        throw new UnsupportedOperationException("Test terminated ... method not implemented");
-    }
-
-    @Override
     public AndroidTestMockPrefsAccessor getPrefs() {
         return (AndroidTestMockPrefsAccessor) prefs;
     }
@@ -114,7 +109,7 @@ public class AndroidTestMockContextAccessor extends ContextAccessor {
     }
 
     @Override
-    public void startPlayingSoundAndVibrate(final Runnable runWhenDone) {
+    public void startPlayingSoundAndVibrate(ActivityPrefsAccessor activityPrefs, final Runnable runWhenDone) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
@@ -129,7 +124,7 @@ public class AndroidTestMockContextAccessor extends ContextAccessor {
     }
 
     @Override
-    public void startPlayingSound(Runnable runWhenDone) {
+    public void startPlayingSound(ActivityPrefsAccessor activityPrefs, Runnable runWhenDone) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 

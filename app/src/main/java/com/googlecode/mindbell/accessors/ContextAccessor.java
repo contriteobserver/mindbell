@@ -25,7 +25,6 @@ package com.googlecode.mindbell.accessors;
 public abstract class ContextAccessor {
     public static final float MINUS_ONE_DB = 0.891250938f;
     public static final float MINUS_THREE_DB = 0.707945784f;
-    public static final float MINUS_SIX_DB = 0.501187234f;
 
     /** Alarm volume before ringing the bell */
     protected int originalVolume;
@@ -38,12 +37,6 @@ public abstract class ContextAccessor {
     public abstract int getAlarmMaxVolume();
 
     public abstract int getAlarmVolume();
-
-    public float getBellDefaultVolume() {
-        return MINUS_SIX_DB;
-    }
-
-    public abstract float getBellVolume();
 
     /**
      * Check whether bell should be muted, show reason if requested, and return reason, null otherwise.
@@ -107,13 +100,13 @@ public abstract class ContextAccessor {
 
     public abstract void showMessage(String message);
 
-    public abstract void startPlayingSoundAndVibrate(final Runnable runWhenDone);
+    public abstract void startPlayingSoundAndVibrate(ActivityPrefsAccessor activityPrefs, final Runnable runWhenDone);
 
     public abstract void showBell();
 
     public abstract void updateStatusNotification();
 
-    public abstract void startPlayingSound(final Runnable runWhenDone);
+    public abstract void startPlayingSound(ActivityPrefsAccessor activityPrefs, final Runnable runWhenDone);
 
     public abstract void updateBellSchedule();
 

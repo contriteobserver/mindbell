@@ -132,12 +132,6 @@ public class AndroidContextAccessor extends ContextAccessor {
     }
 
     @Override
-    public float getBellVolume() {
-        float bellVolume = prefs.getVolume(getBellDefaultVolume());
-        return bellVolume;
-    }
-
-    @Override
     protected String getReasonMutedInFlightMode() {
         return context.getText(R.string.reasonMutedInFlightMode).toString();
     }
@@ -193,15 +187,15 @@ public class AndroidContextAccessor extends ContextAccessor {
     }
 
     @Override
-    public void startPlayingSoundAndVibrate(final Runnable runWhenDone) {
+    public void startPlayingSoundAndVibrate(ActivityPrefsAccessor activityPrefs, final Runnable runWhenDone) {
 
         // Start playing sound if requested by preferences
-        if (prefs.isSound()) {
-            startPlayingSound(runWhenDone);
+        if (activityPrefs.isSound()) {
+            startPlayingSound(activityPrefs, runWhenDone);
         }
 
         // Vibrate if requested by preferences
-        if (prefs.isVibrate()) {
+        if (activityPrefs.isVibrate()) {
             startVibration();
         }
 
@@ -211,7 +205,7 @@ public class AndroidContextAccessor extends ContextAccessor {
         // bell to the back again. So a new thread is created that waits and calls the runWhenDone
         // which sends the bell to background. As it's a new thread this method ends after starting
         // the thread which leads to the end of MindBell.onStart() which shows the bell.
-        if (prefs.isShow() && !prefs.isSound() && runWhenDone != null) {
+        if (activityPrefs.isShow() && !activityPrefs.isSound() && runWhenDone != null) {
             startWaiting(runWhenDone);
         }
 
@@ -220,10 +214,11 @@ public class AndroidContextAccessor extends ContextAccessor {
     /**
      * Start playing bell sound and call runWhenDone when playing finishes.
      *
+     * @param activityPrefs
      * @param runWhenDone
      */
     @Override
-    public void startPlayingSound(final Runnable runWhenDone) {
+    public void startPlayingSound(ActivityPrefsAccessor activityPrefs, final Runnable runWhenDone) {
         originalVolume = getAlarmVolume();
         int alarmMaxVolume = getAlarmMaxVolume();
         if (originalVolume == alarmMaxVolume) { // "someone" else set it to max, so we don't touch it
@@ -233,8 +228,8 @@ public class AndroidContextAccessor extends ContextAccessor {
             MindBell.logDebug("Start playing sound found originalVolume " + originalVolume + ", setting alarm volume to max");
             setAlarmVolume(alarmMaxVolume);
         }
-        float bellVolume = getBellVolume();
-        Uri bellUri = prefs.getSoundUri();
+        float bellVolume = activityPrefs.getVolume();
+        Uri bellUri = activityPrefs.getSoundUri();
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
         mediaPlayer.setVolume(bellVolume, bellVolume);

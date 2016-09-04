@@ -53,7 +53,7 @@ public abstract class PrefsAccessor {
 
     public abstract String getActiveOnDaysOfWeekString();
 
-    public abstract float getVolume(float defaultVolume);
+    public abstract float getVolume();
 
     public abstract TimeOfDay getDaytimeEnd();
 
@@ -151,4 +151,12 @@ public abstract class PrefsAccessor {
     public abstract void setPopup(int popup);
 
     public abstract void resetPopup();
+
+    public abstract ActivityPrefsAccessor forRegularOperation();
+
+    public abstract ActivityPrefsAccessor forMeditationBeginning();
+
+    public abstract ActivityPrefsAccessor forMeditationInterrupting();
+
+    public abstract ActivityPrefsAccessor forMeditationEnding();
 }

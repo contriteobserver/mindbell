@@ -94,7 +94,7 @@ public class RingingLogic {
         }
 
         // Kick off the playback of the bell sound, with an automatic volume reset built-in if not stopped.
-        contextAccessor.startPlayingSoundAndVibrate(runWhenDone);
+        contextAccessor.startPlayingSoundAndVibrate(contextAccessor.getPrefs().forRegularOperation(), runWhenDone);
 
         return true;
     }
