@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MindBellPreferences" android:label="@string/preferencesTitle">
+        <activity android:name=".MindBellPreferences" android:label="@string/preferencesTitle" android:parentActivityName="MindBellMain">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
@@ -46,13 +46,9 @@
             </intent-filter>
         </activity>
         
-        <activity android:name=".AboutActivity" android:label="@string/title_activity_about" android:parentActivityName="MindBellMain" >
-			<!-- Parent activity meta-data to support 4.0 and lower -->
-			<meta-data
-				android:name="android.support.PARENT_ACTIVITY"
-				android:value="MindBellMain" />
+        <activity android:name=".AboutActivity" android:label="@string/title_activity_about" android:parentActivityName="MindBellMain">
         </activity>
-        
+
         <receiver android:name=".Scheduler">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
