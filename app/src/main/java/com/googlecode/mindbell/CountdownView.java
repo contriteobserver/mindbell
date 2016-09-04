@@ -205,8 +205,8 @@ public class CountdownView extends View {
         centerY = paddedTop + contentHeight / 2;
 
         // Calculate insets for the gap and time slice circle
-        float gapInset = Math.min(paddingLeft, paddingTop);
-        float timeSliceInset = gapInset * 1.5f;
+        float gapInset = Math.min(paddingLeft, paddingTop) * 1.2f;
+        float timeSliceInset = gapInset * 1.7f;
 
         // Calculate dimensions for the bowl, gap and time slice circle plus the crop rectangle
         bowlDimensions = new RectF(paddedLeft, paddedTop, paddedRight, paddedBottom);
