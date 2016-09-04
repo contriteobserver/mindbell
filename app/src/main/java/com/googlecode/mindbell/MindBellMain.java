@@ -23,10 +23,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -44,16 +42,7 @@ import com.googlecode.mindbell.accessors.PrefsAccessor;
 import com.googlecode.mindbell.logic.RingingLogic;
 import com.googlecode.mindbell.util.Utils;
 
-import static com.googlecode.mindbell.MindBellPreferences.TAG;
-
 public class MindBellMain extends Activity {
-
-    // FIXME dkn Warum sind die hier und nicht in den SharedPreferences?
-    private static final String POPUP_PREFS_FILE = "popup-prefs";
-
-    private static final String KEY_POPUP = "popup";
-
-    private SharedPreferences popupPrefs;
 
     private ContextAccessor contextAccessor;
 
@@ -65,15 +54,9 @@ public class MindBellMain extends Activity {
     }
 
     private boolean hasShownPopup() {
-        try {
-            int versionCode = Utils.getApplicationVersionCode(getPackageManager(), getPackageName());
-            int versionCodePopupShownFor = popupPrefs.getInt(KEY_POPUP, 0);
-            return versionCode == versionCodePopupShownFor;
-        } catch (ClassCastException e) {
-            setPopupShown(false);
-            Log.w(TAG, "Removed setting '" + KEY_POPUP + "' since it had wrong type");
-            return false;
-        }
+        int versionCode = Utils.getApplicationVersionCode(getPackageManager(), getPackageName());
+        int versionCodePopupShownFor = contextAccessor.getPrefs().getPopup();
+        return versionCode == versionCodePopupShownFor;
     }
 
     /**
@@ -108,7 +91,6 @@ public class MindBellMain extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        popupPrefs = getSharedPreferences(POPUP_PREFS_FILE, MODE_PRIVATE);
         MindBell.logDebug("Main activity is being created");
         contextAccessor = AndroidContextAccessor.getInstanceAndLogPreferences(this);
         // Use the following line to show popup dialog on every start
@@ -307,9 +289,9 @@ public class MindBellMain extends Activity {
     private void setPopupShown(boolean shown) {
         if (shown) {
             int versionCode = Utils.getApplicationVersionCode(getPackageManager(), getPackageName());
-            popupPrefs.edit().putInt(KEY_POPUP, versionCode).commit();
+            contextAccessor.getPrefs().setPopup(versionCode);
         } else {
-            popupPrefs.edit().remove(KEY_POPUP).apply();
+            contextAccessor.getPrefs().resetPopup();
         }
     }
 

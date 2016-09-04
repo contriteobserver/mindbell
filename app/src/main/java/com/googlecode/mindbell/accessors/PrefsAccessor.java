@@ -145,4 +145,10 @@ public abstract class PrefsAccessor {
     public abstract long getMeditationEndingTimeMillis();
 
     public abstract void setMeditationEndingTimeMillis(long meditationEndingTimeMillis);
+
+    public abstract int getPopup();
+
+    public abstract void setPopup(int popup);
+
+    public abstract void resetPopup();
 }

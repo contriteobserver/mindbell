@@ -45,6 +45,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     public static final String NORMALIZE_NONE = "-1";
 
     private final SharedPreferences settings;
+    private final String keyPopup;
     private final String keyActive;
     private final String keyMeditating;
 
@@ -80,6 +81,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     /**
      * Preference default values ... must correspond with settings in xml definitions
      */
+    private final int defaultPopup = -1;
     private final boolean defaultActive = false;
     private final boolean defaultMeditating = false;
     private final boolean defaultShow = true;
@@ -129,6 +131,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         }
 
         // Define all preference keys
+        keyPopup = context.getString(R.string.keyPopup);
         keyActive = context.getString(R.string.keyActive);
         keyMeditating = context.getString(R.string.keyMeditating);
         keyShow = context.getString(R.string.keyShow);
@@ -240,6 +243,17 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
                 logStackTrace = true;
             }
         }
+        // Check int settings
+        String[] intSettings = new String[] { keyPopup };
+        for (String key : intSettings) {
+            try {
+                settings.getInt(key, 0);
+            } catch (ClassCastException e) {
+                settings.edit().remove(key).apply();
+                Log.w(TAG, "Removed setting '" + key + "' since it had wrong type");
+                logStackTrace = true;
+            }
+        }
         // Check long settings
         String[] longSettings = new String[] { keyRampUpStartingTimeMillis, keyMeditationStartingTimeMillis, keyMeditationEndingTimeMillis };
         for (String key : longSettings) {
@@ -281,6 +295,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         }
 
         // Set default values for those preferences that are missing
+        if (!settings.contains(keyPopup)) {
+            setPopup(defaultPopup);
+            Log.w(TAG, "Reset missing setting for '" + keyPopup + "' to '" + defaultPopup + "'");
+            logStackTrace = true;
+        }
         if (!settings.contains(keyActive)) {
             isActive(defaultActive);
             Log.w(TAG, "Reset missing setting for '" + keyActive + "' to '" + defaultActive + "'");
@@ -434,6 +453,9 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             }
             for (String s : stringSetSettings) {
                 sb.append(s).append("=").append(settings.getStringSet(s, null)).append(", ");
+            }
+            for (String s : intSettings) {
+                sb.append(s).append("=").append(settings.getInt(s, -1)).append(", ");
             }
             for (String s : longSettings) {
                 sb.append(s).append("=").append(settings.getLong(s, -1)).append(", ");
@@ -698,6 +720,21 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public void setMeditationEndingTimeMillis(long meditationEndingTimeMillis) {
         settings.edit().putLong(keyMeditationEndingTimeMillis, meditationEndingTimeMillis).apply();
+    }
+
+    @Override
+    public int getPopup() {
+        return settings.getInt(keyPopup, defaultPopup);
+    }
+
+    @Override
+    public void setPopup(int popup) {
+        settings.edit().putInt(keyPopup, popup).apply();
+    }
+
+    @Override
+    public void resetPopup() {
+        settings.edit().putInt(keyPopup, defaultPopup).apply();
     }
 
 }

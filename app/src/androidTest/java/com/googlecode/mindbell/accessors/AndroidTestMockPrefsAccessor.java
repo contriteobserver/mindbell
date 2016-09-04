@@ -297,4 +297,19 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
+    @Override
+    public int getPopup() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public void setPopup(int popup) {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public void resetPopup() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
 }
