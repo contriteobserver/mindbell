@@ -53,10 +53,10 @@ public class Scheduler extends BroadcastReceiver {
         final long nowTimeMillis = intent.getLongExtra(extraNowTimeMillis, Calendar.getInstance().getTimeInMillis());
         final int meditationPeriod = intent.getIntExtra(extraMeditationPeriod, -1);
 
-        Log.d(TAG, "Scheduler received intent: isRescheduling=" + isRescheduling + ", nowTimeMillis=" + nowTimeMillis + ", meditationPeriod=" + meditationPeriod);
+        MindBell.logDebug("Scheduler received intent: isRescheduling=" + isRescheduling + ", nowTimeMillis=" + nowTimeMillis + ", meditationPeriod=" + meditationPeriod);
 
         // Create working environment
-        ContextAccessor contextAccessor = AndroidContextAccessor.getInstance(context);
+        ContextAccessor contextAccessor = AndroidContextAccessor.getInstanceAndLogPreferences(context);
         PrefsAccessor prefs = contextAccessor.getPrefs();
 
         // Update notification just in case state has changed or MindBell missed a muting

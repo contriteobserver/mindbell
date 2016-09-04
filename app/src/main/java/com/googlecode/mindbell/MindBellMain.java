@@ -109,7 +109,8 @@ public class MindBellMain extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         popupPrefs = getSharedPreferences(POPUP_PREFS_FILE, MODE_PRIVATE);
-        contextAccessor = AndroidContextAccessor.getInstance(this);
+        MindBell.logDebug("Main activity is being created");
+        contextAccessor = AndroidContextAccessor.getInstanceAndLogPreferences(this);
         // Use the following line to show popup dialog on every start
         // setPopupShown(false);
         setContentView(R.layout.main);

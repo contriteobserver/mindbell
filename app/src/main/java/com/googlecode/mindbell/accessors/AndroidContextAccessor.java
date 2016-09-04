@@ -55,19 +55,36 @@ public class AndroidContextAccessor extends ContextAccessor {
 
     private static final int uniqueNotificationID = R.layout.bell;
 
-    /**
-     * Returns an accessor for the given context, just in case we want to make this a Singleton.
-     */
-    public static AndroidContextAccessor getInstance(Context context) {
-        return new AndroidContextAccessor(context);
-    }
-
+    // ApplicationContext of MindBell
     private final Context context;
 
     private MediaPlayer mediaPlayer = null;
 
+    /**
+     * Returns an accessor for the given context, this call also validates the preferences.
+     */
+    public static AndroidContextAccessor getInstance(Context context) {
+        AndroidContextAccessor instance = new AndroidContextAccessor(context);
+        ((AndroidPrefsAccessor) instance.getPrefs()).checkSettings(context, false);
+        return instance;
+    }
+
+    /**
+     * Returns an accessor for the given context, this call also validates the preferences.
+     */
+    public static AndroidContextAccessor getInstanceAndLogPreferences(Context context) {
+        AndroidContextAccessor instance = new AndroidContextAccessor(context);
+        ((AndroidPrefsAccessor) instance.getPrefs()).checkSettings(context, true);
+        return instance;
+    }
+
+    /**
+     * Constructor is private just in case we want to make this a singleton.
+     *
+     * @param context
+     */
     private AndroidContextAccessor(Context context) {
-        this.context = context;
+        this.context = context.getApplicationContext();
         this.prefs = new AndroidPrefsAccessor(context);
     }
 

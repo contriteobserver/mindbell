@@ -19,14 +19,14 @@
  *******************************************************************************/
 package com.googlecode.mindbell;
 
-import static com.googlecode.mindbell.MindBellPreferences.TAG;
-
-import com.googlecode.mindbell.accessors.AndroidContextAccessor;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+
+import com.googlecode.mindbell.accessors.AndroidContextAccessor;
+
+import static com.googlecode.mindbell.MindBellPreferences.TAG;
 
 /**
  * Update status notification on changes in system settings to display an active icon or active but muted icon or no icon at all.
@@ -36,7 +36,7 @@ public class UpdateStatusNotification extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "Update status notification received");
-        AndroidContextAccessor.getInstance(context).updateStatusNotification();
+        AndroidContextAccessor.getInstanceAndLogPreferences(context).updateStatusNotification();
     }
 
 }
