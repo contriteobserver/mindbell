@@ -134,7 +134,9 @@ public class CountdownView extends View {
             public void run() {
                 postInvalidate(); // => onDraw()
             }
-        }, ONE_SECOND, ONE_SECOND);
+        }, 0, ONE_SECOND); // draw at once and then every second
+
+        MindBell.logDebug("Countdown timers started");
     }
 
     /**
@@ -153,6 +155,8 @@ public class CountdownView extends View {
 //        } else {
 //            MindBell.logDebug("Meditation stopped, no wake lock to release");
 //        }
+
+        MindBell.logDebug("Countdown timers stopped");
     }
 
     @Override
@@ -230,10 +234,15 @@ public class CountdownView extends View {
             rampUp = true;
             meditationSeconds = (meditationStartingTimeMillis - rampUpStartingTimeMillis) / ONE_SECOND;
             elapsedMeditationSeconds = (currentTimeMillis - rampUpStartingTimeMillis) / ONE_SECOND;
-        } else  {
+        } else if (currentTimeMillis < meditationEndingTimeMillis) {
             rampUp = false;
             meditationSeconds = (meditationEndingTimeMillis - meditationStartingTimeMillis) / ONE_SECOND;
             elapsedMeditationSeconds = (currentTimeMillis - meditationStartingTimeMillis) / ONE_SECOND;
+        } else  {
+            stopDisplayUpdateTimer(); // meditation is over therefore stop further drawing
+            rampUp = false;
+            meditationSeconds = (meditationEndingTimeMillis - meditationStartingTimeMillis) / ONE_SECOND;
+            elapsedMeditationSeconds = meditationSeconds;
         }
 
         // Draw bowl by drawing a bowl circle, a gap circle and a rectangle to crop the top
