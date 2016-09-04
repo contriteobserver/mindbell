@@ -20,9 +20,7 @@
  -->
 
 
-<PreferenceScreen
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:mindful="http://dknapps.de/ns">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<PreferenceScreen android:title="@string/prefsCategoryMuteRules">
 
@@ -49,12 +47,12 @@
 
 	<PreferenceScreen android:title="@string/prefsCategoryMeditation">
 
-		<CheckBoxPreference
-			android:key="@string/keyMeditating"
-			android:title="@string/prefsMeditating"
-			android:summaryOff="@string/summaryNotMeditating"
-			android:summaryOn="@string/summaryMeditating"
-			android:defaultValue="false" />
+		<!--<CheckBoxPreference-->
+			<!--android:key="@string/keyMeditating"-->
+			<!--android:title="@string/prefsMeditating"-->
+			<!--android:summaryOff="@string/summaryNotMeditating"-->
+			<!--android:summaryOn="@string/summaryMeditating"-->
+			<!--android:defaultValue="false" />-->
 
 	</PreferenceScreen>
 
