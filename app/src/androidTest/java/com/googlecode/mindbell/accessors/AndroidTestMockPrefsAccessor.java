@@ -76,7 +76,7 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public float getVolume(float defaultVolume) {
+    public float getVolume() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
@@ -309,6 +309,26 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
 
     @Override
     public void resetPopup() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public ActivityPrefsAccessor forRegularOperation() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public ActivityPrefsAccessor forMeditationBeginning() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public ActivityPrefsAccessor forMeditationInterrupting() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public ActivityPrefsAccessor forMeditationEnding() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 

@@ -19,6 +19,9 @@
  -->
 <resources>
 
+    <!-- Override description regarding go to battery optimization settings (not available before Android Marshmallow) -->
+    <string name="main_message2_popup">MindBell läutet nicht regelmäßig? Haben Sie die Glocke in den Einstellungen aktiviert? Eventuell müssen Sie MindBell aus geräteabhängigen Akkusparoptionen herausnehmen - mit dem Anklicken von \'Akku\' unten kommen Sie zu den Einstellungen. Wenn es dann immer noch nicht geht, hilft vielleicht diese Check-Liste: http://dknapps.de/mindbell-notringing</string>
+
     <!-- Override description regarding do-not-disturb modes introduced with Android Marshmallow -->
     <string name="summaryMuteWithPhone">Kein/e Anzeige/Klang/Vibration im \'Lautlos\'- und \'Nur-Wecker\'-Modus sowie bei 0-Lautstärke im \'Nur-wichtige\'- und \'Nicht-Stören-Aus\'-Modus, Anzeige/Klang/Vibration bei Nicht-0-Lautstärke im \'Nur-wichtige\'- und \'Nicht-Stören-Aus\'-Modus; s.a. Menü&gt;Hilfe&gt;FAQ</string>
     <string name="summaryNoMuteWithPhone">Kein Klang, aber Anzeige/Vibration im \'Lautlos\'-Modus, Anzeige/Klang/Vibration im \'Nur-Wecker\'-, \'Nur-wichtige\'- und \'Nicht-Stören-Aus\'-Modus; see also Menü&gt;Hilfe&gt;FAQ</string>

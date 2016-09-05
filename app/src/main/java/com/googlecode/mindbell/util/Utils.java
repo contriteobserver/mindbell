@@ -19,17 +19,8 @@
  *******************************************************************************/
 package com.googlecode.mindbell.util;
 
-import static com.googlecode.mindbell.MindBellPreferences.TAG;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
-import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -37,9 +28,15 @@ import android.content.res.Resources;
 import android.content.res.Resources.NotFoundException;
 import android.net.Uri;
 import android.os.Build;
+import android.os.PowerManager;
 import android.util.Log;
 
-import com.googlecode.mindbell.Scheduler;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import static com.googlecode.mindbell.MindBellPreferences.TAG;
 
 public class Utils {
 
@@ -177,6 +174,18 @@ public class Utils {
         sb.append("Build.VERSION.SDK_INT").append("=").append(Build.VERSION.SDK_INT).append("\n");
         sb.append("===== end of system information =====").append("\n");
         return sb.toString();
+    }
+
+    /**
+     * Returns true if MindBell is exclude from battery optimization.
+     */
+    public static boolean isAppWhitelisted(Context context) {
+        if (Build.VERSION.SDK_INT >= 23) {
+            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            return pm.isIgnoringBatteryOptimizations(context.getPackageName());
+        } else {
+            return false;
+        }
     }
 
 }

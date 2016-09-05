@@ -166,6 +166,10 @@
     <string name="main_message8_popup">The Privacy Policy for MindBell can be found here: http://dknapps.de/mindbell-privacy</string>
     <string name="main_yes_popup">OK</string>
     <string name="main_no_popup">Send e-mail</string>
+    <string name="main_neutral_popup">Battery</string>
+    <string name="noEmailClients">There are no email clients installed.</string>
+    <string name="alreadyWhitelisted">MindBell is already excluded from battery optimization.</string>
+    <string name="shouldGetWhitelisted">If not ringing regularly please exclude MindBell from battery optimization.</string>
 
     <!-- Preference keys (don't localize) -->
     <string name="keyPopup" translatable="false">popup</string>
