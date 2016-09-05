@@ -19,19 +19,15 @@
  *******************************************************************************/
 package com.googlecode.mindbell;
 
-import com.googlecode.mindbell.accessors.AndroidContextAccessor;
-import com.googlecode.mindbell.accessors.ContextAccessor;
-import com.googlecode.mindbell.accessors.PrefsAccessor;
-import com.googlecode.mindbell.logic.RingingLogic;
-import com.googlecode.mindbell.util.Utils;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,6 +37,12 @@ import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
+
+import com.googlecode.mindbell.accessors.AndroidContextAccessor;
+import com.googlecode.mindbell.accessors.ContextAccessor;
+import com.googlecode.mindbell.accessors.PrefsAccessor;
+import com.googlecode.mindbell.logic.RingingLogic;
+import com.googlecode.mindbell.util.Utils;
 
 import static com.googlecode.mindbell.MindBellPreferences.TAG;
 
@@ -154,7 +156,11 @@ public class MindBellMain extends Activity {
     /**
      * Handles click on menu item send info.
      */
-    private boolean onMenuItemClickSendInfo(boolean withLog) {
+    private void onMenuItemClickSendInfo(boolean withLog) {
+        if (withLog) {
+            AndroidContextAccessor.getInstance(this); // write settings to log
+            MindBell.logDebug("Excluded from battery optimization (always false for SDK < 23)? -> " + Utils.isAppWhitelisted(this));
+        }
         Intent i = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                 "mailto", getText(R.string.emailAddress).toString(), null));
         i.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.emailSubject));
@@ -162,9 +168,22 @@ public class MindBellMain extends Activity {
         try {
             startActivity(Intent.createChooser(i, getText(R.string.emailChooseApp)));
         } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getText(R.string.noEmailClients), Toast.LENGTH_SHORT).show();
         }
-        return true;
+    }
+
+    /**
+     * Handles click on menu item battery optimization settings.
+     *
+     * Warning: Caller must ensure SDK >= 23.
+     */
+    private void onMenuItemClickBatteryOptimizationSettings() {
+        if (Utils.isAppWhitelisted(this)) {
+            Toast.makeText(this, getText(R.string.alreadyWhitelisted), Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, getText(R.string.shouldGetWhitelisted), Toast.LENGTH_LONG).show();
+        }
+        startActivity(new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS));
     }
 
     @Override
@@ -203,7 +222,7 @@ public class MindBellMain extends Activity {
     private void setPopupShown(boolean shown) {
         if (shown) {
             int versionCode = Utils.getApplicationVersionCode(getPackageManager(), getPackageName());
-            popupPrefs.edit().putInt(KEY_POPUP, versionCode).commit();
+            popupPrefs.edit().putInt(KEY_POPUP, versionCode).apply();
         } else {
             popupPrefs.edit().remove(KEY_POPUP).apply();
         }
@@ -212,7 +231,7 @@ public class MindBellMain extends Activity {
     private boolean onMenuItemClickHelp() {
         View popupView = LayoutInflater.from(this).inflate(R.layout.popup_dialog, null);
         String versionName = Utils.getApplicationVersionName(getPackageManager(), getPackageName());
-        new AlertDialog.Builder(this) //
+        AlertDialog.Builder builder = new AlertDialog.Builder(this) //
                 .setTitle(getText(R.string.app_name) + " " + versionName) //
                 .setIcon(R.drawable.icon) //
                 .setView(popupView) //
@@ -222,8 +241,16 @@ public class MindBellMain extends Activity {
                     public void onClick(DialogInterface dialog, int which) {
                         onMenuItemClickSendInfo(true);
                     }
-                }) //
-                .show();
+                });
+        if (Build.VERSION.SDK_INT >= 23) {
+            builder.setNeutralButton(R.string.main_neutral_popup, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    onMenuItemClickBatteryOptimizationSettings();
+                }
+            });
+        }
+        builder.show();
         return true;
     }
 
