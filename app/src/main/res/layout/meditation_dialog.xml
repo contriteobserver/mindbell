@@ -74,6 +74,20 @@
             android:inputType="number"
             android:hint="@string/prefsMeditationDuration" />
 
+        <TextView android:id="@+id/label_keepScreenOn"
+            style="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/prefsKeepScreenOn"
+            android:textIsSelectable="false"
+            android:labelFor="@+id/keepScreenOn"/>
+
+        <CheckBox android:id="@+id/keepScreenOn"
+            style="?android:attr/textAppearanceSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/prefsKeepScreenOn" />
+
     </LinearLayout>
 
 </ScrollView>

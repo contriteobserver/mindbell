@@ -106,6 +106,10 @@ public abstract class PrefsAccessor {
         return false;
     }
 
+    public abstract boolean isKeepScreenOn();
+
+    public abstract void setKeepScreenOn(boolean keepScreenOn);
+
     public abstract boolean isStatusNotificationVisibilityPublic();
 
     public abstract void isActive(boolean active);

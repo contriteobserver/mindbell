@@ -117,6 +117,7 @@
     <string name="prefsRampUpTime">Ramp-up time</string>
     <string name="prefsNumberOfPeriods">Number of periods</string>
     <string name="prefsMeditationDuration">Duration of meditation</string>
+    <string name="prefsKeepScreenOn">Keep screen on</string>
 
     <!-- Validation messages -->
     <string name="atLeastOneRingingActionNeeded">Specify at least one ringing action</string>
@@ -188,6 +189,7 @@
     <string name="keyVolume" translatable="false">volume</string>
     <string name="keyMuteWithPhone" translatable="false">muteWithPhone</string>
     <string name="keyVibrate" translatable="false">vibrate</string>
+    <string name="keyKeepScreenOn" translatable="false">keepScreenOn</string>
     <string name="keyPattern" translatable="false">pattern</string>
     <string name="keyMuteOffHook" translatable="false">muteOffHook</string>
     <string name="keyMuteInFlightMode" translatable="false">muteOffInFlightMode</string>

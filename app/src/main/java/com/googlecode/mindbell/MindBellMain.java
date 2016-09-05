@@ -34,6 +34,8 @@ import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -161,6 +163,8 @@ public class MindBellMain extends Activity {
             editTextNumberOfPeriods.setText(prefs.getNumberOfPeriods());
             final EditText editTextMeditationDuration = (EditText) view.findViewById(R.id.meditationDuration);
             editTextMeditationDuration.setText(prefs.getMeditationDuration());
+            final CheckBox checkBoxKeepScreenOn = (CheckBox) view.findViewById(R.id.keepScreenOn);
+            checkBoxKeepScreenOn.setChecked(prefs.isKeepScreenOn());
             new AlertDialog.Builder(this) //
                     .setTitle(R.string.title_meditation_dialog) //
                     .setView(view) //
@@ -170,6 +174,7 @@ public class MindBellMain extends Activity {
                             prefs.setRampUpTime(editTextRampUpTime.getText().toString());
                             prefs.setNumberOfPeriods(editTextNumberOfPeriods.getText().toString());
                             prefs.setMeditationDuration(editTextMeditationDuration.getText().toString());
+                            prefs.setKeepScreenOn(checkBoxKeepScreenOn.isChecked());
                             toggleMeditating();
                         }
                     }) //
@@ -202,13 +207,17 @@ public class MindBellMain extends Activity {
             prefs.setMeditationEndingTimeMillis(meditationEndingTimeMillis);
             contextAccessor.updateBellSchedule(rampUpStartingTimeMillis);
             countdownView.startDisplayUpdateTimer(contextAccessor);
-            // FIXME dkn Abhängig vom Benutzerwunsch
-//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            if (prefs.isKeepScreenOn()) {
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                MindBell.logDebug("Keep screen on activated");
+            }
         } else {
             countdownView.stopDisplayUpdateTimer();
             contextAccessor.updateBellSchedule();
-            // FIXME dkn Abhängig vom Benutzerwunsch
-//            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            if (prefs.isKeepScreenOn()) {
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                MindBell.logDebug("Keep screen on deactivated");
+            }
         }
         flipToAppropriateView();
         invalidateOptionsMenu(); // re-call onPrepareOptionsMenu()

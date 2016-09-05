@@ -76,8 +76,6 @@ public class CountdownView extends View {
     // Y part of the center
     private int centerY;
 
-    // FIXME dkn private PowerManager.WakeLock wakeLock;
-
     public CountdownView(Context context) {
         super(context);
         init(null, 0);
@@ -121,12 +119,6 @@ public class CountdownView extends View {
         this.meditationStartingTimeMillis = prefs.getMeditationStartingTimeMillis();
         this.meditationEndingTimeMillis = prefs.getMeditationEndingTimeMillis();
 
-        // FIXME dkn Nur wenn der Bildschirm anbleiben soll
-//        PowerManager pm = (PowerManager) getContext().getSystemService(Context.POWER_SERVICE);
-//        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
-//        wakeLock.acquire();
-//        MindBell.logDebug("Meditation started, wake lock acquired");
-
         displayUpdateTimer = new Timer();
 
         displayUpdateTimer.scheduleAtFixedRate(new TimerTask() {
@@ -147,15 +139,6 @@ public class CountdownView extends View {
             displayUpdateTimer.cancel();
             displayUpdateTimer = null;
         }
-        // FIXME dkn Nur wenn der Bildschirm anbleiben soll
-//        if (wakeLock != null) {
-//            wakeLock.release();
-//            wakeLock = null;
-//            MindBell.logDebug("Meditation stopped, wake lock released");
-//        } else {
-//            MindBell.logDebug("Meditation stopped, no wake lock to release");
-//        }
-
         MindBell.logDebug("Countdown timers stopped");
     }
 

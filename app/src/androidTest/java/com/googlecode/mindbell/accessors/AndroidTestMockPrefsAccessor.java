@@ -146,6 +146,16 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
+    public boolean isKeepScreenOn() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public void setKeepScreenOn(boolean keepScreenOn) {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
     public boolean isStatusNotificationVisibilityPublic() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }

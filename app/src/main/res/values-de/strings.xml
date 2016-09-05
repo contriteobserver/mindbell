@@ -117,6 +117,7 @@
     <string name="prefsRampUpTime">Vorbereitungszeit</string>
     <string name="prefsNumberOfPeriods">Anzahl der Abschnitte</string>
     <string name="prefsMeditationDuration">Meditationsdauer</string>
+    <string name="prefsKeepScreenOn">Bildschirm anlassen</string>
 
     <!-- Validation messages -->
     <string name="atLeastOneRingingActionNeeded">Mindestens eine Aktion beim Läuten auswählen</string>

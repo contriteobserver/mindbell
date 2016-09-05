@@ -112,16 +112,16 @@
 		<item>Sat</item>
 	</string-array>
 
-	<!-- Number of rings for beginning/interrupting/ending the meditation -->
-	<string-array name="bellEntries">
-		<item>1 x</item>
-		<item>2 x</item>
-		<item>3 x</item>
-	</string-array>
-
 	<!-- ==================== don't localize ==================== -->
 
-	<!-- Vibration patterns -->
+    <!-- Number of rings for beginning/interrupting/ending the meditation -->
+    <string-array name="bellEntries" translatable="false">
+        <item>1 x</item>
+        <item>2 x</item>
+        <item>3 x</item>
+    </string-array>
+
+    <!-- Vibration patterns -->
 	<string-array name="patternEntries" translatable="false">
 	    <item>r</item>
 	    <item>-brrrrrr</item>

@@ -60,6 +60,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private final String keyMuteOffHook;
     private final String keyMuteWithPhone;
     private final String keyVibrate;
+    private final String keyKeepScreenOn;
     private final String keyPattern;
 
     private final String keyFrequency;
@@ -97,6 +98,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private final boolean defaultMuteOffHook = true;
     private final boolean defaultMuteWithPhone = true;
     private final boolean defaultVibrate = false;
+    private final boolean defaultKeepScreenOn = false;
     // private final String defaultRingtone = ""; // there is no really useful default ringtone
     private final String defaultPattern = "100:200:100:600";
     private final String defaultFrequency = "3600000";
@@ -152,6 +154,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         keyMuteWithPhone = context.getString(R.string.keyMuteWithPhone);
         keyVolume = context.getString(R.string.keyVolume);
         keyVibrate = context.getString(R.string.keyVibrate);
+        keyKeepScreenOn = context.getString(R.string.keyKeepScreenOn);
         keyPattern = context.getString(R.string.keyPattern);
         keyFrequency = context.getString(R.string.keyFrequency);
         keyRandomize = context.getString(R.string.keyRandomize);
@@ -207,7 +210,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
         // Check boolean settings
         String[] booleanSettings = new String[] { keyShow, keySound, keyUseStandardBell, keyStatus, keyMeditating, keyStatusVisibilityPublic, keyStatusIconMaterialDesign,
-                keyActive, keyMuteInFlightMode, keyMuteOffHook, keyMuteWithPhone, keyVibrate, keyRandomize };
+                keyActive, keyMuteInFlightMode, keyMuteOffHook, keyMuteWithPhone, keyVibrate, keyKeepScreenOn, keyRandomize };
         for (String key : booleanSettings) {
             try {
                 settings.getBoolean(key, false);
@@ -375,6 +378,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         if (!settings.contains(keyVibrate)) {
             settings.edit().putBoolean(keyVibrate, defaultVibrate).apply();
             Log.w(TAG, "Reset missing setting for '" + keyVibrate + "' to '" + defaultVibrate + "'");
+            logStackTrace = true;
+        }
+        if (!settings.contains(keyKeepScreenOn)) {
+            settings.edit().putBoolean(keyKeepScreenOn, defaultKeepScreenOn).apply();
+            Log.w(TAG, "Reset missing setting for '" + keyKeepScreenOn + "' to '" + defaultKeepScreenOn + "'");
             logStackTrace = true;
         }
         // due to lack of a useful default ringtone the preference might be null, see getSoundUri()
@@ -646,6 +654,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public boolean isVibrate() {
         return settings.getBoolean(keyVibrate, defaultVibrate);
+    }
+
+    @Override
+    public boolean isKeepScreenOn() {
+        return settings.getBoolean(keyKeepScreenOn, defaultKeepScreenOn);
+    }
+
+    @Override
+    public void setKeepScreenOn(boolean keepScreenOn) {
+        settings.edit().putBoolean(keyKeepScreenOn, keepScreenOn).apply();
     }
 
     @Override
