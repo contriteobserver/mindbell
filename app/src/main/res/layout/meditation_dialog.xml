@@ -28,12 +28,29 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <EditText android:id="@+id/rampUpTime"
+        <TextView android:id="@+id/label_rampUpTime"
+            style="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/prefsRampUpTime"
+            android:textIsSelectable="false"
+            android:labelFor="@+id/rampUpTime"/>
+
+        <EditText
+            android:id="@+id/rampUpTime"
             style="?android:attr/textAppearanceSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
             android:hint="@string/prefsRampUpTime" />
+
+        <TextView android:id="@+id/label_numberOfPeriods"
+            style="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/prefsNumberOfPeriods"
+            android:textIsSelectable="false"
+            android:labelFor="@+id/numberOfPeriods"/>
 
         <EditText android:id="@+id/numberOfPeriods"
             style="?android:attr/textAppearanceSmall"
@@ -41,6 +58,14 @@
             android:layout_height="wrap_content"
             android:inputType="number"
             android:hint="@string/prefsNumberOfPeriods" />
+
+        <TextView android:id="@+id/label_meditationDuration"
+            style="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/prefsMeditationDuration"
+            android:textIsSelectable="false"
+            android:labelFor="@+id/meditationDuration"/>
 
         <EditText android:id="@+id/meditationDuration"
             style="?android:attr/textAppearanceSmall"
