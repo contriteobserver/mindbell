@@ -42,6 +42,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     public static final String NORMALIZE_NONE = "-1";
 
+    public static final float DEFAULT_VOLUME = 0.501187234f;
+
     private final SharedPreferences settings;
     private final String keyPopup;
     private final String keyActive;
@@ -70,6 +72,9 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private final String keyRampUpTime;
     private final String keyNumberOfPeriods;
     private final String keyMeditationDuration;
+    private final String keyMeditationBeginningBell;
+    private final String keyMeditationInterruptingBell;
+    private final String keyMeditationEndingBell;
     private final String keyRampUpStartingTimeMillis;
     private final String keyMeditationStartingTimeMillis;
     private final String keyMeditationEndingTimeMillis;
@@ -102,18 +107,19 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private final String defaultRampUpTime = "30"; // seconds
     private final String defaultNumberOfPeriods = "1";
     private final String defaultMeditationDuration = "25"; // minutes
+    private final String defaultMeditationBeginningBell = "3";
+    private final String defaultMeditationInterruptingBell = "1";
+    private final String defaultMeditationEndingBell = "2";
     private final long defaultRampUpStartingTimeMillis = -1;
     private final long defaultMeditationStartingTimeMillis = -1;
     private final long defaultMeditationEndingTimeMillis = -1;
     private final Set<String> defaultActiveOnDaysOfWeek = new HashSet<>(
             Arrays.asList(new String[]{"1", "2", "3", "4", "5", "6", "7"})); // every day
-    private final float defaultVolume = 0.501187234f;
-
     private final String[] weekdayEntryValues;
     private final String[] hourEntries;
     private final String[] weekdayAbbreviationEntries;
 
-    private final Uri bellRessourceUri;
+    private final Map<String, Uri> bellResourceUriMap;
 
     private ActivityPrefsAccessor activityPrefsForRegularOperation = new ActivityPrefsAccessorForRegularOperation();
 
@@ -155,6 +161,9 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         keyRampUpTime = context.getString(R.string.keyRampUpTime);
         keyNumberOfPeriods = context.getString(R.string.keyNumberOfPeriods);
         keyMeditationDuration = context.getString(R.string.keyMeditationDuration);
+        keyMeditationBeginningBell = context.getString(R.string.keyMeditationBeginningBell);
+        keyMeditationInterruptingBell = context.getString(R.string.keyMeditationInterruptingBell);
+        keyMeditationEndingBell = context.getString(R.string.keyMeditationEndingBell);
         keyRampUpStartingTimeMillis = context.getString(R.string.keyRampUpStartingTimeMillis);
         keyMeditationStartingTimeMillis = context.getString(R.string.keyMeditationStartingTimeMillis);
         keyMeditationEndingTimeMillis = context.getString(R.string.keyMeditationEndingTimeMillis);
@@ -165,8 +174,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         weekdayEntryValues = context.getResources().getStringArray(R.array.weekdayEntryValues);
         weekdayAbbreviationEntries = context.getResources().getStringArray(R.array.weekdayAbbreviationEntries);
 
-        bellRessourceUri = Utils.getResourceUri(context, R.raw.bell10s);
-
+        // Define bell resource uri values ... doing it here because this needs a context
+        bellResourceUriMap = new HashMap<>();
+        bellResourceUriMap.put("1" ,Utils.getResourceUri(context, R.raw.bell10s));
+        bellResourceUriMap.put("2" ,Utils.getResourceUri(context, R.raw.bell20s));
+        bellResourceUriMap.put("3" ,Utils.getResourceUri(context, R.raw.bell30s));
     }
 
     /**
@@ -185,6 +197,9 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         entryValuesMap.put(keyRampUpTime, new String[] {}); // FIXME dkn Wie das prüfen mit NumberPickers
         entryValuesMap.put(keyNumberOfPeriods, new String[] {}); // FIXME dkn Wie das prüfen mit NumberPickers
         entryValuesMap.put(keyMeditationDuration, new String[] {}); // FIXME dkn Wie das prüfen mit NumberPickers
+        entryValuesMap.put(keyMeditationBeginningBell, context.getResources().getStringArray(R.array.bellEntryValues));
+        entryValuesMap.put(keyMeditationInterruptingBell, context.getResources().getStringArray(R.array.bellEntryValues));
+        entryValuesMap.put(keyMeditationEndingBell, context.getResources().getStringArray(R.array.bellEntryValues));
         entryValuesMap.put(keyActiveOnDaysOfWeek, context.getResources().getStringArray(R.array.weekdayEntryValues));
 
         // Track wheter a stacktrace shall be logged to find out the reason for sometimes deleted preferences
@@ -203,7 +218,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             }
         }
         // Check string settings
-        String[] stringSettings = new String[] { keyRingtone, keyPattern, keyFrequency, keyNormalize, keyStart, keyEnd, keyRampUpTime, keyNumberOfPeriods, keyMeditationDuration };
+        String[] stringSettings = new String[] { keyRingtone, keyPattern, keyFrequency, keyNormalize, keyStart, keyEnd, keyRampUpTime, keyNumberOfPeriods, keyMeditationDuration, keyMeditationBeginningBell, keyMeditationInterruptingBell, keyMeditationEndingBell };
         for (String key : stringSettings) {
             try {
                 String value = settings.getString(key, null);
@@ -412,6 +427,21 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             Log.w(TAG, "Reset missing setting for '" + keyMeditationDuration + "' to '" + defaultMeditationDuration + "'");
             logStackTrace = true;
         }
+        if (!settings.contains(keyMeditationBeginningBell)) {
+            settings.edit().putString(keyMeditationBeginningBell, defaultMeditationBeginningBell).apply();
+            Log.w(TAG, "Reset missing setting for '" + keyMeditationBeginningBell + "' to '" + defaultMeditationBeginningBell + "'");
+            logStackTrace = true;
+        }
+        if (!settings.contains(keyMeditationInterruptingBell)) {
+            settings.edit().putString(keyMeditationInterruptingBell, defaultMeditationInterruptingBell).apply();
+            Log.w(TAG, "Reset missing setting for '" + keyMeditationInterruptingBell + "' to '" + defaultMeditationInterruptingBell + "'");
+            logStackTrace = true;
+        }
+        if (!settings.contains(keyMeditationEndingBell)) {
+            settings.edit().putString(keyMeditationEndingBell, defaultMeditationEndingBell).apply();
+            Log.w(TAG, "Reset missing setting for '" + keyMeditationEndingBell + "' to '" + defaultMeditationEndingBell + "'");
+            logStackTrace = true;
+        }
         if (!settings.contains(keyRampUpStartingTimeMillis)) {
             settings.edit().putLong(keyRampUpStartingTimeMillis, defaultRampUpStartingTimeMillis).apply();
             Log.w(TAG, "Reset missing setting for '" + keyRampUpStartingTimeMillis + "' to '" + defaultRampUpStartingTimeMillis + "'");
@@ -433,8 +463,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             logStackTrace = true;
         }
         if (!settings.contains(keyVolume)) {
-            settings.edit().putFloat(keyVolume, defaultVolume).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyVolume + "' to '" + defaultVolume + "'");
+            settings.edit().putFloat(keyVolume, DEFAULT_VOLUME).apply();
+            Log.w(TAG, "Reset missing setting for '" + keyVolume + "' to '" + DEFAULT_VOLUME + "'");
             logStackTrace = true;
         }
         // Log stacktrace if a setting has been deleted or set to its default
@@ -513,10 +543,10 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public float getVolume() {
         try {
-            return settings.getFloat(keyVolume, defaultVolume);
+            return settings.getFloat(keyVolume, DEFAULT_VOLUME);
         } catch (ClassCastException e) {
             Log.e(TAG, "Not a float for volume", e);
-            return defaultVolume;
+            return DEFAULT_VOLUME;
         }
     }
 
@@ -530,7 +560,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         // This implementation is almost the same as MindBellPreferences#setPreferenceVolumeSoundUri()
         String ringtone = getRingtone();
         if (settings.getBoolean(keyUseStandardBell, defaultUseStandardBell) || ringtone == null) {
-            return bellRessourceUri; // set initially in constructor because that needs a context
+            return bellResourceUriMap.get("1");
         } else {
             return Uri.parse(ringtone);
         }
@@ -720,6 +750,21 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
+    public String getMeditationBeginningBell() {
+        return settings.getString(keyMeditationBeginningBell, defaultMeditationBeginningBell);
+    }
+
+    @Override
+    public String getMeditationInterruptingBell() {
+        return settings.getString(keyMeditationInterruptingBell, defaultMeditationInterruptingBell);
+    }
+
+    @Override
+    public String getMeditationEndingBell() {
+        return settings.getString(keyMeditationEndingBell, defaultMeditationEndingBell);
+    }
+
+    @Override
     public int getPopup() {
         return settings.getInt(keyPopup, defaultPopup);
     }
@@ -782,7 +827,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         }
     }
 
-    private class ActivityPrefsAccessorForMeditation implements ActivityPrefsAccessor {
+    private abstract class ActivityPrefsAccessorForMeditation implements ActivityPrefsAccessor {
 
         @Override
         public boolean isShow() {
@@ -800,26 +845,39 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         }
 
         @Override
-        public Uri getSoundUri() {
-            return bellRessourceUri;
-        }
+        public abstract Uri getSoundUri();
 
         @Override
         public float getVolume() {
             return AndroidPrefsAccessor.this.getVolume();
         }
-
+        
     }
 
     private class ActivityPrefsAccessorForMeditationBeginning extends ActivityPrefsAccessorForMeditation {
 
+        @Override
+        public Uri getSoundUri() {
+            return bellResourceUriMap.get(getMeditationBeginningBell());
+        }
+        
     }
 
     private class ActivityPrefsAccessorForMeditationInterrupting extends ActivityPrefsAccessorForMeditation {
 
+        @Override
+        public Uri getSoundUri() {
+            return bellResourceUriMap.get(getMeditationInterruptingBell());
+        }
+
     }
 
     private class ActivityPrefsAccessorForMeditationEnding extends ActivityPrefsAccessorForMeditation {
+
+        @Override
+        public Uri getSoundUri() {
+            return bellResourceUriMap.get(getMeditationEndingBell());
+        }
 
     }
 

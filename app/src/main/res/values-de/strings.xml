@@ -44,7 +44,7 @@
     <string name="preferencesTitle">MindBell Einstellungen</string>
 
     <string name="prefsCategoryActivity">Aktivität</string>
-    <string name="prefsActive">Glocke aktivieren</string>
+    <string name="prefsActive">Glocke an/aus</string>
     <string name="summaryActive">Glocke ist derzeit angeschaltet</string>
     <string name="summaryNotActive">Glocke ist derzeit ausgeschaltet</string>
     <string name="prefsStart">Starte Glocke täglich um &#8230;</string>
@@ -105,9 +105,12 @@
     <string name="summaryNotMutedInFlightMode">Glocke läutet auch im Flugmodus</string>
 
     <string name="prefsCategoryMeditation">Meditation</string>
-    <string name="prefsMeditating">Laufende Meditation</string>
+    <string name="prefsMeditating">Meditation an/aus</string>
     <string name="summaryMeditating">Meditation läuft</string>
     <string name="summaryNotMeditating">Meditation ist gestoppt</string>
+    <string name="prefsMeditationBeginningBell">Anfangsglocken</string>
+    <string name="prefsMeditationInterruptingBell">Zwischenglocken</string>
+    <string name="prefsMeditationEndingBell">Abschlussglocken</string>
 
     <!-- MeditationDialog Preferences -->
     <string name="title_meditation_dialog">Meditation starten</string>

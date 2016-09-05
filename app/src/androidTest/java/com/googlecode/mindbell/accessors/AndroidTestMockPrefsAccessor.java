@@ -298,6 +298,21 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
+    public String getMeditationBeginningBell() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public String getMeditationInterruptingBell() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public String getMeditationEndingBell() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
     public int getPopup() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }

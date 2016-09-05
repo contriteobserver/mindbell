@@ -146,6 +146,12 @@ public abstract class PrefsAccessor {
 
     public abstract void setMeditationEndingTimeMillis(long meditationEndingTimeMillis);
 
+    public abstract String getMeditationBeginningBell();
+
+    public abstract String getMeditationInterruptingBell();
+
+    public abstract String getMeditationEndingBell();
+
     public abstract int getPopup();
 
     public abstract void setPopup(int popup);

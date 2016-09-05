@@ -44,7 +44,7 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
         // setup
         ContextAccessor ca = createContextAccessor();
         // exercise
-        ca.startPlayingSoundAndVibrate(activityPrefs, null);
+        ca.startPlayingSoundAndVibrate(ca.getPrefs().forRegularOperation(), null);
         // verify
         assertEquals(ca.getAlarmMaxVolume(), ca.getAlarmVolume());
     }
@@ -56,7 +56,7 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
         ca.setAlarmVolume(ca.getAlarmMaxVolume() / 2);
         int alarmVolume = ca.getAlarmVolume();
         // exercise
-        ca.startPlayingSoundAndVibrate(activityPrefs, null);
+        ca.startPlayingSoundAndVibrate(ca.getPrefs().forRegularOperation(), null);
         ca.finishBellSound();
         // verify
         assertFalse(ca.isBellSoundPlaying());
@@ -69,7 +69,7 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
         ContextAccessor ca = createContextAccessor();
         int originalVolume = ca.getAlarmVolume();
         // exercise
-        ca.startPlayingSoundAndVibrate(activityPrefs, null);
+        ca.startPlayingSoundAndVibrate(ca.getPrefs().forRegularOperation(), null);
         ca.finishBellSound();
         // verify
         assertEquals(originalVolume, ca.getAlarmVolume());
@@ -80,7 +80,7 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
         // setup
         ContextAccessor ca = createContextAccessor();
         // exercise
-        ca.startPlayingSoundAndVibrate(activityPrefs, null);
+        ca.startPlayingSoundAndVibrate(ca.getPrefs().forRegularOperation(), null);
         // verify
         assertTrue(ca.isBellSoundPlaying());
     }
@@ -178,9 +178,8 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
     @Test
     public void testReasonableDefault() {
         ContextAccessor ca = AndroidTestMockContextAccessor.getInstance();
-        float bellDefaultVolume = ca.getBellDefaultVolume();
-        Assert.assertTrue(0 <= bellDefaultVolume);
-        Assert.assertTrue(bellDefaultVolume <= 1);
+        Assert.assertTrue(0 <= AndroidPrefsAccessor.DEFAULT_VOLUME);
+        Assert.assertTrue(AndroidPrefsAccessor.DEFAULT_VOLUME <= 1);
     }
 
 }

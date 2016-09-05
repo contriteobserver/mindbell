@@ -26,12 +26,8 @@
 
     <PreferenceScreen android:title="@string/prefsCategoryActivity">
 
-        <CheckBoxPreference
-			android:key="@string/keyActive"
-			android:title="@string/prefsActive"
-			android:summaryOff="@string/summaryNotActive"
-			android:summaryOn="@string/summaryActive"
-			android:defaultValue="false" />
+		<!-- keyActive can only be toggled by the meditation button -->
+
 		<com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
 			android:key="@string/keyStart"
 			android:defaultValue="9"

@@ -44,7 +44,7 @@
     <string name="preferencesTitle">MindBell Preferences</string>
 
     <string name="prefsCategoryActivity">Activity</string>
-    <string name="prefsActive">Activate bell</string>
+    <string name="prefsActive">Bell on/off</string>
     <string name="summaryActive">Bell is turned on</string>
     <string name="summaryNotActive">Bell is turned off</string>
     <string name="prefsStart">Start bell every day at &#8230;</string>
@@ -105,9 +105,12 @@
     <string name="summaryNotMutedInFlightMode">Bell will also ring in flight mode</string>
 
     <string name="prefsCategoryMeditation">Meditation</string>
-    <string name="prefsMeditating">Ongoing Meditation</string>
+    <string name="prefsMeditating">Meditation an/aus</string>
+    <string name="summaryMeditating">Meditation is ongoing</string>
     <string name="summaryNotMeditating">Meditation is stopped</string>
-    <string name="summaryMeditating">Meditation is running</string>
+    <string name="prefsMeditationBeginningBell">Beginning bells</string>
+    <string name="prefsMeditationInterruptingBell">Intermediate bells</string>
+    <string name="prefsMeditationEndingBell">Ending bells</string>
 
     <!-- MeditationDialog Preferences -->
     <string name="title_meditation_dialog">Start meditation</string>
@@ -200,6 +203,9 @@
     <string name="keyRampUpStartingTimeMillis" translatable="false">rampUpStartingTimeMillis</string>
     <string name="keyMeditationStartingTimeMillis" translatable="false">meditationStartingTimeMillis</string>
     <string name="keyMeditationEndingTimeMillis" translatable="false">meditationEndingTimeMillis</string>
+    <string name="keyMeditationBeginningBell" translatable="false">meditationBeginningBell</string>
+    <string name="keyMeditationInterruptingBell" translatable="false">meditationInterruptingBell</string>
+    <string name="keyMeditationEndingBell" translatable="false">meditationEndingBell</string>
 
     <!-- Unique string to be added to a Scheduling Intent to see which meditation period the bell is in (don't localize) -->
     <string name="extraMeditationPeriod" translatable="false">com.googlecode.mindbell.Scheduler.MeditationPeriod</string>

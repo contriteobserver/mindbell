@@ -47,12 +47,34 @@
 
 	<PreferenceScreen android:title="@string/prefsCategoryMeditation">
 
-		<!--<CheckBoxPreference-->
-			<!--android:key="@string/keyMeditating"-->
-			<!--android:title="@string/prefsMeditating"-->
-			<!--android:summaryOff="@string/summaryNotMeditating"-->
-			<!--android:summaryOn="@string/summaryMeditating"-->
-			<!--android:defaultValue="false" />-->
+		<!-- keyMeditating can only be toggled by the meditation button -->
+
+		<com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
+			android:key="@string/keyMeditationBeginningBell"
+			android:defaultValue="3"
+			android:title="@string/prefsMeditationBeginningBell"
+			android:summary="%s"
+			android:entries="@array/bellEntries"
+			android:entryValues="@array/bellEntryValues"
+			android:dialogTitle="@string/prefsMeditationBeginningBell" />
+
+		<com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
+			android:key="@string/keyMeditationInterruptingBell"
+			android:defaultValue="1"
+			android:title="@string/prefsMeditationInterruptingBell"
+			android:summary="%s"
+			android:entries="@array/bellEntries"
+			android:entryValues="@array/bellEntryValues"
+			android:dialogTitle="@string/prefsMeditationInterruptingBell" />
+
+		<com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
+			android:key="@string/keyMeditationEndingBell"
+			android:defaultValue="2"
+			android:title="@string/prefsMeditationEndingBell"
+			android:summary="%s"
+			android:entries="@array/bellEntries"
+			android:entryValues="@array/bellEntryValues"
+			android:dialogTitle="@string/prefsMeditationEndingBell" />
 
 	</PreferenceScreen>
 
