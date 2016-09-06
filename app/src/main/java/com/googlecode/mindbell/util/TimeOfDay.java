@@ -19,15 +19,10 @@
  *******************************************************************************/
 package com.googlecode.mindbell.util;
 
-import static com.googlecode.mindbell.MindBellPreferences.TAG;
+import com.googlecode.mindbell.accessors.PrefsAccessor;
 
-import java.sql.Time;
 import java.util.Calendar;
 import java.util.Set;
-
-import android.util.Log;
-
-import com.googlecode.mindbell.accessors.PrefsAccessor;
 
 /**
  * Represents a time of day by storing only hour, minute and weekday.
@@ -116,10 +111,17 @@ public class TimeOfDay {
     }
 
     /**
-     * Returns a String readably representing this TimeOfDay.
+     * Returns a String readily representing this TimeOfDay.
      */
     public String getDisplayString() {
         return representation;
+    }
+
+    /**
+     * Returns a String with hh:mm of this TimeOfDay.
+     */
+    public String getShortDisplayString() {
+        return representation.substring(0, 5);
     }
 
     /*

@@ -133,9 +133,9 @@
     <string name="statusTitleNotificationsDisabled">Bitte Einstellungen überprüfen</string>
     <string name="statusTextNotificationsDisabled">MindBell hat \'Status-Icon anzeigen\' ausgeschaltet</string>
     <string name="statusTitleBellActive">MindBell ist aktiv</string>
-    <string name="statusTextBellActive">_STARTTIME_ bis _ENDTIME_ am _WEEKDAYS_</string>
+    <string name="statusTextBellActive">{0} bis {1} am {2}</string>
     <string name="statusTitleBellMeditating">MindBell meditiert</string>
-    <string name="statusTextBellMeditating">Nach _RAMPUPTIME_ Sekunden für _MEDITATIONDURATION_ Minuten</string>
+    <string name="statusTextBellMeditating">{0,choice,1#1 Minute|1&lt;{0} Minuten} bis {1}</string>
     <string name="statusActionRefreshStatus">Status aktualisieren</string>
 
     <!-- Reasons why bell is muted -->

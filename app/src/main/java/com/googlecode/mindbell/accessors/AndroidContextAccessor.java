@@ -48,6 +48,7 @@ import com.googlecode.mindbell.util.AlarmManagerCompat;
 import com.googlecode.mindbell.util.TimeOfDay;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 
 import static com.googlecode.mindbell.MindBellPreferences.TAG;
 
@@ -408,17 +409,17 @@ public class AndroidContextAccessor extends ContextAccessor {
         } else if (prefs.isMeditating()) {// Bell meditation => override icon and notification text
             statusDrawable = R.drawable.ic_stat_bell_meditating;
             contentTitle = context.getText(R.string.statusTitleBellMeditating);
-            contentText = context.getText(R.string.statusTextBellMeditating).toString() //
-                    .replace("_RAMPUPTIME_", prefs.getRampUpTime()) //
-                    .replace("_MEDITATIONDURATION_", prefs.getMeditationDuration());
+            contentText = MessageFormat.format(context.getText(R.string.statusTextBellMeditating).toString(), //
+                    Integer.valueOf(prefs.getMeditationDuration()), //
+                    new TimeOfDay(prefs.getMeditationEndingTimeMillis()).getShortDisplayString());
         } else if (muteRequestReason != null) { // Bell muted => override icon and notification text
             statusDrawable = bellActiveButMutedDrawable;
             contentText = muteRequestReason;
         } else { // enrich standard notification by times and days
-            contentText = context.getText(R.string.statusTextBellActive).toString() //
-                    .replace("_STARTTIME_", prefs.getDaytimeStartString()) //
-                    .replace("_ENDTIME_", prefs.getDaytimeEndString()) //
-                    .replace("_WEEKDAYS_", prefs.getActiveOnDaysOfWeekString());
+            contentText = MessageFormat.format(context.getText(R.string.statusTextBellActive).toString(), //
+                    prefs.getDaytimeStartString(), //
+                    prefs.getDaytimeEndString(), //
+                    prefs.getActiveOnDaysOfWeekString());
         }
         // Now do the notification update
         Log.i(TAG, "Update status notification: " + contentText);
