@@ -106,7 +106,7 @@ public class AndroidContextAccessor extends ContextAccessor {
 
     @Override
     public void finishBellSound() {
-        if (mediaPlayer.isPlaying()) {
+        if (isBellSoundPlaying()) {
             mediaPlayer.stop();
             MindBell.logDebug("Stopped ongoing player.");
         }
@@ -152,7 +152,7 @@ public class AndroidContextAccessor extends ContextAccessor {
 
     @Override
     public boolean isBellSoundPlaying() {
-        return mediaPlayer != null;
+        return mediaPlayer != null && mediaPlayer.isPlaying();
     }
 
     @Override
