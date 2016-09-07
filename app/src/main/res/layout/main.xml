@@ -76,7 +76,7 @@
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             mindbell:textColor="#FF6600"
-            mindbell:textSize="96sp" />
+            mindbell:textSize="190sp" />
 
     </ViewFlipper>
 
