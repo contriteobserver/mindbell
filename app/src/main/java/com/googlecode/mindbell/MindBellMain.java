@@ -213,6 +213,7 @@ public class MindBellMain extends Activity {
             }
         } else {
             countdownView.stopDisplayUpdateTimer();
+            contextAccessor.finishBellSound();
             contextAccessor.updateBellSchedule();
             if (prefs.isKeepScreenOn()) {
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
