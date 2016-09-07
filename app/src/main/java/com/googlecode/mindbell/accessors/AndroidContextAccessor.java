@@ -56,9 +56,6 @@ public class AndroidContextAccessor extends ContextAccessor {
 
     private static final int uniqueNotificationID = R.layout.bell;
 
-    // The one and only instance of this class
-    private static AndroidContextAccessor instance;
-
     // ApplicationContext of MindBell
     private final Context context;
 
@@ -67,10 +64,9 @@ public class AndroidContextAccessor extends ContextAccessor {
     /**
      * Returns an accessor for the given context, this call also validates the preferences.
      */
-    public static synchronized AndroidContextAccessor getInstance(Context context) {
-        if (instance == null) {
-            instance = new AndroidContextAccessor(context);
-        }
+    public static AndroidContextAccessor getInstance(Context context) {
+        AndroidContextAccessor instance = new AndroidContextAccessor(context);
+        ((AndroidPrefsAccessor) instance.getPrefs()).checkSettings(context, false);
         return instance;
     }
 
@@ -78,7 +74,8 @@ public class AndroidContextAccessor extends ContextAccessor {
      * Returns an accessor for the given context, this call also validates the preferences.
      */
     public static AndroidContextAccessor getInstanceAndLogPreferences(Context context) {
-        ((AndroidPrefsAccessor) getInstance(context).getPrefs()).checkSettings(context, true);
+        AndroidContextAccessor instance = new AndroidContextAccessor(context);
+        ((AndroidPrefsAccessor) instance.getPrefs()).checkSettings(context, true);
         return instance;
     }
 
@@ -90,7 +87,6 @@ public class AndroidContextAccessor extends ContextAccessor {
     private AndroidContextAccessor(Context context) {
         this.context = context.getApplicationContext();
         this.prefs = new AndroidPrefsAccessor(context);
-        Log.w(TAG, new Exception("New AndroidContextAccessor created"));
     }
 
     /**
@@ -107,7 +103,7 @@ public class AndroidContextAccessor extends ContextAccessor {
 
     @Override
     public void finishBellSound() {
-        if (isBellSoundPlaying()) {
+        if (mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
             MindBell.logDebug("Stopped ongoing player.");
         }
@@ -153,7 +149,7 @@ public class AndroidContextAccessor extends ContextAccessor {
 
     @Override
     public boolean isBellSoundPlaying() {
-        return mediaPlayer != null && mediaPlayer.isPlaying();
+        return mediaPlayer != null;
     }
 
     @Override
