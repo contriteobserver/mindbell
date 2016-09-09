@@ -67,16 +67,14 @@ public class AndroidContextAccessor extends ContextAccessor {
      * Returns an accessor for the given context, this call also validates the preferences.
      */
     public static AndroidContextAccessor getInstance(Context context) {
-        AndroidContextAccessor instance = new AndroidContextAccessor(context, false);
-        return instance;
+        return new AndroidContextAccessor(context, false);
     }
 
     /**
      * Returns an accessor for the given context, this call also validates the preferences.
      */
     public static AndroidContextAccessor getInstanceAndLogPreferences(Context context) {
-        AndroidContextAccessor instance = new AndroidContextAccessor(context, true);
-        return instance;
+        return new AndroidContextAccessor(context, true);
     }
 
     /**
@@ -219,13 +217,16 @@ public class AndroidContextAccessor extends ContextAccessor {
     }
 
     /**
-     * Start playing bell sound and call runWhenDone when playing finishes.
+     * Start playing bell sound and call runWhenDone when playing finishes but only if bell is not muted.
      *
      * @param activityPrefs
      * @param runWhenDone
      */
     @Override
     public void startPlayingSound(ActivityPrefsAccessor activityPrefs, final Runnable runWhenDone) {
+        if (isMuteRequested(true)) {
+            return;
+        }
         originalVolume = getAlarmVolume();
         int alarmMaxVolume = getAlarmMaxVolume();
         if (originalVolume == alarmMaxVolume) { // "someone" else set it to max, so we don't touch it
