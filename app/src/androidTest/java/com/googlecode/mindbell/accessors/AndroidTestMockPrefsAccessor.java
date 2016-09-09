@@ -323,6 +323,21 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
+    public int getOriginalVolume() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public void setOriginalVolume(int originalVolume) {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public void resetOriginalVolume() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
     public int getPopup() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }

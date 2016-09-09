@@ -23,11 +23,10 @@ package com.googlecode.mindbell.accessors;
  * Convenience access to information from the context. Can be replaced by test implementation.
  */
 public abstract class ContextAccessor {
-    public static final float MINUS_ONE_DB = 0.891250938f;
-    public static final float MINUS_THREE_DB = 0.707945784f;
 
-    /** Alarm volume before ringing the bell */
-    protected int originalVolume;
+    public static final float MINUS_ONE_DB = 0.891250938f;
+
+    public static final float MINUS_THREE_DB = 0.707945784f;
 
     /** Accessor to all preferences (may be mocked) */
     protected PrefsAccessor prefs = null;

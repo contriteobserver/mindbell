@@ -176,38 +176,39 @@
     <string name="shouldGetWhitelisted">If not ringing regularly please exclude MindBell from battery optimization.</string>
 
     <!-- Preference keys (don't localize) -->
-    <string name="keyPopup" translatable="false">popup</string>
+    <string name="keyActiveOnDaysOfWeek" translatable="false">activeOnDaysOfWeek</string>
     <string name="keyActive" translatable="false">active</string>
+    <string name="keyEnd" translatable="false">end</string>
+    <string name="keyFrequency" translatable="false">frequency</string>
+    <string name="keyKeepScreenOn" translatable="false">keepScreenOn</string>
     <string name="keyMeditating" translatable="false">meditating</string>
+    <string name="keyMeditationBeginningBell" translatable="false">meditationBeginningBell</string>
+    <string name="keyMeditationDuration" translatable="false">meditationDuration</string>
+    <string name="keyMeditationEndingBell" translatable="false">meditationEndingBell</string>
+    <string name="keyMeditationEndingTimeMillis" translatable="false">meditationEndingTimeMillis</string>
+    <string name="keyMeditationInterruptingBell" translatable="false">meditationInterruptingBell</string>
+    <string name="keyMeditationStartingTimeMillis" translatable="false">meditationStartingTimeMillis</string>
+    <string name="keyMuteInFlightMode" translatable="false">muteOffInFlightMode</string>
+    <string name="keyMuteOffHook" translatable="false">muteOffHook</string>
+    <string name="keyMuteWithPhone" translatable="false">muteWithPhone</string>
+    <string name="keyNormalize" translatable="false">normalize</string>
+    <string name="keyNumberOfPeriods" translatable="false">numberOfPeriods</string>
+    <string name="keyOriginalVolume" translatable="false">originalVolume</string>
+    <string name="keyPattern" translatable="false">pattern</string>
+    <string name="keyPopup" translatable="false">popup</string>
+    <string name="keyRampUpStartingTimeMillis" translatable="false">rampUpStartingTimeMillis</string>
+    <string name="keyRampUpTime" translatable="false">rampUpTime</string>
+    <string name="keyRandomize" translatable="false">randomize</string>
+    <string name="keyRingtone" translatable="false">ringtone</string>
     <string name="keyShow" translatable="false">show</string>
     <string name="keySound" translatable="false">sound</string>
-    <string name="keyUseStandardBell" translatable="false">useStandardBell</string>
-    <string name="keyRingtone" translatable="false">ringtone</string>
+    <string name="keyStart" translatable="false">start</string>
+    <string name="keyStatusIconMaterialDesign" translatable="false">statusIconMaterialDesign</string>
     <string name="keyStatus" translatable="false">status</string>
     <string name="keyStatusVisibilityPublic" translatable="false">statusVisiblityPublic</string>
-    <string name="keyStatusIconMaterialDesign" translatable="false">statusIconMaterialDesign</string>
-    <string name="keyVolume" translatable="false">volume</string>
-    <string name="keyMuteWithPhone" translatable="false">muteWithPhone</string>
+    <string name="keyUseStandardBell" translatable="false">useStandardBell</string>
     <string name="keyVibrate" translatable="false">vibrate</string>
-    <string name="keyKeepScreenOn" translatable="false">keepScreenOn</string>
-    <string name="keyPattern" translatable="false">pattern</string>
-    <string name="keyMuteOffHook" translatable="false">muteOffHook</string>
-    <string name="keyMuteInFlightMode" translatable="false">muteOffInFlightMode</string>
-    <string name="keyFrequency" translatable="false">frequency</string>
-    <string name="keyRandomize" translatable="false">randomize</string>
-    <string name="keyNormalize" translatable="false">normalize</string>
-    <string name="keyStart" translatable="false">start</string>
-    <string name="keyEnd" translatable="false">end</string>
-    <string name="keyActiveOnDaysOfWeek" translatable="false">activeOnDaysOfWeek</string>
-    <string name="keyRampUpTime" translatable="false">rampUpTime</string>
-    <string name="keyNumberOfPeriods" translatable="false">numberOfPeriods</string>
-    <string name="keyMeditationDuration" translatable="false">meditationDuration</string>
-    <string name="keyRampUpStartingTimeMillis" translatable="false">rampUpStartingTimeMillis</string>
-    <string name="keyMeditationStartingTimeMillis" translatable="false">meditationStartingTimeMillis</string>
-    <string name="keyMeditationEndingTimeMillis" translatable="false">meditationEndingTimeMillis</string>
-    <string name="keyMeditationBeginningBell" translatable="false">meditationBeginningBell</string>
-    <string name="keyMeditationInterruptingBell" translatable="false">meditationInterruptingBell</string>
-    <string name="keyMeditationEndingBell" translatable="false">meditationEndingBell</string>
+    <string name="keyVolume" translatable="false">volume</string>
 
     <!-- Unique string to be added to a Scheduling Intent to see which meditation period the bell is in (don't localize) -->
     <string name="extraMeditationPeriod" translatable="false">com.googlecode.mindbell.Scheduler.MeditationPeriod</string>

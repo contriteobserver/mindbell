@@ -107,18 +107,27 @@ public class AndroidContextAccessor extends ContextAccessor {
                 mediaPlayer.stop();
                 MindBell.logDebug("Ongoing MediaPlayer stopped");
             }
+            mediaPlayer.reset(); // get rid of "mediaplayer went away with unhandled events" log entries
             mediaPlayer.release();
             mediaPlayerWeakReference.clear();
             mediaPlayerWeakReference = null;
             MindBell.logDebug("Weak reference to MediaPlayer released");
         }
-        int alarmMaxVolume = getAlarmMaxVolume();
-        if (originalVolume == alarmMaxVolume) { // "someone" else set it to max, so we don't touch it
+        // Reset volume to originalVolume if it has been set before (does not equal -1)
+        int originalVolume = prefs.getOriginalVolume();
+        if (originalVolume < 0) {
             MindBell.logDebug(
-                    "Finish bell sound found originalVolume " + originalVolume + " to be max, alarm volume left untouched");
+                    "Finish bell sound found originalVolume " + originalVolume + ", alarm volume left untouched");
         } else {
-            MindBell.logDebug("Finish bell sound found originalVolume " + originalVolume + ", setting alarm volume to it");
-            setAlarmVolume(originalVolume);
+            int alarmMaxVolume = getAlarmMaxVolume();
+            if (originalVolume == alarmMaxVolume) { // "someone" else set it to max, so we don't touch it
+                MindBell.logDebug(
+                        "Finish bell sound found originalVolume " + originalVolume + " to be max, alarm volume left untouched");
+            } else {
+                MindBell.logDebug("Finish bell sound found originalVolume " + originalVolume + ", setting alarm volume to it");
+                setAlarmVolume(originalVolume);
+            }
+            prefs.resetOriginalVolume(); // no longer needed therefore invalidate it
         }
     }
 
@@ -224,17 +233,15 @@ public class AndroidContextAccessor extends ContextAccessor {
      */
     @Override
     public void startPlayingSound(ActivityPrefsAccessor activityPrefs, final Runnable runWhenDone) {
-        if (isMuteRequested(true)) {
-            return;
-        }
-        originalVolume = getAlarmVolume();
+        int originalVolume = getAlarmVolume();
         int alarmMaxVolume = getAlarmMaxVolume();
         if (originalVolume == alarmMaxVolume) { // "someone" else set it to max, so we don't touch it
             MindBell.logDebug(
                     "Start playing sound found originalVolume " + originalVolume + " to be max, alarm volume left untouched");
         } else {
-            MindBell.logDebug("Start playing sound found originalVolume " + originalVolume + ", setting alarm volume to max");
+            MindBell.logDebug("Start playing sound found and stored originalVolume " + originalVolume + ", setting alarm volume to max");
             setAlarmVolume(alarmMaxVolume);
+            prefs.setOriginalVolume(originalVolume);
         }
         float bellVolume = activityPrefs.getVolume();
         Uri bellUri = activityPrefs.getSoundUri();

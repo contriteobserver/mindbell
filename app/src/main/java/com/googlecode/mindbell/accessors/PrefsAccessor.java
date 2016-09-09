@@ -156,6 +156,12 @@ public abstract class PrefsAccessor {
 
     public abstract String getMeditationEndingBell();
 
+    public abstract int getOriginalVolume();
+
+    public abstract void setOriginalVolume(int originalVolume);
+
+    public abstract void resetOriginalVolume();
+
     public abstract int getPopup();
 
     public abstract void setPopup(int popup);
