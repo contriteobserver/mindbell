@@ -43,7 +43,6 @@ import com.googlecode.mindbell.MindBell;
 import com.googlecode.mindbell.MindBellMain;
 import com.googlecode.mindbell.R;
 import com.googlecode.mindbell.Scheduler;
-import com.googlecode.mindbell.logic.RingingLogic;
 import com.googlecode.mindbell.util.AlarmManagerCompat;
 import com.googlecode.mindbell.util.TimeOfDay;
 
@@ -201,25 +200,42 @@ public class AndroidContextAccessor extends ContextAccessor {
     }
 
     @Override
+    public void startPlayingSoundAndVibrate(final Runnable runWhenDone) {
+        startPlayingSoundAndVibrate(prefs.forRegularOperation(), runWhenDone);
+    }
+
+    @Override
     public void startPlayingSoundAndVibrate(ActivityPrefsAccessor activityPrefs, final Runnable runWhenDone) {
 
-        // Start playing sound if requested by preferences
-        if (activityPrefs.isSound()) {
-            startPlayingSound(activityPrefs, runWhenDone);
+        boolean playingSoundStarted = false;
+
+        // Stop an already ongoing sound, this isn't wrong when phone and bell are muted, too
+        finishBellSound();
+
+        // Only play sound and vibrate if phone is muted and bell shall mute with phone
+        if (!isMuteRequested(true)) {
+
+            // Raise alarm volume to the max but keep the original volume for reset by finishBellSound()
+            // Start playing sound if requested by preferences
+            if (activityPrefs.isSound()) {
+                startPlayingSound(activityPrefs, runWhenDone);
+                playingSoundStarted = true;
+            }
+
+            // Vibrate if requested by preferences
+            if (activityPrefs.isVibrate()) {
+                startVibration();
+            }
+
         }
 
-        // Vibrate if requested by preferences
-        if (activityPrefs.isVibrate()) {
-            startVibration();
-        }
-
-        // If displaying the bell is requested by the preferences but playing a sound is not, then
+        // If displaying the bell is requested by the preferences but no sound is being played, then
         // we are currently in MindBell.onStart(), so the bell has not been displayed yet. So this
         // method must end to bring the bell to front. But after a while someone has to send the
         // bell to the back again. So a new thread is created that waits and calls the runWhenDone
         // which sends the bell to background. As it's a new thread this method ends after starting
         // the thread which leads to the end of MindBell.onStart() which shows the bell.
-        if (activityPrefs.isShow() && !activityPrefs.isSound() && runWhenDone != null) {
+        if (activityPrefs.isShow() && !playingSoundStarted && runWhenDone != null) {
             startWaiting(runWhenDone);
         }
 
@@ -286,7 +302,7 @@ public class AndroidContextAccessor extends ContextAccessor {
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    Thread.sleep(RingingLogic.WAITING_TIME);
+                    Thread.sleep(AndroidPrefsAccessor.WAITING_TIME);
                 } catch (InterruptedException e) {
                     // doesn't care if sleep was interrupted, just move on
                 }
@@ -376,7 +392,7 @@ public class AndroidContextAccessor extends ContextAccessor {
         Intent ringBell = new Intent(context, MindBell.class);
         PendingIntent bellIntent = PendingIntent.getActivity(context, -1, ringBell, PendingIntent.FLAG_UPDATE_CURRENT);
         try {
-            bellIntent.send(); // show MindBell activity and call RingingLogic.ringBellAndWait()
+            bellIntent.send(); // show MindBell activity and call startPlayingSoundAndVibrate()
         } catch (PendingIntent.CanceledException e) {
             Log.d(TAG, "Cannot show bell, play sound and vibrate: " + e.getMessage(), e);
         }

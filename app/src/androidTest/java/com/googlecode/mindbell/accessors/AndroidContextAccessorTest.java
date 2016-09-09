@@ -67,6 +67,7 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
     public void testOriginalVolume() {
         // setup
         ContextAccessor ca = createContextAccessor();
+        ca.getPrefs().resetOriginalVolume();
         int originalVolume = ca.getAlarmVolume();
         // exercise
         ca.startPlayingSoundAndVibrate(ca.getPrefs().forRegularOperation(), null);

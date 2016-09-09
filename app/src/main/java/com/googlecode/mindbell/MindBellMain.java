@@ -43,7 +43,6 @@ import android.widget.ViewFlipper;
 import com.googlecode.mindbell.accessors.AndroidContextAccessor;
 import com.googlecode.mindbell.accessors.ContextAccessor;
 import com.googlecode.mindbell.accessors.PrefsAccessor;
-import com.googlecode.mindbell.logic.RingingLogic;
 import com.googlecode.mindbell.util.Utils;
 
 public class MindBellMain extends Activity {
@@ -302,7 +301,7 @@ public class MindBellMain extends Activity {
         if (e.getAction() == MotionEvent.ACTION_DOWN) {
             notifyIfNotActive();
             contextAccessor.updateStatusNotification();
-            RingingLogic.ringBell(contextAccessor, null);
+            contextAccessor.startPlayingSoundAndVibrate(null);
         }
         return true;
     }

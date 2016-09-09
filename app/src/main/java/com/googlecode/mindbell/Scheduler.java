@@ -27,7 +27,6 @@ import android.util.Log;
 import com.googlecode.mindbell.accessors.AndroidContextAccessor;
 import com.googlecode.mindbell.accessors.ContextAccessor;
 import com.googlecode.mindbell.accessors.PrefsAccessor;
-import com.googlecode.mindbell.logic.RingingLogic;
 import com.googlecode.mindbell.logic.SchedulerLogic;
 import com.googlecode.mindbell.util.TimeOfDay;
 
@@ -103,7 +102,7 @@ public class Scheduler extends BroadcastReceiver {
         } else {
 
             Log.d(TAG, "Play sound and vibrate if requested but do not show bell");
-            RingingLogic.ringBellAndWait(contextAccessor);
+            contextAccessor.startPlayingSoundAndVibrate(null);
         }
     }
 

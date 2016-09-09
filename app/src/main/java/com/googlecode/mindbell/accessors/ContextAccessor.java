@@ -99,6 +99,8 @@ public abstract class ContextAccessor {
 
     public abstract void showMessage(String message);
 
+    public abstract void startPlayingSoundAndVibrate(Runnable runWhenDone);
+
     public abstract void startPlayingSoundAndVibrate(ActivityPrefsAccessor activityPrefs, final Runnable runWhenDone);
 
     public abstract void showBell();

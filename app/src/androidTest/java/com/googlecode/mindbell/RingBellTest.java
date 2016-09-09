@@ -29,10 +29,8 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.googlecode.mindbell.accessors.AndroidContextAccessor;
 import com.googlecode.mindbell.accessors.ContextAccessor;
-import com.googlecode.mindbell.logic.RingingLogic;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,7 +41,6 @@ import java.util.Map;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 @RunWith(AndroidJUnit4.class)
 @SmallTest
@@ -160,65 +157,6 @@ public class RingBellTest {
     @Test
     public void testPreconditions() {
         assertNotNull(context);
-    }
-
-    @Test
-    public void testRingBell_throwNPE1() {
-        try {
-            RingingLogic.ringBell((ContextAccessor) null, getDummyRunnable());
-            fail("Should have thrown null pointer exception");
-        } catch (NullPointerException npe) {
-            // OK, expected
-        }
-    }
-
-    @Test
-    public void testRingBell_true() {
-        // setup
-        setContextMuteWithPhone(false);
-        setContextMuteOffHook(false);
-        // exercise
-        boolean isRinging = RingingLogic.ringBell(AndroidContextAccessor.getInstance(context), null);
-        // verify
-        assertTrue(isRinging);
-    }
-
-    @Test
-    public void testExpires() throws InterruptedException {
-        // timeout shorter than sound duration: cannot finish
-        long timeout = 100L;
-        final RingingLogic.KeepAlive keepAlive = new RingingLogic.KeepAlive(AndroidContextAccessor.getInstance(context), timeout);
-        // exercise: it gets back before the timeout
-        Thread th = new Thread() {
-            @Override
-            public void run() {
-                keepAlive.ringBell();
-            }
-        };
-        th.start();
-        th.join(2 * timeout);
-        if (th.isAlive()) {
-            Assert.fail("KeepAlive doesn't expire as it should");
-        }
-    }
-
-    @Test
-    public void testReturnsNaturally() throws InterruptedException {
-        // timeout longer than sound duration: finishing is easy (15000 as used in Scheduler)
-        long timeout = 15000L;
-        final RingingLogic.KeepAlive keepAlive = new RingingLogic.KeepAlive(AndroidContextAccessor.getInstance(context), timeout);
-        // exercise: it gets back before the timeout
-        Thread th = new Thread() {
-            @Override
-            public void run() {
-                keepAlive.ringBell();
-            }
-        };
-        th.start();
-        th.join(2 * timeout);
-        if (th.isAlive()) {
-            Assert.fail("KeepAlive doesn't return naturally as it should");
-        }
     }
 
 }

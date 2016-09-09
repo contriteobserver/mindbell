@@ -19,16 +19,13 @@
  *******************************************************************************/
 package com.googlecode.mindbell;
 
-import com.googlecode.mindbell.R;
-
-import static com.googlecode.mindbell.MindBellPreferences.TAG;
-
-import com.googlecode.mindbell.accessors.AndroidContextAccessor;
-import com.googlecode.mindbell.logic.RingingLogic;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.googlecode.mindbell.accessors.AndroidContextAccessor;
+
+import static com.googlecode.mindbell.MindBellPreferences.TAG;
 
 public class MindBell extends Activity {
 
@@ -46,7 +43,7 @@ public class MindBell extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        RingingLogic.ringBell(AndroidContextAccessor.getInstance(this), new Runnable() {
+        AndroidContextAccessor.getInstance(this).startPlayingSoundAndVibrate(new Runnable() {
             public void run() {
                 MindBell.this.moveTaskToBack(true);
                 MindBell.this.finish();

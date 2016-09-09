@@ -81,6 +81,9 @@ import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.Preference.
 
 public class AndroidPrefsAccessor extends PrefsAccessor {
 
+    /** Time to wait for displayed bell to be send back */
+    public static final long WAITING_TIME = 15000L;
+
     public static final String NORMALIZE_NONE = "-1";
 
     public static final float DEFAULT_VOLUME = 0.501187234f;
