@@ -87,7 +87,7 @@ public class MindBellMain extends Activity {
      * Show hint how to activate the bell.
      */
     private void notifyIfNotActive() {
-        if (!contextAccessor.getPrefs().isActive()) {
+        if (!contextAccessor.getPrefs().setActive()) {
             Toast.makeText(this, R.string.howToSet, Toast.LENGTH_LONG).show();
         }
     }
@@ -142,10 +142,10 @@ public class MindBellMain extends Activity {
      */
     private boolean onMenuItemClickActive() {
         PrefsAccessor prefsAccessor = contextAccessor.getPrefs();
-        prefsAccessor.isActive(!prefsAccessor.isActive()); // toggle active/inactive
+        prefsAccessor.setActive(!prefsAccessor.setActive()); // toggle active/inactive
         contextAccessor.updateBellSchedule();
         invalidateOptionsMenu(); // re-call onPrepareOptionsMenu()
-        CharSequence feedback = getText((prefsAccessor.isActive()) ? R.string.summaryActive : R.string.summaryNotActive);
+        CharSequence feedback = getText((prefsAccessor.setActive()) ? R.string.summaryActive : R.string.summaryNotActive);
         Toast.makeText(this, feedback, Toast.LENGTH_SHORT).show();
         return true;
     }
@@ -155,7 +155,7 @@ public class MindBellMain extends Activity {
      */
     private boolean onMenuItemClickMeditating() {
         final PrefsAccessor prefs = contextAccessor.getPrefs();
-        if (!prefs.isMeditating()) {
+        if (!prefs.setMeditating()) {
             View view = getLayoutInflater().inflate(R.layout.meditation_dialog, null);
             final EditText editTextRampUpTime = (EditText) view.findViewById(R.id.rampUpTime);
             editTextRampUpTime.setText(prefs.getRampUpTime());
@@ -195,9 +195,9 @@ public class MindBellMain extends Activity {
      */
     private void toggleMeditating() {
         PrefsAccessor prefs = contextAccessor.getPrefs();
-        prefs.isMeditating(!prefs.isMeditating()); // toggle active/inactive
+        prefs.setMeditating(!prefs.setMeditating()); // toggle active/inactive
         CountdownView countdownView = (CountdownView) findViewById(R.id.countdown);
-        if (prefs.isMeditating()) {
+        if (prefs.setMeditating()) {
             long rampUpStartingTimeMillis = System.currentTimeMillis();
             long meditationStartingTimeMillis = rampUpStartingTimeMillis + prefs.getRampUpTimeMillis();
             long meditationEndingTimeMillis = meditationStartingTimeMillis + prefs.getMeditationDurationMillis();
@@ -222,16 +222,16 @@ public class MindBellMain extends Activity {
         }
         flipToAppropriateView();
         invalidateOptionsMenu(); // re-call onPrepareOptionsMenu()
-        CharSequence feedback = getText((prefs.isMeditating()) ? R.string.summaryMeditating : R.string.summaryNotMeditating);
+        CharSequence feedback = getText((prefs.setMeditating()) ? R.string.summaryMeditating : R.string.summaryNotMeditating);
         Toast.makeText(this, feedback, Toast.LENGTH_SHORT).show();
     }
 
     /**
-     * Flip to meditation view if isMeditating is true, to bell view otherwise.
+     * Flip to meditation view if setMeditating is true, to bell view otherwise.
      */
     private void flipToAppropriateView() {
         ViewFlipper viewFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
-        viewFlipper.setDisplayedChild(contextAccessor.getPrefs().isMeditating() ? 1 : 2);
+        viewFlipper.setDisplayedChild(contextAccessor.getPrefs().setMeditating() ? 1 : 2);
     }
 
     /**
@@ -270,16 +270,16 @@ public class MindBellMain extends Activity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem activeItem = menu.findItem(R.id.active);
-        activeItem.setIcon((contextAccessor.getPrefs().isActive()) ? R.drawable.ic_action_bell_off : R.drawable.ic_action_bell_on);
+        activeItem.setIcon((contextAccessor.getPrefs().setActive()) ? R.drawable.ic_action_bell_off : R.drawable.ic_action_bell_on);
         MenuItem meditatingItem = menu.findItem(R.id.meditating);
-        meditatingItem.setIcon((contextAccessor.getPrefs().isMeditating()) ? R.drawable.ic_action_meditating_off : R.drawable.ic_action_meditating_on);
+        meditatingItem.setIcon((contextAccessor.getPrefs().setMeditating()) ? R.drawable.ic_action_meditating_off : R.drawable.ic_action_meditating_on);
         return true;
     }
 
     @Override
     protected void onResume() {
         flipToAppropriateView();
-        if (contextAccessor.getPrefs().isMeditating()) {
+        if (contextAccessor.getPrefs().setMeditating()) {
             CountdownView countdownView = (CountdownView) findViewById(R.id.countdown);
             countdownView.startDisplayUpdateTimer(contextAccessor);
         }
@@ -290,7 +290,7 @@ public class MindBellMain extends Activity {
     @Override
     protected void onPause() {
         // Stop meditation when screen is rotated, otherwise timer states had to be saved
-        if (contextAccessor.getPrefs().isMeditating()) {
+        if (contextAccessor.getPrefs().setMeditating()) {
             CountdownView countdownView = (CountdownView) findViewById(R.id.countdown);
             countdownView.stopDisplayUpdateTimer();
         }

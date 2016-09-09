@@ -67,8 +67,7 @@ public class AndroidContextAccessor extends ContextAccessor {
      * Returns an accessor for the given context, this call also validates the preferences.
      */
     public static AndroidContextAccessor getInstance(Context context) {
-        AndroidContextAccessor instance = new AndroidContextAccessor(context);
-        ((AndroidPrefsAccessor) instance.getPrefs()).checkSettings(context, false);
+        AndroidContextAccessor instance = new AndroidContextAccessor(context, false);
         return instance;
     }
 
@@ -76,8 +75,7 @@ public class AndroidContextAccessor extends ContextAccessor {
      * Returns an accessor for the given context, this call also validates the preferences.
      */
     public static AndroidContextAccessor getInstanceAndLogPreferences(Context context) {
-        AndroidContextAccessor instance = new AndroidContextAccessor(context);
-        ((AndroidPrefsAccessor) instance.getPrefs()).checkSettings(context, true);
+        AndroidContextAccessor instance = new AndroidContextAccessor(context, true);
         return instance;
     }
 
@@ -86,9 +84,9 @@ public class AndroidContextAccessor extends ContextAccessor {
      *
      * @param context
      */
-    private AndroidContextAccessor(Context context) {
+    private AndroidContextAccessor(Context context, boolean logSettings) {
         this.context = context.getApplicationContext();
-        this.prefs = new AndroidPrefsAccessor(context);
+        this.prefs = new AndroidPrefsAccessor(context, logSettings);
     }
 
     /**
@@ -381,7 +379,7 @@ public class AndroidContextAccessor extends ContextAccessor {
      */
     @Override
     public void updateStatusNotification() {
-        if ((!prefs.isActive() && !prefs.isMeditating()) || !prefs.isStatus()) {// bell inactive or no notification wanted?
+        if ((!prefs.setActive() && !prefs.setMeditating()) || !prefs.isStatus()) {// bell inactive or no notification wanted?
             Log.i(TAG, "Remove status notification because of inactive and non-meditating bell or unwanted notification");
             removeStatusNotification();
             return;
@@ -411,7 +409,7 @@ public class AndroidContextAccessor extends ContextAccessor {
             // to enable notification again. In this very moment we cannot ask for permission to avoid an ANR in receiver
             // UpdateStatusNotification.
             prefs.setStatus(false);
-        } else if (prefs.isMeditating()) {// Bell meditation => override icon and notification text
+        } else if (prefs.setMeditating()) {// Bell meditation => override icon and notification text
             statusDrawable = R.drawable.ic_stat_bell_meditating;
             contentTitle = context.getText(R.string.statusTitleBellMeditating);
             contentText = MessageFormat.format(context.getText(R.string.statusTextBellMeditating).toString(), //

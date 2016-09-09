@@ -116,12 +116,12 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public boolean isActive() {
+    public boolean setActive() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
     @Override
-    public boolean isMeditating() {
+    public boolean setMeditating() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
@@ -169,12 +169,12 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public void isActive(boolean active) {
+    public void setActive(boolean active) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
     @Override
-    public void isMeditating(boolean meditating) {
+    public void setMeditating(boolean meditating) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 

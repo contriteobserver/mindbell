@@ -35,8 +35,48 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import static com.googlecode.mindbell.MindBellPreferences.TAG;
+import static com.googlecode.mindbell.R.string.keyActive;
+import static com.googlecode.mindbell.R.string.keyActiveOnDaysOfWeek;
+import static com.googlecode.mindbell.R.string.keyEnd;
+import static com.googlecode.mindbell.R.string.keyFrequency;
+import static com.googlecode.mindbell.R.string.keyKeepScreenOn;
+import static com.googlecode.mindbell.R.string.keyMeditating;
+import static com.googlecode.mindbell.R.string.keyMeditationBeginningBell;
+import static com.googlecode.mindbell.R.string.keyMeditationDuration;
+import static com.googlecode.mindbell.R.string.keyMeditationEndingBell;
+import static com.googlecode.mindbell.R.string.keyMeditationEndingTimeMillis;
+import static com.googlecode.mindbell.R.string.keyMeditationInterruptingBell;
+import static com.googlecode.mindbell.R.string.keyMeditationStartingTimeMillis;
+import static com.googlecode.mindbell.R.string.keyMuteInFlightMode;
+import static com.googlecode.mindbell.R.string.keyMuteOffHook;
+import static com.googlecode.mindbell.R.string.keyMuteWithPhone;
+import static com.googlecode.mindbell.R.string.keyNormalize;
+import static com.googlecode.mindbell.R.string.keyNumberOfPeriods;
+import static com.googlecode.mindbell.R.string.keyPattern;
+import static com.googlecode.mindbell.R.string.keyPopup;
+import static com.googlecode.mindbell.R.string.keyRampUpStartingTimeMillis;
+import static com.googlecode.mindbell.R.string.keyRampUpTime;
+import static com.googlecode.mindbell.R.string.keyRandomize;
+import static com.googlecode.mindbell.R.string.keyRingtone;
+import static com.googlecode.mindbell.R.string.keyShow;
+import static com.googlecode.mindbell.R.string.keySound;
+import static com.googlecode.mindbell.R.string.keyStart;
+import static com.googlecode.mindbell.R.string.keyStatus;
+import static com.googlecode.mindbell.R.string.keyStatusIconMaterialDesign;
+import static com.googlecode.mindbell.R.string.keyStatusVisibilityPublic;
+import static com.googlecode.mindbell.R.string.keyUseStandardBell;
+import static com.googlecode.mindbell.R.string.keyVibrate;
+import static com.googlecode.mindbell.R.string.keyVolume;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.Preference.Type.BOOLEAN;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.Preference.Type.FLOAT;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.Preference.Type.INTEGER;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.Preference.Type.LONG;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.Preference.Type.STRING;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.Preference.Type.STRING_SET;
 
 public class AndroidPrefsAccessor extends PrefsAccessor {
 
@@ -44,79 +84,15 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     public static final float DEFAULT_VOLUME = 0.501187234f;
 
+    // *The* SharedPreferences
     private final SharedPreferences settings;
-    private final String keyPopup;
-    private final String keyActive;
-    private final String keyMeditating;
 
-    private final String keyUseStandardBell;
-    private final String keyRingtone;
-    private final String keyShow;
-    private final String keySound;
-    private final String keyStatus;
-    private final String keyStatusVisibilityPublic;
-    private final String keyStatusIconMaterialDesign;
-    private final String keyMuteInFlightMode;
-    private final String keyMuteOffHook;
-    private final String keyMuteWithPhone;
-    private final String keyVibrate;
-    private final String keyKeepScreenOn;
-    private final String keyPattern;
+    // Map of all used preferences - with type and default value - by resid
+    private final SortedMap<Integer, Preference> preferenceMap = new TreeMap<>();
 
-    private final String keyFrequency;
-    private final String keyRandomize;
-    private final String keyNormalize;
-    private final String keyStart;
-    private final String keyEnd;
-    private final String keyActiveOnDaysOfWeek;
+    // Map of allowed internal values for a string set preference by resid
+    private final Map<Integer, String[]> entryValuesMap = new HashMap<>();
 
-    private final String keyRampUpTime;
-    private final String keyNumberOfPeriods;
-    private final String keyMeditationDuration;
-    private final String keyMeditationBeginningBell;
-    private final String keyMeditationInterruptingBell;
-    private final String keyMeditationEndingBell;
-    private final String keyRampUpStartingTimeMillis;
-    private final String keyMeditationStartingTimeMillis;
-    private final String keyMeditationEndingTimeMillis;
-
-    private final String keyVolume;
-
-    /**
-     * Preference default values ... must correspond with settings in xml definitions
-     */
-    private final int defaultPopup = -1;
-    private final boolean defaultActive = false;
-    private final boolean defaultMeditating = false;
-    private final boolean defaultShow = true;
-    private final boolean defaultSound = true;
-    private final boolean defaultUseStandardBell = true;
-    private final boolean defaultStatus = false;
-    private final boolean defaultStatusVisibilityPublic = true;
-    private final boolean defaultStatusIconMaterialDesign = true;
-    private final boolean defaultMuteInFlightMode = false;
-    private final boolean defaultMuteOffHook = true;
-    private final boolean defaultMuteWithPhone = true;
-    private final boolean defaultVibrate = false;
-    private final boolean defaultKeepScreenOn = false;
-    // private final String defaultRingtone = ""; // there is no really useful default ringtone
-    private final String defaultPattern = "100:200:100:600";
-    private final String defaultFrequency = "3600000";
-    private final boolean defaultRandomize = true;
-    private final String defaultNormalize = NORMALIZE_NONE;
-    private final String defaultStart = "9";
-    private final String defaultEnd = "21";
-    private final String defaultRampUpTime = "30"; // seconds
-    private final String defaultNumberOfPeriods = "1";
-    private final String defaultMeditationDuration = "25"; // minutes
-    private final String defaultMeditationBeginningBell = "3";
-    private final String defaultMeditationInterruptingBell = "1";
-    private final String defaultMeditationEndingBell = "2";
-    private final long defaultRampUpStartingTimeMillis = -1;
-    private final long defaultMeditationStartingTimeMillis = -1;
-    private final long defaultMeditationEndingTimeMillis = -1;
-    private final Set<String> defaultActiveOnDaysOfWeek = new HashSet<>(
-            Arrays.asList(new String[]{"1", "2", "3", "4", "5", "6", "7"})); // every day
     private final String[] weekdayEntryValues;
     private final String[] hourEntries;
     private final String[] weekdayAbbreviationEntries;
@@ -135,42 +111,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
      * Constructs an accessor for preferences in the given context, please use {@link AndroidContextAccessor#getPrefs()} instead
      * of calling this directly.
      */
-    protected AndroidPrefsAccessor(Context context) {
+    protected AndroidPrefsAccessor(Context context, boolean logSettings) {
         settings = context.getSharedPreferences(context.getPackageName() + "_preferences", Context.MODE_PRIVATE);
-
-        // Define all preference keys
-        keyPopup = context.getString(R.string.keyPopup);
-        keyActive = context.getString(R.string.keyActive);
-        keyMeditating = context.getString(R.string.keyMeditating);
-        keyShow = context.getString(R.string.keyShow);
-        keySound = context.getString(R.string.keySound);
-        keyUseStandardBell = context.getString(R.string.keyUseStandardBell);
-        keyRingtone = context.getString(R.string.keyRingtone);
-        keyStatus = context.getString(R.string.keyStatus);
-        keyStatusVisibilityPublic = context.getString(R.string.keyStatusVisibilityPublic);
-        keyStatusIconMaterialDesign = context.getString(R.string.keyStatusIconMaterialDesign);
-        keyMuteInFlightMode = context.getString(R.string.keyMuteInFlightMode);
-        keyMuteOffHook = context.getString(R.string.keyMuteOffHook);
-        keyMuteWithPhone = context.getString(R.string.keyMuteWithPhone);
-        keyVolume = context.getString(R.string.keyVolume);
-        keyVibrate = context.getString(R.string.keyVibrate);
-        keyKeepScreenOn = context.getString(R.string.keyKeepScreenOn);
-        keyPattern = context.getString(R.string.keyPattern);
-        keyFrequency = context.getString(R.string.keyFrequency);
-        keyRandomize = context.getString(R.string.keyRandomize);
-        keyNormalize = context.getString(R.string.keyNormalize);
-        keyStart = context.getString(R.string.keyStart);
-        keyEnd = context.getString(R.string.keyEnd);
-        keyRampUpTime = context.getString(R.string.keyRampUpTime);
-        keyNumberOfPeriods = context.getString(R.string.keyNumberOfPeriods);
-        keyMeditationDuration = context.getString(R.string.keyMeditationDuration);
-        keyMeditationBeginningBell = context.getString(R.string.keyMeditationBeginningBell);
-        keyMeditationInterruptingBell = context.getString(R.string.keyMeditationInterruptingBell);
-        keyMeditationEndingBell = context.getString(R.string.keyMeditationEndingBell);
-        keyRampUpStartingTimeMillis = context.getString(R.string.keyRampUpStartingTimeMillis);
-        keyMeditationStartingTimeMillis = context.getString(R.string.keyMeditationStartingTimeMillis);
-        keyMeditationEndingTimeMillis = context.getString(R.string.keyMeditationEndingTimeMillis);
-        keyActiveOnDaysOfWeek = context.getString(R.string.keyActiveOnDaysOfWeek);
 
         // Define entries and entry values
         hourEntries = context.getResources().getStringArray(R.array.hourEntries);
@@ -182,6 +124,9 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         bellResourceUriMap.put("1" ,Utils.getResourceUri(context, R.raw.bell10s));
         bellResourceUriMap.put("2" ,Utils.getResourceUri(context, R.raw.bell20s));
         bellResourceUriMap.put("3" ,Utils.getResourceUri(context, R.raw.bell30s));
+
+        // Check the settings and reset invalid ones
+        checkSettings(context, logSettings);
     }
 
     /**
@@ -189,341 +134,336 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
      * expectations, we delete it and recreate it with it's default value.
      */
     public void checkSettings(Context context, boolean logSettings) {
-        // Map preference keys to their allowed entryValues
-        final Map<String, String[]> entryValuesMap = new HashMap<>();
-        entryValuesMap.put(keyRingtone, new String[] {}); // we don't need to know the possible ringtone values
-        entryValuesMap.put(keyPattern, context.getResources().getStringArray(R.array.patternEntryValues));
-        entryValuesMap.put(keyFrequency, context.getResources().getStringArray(R.array.frequencyEntryValues));
-        entryValuesMap.put(keyNormalize, context.getResources().getStringArray(R.array.normalizeEntryValues));
-        entryValuesMap.put(keyStart, context.getResources().getStringArray(R.array.hourEntryValues));
-        entryValuesMap.put(keyEnd, context.getResources().getStringArray(R.array.hourEntryValues));
-        entryValuesMap.put(keyRampUpTime, new String[] {}); // FIXME dkn Wie das prüfen mit NumberPickers
-        entryValuesMap.put(keyNumberOfPeriods, new String[] {}); // FIXME dkn Wie das prüfen mit NumberPickers
-        entryValuesMap.put(keyMeditationDuration, new String[] {}); // FIXME dkn Wie das prüfen mit NumberPickers
-        entryValuesMap.put(keyMeditationBeginningBell, context.getResources().getStringArray(R.array.bellEntryValues));
-        entryValuesMap.put(keyMeditationInterruptingBell, context.getResources().getStringArray(R.array.bellEntryValues));
-        entryValuesMap.put(keyMeditationEndingBell, context.getResources().getStringArray(R.array.bellEntryValues));
-        entryValuesMap.put(keyActiveOnDaysOfWeek, context.getResources().getStringArray(R.array.weekdayEntryValues));
 
-        // Track wheter a stacktrace shall be logged to find out the reason for sometimes deleted preferences
+        // Define all preference keys and their default values
+        addPreference(keyActive, false, BOOLEAN, context);
+        addPreference(keyActiveOnDaysOfWeek, new HashSet<>(
+                Arrays.asList(new String[]{"1", "2", "3", "4", "5", "6", "7"})), STRING_SET, context);
+        addPreference(keyEnd, "21", STRING, context);
+        addPreference(keyFrequency, "3600000", STRING, context);
+        addPreference(keyKeepScreenOn, false, BOOLEAN, context);
+        addPreference(keyMeditating, false, BOOLEAN, context);
+        addPreference(keyMeditationBeginningBell, "3", STRING, context);
+        addPreference(keyMeditationDuration, "25", STRING, context);
+        addPreference(keyMeditationEndingBell, "2", STRING, context);
+        addPreference(keyMeditationEndingTimeMillis, -1L, LONG, context);
+        addPreference(keyMeditationInterruptingBell, "1", STRING, context);
+        addPreference(keyMeditationStartingTimeMillis, -1L, LONG, context);
+        addPreference(keyMuteInFlightMode, false, BOOLEAN, context);
+        addPreference(keyMuteOffHook, true, BOOLEAN, context);
+        addPreference(keyMuteWithPhone, true, BOOLEAN, context);
+        addPreference(keyNormalize, NORMALIZE_NONE, STRING, context);
+        addPreference(keyNumberOfPeriods, "1", STRING, context);
+        addPreference(keyPattern, "100:200:100:600", STRING, context);
+        addPreference(keyPopup, -1, INTEGER, context);
+        addPreference(keyRampUpStartingTimeMillis, -1L, LONG, context);
+        addPreference(keyRampUpTime, "30", STRING, context);
+        addPreference(keyRandomize, true, BOOLEAN, context);
+        addPreference(keyRingtone, "", STRING, context); // no useful default, code relies on <defaultValue>.isEmpty()
+        addPreference(keyShow, true, BOOLEAN, context);
+        addPreference(keySound, true, BOOLEAN, context);
+        addPreference(keyStart, "9", STRING, context);
+        addPreference(keyStatus, false, BOOLEAN, context);
+        addPreference(keyStatusIconMaterialDesign, true, BOOLEAN, context);
+        addPreference(keyStatusVisibilityPublic, true, BOOLEAN, context);
+        addPreference(keyUseStandardBell, true, BOOLEAN, context);
+        addPreference(keyVibrate, false, BOOLEAN, context);
+        addPreference(keyVolume, DEFAULT_VOLUME, FLOAT, context);
+
+        // Map preference keys to their allowed entryValues
+        entryValuesMap.put(keyActiveOnDaysOfWeek, context.getResources().getStringArray(R.array.weekdayEntryValues));
+        entryValuesMap.put(keyEnd, context.getResources().getStringArray(R.array.hourEntryValues));
+        entryValuesMap.put(keyFrequency, context.getResources().getStringArray(R.array.frequencyEntryValues));
+        entryValuesMap.put(keyMeditationBeginningBell, context.getResources().getStringArray(R.array.bellEntryValues));
+        entryValuesMap.put(keyMeditationDuration, new String[] {}); // FIXME dkn Wie das prüfen mit NumberPickers
+        entryValuesMap.put(keyMeditationEndingBell, context.getResources().getStringArray(R.array.bellEntryValues));
+        entryValuesMap.put(keyMeditationInterruptingBell, context.getResources().getStringArray(R.array.bellEntryValues));
+        entryValuesMap.put(keyNormalize, context.getResources().getStringArray(R.array.normalizeEntryValues));
+        entryValuesMap.put(keyNumberOfPeriods, new String[] {}); // FIXME dkn Wie das prüfen mit NumberPickers
+        entryValuesMap.put(keyPattern, context.getResources().getStringArray(R.array.patternEntryValues));
+        entryValuesMap.put(keyRampUpTime, new String[] {}); // FIXME dkn Wie das prüfen mit NumberPickers
+        entryValuesMap.put(keyRingtone, new String[] {}); // we don't need to know the possible ringtone values
+        entryValuesMap.put(keyStart, context.getResources().getStringArray(R.array.hourEntryValues));
+
+        // Track whether a stacktrace shall be logged to find out the reason for sometimes deleted preferences
         boolean logStackTrace = false;
 
-        // Check boolean settings
-        String[] booleanSettings = new String[] { keyShow, keySound, keyUseStandardBell, keyStatus, keyMeditating, keyStatusVisibilityPublic, keyStatusIconMaterialDesign,
-                keyActive, keyMuteInFlightMode, keyMuteOffHook, keyMuteWithPhone, keyVibrate, keyKeepScreenOn, keyRandomize };
-        for (String key : booleanSettings) {
-            try {
-                settings.getBoolean(key, false);
-            } catch (ClassCastException e) {
-                settings.edit().remove(key).apply();
-                Log.w(TAG, "Removed setting '" + key + "' since it had wrong type");
-                logStackTrace = true;
-            }
-        }
-        // Check string settings
-        String[] stringSettings = new String[] { keyRingtone, keyPattern, keyFrequency, keyNormalize, keyStart, keyEnd, keyRampUpTime, keyNumberOfPeriods, keyMeditationDuration, keyMeditationBeginningBell, keyMeditationInterruptingBell, keyMeditationEndingBell };
-        for (String key : stringSettings) {
-            try {
-                String value = settings.getString(key, null);
-                if (value != null) {
-                    List<String> entryValues = Arrays.asList(entryValuesMap.get(key));
-                    if (entryValues != null && !entryValues.isEmpty() && !entryValues.contains(value)) {
-                        settings.edit().remove(key).apply();
-                        Log.w(TAG, "Removed setting '" + key + "' since it had wrong value '" + value + "'");
-                        logStackTrace = true;
-                    }
-                }
-            } catch (ClassCastException e) {
-                settings.edit().remove(key).apply();
-                Log.w(TAG, "Removed setting '" + key + "' since it had wrong type");
-                logStackTrace = true;
-            }
-        }
-        // Check string set settings
-        String[] stringSetSettings = new String[] { keyActiveOnDaysOfWeek };
-        for (String key : stringSetSettings) {
-            try {
-                Set<String> valueSet = settings.getStringSet(key, null);
-                if (valueSet != null) {
-                    for (String value : valueSet) {
-                        List<String> entryValues = Arrays.asList(entryValuesMap.get(key));
-                        if (value != null && !entryValues.contains(value)) {
-                            settings.edit().remove(key).apply();
-                            Log.w(TAG, "Removed setting '" + key + "' since it had (at least one) wrong value '" + value + "'");
-                            logStackTrace = true;
-                            break;
-                        }
-                    }
-                }
-            } catch (ClassCastException e) {
-                settings.edit().remove(key).apply();
-                Log.w(TAG, "Removed setting '" + key + "' since it had wrong type");
-                logStackTrace = true;
-            }
-        }
-        // Check int settings
-        String[] intSettings = new String[] { keyPopup };
-        for (String key : intSettings) {
-            try {
-                settings.getInt(key, 0);
-            } catch (ClassCastException e) {
-                settings.edit().remove(key).apply();
-                Log.w(TAG, "Removed setting '" + key + "' since it had wrong type");
-                logStackTrace = true;
-            }
-        }
-        // Check long settings
-        String[] longSettings = new String[] { keyRampUpStartingTimeMillis, keyMeditationStartingTimeMillis, keyMeditationEndingTimeMillis };
-        for (String key : longSettings) {
-            try {
-                settings.getLong(key, 0);
-            } catch (ClassCastException e) {
-                settings.edit().remove(key).apply();
-                Log.w(TAG, "Removed setting '" + key + "' since it had wrong type");
-                logStackTrace = true;
-            }
-        }
-        // Check float settings
-        String[] floatSettings = new String[] { keyVolume };
-        for (String key : floatSettings) {
-            try {
-                settings.getFloat(key, 0);
-            } catch (ClassCastException e) {
-                settings.edit().remove(key).apply();
-                Log.w(TAG, "Removed setting '" + key + "' since it had wrong type");
-                logStackTrace = true;
-            }
+        // Remove preference settings of wrong type and set non-existent preference to their default value
+        for (Preference preference : preferenceMap.values()) {
+            logStackTrace = removeInvalidSetting(preference) || logStackTrace;
+            logStackTrace = resetMissingSetting(preference) || logStackTrace;
         }
 
-        // Check frequency as it may never fall to a too low value
-        String frequencyString = settings.getString(keyFrequency, null);
-        if (frequencyString != null) {
-            try {
-                long interval = Long.valueOf(frequencyString);
-                if (interval < 1 * 60000) { // less than one minute
-                    settings.edit().remove(keyFrequency).apply();
-                    Log.w(TAG, "Removed setting '" + keyFrequency + "' since value '" + frequencyString + "' was too low");
-                    logStackTrace = true;
-                }
-            } catch (NumberFormatException e) {
-                settings.edit().remove(keyFrequency).apply();
-                Log.w(TAG, "Removed setting '" + keyFrequency + "' since value '" + frequencyString + "' is not a number");
-                logStackTrace = true;
-            }
-        }
-
-        // Set default values for those preferences that are missing
-        if (!settings.contains(keyPopup)) {
-            setPopup(defaultPopup);
-            Log.w(TAG, "Reset missing setting for '" + keyPopup + "' to '" + defaultPopup + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyActive)) {
-            isActive(defaultActive);
-            Log.w(TAG, "Reset missing setting for '" + keyActive + "' to '" + defaultActive + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyMeditating)) {
-            isMeditating(defaultMeditating);
-            Log.w(TAG, "Reset missing setting for '" + keyMeditating + "' to '" + defaultMeditating + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyShow)) {
-            settings.edit().putBoolean(keyShow, defaultShow).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyShow + "' to '" + defaultShow + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keySound)) {
-            settings.edit().putBoolean(keySound, defaultSound).apply();
-            Log.w(TAG, "Reset missing setting for '" + keySound + "' to '" + defaultSound + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyUseStandardBell)) {
-            settings.edit().putBoolean(keyUseStandardBell, defaultUseStandardBell).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyUseStandardBell + "' to '" + defaultUseStandardBell + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyStatus)) {
-            settings.edit().putBoolean(keyStatus, defaultStatus).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyStatus + "' to '" + defaultStatus + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyStatusVisibilityPublic)) {
-            settings.edit().putBoolean(keyStatusVisibilityPublic, defaultStatusVisibilityPublic).apply();
-            Log.w(TAG,
-                    "Reset missing setting for '" + keyStatusVisibilityPublic + "' to '" + defaultStatusVisibilityPublic + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyStatusIconMaterialDesign)) {
-            settings.edit().putBoolean(keyStatusIconMaterialDesign, defaultStatusIconMaterialDesign).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyStatusIconMaterialDesign + "' to '" + defaultStatusIconMaterialDesign
-                    + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyMuteInFlightMode)) {
-            settings.edit().putBoolean(keyMuteInFlightMode, defaultMuteInFlightMode).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyMuteInFlightMode + "' to '" + defaultMuteInFlightMode + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyMuteOffHook)) {
-            settings.edit().putBoolean(keyMuteOffHook, defaultMuteOffHook).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyMuteOffHook + "' to '" + defaultMuteOffHook + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyMuteWithPhone)) {
-            settings.edit().putBoolean(keyMuteWithPhone, defaultMuteWithPhone).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyMuteWithPhone + "' to '" + defaultMuteWithPhone + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyVibrate)) {
-            settings.edit().putBoolean(keyVibrate, defaultVibrate).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyVibrate + "' to '" + defaultVibrate + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyKeepScreenOn)) {
-            settings.edit().putBoolean(keyKeepScreenOn, defaultKeepScreenOn).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyKeepScreenOn + "' to '" + defaultKeepScreenOn + "'");
-            logStackTrace = true;
-        }
-        // due to lack of a useful default ringtone the preference might be null, see getSoundUri()
-//        if (!settings.contains(keyRingtone)) {
-//            settings.edit().putString(keyRingtone, defaultRingtone).apply();
-//            Log.w(TAG, "Reset missing setting for '" + keyRingtone + "' to '" + defaultRingtone + "'");
-//        }
-        if (!settings.contains(keyPattern)) {
-            settings.edit().putString(keyPattern, defaultPattern).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyPattern + "' to '" + defaultPattern + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyFrequency)) {
-            settings.edit().putString(keyFrequency, defaultFrequency).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyFrequency + "' to '" + defaultFrequency + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyRandomize)) {
-            settings.edit().putBoolean(keyRandomize, defaultRandomize).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyRandomize + "' to '" + defaultRandomize + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyNormalize)) {
-            settings.edit().putString(keyNormalize, defaultNormalize).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyNormalize + "' to '" + defaultNormalize + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyStart)) {
-            settings.edit().putString(keyStart, defaultStart).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyStart + "' to '" + defaultStart + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyEnd)) {
-            settings.edit().putString(keyEnd, defaultEnd).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyEnd + "' to '" + defaultEnd + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyRampUpTime)) {
-            settings.edit().putString(keyRampUpTime, defaultRampUpTime).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyRampUpTime + "' to '" + defaultRampUpTime + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyNumberOfPeriods)) {
-            settings.edit().putString(keyNumberOfPeriods, defaultNumberOfPeriods).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyNumberOfPeriods + "' to '" + defaultNumberOfPeriods + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyMeditationDuration)) {
-            settings.edit().putString(keyMeditationDuration, defaultMeditationDuration).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyMeditationDuration + "' to '" + defaultMeditationDuration + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyMeditationBeginningBell)) {
-            settings.edit().putString(keyMeditationBeginningBell, defaultMeditationBeginningBell).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyMeditationBeginningBell + "' to '" + defaultMeditationBeginningBell + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyMeditationInterruptingBell)) {
-            settings.edit().putString(keyMeditationInterruptingBell, defaultMeditationInterruptingBell).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyMeditationInterruptingBell + "' to '" + defaultMeditationInterruptingBell + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyMeditationEndingBell)) {
-            settings.edit().putString(keyMeditationEndingBell, defaultMeditationEndingBell).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyMeditationEndingBell + "' to '" + defaultMeditationEndingBell + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyRampUpStartingTimeMillis)) {
-            settings.edit().putLong(keyRampUpStartingTimeMillis, defaultRampUpStartingTimeMillis).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyRampUpStartingTimeMillis + "' to '" + defaultRampUpStartingTimeMillis + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyMeditationStartingTimeMillis)) {
-            settings.edit().putLong(keyMeditationStartingTimeMillis, defaultMeditationStartingTimeMillis).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyMeditationStartingTimeMillis + "' to '" + defaultMeditationStartingTimeMillis + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyMeditationEndingTimeMillis)) {
-            settings.edit().putLong(keyMeditationEndingTimeMillis, defaultMeditationEndingTimeMillis).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyMeditationEndingTimeMillis + "' to '" + defaultMeditationEndingTimeMillis + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyActiveOnDaysOfWeek)) {
-            settings.edit().putStringSet(keyActiveOnDaysOfWeek, defaultActiveOnDaysOfWeek).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyActiveOnDaysOfWeek + "' to '" + defaultActiveOnDaysOfWeek + "'");
-            logStackTrace = true;
-        }
-        if (!settings.contains(keyVolume)) {
-            settings.edit().putFloat(keyVolume, DEFAULT_VOLUME).apply();
-            Log.w(TAG, "Reset missing setting for '" + keyVolume + "' to '" + DEFAULT_VOLUME + "'");
-            logStackTrace = true;
-        }
         // Log stacktrace if a setting has been deleted or set to its default
         if (logStackTrace) {
             Log.w(TAG, new Exception("At least one setting has been deleted or reset to its default"));
+        } else {
+            MindBell.logDebug("Preferences checked and found to be ok");
         }
-        // Finally report the settings if requested
+        
+        // Finally report all currently existing settings if requested
         if (logSettings) {
             StringBuilder sb = new StringBuilder();
             sb.append("Effective settings: ");
-            for (String s : booleanSettings) {
-                sb.append(s).append("=").append(settings.getBoolean(s, false)).append(", ");
-            }
-            for (String s : stringSettings) {
-                sb.append(s).append("=").append(settings.getString(s, null)).append(", ");
-            }
-            for (String s : stringSetSettings) {
-                sb.append(s).append("=").append(settings.getStringSet(s, null)).append(", ");
-            }
-            for (String s : intSettings) {
-                sb.append(s).append("=").append(settings.getInt(s, -1)).append(", ");
-            }
-            for (String s : longSettings) {
-                sb.append(s).append("=").append(settings.getLong(s, -1)).append(", ");
-            }
-            for (String s : floatSettings) {
-                sb.append(s).append("=").append(settings.getFloat(s, -1)).append(", ");
+            TreeMap<String, Object> orderedSettings = new TreeMap<>(settings.getAll());
+            for (Map.Entry<String, Object> setting : orderedSettings.entrySet()) {
+                sb.append(setting.getKey()).append("=").append(setting.getValue()).append(", ");
             }
             sb.setLength(sb.length() - 2); // remove last ", "
             MindBell.logDebug(sb.toString());
         }
     }
 
+
+    /**
+     * Puts a newly created Preference into the referenceMap with the given resid as key of the map.
+     *  @param resid
+     * @param defaultValue
+     * @param type
+     * @param context
+     */
+    private void addPreference(int resid, Object defaultValue, Preference.Type type, Context context) {
+        preferenceMap.put(resid, new Preference(resid, context.getString(resid), defaultValue, type));
+    }
+
+    /**
+     * Removes a preference setting if it is not of the expected type or has an invalid valid and in that case returns true.
+     *
+     * @param preference
+     * @return
+     */
+    private boolean removeInvalidSetting(Preference preference) {
+        try {
+            Object value = getSetting(preference);
+            switch (preference.type) {
+                case BOOLEAN:
+                case FLOAT:
+                case INTEGER:
+                case LONG:
+                    // no more to do, retrieving the value is all that can be done
+                    break;
+                case STRING:
+                    String stringValue = (String) value;
+                    if (stringValue != null) {
+                        List<String> entryValues = Arrays.asList(entryValuesMap.get(preference.resid));
+                        if (entryValues != null && !entryValues.isEmpty() && !entryValues.contains(stringValue)) {
+                            settings.edit().remove(preference.key).apply();
+                            Log.w(TAG, "Removed setting '" + preference + "' since it had wrong value '" + stringValue + "'");
+                            return true;
+                        }
+                    }
+                    break;
+                case STRING_SET:
+                    Set<String> stringSetValue = (Set<String>) value;
+                    if (stringSetValue != null) {
+                        for (String aStringInSet : stringSetValue) {
+                            List<String> entryValues = Arrays.asList(entryValuesMap.get(preference.resid));
+                            if (aStringInSet != null && !entryValues.contains(aStringInSet)) {
+                                settings.edit().remove(preference.key).apply();
+                                Log.w(TAG, "Removed setting '" + preference + "' since it had (at least one) wrong value '" + aStringInSet + "'");
+                                return true;
+                            }
+                        }
+                    }
+                    break;
+            }
+            return false;
+        } catch (ClassCastException e) {
+            settings.edit().remove(preference.key).apply();
+            Log.w(TAG, "Removed setting '" + preference + "' since it had wrong type: " + e);
+            return true;
+        }
+    }
+
+    /**
+     * Resets a preference to its default value if it is missing and in that case returns true.
+     * 
+     * @param preference
+     * @return
+     */
+    private boolean resetMissingSetting(Preference preference) {
+        if (!settings.contains(preference.key)) {
+            resetSetting(preference);
+            Log.w(TAG, "Reset missing setting for '" + preference.key + "' to '" + preference.defaultValue + "'");
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Returns the current boolean setting of the preference with the given resid.
+     *
+     * @param resid
+     * @return
+     */
+    private boolean getBooleanSetting(int resid) {
+        return (Boolean) getSetting(resid);
+    }
+    
+    /**
+     * Returns the current float setting of the preference with the given resid.
+     *
+     * @param resid
+     * @return
+     */
+    private float getFloatSetting(int resid) {
+        return (Float) getSetting(resid);
+    }
+    
+    /**
+     * Returns the current int setting of the preference with the given resid.
+     *
+     * @param resid
+     * @return
+     */
+    private int getIntSetting(int resid) {
+        return (Integer) getSetting(resid);
+    }
+    
+    /**
+     * Returns the current long setting of the preference with the given resid.
+     *
+     * @param resid
+     * @return
+     */
+    private long getLongSetting(int resid) {
+        return (Long) getSetting(resid);
+    }
+    
+    /**
+     * Returns the current string setting of the preference with the given resid.
+     *
+     * @param resid
+     * @return
+     */
+    private String getStringSetting(int resid) {
+        return (String) getSetting(resid);
+    }
+    
+    /**
+     * Returns the current string set setting of the preference with the given resid.
+     *
+     * @param resid
+     * @return
+     */
+    private Set<String> getStringSetSetting(int resid) {
+        return (Set<String>) getSetting(resid);
+    }
+    
+    /**
+     * Returns the current setting of the preference with the given resid
+     * 
+     * @param resid
+     * @return
+     */
+    private Object getSetting(int resid) {
+        return getSetting(preferenceMap.get(resid));
+    }
+    
+    /**
+     * Returns the current setting of the preference.
+     * 
+     * @param preference
+     * @return
+     */
+    private Object getSetting(Preference preference) {
+        switch (preference.type) {
+            case BOOLEAN:
+                return settings.getBoolean(preference.key, (Boolean) preference.defaultValue);
+            case FLOAT:
+                return settings.getFloat(preference.key, (Float) preference.defaultValue);
+            case INTEGER:
+                return settings.getInt(preference.key, (Integer) preference.defaultValue);
+            case LONG:
+                return settings.getLong(preference.key, (Long) preference.defaultValue);
+            case STRING:
+                return settings.getString(preference.key, (String) preference.defaultValue);
+            case STRING_SET:
+                return settings.getStringSet(preference.key, (Set<String>) preference.defaultValue);
+            default:
+                Log.e(TAG, "Preference '" + preference.key + "' has a non supported type: " + preference.type);
+                return null;
+        }
+    }
+
+    /**
+     * Sets the preference with the given resid to the given value.
+     *
+     * @param resid
+     * @param value
+     */
+    private void setSetting(int resid, Object value) {
+        setSetting(preferenceMap.get(resid), value);
+    }
+    
+    /**
+     * Sets the preference to the given value.
+     *
+     * @param preference
+     * @param value
+     */
+    private void setSetting(Preference preference, Object value) {
+        switch (preference.type) {
+            case BOOLEAN:
+                settings.edit().putBoolean(preference.key, (Boolean) value).apply();
+                break;
+            case FLOAT:
+                settings.edit().putFloat(preference.key, (Float) value).apply();
+                break;
+            case INTEGER:
+                settings.edit().putInt(preference.key, (Integer) value).apply();
+                break;
+            case LONG:
+                settings.edit().putLong(preference.key, (Long) value).apply();
+                break;
+            case STRING:
+                settings.edit().putString(preference.key, (String) value).apply();
+                break;
+            case STRING_SET:
+                settings.edit().putStringSet(preference.key, (Set<String>) value).apply();
+                break;
+            default:
+                Log.e(TAG, "Preference '" + preference.key + "' has a non supported type: " + preference.type);
+                break;
+        }
+    }
+
+    /**
+     * Resets the preference with the given resid to its default value.
+     *
+     * @param resid
+     */
+    private void resetSetting(int resid) {
+        resetSetting(preferenceMap.get(resid));
+    }
+
+    /**
+     * Resets the preference with the given resid to its default value.
+     *
+     * @param preference
+     */
+    private void resetSetting(Preference preference) {
+        setSetting(preference, preference.defaultValue);
+    }
+
     @Override
     public boolean isShow() {
-        return settings.getBoolean(keyShow, defaultShow);
+        return getBooleanSetting(keyShow);
     }
 
     @Override
     public boolean isSound() {
-        return settings.getBoolean(keySound, defaultSound);
+        return getBooleanSetting(keySound);
     }
 
     @Override
     public boolean isStatus() {
-        return settings.getBoolean(keyStatus, defaultStatus);
+        return getBooleanSetting(keyStatus);
     }
 
     @Override
     public Set<Integer> getActiveOnDaysOfWeek() {
-        Set<String> strings = settings.getStringSet(keyActiveOnDaysOfWeek, defaultActiveOnDaysOfWeek);
+        Set<String> strings = getStringSetSetting(keyActiveOnDaysOfWeek);
         Set<Integer> integers = new HashSet<>();
         for (String string : strings) {
             integers.add(Integer.valueOf(string));
@@ -550,24 +490,19 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     @Override
     public float getVolume() {
-        try {
-            return settings.getFloat(keyVolume, DEFAULT_VOLUME);
-        } catch (ClassCastException e) {
-            Log.e(TAG, "Not a float for volume", e);
-            return DEFAULT_VOLUME;
-        }
+        return getFloatSetting(keyVolume);
     }
 
     @Override
     public String getRingtone() {
-        return settings.getString(keyRingtone, null);
+        return getStringSetting(keyRingtone);
     }
 
     @Override
     public Uri getSoundUri() {
         // This implementation is almost the same as MindBellPreferences#setPreferenceVolumeSoundUri()
         String ringtone = getRingtone();
-        if (settings.getBoolean(keyUseStandardBell, defaultUseStandardBell) || ringtone == null) {
+        if (getBooleanSetting(keyUseStandardBell) || ringtone.isEmpty()) {
             return bellResourceUriMap.get("1");
         } else {
             return Uri.parse(ringtone);
@@ -580,7 +515,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     private int getDaytimeEndHour() {
-        return Integer.valueOf(settings.getString(keyEnd, defaultEnd));
+        return Integer.valueOf(getStringSetting(keyEnd));
     }
 
     @Override
@@ -594,7 +529,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     private int getDaytimeStartHour() {
-        return Integer.valueOf(settings.getString(keyStart, defaultStart));
+        return Integer.valueOf(getStringSetting(keyStart));
     }
 
     @Override
@@ -604,92 +539,87 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     @Override
     public long getInterval() {
-        long interval = Long.valueOf(settings.getString(keyFrequency, defaultFrequency));
-        if (interval < 1 * 60000) { // min: 1 minute
-            interval = Long.valueOf(defaultFrequency);
-        }
-        return interval;
+        return Long.valueOf(getStringSetting(keyFrequency));
     }
 
     @Override
     public int getNormalize() {
-        return Integer.valueOf(settings.getString(keyNormalize, defaultNormalize));
+        return Integer.valueOf(getStringSetting(keyNormalize));
     }
 
     @Override
     public String getPattern() {
-        return settings.getString(keyPattern, defaultPattern);
+        return getStringSetting(keyPattern);
     }
 
     @Override
-    public boolean isActive() {
-        return settings.getBoolean(keyActive, defaultActive);
+    public boolean setActive() {
+        return getBooleanSetting(keyActive);
     }
 
     @Override
-    public boolean isMeditating() {
-        return settings.getBoolean(keyMeditating, defaultMeditating);
+    public boolean setMeditating() {
+        return getBooleanSetting(keyMeditating);
     }
 
     @Override
     public boolean isRandomize() {
-        return settings.getBoolean(keyRandomize, defaultRandomize);
+        return getBooleanSetting(keyRandomize);
     }
 
     @Override
     public boolean isMuteInFlightMode() {
-        return settings.getBoolean(keyMuteInFlightMode, defaultMuteInFlightMode);
+        return getBooleanSetting(keyMuteInFlightMode);
     }
 
     @Override
     public boolean isMuteOffHook() {
-        return settings.getBoolean(keyMuteOffHook, defaultMuteOffHook);
+        return getBooleanSetting(keyMuteOffHook);
     }
 
     @Override
     public boolean isMuteWithPhone() {
-        return settings.getBoolean(keyMuteWithPhone, defaultMuteWithPhone);
+        return getBooleanSetting(keyMuteWithPhone);
     }
 
     @Override
     public boolean isVibrate() {
-        return settings.getBoolean(keyVibrate, defaultVibrate);
+        return getBooleanSetting(keyVibrate);
     }
 
     @Override
     public boolean isKeepScreenOn() {
-        return settings.getBoolean(keyKeepScreenOn, defaultKeepScreenOn);
+        return getBooleanSetting(keyKeepScreenOn);
     }
 
     @Override
     public void setKeepScreenOn(boolean keepScreenOn) {
-        settings.edit().putBoolean(keyKeepScreenOn, keepScreenOn).apply();
+        setSetting(keyKeepScreenOn, keepScreenOn);
     }
 
     @Override
     public boolean isStatusNotificationVisibilityPublic() {
-        return settings.getBoolean(keyStatusVisibilityPublic, defaultStatusVisibilityPublic);
+        return getBooleanSetting(keyStatusVisibilityPublic);
     }
 
     @Override
-    public void isActive(boolean active) {
-        settings.edit().putBoolean(keyActive, active).apply();
+    public void setActive(boolean active) {
+        setSetting(keyActive, active);
     }
 
-    // FIXME dkn Setter mit Getter-Namen :-) ... setPrefXXX getPrefXXX getXXX umgerechnet o.ä
     @Override
-    public void isMeditating(boolean meditating) {
-        settings.edit().putBoolean(keyMeditating, meditating).apply();
+    public void setMeditating(boolean meditating) {
+        setSetting(keyMeditating, meditating);
     }
 
     @Override
     public void setStatus(boolean statusNotification) {
-        settings.edit().putBoolean(keyStatus, statusNotification).apply();
+        setSetting(keyStatus, statusNotification);
     }
 
     @Override
     public boolean useStatusIconMaterialDesign() {
-        return settings.getBoolean(keyStatusIconMaterialDesign, defaultStatusIconMaterialDesign);
+        return getBooleanSetting(keyStatusIconMaterialDesign);
     }
 
     @Override
@@ -699,12 +629,12 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     @Override
     public String getRampUpTime() {
-        return settings.getString(keyRampUpTime, defaultRampUpTime);
+        return getStringSetting(keyRampUpTime);
     }
 
     @Override
     public void setRampUpTime(String rampUpTime) {
-        settings.edit().putString(keyRampUpTime, rampUpTime).apply();
+        setSetting(keyRampUpTime, rampUpTime);
     }
 
     @Override
@@ -714,12 +644,12 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     @Override
     public String getNumberOfPeriods() {
-        return settings.getString(keyNumberOfPeriods, defaultNumberOfPeriods);
+        return getStringSetting(keyNumberOfPeriods);
     }
 
     @Override
     public void setNumberOfPeriods(String numberOfPeriods) {
-        settings.edit().putString(keyNumberOfPeriods, numberOfPeriods).apply();
+        setSetting(keyNumberOfPeriods, numberOfPeriods);
     }
 
     @Override
@@ -729,72 +659,72 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     @Override
     public String getMeditationDuration() {
-        return settings.getString(keyMeditationDuration, defaultMeditationDuration);
+        return getStringSetting(keyMeditationDuration);
     }
 
     @Override
     public void setMeditationDuration(String meditationDuration) {
-        settings.edit().putString(keyMeditationDuration, meditationDuration).apply();
+        setSetting(keyMeditationDuration, meditationDuration);
     }
 
     @Override
     public long getRampUpStartingTimeMillis() {
-        return settings.getLong(keyRampUpStartingTimeMillis, defaultRampUpStartingTimeMillis);
+        return getLongSetting(keyRampUpStartingTimeMillis);
     }
 
     @Override
     public void setRampUpStartingTimeMillis(long rampUpStartingTimeMillis) {
-        settings.edit().putLong(keyRampUpStartingTimeMillis, rampUpStartingTimeMillis).apply();
+        setSetting(keyRampUpStartingTimeMillis, rampUpStartingTimeMillis);
     }
 
     @Override
     public long getMeditationStartingTimeMillis() {
-        return settings.getLong(keyMeditationStartingTimeMillis, defaultMeditationStartingTimeMillis);
+        return getLongSetting(keyMeditationStartingTimeMillis);
     }
 
     @Override
     public void setMeditationStartingTimeMillis(long meditationStartingTimeMillis) {
-        settings.edit().putLong(keyMeditationStartingTimeMillis, meditationStartingTimeMillis).apply();
+        setSetting(keyMeditationStartingTimeMillis, meditationStartingTimeMillis);
     }
 
     @Override
     public long getMeditationEndingTimeMillis() {
-        return settings.getLong(keyMeditationEndingTimeMillis, defaultMeditationEndingTimeMillis);
+        return getLongSetting(keyMeditationEndingTimeMillis);
     }
 
     @Override
     public void setMeditationEndingTimeMillis(long meditationEndingTimeMillis) {
-        settings.edit().putLong(keyMeditationEndingTimeMillis, meditationEndingTimeMillis).apply();
+        setSetting(keyMeditationEndingTimeMillis, meditationEndingTimeMillis);
     }
 
     @Override
     public String getMeditationBeginningBell() {
-        return settings.getString(keyMeditationBeginningBell, defaultMeditationBeginningBell);
+        return getStringSetting(keyMeditationBeginningBell);
     }
 
     @Override
     public String getMeditationInterruptingBell() {
-        return settings.getString(keyMeditationInterruptingBell, defaultMeditationInterruptingBell);
+        return getStringSetting(keyMeditationInterruptingBell);
     }
 
     @Override
     public String getMeditationEndingBell() {
-        return settings.getString(keyMeditationEndingBell, defaultMeditationEndingBell);
+        return getStringSetting(keyMeditationEndingBell);
     }
 
     @Override
     public int getPopup() {
-        return settings.getInt(keyPopup, defaultPopup);
+        return getIntSetting(keyPopup);
     }
 
     @Override
     public void setPopup(int popup) {
-        settings.edit().putInt(keyPopup, popup).apply();
+        setSetting(keyPopup, popup);
     }
 
     @Override
     public void resetPopup() {
-        settings.edit().putInt(keyPopup, defaultPopup).apply();
+        resetSetting(keyPopup);
     }
 
     @Override
@@ -815,6 +745,27 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public ActivityPrefsAccessor forMeditationEnding() {
         return activityPrefsForMeditationEnding;
+    }
+    
+    static class Preference {
+        
+        enum Type { BOOLEAN, FLOAT, INTEGER, LONG, STRING, STRING_SET };
+        
+        private int resid;
+        
+        private String key;
+
+        private Object defaultValue;
+
+        private Type type;
+
+        public Preference(int resid, String key, Object defaultValue, Type type) {
+            this.resid = resid;
+            this.key = key;
+            this.type = type;
+            this.defaultValue = defaultValue;
+        }
+
     }
 
     private class ActivityPrefsAccessorForRegularOperation implements ActivityPrefsAccessor {

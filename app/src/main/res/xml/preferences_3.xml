@@ -28,20 +28,17 @@
             android:key="@string/keyMuteWithPhone"
 			android:title="@string/prefsMuteWithPhone"
 			android:summaryOn="@string/summaryMuteWithPhone"
-			android:summaryOff="@string/summaryNoMuteWithPhone"
-			android:defaultValue="true"/>
+			android:summaryOff="@string/summaryNoMuteWithPhone"/>
 		<CheckBoxPreference
 			android:key="@string/keyMuteOffHook"
 			android:title="@string/prefsMuteOffHook"
 			android:summaryOff="@string/summaryNotMuted"
-			android:summaryOn="@string/summaryMuted"
-			android:defaultValue="true"/>
+			android:summaryOn="@string/summaryMuted"/>
 		<CheckBoxPreference
 			android:key="@string/keyMuteInFlightMode"
 			android:title="@string/prefsMuteInFlightMode"
 			android:summaryOff="@string/summaryNotMutedInFlightMode"
-			android:summaryOn="@string/summaryMutedInFlightMode"
-			android:defaultValue="false"/>
+			android:summaryOn="@string/summaryMutedInFlightMode"/>
 
 	</PreferenceScreen>
 
@@ -51,7 +48,6 @@
 
 		<com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
 			android:key="@string/keyMeditationBeginningBell"
-			android:defaultValue="3"
 			android:title="@string/prefsMeditationBeginningBell"
 			android:summary="%s"
 			android:entries="@array/bellEntries"
@@ -60,7 +56,6 @@
 
 		<com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
 			android:key="@string/keyMeditationInterruptingBell"
-			android:defaultValue="1"
 			android:title="@string/prefsMeditationInterruptingBell"
 			android:summary="%s"
 			android:entries="@array/bellEntries"
@@ -69,7 +64,6 @@
 
 		<com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
 			android:key="@string/keyMeditationEndingBell"
-			android:defaultValue="2"
 			android:title="@string/prefsMeditationEndingBell"
 			android:summary="%s"
 			android:entries="@array/bellEntries"

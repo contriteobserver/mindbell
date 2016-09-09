@@ -355,7 +355,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
     private void setPreferenceVolumeSoundUri(MediaVolumePreference preferenceVolume, boolean useStandardBell, String ringtoneUriString) {
         Uri soundUri;
         // This implementation is almost the same as AndroidPrefsAccessor#getSoundUri()
-        if (useStandardBell || ringtoneUriString == null) {
+        if (useStandardBell || ringtoneUriString.isEmpty()) {
             soundUri = Utils.getResourceUri(this, R.raw.bell10s);
         } else {
             soundUri = Uri.parse(ringtoneUriString);

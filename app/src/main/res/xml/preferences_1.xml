@@ -30,7 +30,6 @@
 
 		<com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
 			android:key="@string/keyStart"
-			android:defaultValue="9"
 			android:title="@string/prefsStart"
 			android:summary="%s"
 			android:entries="@array/hourEntries"
@@ -38,7 +37,6 @@
 			android:dialogTitle="@string/prefsStart" />
 		<com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
 			android:key="@string/keyEnd"
-			android:defaultValue="21"
 			android:title="@string/prefsEnd"
 			android:summary="%s"
 			android:entries="@array/hourEntries"
@@ -46,7 +44,6 @@
 			android:dialogTitle="@string/prefsEnd" />
 		<com.googlecode.mindbell.preference.MultiSelectListPreferenceWithSummary
 			android:key="@string/keyActiveOnDaysOfWeek"
-			android:defaultValue="@array/weekdayEntryValues"
 			android:title="@string/prefsActiveOnDaysOfWeek"
 			android:summary="%s"
 			android:entries="@array/weekdayEntries"
@@ -63,8 +60,7 @@
                 android:key="@string/keyShow"
                 android:title="@string/prefsShow"
                 android:summaryOff="@string/summaryDontShow"
-                android:summaryOn="@string/summaryShow"
-                android:defaultValue="true"/>
+                android:summaryOn="@string/summaryShow"/>
 
 		</PreferenceCategory>
 
@@ -74,22 +70,19 @@
                 android:key="@string/keySound"
 				android:title="@string/prefsSound"
 				android:summaryOff="@string/summaryDontSound"
-				android:summaryOn="@string/summarySound"
-				android:defaultValue="true"/>
+				android:summaryOn="@string/summarySound"/>
 			<CheckBoxPreference
                 android:key="@string/keyUseStandardBell"
 				android:title="@string/prefsUseStandardBell"
 				android:summaryOff="@string/summaryDontUseStandardBell"
 				android:summaryOn="@string/summaryUseStandardBell"
-				android:defaultValue="true"
                 android:dependency="@string/keySound"/>
             <RingtonePreference
                 android:key="@string/keyRingtone"
                 android:title="@string/prefsRingtone"
                 android:ringtoneType="notification"
                 android:showDefault="false"
-                android:showSilent="false"
-				android:defaultValue=""/>
+                android:showSilent="false"/>
 			<com.googlecode.mindbell.preference.MediaVolumePreference
                 android:key="@string/keyVolume"
 				android:title="@string/prefsVolume"
@@ -106,11 +99,9 @@
                 android:key="@string/keyVibrate"
 				android:title="@string/prefsVibrate"
 				android:summaryOn="@string/summaryVibrate"
-				android:summaryOff="@string/summaryNoVibrate"
-				android:defaultValue="false"/>
+				android:summaryOff="@string/summaryNoVibrate"/>
 			<com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
 				android:key="@string/keyPattern"
-				android:defaultValue="100:200:100:600"
 				android:title="@string/prefsPattern"
 				android:summary="%s"
 				android:entries="@array/patternEntries"
@@ -126,7 +117,6 @@
 
 		<com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
 			android:key="@string/keyFrequency"
-			android:defaultValue="3600000"
 			android:title="@string/prefsFrequency"
 			android:summary="%s"
 			android:entries="@array/frequencyEntries"
@@ -137,11 +127,9 @@
 			android:title="@string/prefsRandomize"
 			android:summaryOff="@string/summaryDontRandomize"
 			android:summaryOn="@string/summaryRandomize"
-			android:defaultValue="true"
 			android:disableDependentsState="true"/>
 		<com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
 			android:key="@string/keyNormalize"
-			android:defaultValue="-1"
 			android:title="@string/prefsNormalize"
 			android:summary="%s"
 			android:entries="@array/normalizeEntries"

@@ -73,9 +73,9 @@ public abstract class PrefsAccessor {
         return getVibrationPattern(getPattern());
     }
 
-    public abstract boolean isActive();
+    public abstract boolean setActive();
 
-    public abstract boolean isMeditating();
+    public abstract boolean setMeditating();
 
     public boolean isNormalize() {
         return isNormalize(getNormalize());
@@ -112,9 +112,9 @@ public abstract class PrefsAccessor {
 
     public abstract boolean isStatusNotificationVisibilityPublic();
 
-    public abstract void isActive(boolean active);
+    public abstract void setActive(boolean active);
 
-    public abstract void isMeditating(boolean meditating);
+    public abstract void setMeditating(boolean meditating);
 
     public abstract void setStatus(boolean statusNotification);
 

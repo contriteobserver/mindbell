@@ -20,9 +20,7 @@
  -->
 
 
-<PreferenceScreen
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:mindful="http://dknapps.de/ns">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<PreferenceScreen android:title="@string/prefsCategoryNotifications">
 
@@ -30,21 +28,18 @@
 			android:key="@string/keyStatus"
 			android:title="@string/prefsStatus"
 			android:summaryOff="@string/summaryNoStatus"
-			android:summaryOn="@string/summaryStatus"
-			android:defaultValue="false"/>
+			android:summaryOn="@string/summaryStatus"/>
 		<CheckBoxPreference
 			android:key="@string/keyStatusIconMaterialDesign"
 			android:title="@string/prefsStatusIconMaterialDesign"
 			android:summaryOff="@string/summaryStatusIconPreMaterialDesign"
 			android:summaryOn="@string/summaryStatusIconMaterialDesign"
-			android:defaultValue="true"
 			android:dependency="@string/keyStatus"/>
 		<CheckBoxPreference
 			android:key="@string/keyStatusVisibilityPublic"
 			android:title="@string/prefsStatusVisibilityPublic"
 			android:summaryOff="@string/summaryStatusVisibilityPrivate"
 			android:summaryOn="@string/summaryStatusVisibilityPublic"
-			android:defaultValue="true"
 			android:dependency="@string/keyStatus"/>
 
 	</PreferenceScreen>
