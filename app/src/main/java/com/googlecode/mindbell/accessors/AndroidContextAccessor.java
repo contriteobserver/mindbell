@@ -200,42 +200,29 @@ public class AndroidContextAccessor extends ContextAccessor {
     }
 
     @Override
-    public void startPlayingSoundAndVibrate(final Runnable runWhenDone) {
-        startPlayingSoundAndVibrate(prefs.forRegularOperation(), runWhenDone);
-    }
-
-    @Override
     public void startPlayingSoundAndVibrate(ActivityPrefsAccessor activityPrefs, final Runnable runWhenDone) {
-
-        boolean playingSoundStarted = false;
 
         // Stop an already ongoing sound, this isn't wrong when phone and bell are muted, too
         finishBellSound();
 
-        // Only play sound and vibrate if phone is muted and bell shall mute with phone
-        if (!isMuteRequested(true)) {
-
-            // Raise alarm volume to the max but keep the original volume for reset by finishBellSound()
-            // Start playing sound if requested by preferences
-            if (activityPrefs.isSound()) {
-                startPlayingSound(activityPrefs, runWhenDone);
-                playingSoundStarted = true;
-            }
-
-            // Vibrate if requested by preferences
-            if (activityPrefs.isVibrate()) {
-                startVibration();
-            }
-
+        // Raise alarm volume to the max but keep the original volume for reset by finishBellSound()
+        // Start playing sound if requested by preferences
+        if (activityPrefs.isSound()) {
+            startPlayingSound(activityPrefs, runWhenDone);
         }
 
-        // If displaying the bell is requested by the preferences but no sound is being played, then
+        // Vibrate if requested by preferences
+        if (activityPrefs.isVibrate()) {
+            startVibration();
+        }
+
+        // If displaying the bell is requested by the preferences but playing a sound is not, then
         // we are currently in MindBell.onStart(), so the bell has not been displayed yet. So this
         // method must end to bring the bell to front. But after a while someone has to send the
         // bell to the back again. So a new thread is created that waits and calls the runWhenDone
         // which sends the bell to background. As it's a new thread this method ends after starting
         // the thread which leads to the end of MindBell.onStart() which shows the bell.
-        if (activityPrefs.isShow() && !playingSoundStarted && runWhenDone != null) {
+        if (activityPrefs.isShow() && !activityPrefs.isSound() && runWhenDone != null) {
             startWaiting(runWhenDone);
         }
 
@@ -247,8 +234,7 @@ public class AndroidContextAccessor extends ContextAccessor {
      * @param activityPrefs
      * @param runWhenDone
      */
-    @Override
-    public void startPlayingSound(ActivityPrefsAccessor activityPrefs, final Runnable runWhenDone) {
+    private void startPlayingSound(ActivityPrefsAccessor activityPrefs, final Runnable runWhenDone) {
         int originalVolume = getAlarmVolume();
         int alarmMaxVolume = getAlarmMaxVolume();
         if (originalVolume == alarmMaxVolume) { // "someone" else set it to max, so we don't touch it

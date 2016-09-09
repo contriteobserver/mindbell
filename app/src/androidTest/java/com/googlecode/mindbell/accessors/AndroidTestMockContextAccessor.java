@@ -109,11 +109,6 @@ public class AndroidTestMockContextAccessor extends ContextAccessor {
     }
 
     @Override
-    public void startPlayingSoundAndVibrate(Runnable runWhenDone) {
-        throw new UnsupportedOperationException("Test terminated ... method not implemented");
-    }
-
-    @Override
     public void startPlayingSoundAndVibrate(ActivityPrefsAccessor activityPrefs, final Runnable runWhenDone) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
@@ -125,11 +120,6 @@ public class AndroidTestMockContextAccessor extends ContextAccessor {
 
     @Override
     public void updateStatusNotification() {
-        throw new UnsupportedOperationException("Test terminated ... method not implemented");
-    }
-
-    @Override
-    public void startPlayingSound(ActivityPrefsAccessor activityPrefs, Runnable runWhenDone) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 

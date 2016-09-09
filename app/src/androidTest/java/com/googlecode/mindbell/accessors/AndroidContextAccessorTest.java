@@ -43,9 +43,10 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
     public void testBellVolume() {
         // setup
         ContextAccessor ca = createContextAccessor();
+        ca.getPrefs().resetOriginalVolume();
         // exercise
         ca.startPlayingSoundAndVibrate(ca.getPrefs().forRegularOperation(), null);
-        // verify
+        // verify ... be sure to have sound checked as an activity on your emulated device
         assertEquals(ca.getAlarmMaxVolume(), ca.getAlarmVolume());
     }
 
@@ -53,6 +54,7 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
     public void testFinish() {
         // setup
         ContextAccessor ca = createContextAccessor();
+        ca.getPrefs().resetOriginalVolume();
         ca.setAlarmVolume(ca.getAlarmMaxVolume() / 2);
         int alarmVolume = ca.getAlarmVolume();
         // exercise
@@ -82,7 +84,7 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
         ContextAccessor ca = createContextAccessor();
         // exercise
         ca.startPlayingSoundAndVibrate(ca.getPrefs().forRegularOperation(), null);
-        // verify
+        // verify ... be sure to have sound checked as an activity on your emulated device
         assertTrue(ca.isBellSoundPlaying());
     }
 

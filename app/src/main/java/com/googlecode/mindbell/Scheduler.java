@@ -88,11 +88,15 @@ public class Scheduler extends BroadcastReceiver {
 
         if (!isRescheduling) {
 
-            Log.d(TAG, "Not ringing, has been called by preferences, activate bell button, when boot completed or after updating");
+            Log.d(TAG, "Not ringing (show/sound/vibrate), has been called by activate bell button or preferences or when boot completed or after updating");
 
         } else if (!(new TimeOfDay()).isDaytime(prefs)) {
 
-            Log.d(TAG, "Not ringing, it is night time");
+            Log.d(TAG, "Not ringing (show/sound/vibrate), it is night time");
+
+        } else if (contextAccessor.isMuteRequested(true)) {
+
+            Log.d(TAG, "Not ringing (show/sound/vibrate), bell is muted with phone");
 
          } else if (prefs.isShow()) {
 
@@ -102,7 +106,7 @@ public class Scheduler extends BroadcastReceiver {
         } else {
 
             Log.d(TAG, "Play sound and vibrate if requested but do not show bell");
-            contextAccessor.startPlayingSoundAndVibrate(null);
+            contextAccessor.startPlayingSoundAndVibrate(prefs.forRegularOperation(), null);
         }
     }
 

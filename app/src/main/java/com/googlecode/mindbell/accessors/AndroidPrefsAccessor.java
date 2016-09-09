@@ -105,6 +105,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     private ActivityPrefsAccessor activityPrefsForRegularOperation = new ActivityPrefsAccessorForRegularOperation();
 
+    private ActivityPrefsAccessor activityPrefsForTapping = new ActivityPrefsAccessorForTapping();
+
     private ActivityPrefsAccessor activityPrefsForMeditationBeginning = new ActivityPrefsAccessorForMeditationBeginning();
 
     private ActivityPrefsAccessor activityPrefsForMeditationInterrupting = new ActivityPrefsAccessorForMeditationInterrupting();
@@ -753,6 +755,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
+    public ActivityPrefsAccessor forTapping() {
+       return activityPrefsForTapping;
+    }
+
+    @Override
     public ActivityPrefsAccessor forMeditationBeginning() {
        return activityPrefsForMeditationBeginning;
     }
@@ -803,6 +810,34 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         @Override
         public boolean isVibrate() {
             return AndroidPrefsAccessor.this.isVibrate();
+        }
+
+        @Override
+        public Uri getSoundUri() {
+            return AndroidPrefsAccessor.this.getSoundUri();
+        }
+
+        @Override
+        public float getVolume() {
+            return AndroidPrefsAccessor.this.getVolume();
+        }
+    }
+
+    private class ActivityPrefsAccessorForTapping implements ActivityPrefsAccessor {
+
+        @Override
+        public boolean isShow() {
+            return false;
+        }
+
+        @Override
+        public boolean isSound() {
+            return true;
+        }
+
+        @Override
+        public boolean isVibrate() {
+            return false;
         }
 
         @Override

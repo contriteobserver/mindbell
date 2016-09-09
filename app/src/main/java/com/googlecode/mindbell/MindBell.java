@@ -43,7 +43,8 @@ public class MindBell extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        AndroidContextAccessor.getInstance(this).startPlayingSoundAndVibrate(new Runnable() {
+        AndroidContextAccessor contextAccessor = AndroidContextAccessor.getInstance(this);
+        contextAccessor.startPlayingSoundAndVibrate(contextAccessor.getPrefs().forRegularOperation(), new Runnable() {
             public void run() {
                 MindBell.this.moveTaskToBack(true);
                 MindBell.this.finish();

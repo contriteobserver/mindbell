@@ -301,7 +301,7 @@ public class MindBellMain extends Activity {
         if (e.getAction() == MotionEvent.ACTION_DOWN) {
             notifyIfNotActive();
             contextAccessor.updateStatusNotification();
-            contextAccessor.startPlayingSoundAndVibrate(null);
+            contextAccessor.startPlayingSoundAndVibrate(contextAccessor.getPrefs().forTapping(), null);
         }
         return true;
     }
