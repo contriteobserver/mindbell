@@ -20,7 +20,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fadeScrollbars="false"
     android:gravity="center_horizontal">
 
     <LinearLayout
@@ -34,15 +33,21 @@
             android:layout_height="wrap_content"
             android:text="@string/prefsRampUpTime"
             android:textIsSelectable="false"
-            android:labelFor="@+id/rampUpTime"/>
+            android:labelFor="@+id/rampUpTime"
+            android:paddingTop="20dp"
+            android:paddingBottom="2dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
 
-        <EditText
+        <TextView
             android:id="@+id/rampUpTime"
             style="?android:attr/textAppearanceSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"
-            android:hint="@string/prefsRampUpTime" />
+            android:paddingTop="2dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
 
         <TextView android:id="@+id/label_numberOfPeriods"
             style="?android:attr/textAppearanceMedium"
@@ -50,14 +55,20 @@
             android:layout_height="wrap_content"
             android:text="@string/prefsNumberOfPeriods"
             android:textIsSelectable="false"
-            android:labelFor="@+id/numberOfPeriods"/>
+            android:labelFor="@+id/numberOfPeriods"
+            android:paddingTop="10dp"
+            android:paddingBottom="2dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
 
-        <EditText android:id="@+id/numberOfPeriods"
+        <TextView android:id="@+id/numberOfPeriods"
             style="?android:attr/textAppearanceSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"
-            android:hint="@string/prefsNumberOfPeriods" />
+            android:paddingTop="2dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
 
         <TextView android:id="@+id/label_meditationDuration"
             style="?android:attr/textAppearanceMedium"
@@ -65,14 +76,20 @@
             android:layout_height="wrap_content"
             android:text="@string/prefsMeditationDuration"
             android:textIsSelectable="false"
-            android:labelFor="@+id/meditationDuration"/>
+            android:labelFor="@+id/meditationDuration"
+            android:paddingTop="10dp"
+            android:paddingBottom="2dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
 
-        <EditText android:id="@+id/meditationDuration"
+        <TextView android:id="@+id/meditationDuration"
             style="?android:attr/textAppearanceSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"
-            android:hint="@string/prefsMeditationDuration" />
+            android:paddingTop="2dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
 
         <TextView android:id="@+id/label_keepScreenOn"
             style="?android:attr/textAppearanceMedium"
@@ -80,13 +97,22 @@
             android:layout_height="wrap_content"
             android:text="@string/prefsKeepScreenOn"
             android:textIsSelectable="false"
-            android:labelFor="@+id/keepScreenOn"/>
+            android:labelFor="@+id/keepScreenOn"
+            android:paddingTop="10dp"
+            android:paddingBottom="2dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
 
         <CheckBox android:id="@+id/keepScreenOn"
             style="?android:attr/textAppearanceSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/prefsKeepScreenOn" />
+            android:hint="@string/prefsKeepScreenOn"
+            android:layout_marginLeft="5dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="10dp" />
 
     </LinearLayout>
 

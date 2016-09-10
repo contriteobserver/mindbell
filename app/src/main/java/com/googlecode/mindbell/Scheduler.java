@@ -123,13 +123,13 @@ public class Scheduler extends BroadcastReceiver {
 
         } else if (meditationPeriod == 1) { // beginning of meditation period 1
 
-            long nextTargetTimeMillis = nowTimeMillis + prefs.getMeditationDurationMillis() / prefs.getNumberOfPeriodsAsInteger();
+            long nextTargetTimeMillis = nowTimeMillis + prefs.getMeditationDurationMillis() / prefs.getNumberOfPeriods();
             contextAccessor.reschedule(nextTargetTimeMillis, meditationPeriod + 1);
             contextAccessor.startPlayingSoundAndVibrate(prefs.forMeditationBeginning(), null);
 
-        } else if (meditationPeriod <= prefs.getNumberOfPeriodsAsInteger()) { // beginning of meditation period 2..n
+        } else if (meditationPeriod <= prefs.getNumberOfPeriods()) { // beginning of meditation period 2..n
 
-            long nextTargetTimeMillis = nowTimeMillis + prefs.getMeditationDurationMillis() / prefs.getNumberOfPeriodsAsInteger();
+            long nextTargetTimeMillis = nowTimeMillis + prefs.getMeditationDurationMillis() / prefs.getNumberOfPeriods();
             contextAccessor.reschedule(nextTargetTimeMillis, meditationPeriod + 1);
             contextAccessor.startPlayingSoundAndVibrate(prefs.forMeditationInterrupting(), null);
 

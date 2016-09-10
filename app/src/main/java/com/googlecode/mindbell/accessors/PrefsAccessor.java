@@ -122,21 +122,19 @@ public abstract class PrefsAccessor {
 
     public abstract long getRampUpTimeMillis();
 
-    public abstract String getRampUpTime();
+    public abstract int getRampUpTime();
 
-    public abstract void setRampUpTime(String rampUpTime);
+    public abstract void setRampUpTime(int rampUpTime);
 
-    public abstract int getNumberOfPeriodsAsInteger();
+    public abstract int getNumberOfPeriods();
 
-    public abstract String getNumberOfPeriods();
-
-    public abstract void setNumberOfPeriods(String numberOfPeriods);
+    public abstract void setNumberOfPeriods(int numberOfPeriods);
 
     public abstract long getMeditationDurationMillis();
 
-    public abstract String getMeditationDuration();
+    public abstract int getMeditationDuration();
 
-    public abstract void setMeditationDuration(String meditationDuration);
+    public abstract void setMeditationDuration(int meditationDuration);
 
     public abstract long getRampUpStartingTimeMillis();
 

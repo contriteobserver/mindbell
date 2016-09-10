@@ -150,7 +150,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         addPreference(keyKeepScreenOn, false, BOOLEAN, context);
         addPreference(keyMeditating, false, BOOLEAN, context);
         addPreference(keyMeditationBeginningBell, "3", STRING, context);
-        addPreference(keyMeditationDuration, "25", STRING, context);
+        addPreference(keyMeditationDuration, 25, INTEGER, context);
         addPreference(keyMeditationEndingBell, "2", STRING, context);
         addPreference(keyMeditationEndingTimeMillis, -1L, LONG, context);
         addPreference(keyMeditationInterruptingBell, "1", STRING, context);
@@ -159,12 +159,12 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         addPreference(keyMuteOffHook, true, BOOLEAN, context);
         addPreference(keyMuteWithPhone, true, BOOLEAN, context);
         addPreference(keyNormalize, NORMALIZE_NONE, STRING, context);
-        addPreference(keyNumberOfPeriods, "1", STRING, context);
+        addPreference(keyNumberOfPeriods, 1, INTEGER, context);
         addPreference(keyOriginalVolume, -1, INTEGER, context);
         addPreference(keyPattern, "100:200:100:600", STRING, context);
         addPreference(keyPopup, -1, INTEGER, context);
         addPreference(keyRampUpStartingTimeMillis, -1L, LONG, context);
-        addPreference(keyRampUpTime, "30", STRING, context);
+        addPreference(keyRampUpTime, 30, INTEGER, context);
         addPreference(keyRandomize, true, BOOLEAN, context);
         addPreference(keyRingtone, "", STRING, context); // no useful default, code relies on <defaultValue>.isEmpty()
         addPreference(keyShow, true, BOOLEAN, context);
@@ -182,13 +182,10 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         entryValuesMap.put(keyEnd, context.getResources().getStringArray(R.array.hourEntryValues));
         entryValuesMap.put(keyFrequency, context.getResources().getStringArray(R.array.frequencyEntryValues));
         entryValuesMap.put(keyMeditationBeginningBell, context.getResources().getStringArray(R.array.bellEntryValues));
-        entryValuesMap.put(keyMeditationDuration, new String[] {}); // FIXME dkn Wie das prüfen mit NumberPickers
         entryValuesMap.put(keyMeditationEndingBell, context.getResources().getStringArray(R.array.bellEntryValues));
         entryValuesMap.put(keyMeditationInterruptingBell, context.getResources().getStringArray(R.array.bellEntryValues));
         entryValuesMap.put(keyNormalize, context.getResources().getStringArray(R.array.normalizeEntryValues));
-        entryValuesMap.put(keyNumberOfPeriods, new String[] {}); // FIXME dkn Wie das prüfen mit NumberPickers
         entryValuesMap.put(keyPattern, context.getResources().getStringArray(R.array.patternEntryValues));
-        entryValuesMap.put(keyRampUpTime, new String[] {}); // FIXME dkn Wie das prüfen mit NumberPickers
         entryValuesMap.put(keyRingtone, new String[] {}); // we don't need to know the possible ringtone values
         entryValuesMap.put(keyStart, context.getResources().getStringArray(R.array.hourEntryValues));
 
@@ -631,46 +628,41 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     @Override
     public long getRampUpTimeMillis() {
-        return Integer.parseInt(getRampUpTime()) * 1000L;
+        return getRampUpTime() * 1000L;
     }
 
     @Override
-    public String getRampUpTime() {
-        return getStringSetting(keyRampUpTime);
+    public int getRampUpTime() {
+        return getIntSetting(keyRampUpTime);
     }
 
     @Override
-    public void setRampUpTime(String rampUpTime) {
+    public void setRampUpTime(int rampUpTime) {
         setSetting(keyRampUpTime, rampUpTime);
     }
 
     @Override
-    public int getNumberOfPeriodsAsInteger() {
-        return Integer.parseInt(getNumberOfPeriods());
+    public int getNumberOfPeriods() {
+        return getIntSetting(keyNumberOfPeriods);
     }
 
     @Override
-    public String getNumberOfPeriods() {
-        return getStringSetting(keyNumberOfPeriods);
-    }
-
-    @Override
-    public void setNumberOfPeriods(String numberOfPeriods) {
+    public void setNumberOfPeriods(int numberOfPeriods) {
         setSetting(keyNumberOfPeriods, numberOfPeriods);
     }
 
     @Override
     public long getMeditationDurationMillis() {
-        return Integer.parseInt(getMeditationDuration()) * 60000L;
+        return getMeditationDuration() * 60000L;
     }
 
     @Override
-    public String getMeditationDuration() {
-        return getStringSetting(keyMeditationDuration);
+    public int getMeditationDuration() {
+        return getIntSetting(keyMeditationDuration);
     }
 
     @Override
-    public void setMeditationDuration(String meditationDuration) {
+    public void setMeditationDuration(int meditationDuration) {
         setSetting(keyMeditationDuration, meditationDuration);
     }
 

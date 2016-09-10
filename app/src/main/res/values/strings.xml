@@ -114,9 +114,9 @@
 
     <!-- MeditationDialog Preferences -->
     <string name="title_meditation_dialog">Start meditation</string>
-    <string name="prefsRampUpTime">Ramp-up time</string>
+    <string name="prefsRampUpTime">Ramp-up time (s)</string>
     <string name="prefsNumberOfPeriods">Number of periods</string>
-    <string name="prefsMeditationDuration">Duration of meditation</string>
+    <string name="prefsMeditationDuration">Duration of meditation (min)</string>
     <string name="prefsKeepScreenOn">Keep screen on</string>
 
     <!-- Validation messages -->
