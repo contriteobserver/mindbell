@@ -75,8 +75,10 @@
             android:paddingRight="10dp"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
-            mindbell:textColor="#FF6600"
-            mindbell:textSize="190sp" />
+            mindbell:rampUpColor="#00FF00"
+            mindbell:rampUpSize="144sp"
+            mindbell:meditationColor="#FF6600"
+            mindbell:meditationSize="144sp" />
 
     </ViewFlipper>
 

@@ -49,8 +49,11 @@ public class CountdownView extends View {
     private Paint timeSlicePaint = new Paint();
     private Paint backgroundPaint = new Paint();
 
-    // Style information about the text to be displayed
-    private TextPaint textPaint;
+    // Style information about the countdown string to be displayed during ramp-up
+    private TextPaint textPaintRampUp;
+
+    // Style information about the countdown string to be displayed during meditation
+    private TextPaint textPaintMeditation;
 
     // Bound of the text to be displayed
     Rect textBounds = new Rect();
@@ -101,11 +104,17 @@ public class CountdownView extends View {
         timeSlicePaint.setColor(Color.WHITE);
         backgroundPaint.setColor(sys.getColor(0, Color.GREEN));
 
-        // Set up a TextPaint object for writing the remaining time onto the time slice
-        textPaint = new TextPaint();
-        textPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-        textPaint.setColor(app.getColor(R.styleable.CountdownView_textColor, Color.RED));
-        textPaint.setTextSize(app.getDimension(R.styleable.CountdownView_textSize, 100));
+        // Set up a TextPaint object for writing the remaining time onto the time slice during ramp-up
+        textPaintRampUp = new TextPaint();
+        textPaintRampUp.setFlags(Paint.ANTI_ALIAS_FLAG);
+        textPaintRampUp.setColor(app.getColor(R.styleable.CountdownView_rampUpColor, Color.RED));
+        textPaintRampUp.setTextSize(app.getDimension(R.styleable.CountdownView_rampUpSize, 100));
+
+        // Set up a TextPaint object for writing the remaining time onto the time slice during meditation
+        textPaintMeditation = new TextPaint();
+        textPaintMeditation.setFlags(Paint.ANTI_ALIAS_FLAG);
+        textPaintMeditation.setColor(app.getColor(R.styleable.CountdownView_meditationColor, Color.RED));
+        textPaintMeditation.setTextSize(app.getDimension(R.styleable.CountdownView_meditationSize, 100));
     }
 
     /**
@@ -242,7 +251,8 @@ public class CountdownView extends View {
         }
 
         // Draw the text on top of the circle
-        String countdownString = getCountdownString(meditationSeconds, elapsedMeditationSeconds, !rampUp);
+        String countdownString = getCountdownString(meditationSeconds, elapsedMeditationSeconds, rampUp);
+        TextPaint textPaint = (rampUp) ? textPaintRampUp : textPaintMeditation;
         textPaint.getTextBounds(countdownString, 0, countdownString.length(), textBounds);
         float textX = centerX - textBounds.exactCenterX();
         float textY = centerY - textBounds.exactCenterY();
@@ -252,18 +262,13 @@ public class CountdownView extends View {
     /**
      * Returns the string with the remaining time to be displayed.
      */
-    private String getCountdownString(long seconds, long elapsedSeconds, boolean showMinutes) {
+    private String getCountdownString(long seconds, long elapsedSeconds, boolean rampUp) {
         StringBuilder sb = new StringBuilder();
-        if (showMinutes) {
+        if (rampUp) {
+            sb.append(seconds - elapsedSeconds);
+        } else {
             long remainingBeganMinutes = (long) Math.ceil((seconds - elapsedSeconds) / 60d);
             sb.append(remainingBeganMinutes);
-        } else {
-            long remainingCompleteMinutes = (seconds - elapsedSeconds) / 60;
-            if (remainingCompleteMinutes  > 0) {
-                sb.append(remainingCompleteMinutes );
-            }
-            sb.append(":");
-            sb.append(seconds - elapsedSeconds - remainingCompleteMinutes * 60);
         }
         return sb.toString();
     }
