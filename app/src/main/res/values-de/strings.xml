@@ -29,7 +29,7 @@
 	    dem buddhistischen Lehrer Thich Nhat Hanh ist dies ein wirksames Mittel, um Achtsamkeit
 	    zu entwickeln.</string>
     <string name="howToRing">Tippen zum Läuten</string>
-    <string name="howToSet">Mit dem Glocke-Ein-Icon oder über die Einstellungen im Menü können Sie die Glocke aktivieren.</string>
+    <string name="howToSet">MindBell mit dem Ein-Icon aktivieren</string>
 
     <!-- Menu of MindBellMain -->
     <string name="menuSettings">Einstellungen</string>
@@ -44,9 +44,9 @@
     <string name="preferencesTitle">MindBell Einstellungen</string>
 
     <string name="prefsCategoryActivity">Aktivität</string>
-    <string name="prefsActive">Glocke an/aus</string>
-    <string name="summaryActive">Glocke ist derzeit angeschaltet</string>
-    <string name="summaryNotActive">Glocke ist derzeit ausgeschaltet</string>
+    <string name="prefsActive">MindBell an/aus</string>
+    <string name="summaryActive">MindBell ist aktiv</string>
+    <string name="summaryNotActive">MindBell ist deaktiviert</string>
     <string name="prefsStart">Starte Glocke täglich um &#8230;</string>
     <string name="prefsEnd">Beende Glocke täglich um &#8230;</string>
     <string name="prefsActiveOnDaysOfWeek">Tage an denen die Glocke aktiv ist &#8230;</string>
@@ -130,7 +130,7 @@
     <string name="title_activity_about">Über MindBell</string>
 
     <!-- Status bar notification -->
-    <string name="statusTitleNotificationsDisabled">Bitte Einstellungen überprüfen</string>
+    <string name="statusTitleNotificationsDisabled">Bitte Benachrichtigungseinstellungen prüfen</string>
     <string name="statusTextNotificationsDisabled">MindBell hat \'Status-Icon anzeigen\' ausgeschaltet</string>
     <string name="statusTitleBellActive">MindBell ist aktiv</string>
     <string name="statusTextBellActive">{0} bis {1} am {2}</string>

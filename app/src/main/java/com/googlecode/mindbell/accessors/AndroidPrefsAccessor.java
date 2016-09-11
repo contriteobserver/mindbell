@@ -146,7 +146,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         addPreference(keyActiveOnDaysOfWeek, new HashSet<>(
                 Arrays.asList(new String[]{"1", "2", "3", "4", "5", "6", "7"})), STRING_SET, context);
         addPreference(keyEnd, "21", STRING, context);
-        addPreference(keyFrequency, "3600000", STRING, context);
+        addPreference(keyFrequency, "900000", STRING, context); // 15 min
         addPreference(keyKeepScreenOn, false, BOOLEAN, context);
         addPreference(keyMeditating, false, BOOLEAN, context);
         addPreference(keyMeditationBeginningBell, "3", STRING, context);
@@ -170,7 +170,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         addPreference(keyShow, true, BOOLEAN, context);
         addPreference(keySound, true, BOOLEAN, context);
         addPreference(keyStart, "9", STRING, context);
-        addPreference(keyStatus, false, BOOLEAN, context);
+        addPreference(keyStatus, true, BOOLEAN, context);
         addPreference(keyStatusIconMaterialDesign, true, BOOLEAN, context);
         addPreference(keyStatusVisibilityPublic, true, BOOLEAN, context);
         addPreference(keyUseStandardBell, true, BOOLEAN, context);

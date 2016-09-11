@@ -41,6 +41,7 @@ import android.widget.Toast;
 
 import com.googlecode.mindbell.MindBell;
 import com.googlecode.mindbell.MindBellMain;
+import com.googlecode.mindbell.MindBellPreferences;
 import com.googlecode.mindbell.R;
 import com.googlecode.mindbell.Scheduler;
 import com.googlecode.mindbell.util.AlarmManagerCompat;
@@ -409,11 +410,13 @@ public class AndroidContextAccessor extends ContextAccessor {
         CharSequence contentTitle = context.getText(R.string.statusTitleBellActive);
         String contentText;
         String muteRequestReason = getMuteRequestReason(false);
+        Class<?> targetClass = MindBellMain.class;
         // Override icon and notification text if bell is muted or permissions are insufficient
         if (!canSettingsBeSatisfied(prefs)) { // Insufficient permissions => override icon/text, switch notifications off
             statusDrawable = R.drawable.ic_stat_warning_white_24px;
             contentTitle = context.getText(R.string.statusTitleNotificationsDisabled);
             contentText = context.getText(R.string.statusTextNotificationsDisabled).toString();
+            targetClass = MindBellPreferences.class;
             // Status Notification would not be correct during incoming or outgoing calls because of the missing permission to
             // listen to phone state changes. Therefore we switch off notification and ask user for permission when he tries
             // to enable notification again. In this very moment we cannot ask for permission to avoid an ANR in receiver
@@ -437,7 +440,7 @@ public class AndroidContextAccessor extends ContextAccessor {
         // Now do the notification update
         Log.i(TAG, "Update status notification: " + contentText);
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        PendingIntent openAppIntent = PendingIntent.getActivity(context, 0, new Intent(context, MindBellMain.class), PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent openAppIntent = PendingIntent.getActivity(context, 0, new Intent(context, targetClass), PendingIntent.FLAG_UPDATE_CURRENT);
         PendingIntent refreshIntent = PendingIntent.getBroadcast(context, 1, new Intent("com.googlecode.mindbell.UPDATE_STATUS_NOTIFICATION"), PendingIntent.FLAG_UPDATE_CURRENT);
         int visibility = (prefs.isStatusNotificationVisibilityPublic()) ? NotificationCompat.VISIBILITY_PUBLIC
                 : NotificationCompat.VISIBILITY_PRIVATE;

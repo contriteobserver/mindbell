@@ -29,7 +29,7 @@
 		According to the Buddhist teacher Thich Nhat Hanh, this is an effective 
 		means of developing mindfulness.</string>
     <string name="howToRing">Tap to ring</string>
-    <string name="howToSet">Use bell-on icon or settings in menu to activate the bell.</string>
+    <string name="howToSet">Use on-icon to activate MindBell</string>
 
     <!-- Menu of MindBellMain -->
     <string name="menuSettings">Settings</string>
@@ -44,9 +44,9 @@
     <string name="preferencesTitle">MindBell Preferences</string>
 
     <string name="prefsCategoryActivity">Activity</string>
-    <string name="prefsActive">Bell on/off</string>
-    <string name="summaryActive">Bell is turned on</string>
-    <string name="summaryNotActive">Bell is turned off</string>
+    <string name="prefsActive">MindBell on/off</string>
+    <string name="summaryActive">MindBell is active</string>
+    <string name="summaryNotActive">MindBell is deactivated</string>
     <string name="prefsStart">Start bell every day at &#8230;</string>
     <string name="prefsEnd">Stop bell every day at &#8230;</string>
     <string name="prefsActiveOnDaysOfWeek">Days of week to be active &#8230;</string>
@@ -130,7 +130,7 @@
 	<string name="title_activity_about">About MindBell</string>
 
     <!-- Status bar notifications -->
-    <string name="statusTitleNotificationsDisabled">Please check settings</string>
+    <string name="statusTitleNotificationsDisabled">Please check notification settings</string>
     <string name="statusTextNotificationsDisabled">MindBell turned off \'Show status icon\'</string>
     <string name="statusTitleBellActive">MindBell is active</string>
     <string name="statusTextBellActive">{0} to {1} on {2}</string>
