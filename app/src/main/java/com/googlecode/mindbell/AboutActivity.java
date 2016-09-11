@@ -22,12 +22,9 @@ package com.googlecode.mindbell;
 import android.app.Activity;
 import android.os.Bundle;
 import android.webkit.WebView;
-import com.googlecode.mindbell.R;
 
 /**
- * <p>
- * Diese Activity stellt einen About-Dialog dar, der z.B. die Lizenz anzeigt.
- * </p>
+ * Show about dialog to display e.g. the license.
  */
 public class AboutActivity extends Activity {
 

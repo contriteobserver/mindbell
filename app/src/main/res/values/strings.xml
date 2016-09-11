@@ -36,6 +36,9 @@
     <string name="menuAbout">About MindBell</string>
     <string name="menuHelp">Help</string>
 
+    <!-- MindBellMain Preferences -->
+    <string name="prefsMutedTillOff">Off</string>
+
     <!-- Send log by e-mail -->
     <string name="emailSubject">E-mail sent by MindBell</string>
     <string name="emailChooseApp">Send mail &#8230;</string>
@@ -105,7 +108,7 @@
     <string name="summaryNotMutedInFlightMode">Bell will also ring in flight mode</string>
 
     <string name="prefsCategoryMeditation">Meditation</string>
-    <string name="prefsMeditating">Meditation an/aus</string>
+    <string name="prefsMeditating">Meditation on/off</string>
     <string name="summaryMeditating">Meditation is ongoing</string>
     <string name="summaryNotMeditating">Meditation is stopped</string>
     <string name="prefsMeditationBeginningBell">Beginning bells</string>
@@ -136,12 +139,14 @@
     <string name="statusTextBellActive">{0} to {1} on {2}</string>
     <string name="statusTitleBellMeditating">MindBell is meditating</string>
     <string name="statusTextBellMeditating">{0,choice,1#1 minute|1&lt;{0} minutes} till {1}</string>
-    <string name="statusActionRefreshStatus">Refresh status</string>
+    <string name="statusActionRefreshStatus">Refresh</string>
+    <string name="statusActionMuteFor">Mute for &#8230;</string>
 
     <!-- Reasons why bell is muted -->
     <string name="reasonMutedWithPhone">Bell muted with phone</string>
     <string name="reasonMutedOffHook">Bell muted during calls</string>
     <string name="reasonMutedInFlightMode">Bell muted in flight mode</string>
+    <string name="reasonMutedTill">Bell muted till {0}</string>
 
     <!-- Reasons why permission READ_PHONE_STATE should be granted -->
     <string name="reasonReadPhoneStateTitle">Why this permission?</string>
@@ -189,6 +194,7 @@
     <string name="keyMeditationInterruptingBell" translatable="false">meditationInterruptingBell</string>
     <string name="keyMeditationStartingTimeMillis" translatable="false">meditationStartingTimeMillis</string>
     <string name="keyMuteInFlightMode" translatable="false">muteOffInFlightMode</string>
+    <string name="keyMutedTill" translatable="false">mutedTill</string>
     <string name="keyMuteOffHook" translatable="false">muteOffHook</string>
     <string name="keyMuteWithPhone" translatable="false">muteWithPhone</string>
     <string name="keyNormalize" translatable="false">normalize</string>

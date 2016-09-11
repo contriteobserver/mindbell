@@ -38,4 +38,7 @@
         android:title="@string/menuAbout"
         android:showAsAction="ifRoom"
         android:icon="@drawable/ic_info_white_24dp"/>
+    <item android:id="@+id/muteFor"
+        android:title="@string/statusActionMuteFor"
+        android:showAsAction="never"/>
 </menu>

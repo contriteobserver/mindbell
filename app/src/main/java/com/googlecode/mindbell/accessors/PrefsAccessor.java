@@ -148,6 +148,10 @@ public abstract class PrefsAccessor {
 
     public abstract void setMeditationEndingTimeMillis(long meditationEndingTimeMillis);
 
+    public abstract long getMutedTill();
+
+    public abstract void setMutedTill(long mutedTill);
+
     public abstract String getMeditationBeginningBell();
 
     public abstract String getMeditationInterruptingBell();

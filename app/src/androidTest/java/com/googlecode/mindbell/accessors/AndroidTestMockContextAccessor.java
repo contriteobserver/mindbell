@@ -19,6 +19,8 @@
  *******************************************************************************/
 package com.googlecode.mindbell.accessors;
 
+import android.app.PendingIntent;
+
 public class AndroidTestMockContextAccessor extends ContextAccessor {
 
     private boolean isPhoneMuted = false;
@@ -110,6 +112,11 @@ public class AndroidTestMockContextAccessor extends ContextAccessor {
 
     @Override
     public void startPlayingSoundAndVibrate(ActivityPrefsAccessor activityPrefs, final Runnable runWhenDone) {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public PendingIntent createRefreshBroadcastIntent() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 

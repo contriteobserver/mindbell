@@ -54,6 +54,7 @@ import static com.googlecode.mindbell.R.string.keyMeditationStartingTimeMillis;
 import static com.googlecode.mindbell.R.string.keyMuteInFlightMode;
 import static com.googlecode.mindbell.R.string.keyMuteOffHook;
 import static com.googlecode.mindbell.R.string.keyMuteWithPhone;
+import static com.googlecode.mindbell.R.string.keyMutedTill;
 import static com.googlecode.mindbell.R.string.keyNormalize;
 import static com.googlecode.mindbell.R.string.keyNumberOfPeriods;
 import static com.googlecode.mindbell.R.string.keyOriginalVolume;
@@ -155,6 +156,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         addPreference(keyMeditationEndingTimeMillis, -1L, LONG, context);
         addPreference(keyMeditationInterruptingBell, "1", STRING, context);
         addPreference(keyMeditationStartingTimeMillis, -1L, LONG, context);
+        addPreference(keyMutedTill, -1L, LONG, context);
         addPreference(keyMuteInFlightMode, false, BOOLEAN, context);
         addPreference(keyMuteOffHook, true, BOOLEAN, context);
         addPreference(keyMuteWithPhone, true, BOOLEAN, context);
@@ -694,6 +696,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public void setMeditationEndingTimeMillis(long meditationEndingTimeMillis) {
         setSetting(keyMeditationEndingTimeMillis, meditationEndingTimeMillis);
+    }
+
+    @Override
+    public long getMutedTill() {
+        return getLongSetting(keyMutedTill);
+    }
+
+    @Override
+    public void setMutedTill(long mutedTill) {
+        setSetting(keyMutedTill, mutedTill);
     }
 
     @Override

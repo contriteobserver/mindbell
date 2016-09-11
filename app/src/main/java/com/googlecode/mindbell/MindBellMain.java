@@ -109,6 +109,8 @@ public class MindBellMain extends Activity {
         inflater.inflate(R.menu.settings, menu);
         MenuItem settingsItem = menu.findItem(R.id.settings);
         settingsItem.setIntent(new Intent(this, MindBellPreferences.class));
+        MenuItem muteForItem = menu.findItem(R.id.muteFor);
+        muteForItem.setIntent(new Intent(this, MuteActivity.class));
         MenuItem aboutItem = menu.findItem(R.id.about);
         aboutItem.setIntent(new Intent(this, AboutActivity.class));
         MenuItem helpItem = menu.findItem(R.id.help);
@@ -224,7 +226,7 @@ public class MindBellMain extends Activity {
                 new AlertDialog.Builder(MindBellMain.this) //
                         .setTitle(residTitle) //
                         .setView(numberPicker) //
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        .setPositiveButton(android.R.string.ok,  new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 int newValue = numberPicker.getValue();

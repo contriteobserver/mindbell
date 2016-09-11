@@ -48,6 +48,12 @@
         <activity android:name=".AboutActivity" android:label="@string/title_activity_about" android:parentActivityName="MindBellMain">
         </activity>
 
+        <activity android:name=".MuteActivity" android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
+
         <receiver android:name=".Scheduler">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>

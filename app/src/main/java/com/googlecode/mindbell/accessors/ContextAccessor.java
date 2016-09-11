@@ -19,6 +19,8 @@
  *******************************************************************************/
 package com.googlecode.mindbell.accessors;
 
+import android.app.PendingIntent;
+
 /**
  * Convenience access to information from the context. Can be replaced by test implementation.
  */
@@ -28,7 +30,9 @@ public abstract class ContextAccessor {
 
     public static final float MINUS_THREE_DB = 0.707945784f;
 
-    /** Accessor to all preferences (may be mocked) */
+    /**
+     * Accessor to all preferences (may be mocked)
+     */
     protected PrefsAccessor prefs = null;
 
     public abstract void finishBellSound();
@@ -42,7 +46,9 @@ public abstract class ContextAccessor {
      */
     public String getMuteRequestReason(boolean shouldShowMessage) {
         String reason = null;
-        if (prefs.isMuteWithPhone() && isPhoneMuted()) { // Mute bell with phone?
+        if (System.currentTimeMillis() < prefs.getMutedTill()) { // Muted manually?
+            reason = getReasonMutedTill();
+        } else if (prefs.isMuteWithPhone() && isPhoneMuted()) { // Mute bell with phone?
             reason = getReasonMutedWithPhone();
         } else if (prefs.isMuteOffHook() && isPhoneOffHook()) { // Mute bell while phone is off hook (or ringing)?
             reason = getReasonMutedOffHook();
@@ -80,6 +86,10 @@ public abstract class ContextAccessor {
         return "bell muted with phone";
     }
 
+    protected String getReasonMutedTill() {
+        return"bell manually muted till hh:mm";
+    }
+
     public abstract boolean isBellSoundPlaying();
 
     /**
@@ -100,6 +110,8 @@ public abstract class ContextAccessor {
     public abstract void showMessage(String message);
 
     public abstract void startPlayingSoundAndVibrate(ActivityPrefsAccessor activityPrefs, final Runnable runWhenDone);
+
+    public abstract PendingIntent createRefreshBroadcastIntent();
 
     public abstract void showBell();
 

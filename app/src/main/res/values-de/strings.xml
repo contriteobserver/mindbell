@@ -35,7 +35,10 @@
     <string name="menuSettings">Einstellungen</string>
     <string name="menuAbout">Über MindBell</string>
     <string name="menuHelp">Hilfe</string>
-    
+
+    <!-- MindBellMain Preferences -->
+    <string name="prefsMutedTillOff">Aus</string>
+
     <!-- Send log by e-mail -->
     <string name="emailSubject">E-Mail gesendet von MindBell</string>
     <string name="emailChooseApp">Mail senden &#8230;</string>
@@ -136,13 +139,15 @@
     <string name="statusTextBellActive">{0} bis {1} am {2}</string>
     <string name="statusTitleBellMeditating">MindBell meditiert</string>
     <string name="statusTextBellMeditating">{0,choice,1#1 Minute|1&lt;{0} Minuten} bis {1}</string>
-    <string name="statusActionRefreshStatus">Status aktualisieren</string>
+    <string name="statusActionRefreshStatus">Aktualisieren</string>
+    <string name="statusActionMuteFor">Still für &#8230;</string>
 
     <!-- Reasons why bell is muted -->
     <string name="reasonMutedWithPhone">Glocke still wie das Handy</string>
     <string name="reasonMutedOffHook">Glocke still während Telefonaten</string>
     <string name="reasonMutedInFlightMode">Glocke still im Flugmodus</string>
-    
+    <string name="reasonMutedTill">Glocke still bis {0}</string>
+
     <!-- Reasons why permission READ_PHONE_STATE should be granted -->
     <string name="reasonReadPhoneStateTitle">Wozu diese Berechtigung?</string>
     <string name="reasonReadPhoneStateText">\'Status-Icon anzeigen\' und \'Beim Telefonieren still\' wurden

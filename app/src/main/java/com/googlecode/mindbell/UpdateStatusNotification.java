@@ -35,7 +35,7 @@ public class UpdateStatusNotification extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "Update status notification received");
+        Log.d(TAG, "Update status notification received intent");
         AndroidContextAccessor.getInstanceAndLogPreferences(context).updateStatusNotification();
     }
 

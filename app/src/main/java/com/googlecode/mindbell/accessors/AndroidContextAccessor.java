@@ -42,6 +42,7 @@ import android.widget.Toast;
 import com.googlecode.mindbell.MindBell;
 import com.googlecode.mindbell.MindBellMain;
 import com.googlecode.mindbell.MindBellPreferences;
+import com.googlecode.mindbell.MuteActivity;
 import com.googlecode.mindbell.R;
 import com.googlecode.mindbell.Scheduler;
 import com.googlecode.mindbell.util.AlarmManagerCompat;
@@ -157,6 +158,12 @@ public class AndroidContextAccessor extends ContextAccessor {
     @Override
     protected String getReasonMutedWithPhone() {
         return context.getText(R.string.reasonMutedWithPhone).toString();
+    }
+
+    @Override
+    protected String getReasonMutedTill() {
+        TimeOfDay mutedTill = new TimeOfDay(prefs.getMutedTill());
+        return MessageFormat.format(context.getText(R.string.reasonMutedTill).toString(), mutedTill.getShortDisplayString());
     }
 
     @Override
@@ -370,6 +377,13 @@ public class AndroidContextAccessor extends ContextAccessor {
         }
         return intent;
     }
+    /**
+     * Create an intent to be send to UpdateStatusNotification to update notification.
+    */
+    @Override
+    public PendingIntent createRefreshBroadcastIntent() {
+        return PendingIntent.getBroadcast(context, 1, new Intent("com.googlecode.mindbell.UPDATE_STATUS_NOTIFICATION"), PendingIntent.FLAG_UPDATE_CURRENT);
+    }
 
     /**
      * Shows bell by bringing activity MindBell to the front
@@ -441,7 +455,7 @@ public class AndroidContextAccessor extends ContextAccessor {
         Log.i(TAG, "Update status notification: " + contentText);
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         PendingIntent openAppIntent = PendingIntent.getActivity(context, 0, new Intent(context, targetClass), PendingIntent.FLAG_UPDATE_CURRENT);
-        PendingIntent refreshIntent = PendingIntent.getBroadcast(context, 1, new Intent("com.googlecode.mindbell.UPDATE_STATUS_NOTIFICATION"), PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent muteIntent = PendingIntent.getActivity(context, 2, new Intent(context, MuteActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
         int visibility = (prefs.isStatusNotificationVisibilityPublic()) ? NotificationCompat.VISIBILITY_PUBLIC
                 : NotificationCompat.VISIBILITY_PRIVATE;
         Notification notification = new NotificationCompat.Builder(context.getApplicationContext()) //
@@ -453,7 +467,8 @@ public class AndroidContextAccessor extends ContextAccessor {
                 .setOngoing(true) //
                 .setSmallIcon(statusDrawable) //
                 .setVisibility(visibility) //
-                .addAction(R.drawable.ic_action_refresh_status, context.getText(R.string.statusActionRefreshStatus), refreshIntent) //
+                .addAction(R.drawable.ic_action_refresh_status, context.getText(R.string.statusActionRefreshStatus), createRefreshBroadcastIntent()) //
+                .addAction(R.drawable.ic_stat_bell_active_but_muted, context.getText(R.string.statusActionMuteFor), muteIntent) //
                 .build();
         notificationManager.notify(uniqueNotificationID, notification);
     }
