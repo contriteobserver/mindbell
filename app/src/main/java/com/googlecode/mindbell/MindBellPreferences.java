@@ -22,7 +22,6 @@ package com.googlecode.mindbell;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.media.MediaMetadataRetriever;
 import android.media.Ringtone;
@@ -70,28 +69,20 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         } else if (ActivityCompat.shouldShowRequestPermissionRationale(MindBellPreferences.this,
                 Manifest.permission.READ_PHONE_STATE)) {
             // User denied the needed permission and can be given an explanation, so we show an explanation
-            AlertDialog dialog = new AlertDialog.Builder(MindBellPreferences.this) //
+            new AlertDialog.Builder(MindBellPreferences.this) //
                     .setTitle(R.string.reasonReadPhoneStateTitle) //
                     .setMessage(R.string.reasonReadPhoneStateText) //
-                    .setPositiveButton(R.string.buttonOk, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // nothing to do
-                        }
-                    }) //
-                    .create();
-            dialog.show();
+                    .setPositiveButton(android.R.string.ok, null) //
+                    .create() //
+                    .show();
         } else {
             // User denied the needed permission and checked never ask again
-            AlertDialog dialog = new AlertDialog.Builder(MindBellPreferences.this) //
+            new AlertDialog.Builder(MindBellPreferences.this) //
                     .setTitle(R.string.neverAskAgainReadPhoneStateTitle) //
-                    .setMessage(R.string.neverAskAgainPhoneStateText) //
-                    .setPositiveButton(R.string.buttonOk, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // nothing to do
-                        }
-                    }) //
-                    .create();
-            dialog.show();
+                    .setMessage(R.string.neverAskAgainReadPhoneStateText) //
+                    .setPositiveButton(android.R.string.ok, null) //
+                    .create()//
+                    .show();
         }
     }
 
@@ -123,7 +114,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
             // Ask for permission if other option is "on" and this option shall be set to "on" but permission is missing
             ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.READ_PHONE_STATE },
                     requestCode);
-            // As the permission request is asynchronous we habe to deny setting this option (to "on")
+            // As the permission request is asynchronous we have to deny setting this option (to "on")
             return false;
         }
     }

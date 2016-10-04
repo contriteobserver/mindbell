@@ -158,11 +158,14 @@
 
     <!-- Permission READ_PHONE_STATE denied but user checked 'never ask again' -->
     <string name="neverAskAgainReadPhoneStateTitle">Missing permission</string>
-    <string name="neverAskAgainPhoneStateText">Permission READ_PHONE_STATE is not granted. Therefore
+    <string name="neverAskAgainReadPhoneStateText">Permission READ_PHONE_STATE is not granted. Therefore
         either \'Show status icon\' or \'Mute during phone calls\' must be switched off.</string>
 
-    <!-- General dialog buttons -->
-    <string name="buttonOk">OK</string>
+    <!-- Permission READ_PHONE_STATE requested after displaying popup dialog -->
+    <string name="requestReadPhoneStateTitle">Asking for permission</string>
+    <string name="requestReadPhoneStateText">Permission READ_PHONE_STATE is not granted yet. Therefore
+        either \'Show status icon\' or \'Mute during phone calls\' must be switched off in the settings.
+        Do you want to grant it now?</string>
 
     <!-- Help popup -->
     <string name="main_message1_popup">To see this information again please choose \'Help\' from the menu.</string>

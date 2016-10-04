@@ -158,12 +158,15 @@
         \'Beim Telefonieren still\' abgeschaltet sein.</string>
 
     <!-- Permission READ_PHONE_STATE denied but user checked 'never ask again' -->
-    <string name="neverAskAgainReadPhoneStateTitle">Fehlende Berechtigung</string>
-    <string name="neverAskAgainPhoneStateText">Die Berechtigung READ_PHONE_STATE wurde nicht erteilt.
+    <string name="neverAskAgainReadPhoneStateTitle">Frage nach Berechtigung</string>
+    <string name="neverAskAgainReadPhoneStateText">Die Berechtigung READ_PHONE_STATE wurde nicht erteilt.
         Daher muss entweder \'Status-Icon anzeigen\' oder \'Beim Telefonieren still\' abgeschaltet sein.</string>
 
-    <!-- General dialog buttons -->
-    <string name="buttonOk">OK</string>
+    <!-- Permission READ_PHONE_STATE requested after displaying popup dialog -->
+    <string name="requestReadPhoneStateTitle">Bitte um Berechtigung</string>
+    <string name="requestReadPhoneStateText">Die Berechtigung READ_PHONE_STATE wurde noch nicht erteilt.
+        Daher muss entweder \'Status-Icon anzeigen\' oder \'Beim Telefonieren still\' in den Einstellungen
+        abgeschaltet sein. Möchten Sie die Berechtigung jetzt erteilen?</string>
 
     <!-- Help popup -->
     <string name="main_message1_popup">Diese Information kann über \'Hilfe\' im Menü erneut angezeigt werden.</string>

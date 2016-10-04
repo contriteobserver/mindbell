@@ -19,14 +19,18 @@
  *******************************************************************************/
 package com.googlecode.mindbell;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -46,14 +50,14 @@ import com.googlecode.mindbell.accessors.ContextAccessor;
 import com.googlecode.mindbell.accessors.PrefsAccessor;
 import com.googlecode.mindbell.util.Utils;
 
-public class MindBellMain extends Activity {
+public class MindBellMain extends Activity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     private ContextAccessor contextAccessor;
 
     private void checkWhetherToShowPopup() {
         if (!hasShownPopup()) {
             setPopupShown(true);
-            onMenuItemClickHelp();
+            requestPermissionsAndOpenHelpDialog(); // calls onMenuItemClickHelp() afterwards
         }
     }
 
@@ -372,6 +376,37 @@ public class MindBellMain extends Activity {
         } else {
             contextAccessor.getPrefs().resetPopup();
         }
+    }
+
+    private void requestPermissionsAndOpenHelpDialog() {
+        if (!contextAccessor.getPrefs().isStatus() || !contextAccessor.getPrefs().isMuteOffHook() ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+            onMenuItemClickHelp(); // Permission not needed or already granted => go directly to the next dialog
+        } else {
+            new AlertDialog.Builder(this) //
+                    .setTitle(R.string.requestReadPhoneStateTitle) //
+                    .setMessage(R.string.requestReadPhoneStateText) //
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            ActivityCompat.requestPermissions(MindBellMain.this, new String[]{Manifest.permission.READ_PHONE_STATE}, 0);
+                        }
+                    }) //
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            onMenuItemClickHelp();
+                        }
+                    }) //
+                    .create() //
+                    .show();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        // Request permission without handling the result but calling the popup dialog. If permissions are not sufficient for
+        // the settings the user will get a warning notification and can grant permission via settings.
+        onMenuItemClickHelp();
     }
 
     private boolean onMenuItemClickHelp() {
