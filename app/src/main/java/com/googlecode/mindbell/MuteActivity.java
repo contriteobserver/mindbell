@@ -57,14 +57,14 @@ public class MuteActivity extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         int newValue = numberPicker.getValue();
-                        long nextTargetTimeMillis = System.currentTimeMillis() + newValue * 60000L;//* 3600000L;
+                        long nextTargetTimeMillis = System.currentTimeMillis() + newValue * 3600000L;
                         contextAccessor.getPrefs().setMutedTill(nextTargetTimeMillis);
                         contextAccessor.updateStatusNotification();
                         PendingIntent sender = contextAccessor.createRefreshBroadcastIntent();
                         AlarmManagerCompat alarmManager = new AlarmManagerCompat(MuteActivity.this.getApplicationContext());
                         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextTargetTimeMillis, sender);
                         TimeOfDay nextBellTime = new TimeOfDay(nextTargetTimeMillis);
-                        Log.d(TAG, "Update status notification scheduled for " + nextBellTime.getDisplayString());
+                        Log.d(TAG, "Update status notification scheduled for " + nextBellTime.getLogString());
                         MuteActivity.this.finish();
                     }
                 }) //

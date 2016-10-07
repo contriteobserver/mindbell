@@ -163,7 +163,7 @@ public class AndroidContextAccessor extends ContextAccessor {
     @Override
     protected String getReasonMutedTill() {
         TimeOfDay mutedTill = new TimeOfDay(prefs.getMutedTill());
-        return MessageFormat.format(context.getText(R.string.reasonMutedTill).toString(), mutedTill.getShortDisplayString());
+        return MessageFormat.format(context.getText(R.string.reasonMutedTill).toString(), mutedTill.getDisplayString());
     }
 
     @Override
@@ -350,7 +350,7 @@ public class AndroidContextAccessor extends ContextAccessor {
         AlarmManagerCompat alarmManager = new AlarmManagerCompat(context);
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextTargetTimeMillis, sender);
         TimeOfDay nextBellTime = new TimeOfDay(nextTargetTimeMillis);
-        Log.d(TAG, "Scheduled next bell alarm for " + nextBellTime.getDisplayString());
+        Log.d(TAG, "Scheduled next bell alarm for " + nextBellTime.getLogString());
     }
 
     /**
@@ -441,7 +441,7 @@ public class AndroidContextAccessor extends ContextAccessor {
             contentTitle = context.getText(R.string.statusTitleBellMeditating);
             contentText = MessageFormat.format(context.getText(R.string.statusTextBellMeditating).toString(), //
                     Integer.valueOf(prefs.getMeditationDuration()), //
-                    new TimeOfDay(prefs.getMeditationEndingTimeMillis()).getShortDisplayString());
+                    new TimeOfDay(prefs.getMeditationEndingTimeMillis()).getDisplayString());
         } else if (muteRequestReason != null) { // Bell muted => override icon and notification text
             statusDrawable = bellActiveButMutedDrawable;
             contentText = muteRequestReason;

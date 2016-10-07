@@ -111,16 +111,16 @@ public class TimeOfDay {
     }
 
     /**
-     * Returns a String readily representing this TimeOfDay.
+     * Returns a String readily representing this TimeOfDay to be used for logging.
      */
-    public String getDisplayString() {
+    public String getLogString() {
         return representation;
     }
 
     /**
-     * Returns a String with hh:mm of this TimeOfDay.
+     * Returns a String readily representing this TimeOfDay to be used for displaying.
      */
-    public String getShortDisplayString() {
+    public String getDisplayString() {
         return representation.substring(0, 5);
     }
 
