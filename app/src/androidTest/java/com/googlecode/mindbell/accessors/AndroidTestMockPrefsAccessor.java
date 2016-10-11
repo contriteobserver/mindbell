@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
@@ -16,7 +16,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ */
 package com.googlecode.mindbell.accessors;
 
 import android.net.Uri;
@@ -34,8 +34,8 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     private boolean muteInFlightMode = false;
 
     /**
-     * Constructs an accessor for preferences in the given context, please use {@link AndroidTestMockContextAccessor#getPrefs()} instead of
-     * calling this directly.
+     * Constructs an accessor for preferences in the given context, please use {@link AndroidTestMockContextAccessor#getPrefs()}
+     * instead of calling this directly.
      */
     protected AndroidTestMockPrefsAccessor() {
     }
@@ -66,12 +66,25 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
+    public void setStatus(boolean theStatusNotification) {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
     public Set<Integer> getActiveOnDaysOfWeek() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    public void setActiveOnDaysOfWeek(Set<Integer> activeOnDaysOfWeek) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
     @Override
     public String getActiveOnDaysOfWeekString() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    public void setActiveOnDaysOfWeekString(String activeOnDaysOfWeekString) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
@@ -85,8 +98,16 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
+    public void setDaytimeEnd(TimeOfDay theDaytimeEnd) {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
     @Override
     public String getDaytimeEndString() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    public void setDaytimeEndString(String theDaytimeEndString) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
@@ -95,8 +116,16 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
+    public void setDaytimeStart(TimeOfDay theDaytimeStart) {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
     @Override
     public String getDaytimeStartString() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    public void setDaytimeStartString(String theDaytimeStartString) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
@@ -105,8 +134,16 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
+    public void setInterval(long theInterval) {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
     @Override
     public int getNormalize() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    public void setNormalize(int normalize) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
@@ -130,9 +167,17 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
+    public void setRandomize(boolean randomize) {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
     @Override
     public boolean isMuteInFlightMode() {
         return muteInFlightMode;
+    }
+
+    public void setMuteInFlightMode(boolean muteInFlightMode) {
+        this.muteInFlightMode = muteInFlightMode;
     }
 
     @Override
@@ -140,9 +185,17 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
         return muteOffHook;
     }
 
+    public void setMuteOffHook(boolean muteOffHook) {
+        this.muteOffHook = muteOffHook;
+    }
+
     @Override
     public boolean isMuteWithPhone() {
         return muteWithPhone;
+    }
+
+    public void setMuteWithPhone(boolean muteWithPhone) {
+        this.muteWithPhone = muteWithPhone;
     }
 
     @Override
@@ -160,14 +213,6 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
-    public void setActiveOnDaysOfWeek(Set<Integer> activeOnDaysOfWeek) {
-        throw new UnsupportedOperationException("Test terminated ... method not implemented");
-    }
-
-    public void setActiveOnDaysOfWeekString(String activeOnDaysOfWeekString) {
-        throw new UnsupportedOperationException("Test terminated ... method not implemented");
-    }
-
     @Override
     public void setActive(boolean active) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
@@ -178,52 +223,7 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
-    public void setDaytimeEnd(TimeOfDay theDaytimeEnd) {
-        throw new UnsupportedOperationException("Test terminated ... method not implemented");
-    }
-
-    public void setDaytimeEndString(String theDaytimeEndString) {
-        throw new UnsupportedOperationException("Test terminated ... method not implemented");
-    }
-
-    public void setDaytimeStart(TimeOfDay theDaytimeStart) {
-        throw new UnsupportedOperationException("Test terminated ... method not implemented");
-    }
-
-    public void setDaytimeStartString(String theDaytimeStartString) {
-        throw new UnsupportedOperationException("Test terminated ... method not implemented");
-    }
-
-    public void setInterval(long theInterval) {
-        throw new UnsupportedOperationException("Test terminated ... method not implemented");
-    }
-
-    public void setNormalize(int normalize) {
-        throw new UnsupportedOperationException("Test terminated ... method not implemented");
-    }
-
-    public void setRandomize(boolean randomize) {
-        throw new UnsupportedOperationException("Test terminated ... method not implemented");
-    }
-
-    public void setMuteInFlightMode(boolean muteInFlightMode) {
-        this.muteInFlightMode = muteInFlightMode;
-    }
-
-    public void setMuteOffHook(boolean muteOffHook) {
-        this.muteOffHook = muteOffHook;
-    }
-
-    public void setMuteWithPhone(boolean muteWithPhone) {
-        this.muteWithPhone = muteWithPhone;
-    }
-
     public void setShowBell(boolean theShowBell) {
-        throw new UnsupportedOperationException("Test terminated ... method not implemented");
-    }
-
-    @Override
-    public void setStatus(boolean theStatusNotification) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 

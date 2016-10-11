@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
@@ -16,7 +16,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ */
 package com.googlecode.mindbell.accessors;
 
 import android.net.Uri;
@@ -27,23 +27,13 @@ import java.util.Set;
 
 public abstract class PrefsAccessor {
 
-    /**
-     * Returns the given pattern string as an array of long values.
-     */
-    public static long[] getVibrationPattern(String pattern) {
-        String[] msAsString = pattern.split(":");
-        long[] ms = new long[msAsString.length];
-        for (int i = 0; i < ms.length; i++) {
-            ms[i] = Long.valueOf(msAsString[i]);
-        }
-        return ms;
-    }
-
     public abstract boolean isShow();
 
     public abstract boolean isSound();
 
     public abstract boolean isStatus();
+
+    public abstract void setStatus(boolean statusNotification);
 
     public abstract String getRingtone();
 
@@ -65,13 +55,23 @@ public abstract class PrefsAccessor {
 
     public abstract long getInterval();
 
-    public abstract int getNormalize();
-
-    public abstract String getPattern();
-
     public long[] getVibrationPattern() {
         return getVibrationPattern(getPattern());
     }
+
+    /**
+     * Returns the given pattern string as an array of long values.
+     */
+    public static long[] getVibrationPattern(String pattern) {
+        String[] msAsString = pattern.split(":");
+        long[] ms = new long[msAsString.length];
+        for (int i = 0; i < ms.length; i++) {
+            ms[i] = Long.valueOf(msAsString[i]);
+        }
+        return ms;
+    }
+
+    public abstract String getPattern();
 
     public abstract boolean setActive();
 
@@ -87,6 +87,8 @@ public abstract class PrefsAccessor {
     public static boolean isNormalize(int normalizeValue) {
         return normalizeValue >= 0;
     }
+
+    public abstract int getNormalize();
 
     public abstract boolean isRandomize();
 
@@ -115,8 +117,6 @@ public abstract class PrefsAccessor {
     public abstract void setActive(boolean active);
 
     public abstract void setMeditating(boolean meditating);
-
-    public abstract void setStatus(boolean statusNotification);
 
     public abstract boolean useStatusIconMaterialDesign();
 

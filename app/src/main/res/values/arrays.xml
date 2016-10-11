@@ -20,99 +20,99 @@
  -->
 <resources>
 
-	<string-array name="frequencyEntries">
-	    <item>1 minute</item>
-	    <item>2 minutes</item>
-	    <item>3 minutes</item>
-	    <item>4 minutes</item>
-	    <item>5 minutes</item>
-	    <item>10 minutes</item>
-	    <item>15 minutes</item>
-		<item>half hour</item>
-		<item>45 minutes</item>
-		<item>hour</item>
-		<item>2 hours</item>
-		<item>3 hours</item>
-		<item>4 hours</item>
-	</string-array>
-	
-	<string-array name="normalizeEntries">
-	    <item>no</item>
-	    <item>hh:00</item>
-	    <item>hh:05</item>
-	    <item>hh:10</item>
-	    <item>hh:15</item>
-	    <item>hh:20</item>
-	    <item>hh:25</item>
-	    <item>hh:30</item>
-	    <item>hh:35</item>
-	    <item>hh:40</item>
-	    <item>hh:45</item>
-	    <item>hh:50</item>
-	    <item>hh:55</item>
-	</string-array>
-	
-	<string-array name="hourEntries">
-		<item>midnight</item>
-		<item>1 am</item>
-		<item>2 am</item>
-		<item>3 am</item>
-		<item>4 am</item>
-		<item>5 am</item>
-		<item>6 am</item>
-		<item>7 am</item>
-		<item>8 am</item>
-		<item>9 am</item>
-		<item>10 am</item>
-		<item>11 am</item>
-		<item>noon</item>
-		<item>1 pm</item>
-		<item>2 pm</item>
-		<item>3 pm</item>
-		<item>4 pm</item>
-		<item>5 pm</item>
-		<item>6 pm</item>
-		<item>7 pm</item>
-		<item>8 pm</item>
-		<item>9 pm</item>
-		<item>10 pm</item>
-		<item>11 pm</item>
-	</string-array>
+    <string-array name="frequencyEntries">
+        <item>1 minute</item>
+        <item>2 minutes</item>
+        <item>3 minutes</item>
+        <item>4 minutes</item>
+        <item>5 minutes</item>
+        <item>10 minutes</item>
+        <item>15 minutes</item>
+        <item>half hour</item>
+        <item>45 minutes</item>
+        <item>hour</item>
+        <item>2 hours</item>
+        <item>3 hours</item>
+        <item>4 hours</item>
+    </string-array>
 
-	<!-- Weekdays for selection in MindBellPreferences -->
-	<string-array name="weekdayEntries">
-		<item>Sunday</item>
-		<item>Monday</item>
-		<item>Tuesday</item>
-		<item>Wednesday</item>
-		<item>Thursday</item>
-		<item>Friday</item>
-		<item>Saturday</item>
-	</string-array>
+    <string-array name="normalizeEntries">
+        <item>no</item>
+        <item>hh:00</item>
+        <item>hh:05</item>
+        <item>hh:10</item>
+        <item>hh:15</item>
+        <item>hh:20</item>
+        <item>hh:25</item>
+        <item>hh:30</item>
+        <item>hh:35</item>
+        <item>hh:40</item>
+        <item>hh:45</item>
+        <item>hh:50</item>
+        <item>hh:55</item>
+    </string-array>
 
-	<!-- Internal value (ordered regarding Calendar) for the weekday selection in MindBellPreferences -->
-	<string-array name="weekdayEntryValues">
-		<item>1</item>
-		<item>2</item>
-		<item>3</item>
-		<item>4</item>
-		<item>5</item>
-		<item>6</item>
-		<item>7</item>
-	</string-array>
+    <string-array name="hourEntries">
+        <item>midnight</item>
+        <item>1 am</item>
+        <item>2 am</item>
+        <item>3 am</item>
+        <item>4 am</item>
+        <item>5 am</item>
+        <item>6 am</item>
+        <item>7 am</item>
+        <item>8 am</item>
+        <item>9 am</item>
+        <item>10 am</item>
+        <item>11 am</item>
+        <item>noon</item>
+        <item>1 pm</item>
+        <item>2 pm</item>
+        <item>3 pm</item>
+        <item>4 pm</item>
+        <item>5 pm</item>
+        <item>6 pm</item>
+        <item>7 pm</item>
+        <item>8 pm</item>
+        <item>9 pm</item>
+        <item>10 pm</item>
+        <item>11 pm</item>
+    </string-array>
 
-	<!-- Abbreviations for weekdays ordered by their internal value -->
-	<string-array name="weekdayAbbreviationEntries">
-		<item>Sun</item>
-		<item>Mon</item>
-		<item>Tue</item>
-		<item>Wed</item>
-		<item>Thu</item>
-		<item>Fri</item>
-		<item>Sat</item>
-	</string-array>
+    <!-- Weekdays for selection in MindBellPreferences -->
+    <string-array name="weekdayEntries">
+        <item>Sunday</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+    </string-array>
 
-	<!-- ==================== don't localize ==================== -->
+    <!-- Internal value (ordered regarding Calendar) for the weekday selection in MindBellPreferences -->
+    <string-array name="weekdayEntryValues">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+    </string-array>
+
+    <!-- Abbreviations for weekdays ordered by their internal value -->
+    <string-array name="weekdayAbbreviationEntries">
+        <item>Sun</item>
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+    </string-array>
+
+    <!-- ==================== don't localize ==================== -->
 
     <!-- Number of rings for beginning/interrupting/ending the meditation -->
     <string-array name="bellEntries" translatable="false">
@@ -122,88 +122,88 @@
     </string-array>
 
     <!-- Vibration patterns -->
-	<string-array name="patternEntries" translatable="false">
-	    <item>r</item>
-	    <item>-brrrrrr</item>
-	    <item>-brr-brrrrrr</item>
-	    <item>-brr-brr-brrrrrr</item>
-	    <item>-brr</item>
-	    <item>-brr-brr</item>
-	    <item>-brr-brr-brr</item>
-	</string-array>
-	
-	<!-- Intervals in milliseconds -->
-	<string-array name="frequencyEntryValues" translatable="false">
-		<item>60000</item><!-- 1 minute -->
-		<item>120000</item><!-- 2 minutes -->
-		<item>180000</item><!-- 3 minutes -->
-		<item>240000</item><!-- 4 minutes -->
-		<item>300000</item><!-- 5 minutes -->
-		<item>600000</item><!-- 10 minutes -->
-		<item>900000</item><!-- 15 minutes -->
-		<item>1800000</item><!-- half hour -->
-		<item>2700000</item><!-- 45 minutes -->
-		<item>3600000</item><!-- hour -->
-		<item>7200000</item><!-- 2 hours -->
-		<item>10800000</item><!-- 3 hours -->
-		<item>14400000</item><!-- 4 hours -->
-	</string-array>
-	
-	<!-- First minute in the first hour to ring at -->
-	<string-array name="normalizeEntryValues" translatable="false">
-	    <item>-1</item>
-	    <item>0</item>
-	    <item>5</item>
-	    <item>10</item>
-	    <item>15</item>
-	    <item>20</item>
-	    <item>25</item>
-	    <item>30</item>
-	    <item>35</item>
-	    <item>40</item>
-	    <item>45</item>
-	    <item>50</item>
-	    <item>55</item>
-	</string-array>
-	
-	<!-- Starting and ending time hours -->
-	<string-array name="hourEntryValues" translatable="false">
-		<item>0</item>
-		<item>1</item>
-		<item>2</item>
-		<item>3</item>
-		<item>4</item>
-		<item>5</item>
-		<item>6</item>
-		<item>7</item>
-		<item>8</item>
-		<item>9</item>
-		<item>10</item>
-		<item>11</item>
-		<item>12</item>
-		<item>13</item>
-		<item>14</item>
-		<item>15</item>
-		<item>16</item>
-		<item>17</item>
-		<item>18</item>
-		<item>19</item>
-		<item>20</item>
-		<item>21</item>
-		<item>22</item>
-		<item>23</item>
-	</string-array>
+    <string-array name="patternEntries" translatable="false">
+        <item>r</item>
+        <item>-brrrrrr</item>
+        <item>-brr-brrrrrr</item>
+        <item>-brr-brr-brrrrrr</item>
+        <item>-brr</item>
+        <item>-brr-brr</item>
+        <item>-brr-brr-brr</item>
+    </string-array>
 
-	<!-- Vibration patterns -->
-	<string-array name="patternEntryValues" translatable="false">
-		<item>0:20</item> <!-- r -->
-		<item>100:600</item> <!-- -brrrrrr -->
-		<item>100:200:100:600</item> <!-- -brr-brrrrrr -->
-		<item>100:200:100:200:100:600</item> <!-- -brr-brr-brrrrrr -->
-		<item>100:200</item> <!-- -brr -->
-		<item>100:200:100:200</item> <!-- -brr-brr -->
-		<item>100:200:100:200:100:200</item> <!-- -brr-brr-brr -->
-	</string-array>
+    <!-- Intervals in milliseconds -->
+    <string-array name="frequencyEntryValues" translatable="false">
+        <item>60000</item><!-- 1 minute -->
+        <item>120000</item><!-- 2 minutes -->
+        <item>180000</item><!-- 3 minutes -->
+        <item>240000</item><!-- 4 minutes -->
+        <item>300000</item><!-- 5 minutes -->
+        <item>600000</item><!-- 10 minutes -->
+        <item>900000</item><!-- 15 minutes -->
+        <item>1800000</item><!-- half hour -->
+        <item>2700000</item><!-- 45 minutes -->
+        <item>3600000</item><!-- hour -->
+        <item>7200000</item><!-- 2 hours -->
+        <item>10800000</item><!-- 3 hours -->
+        <item>14400000</item><!-- 4 hours -->
+    </string-array>
+
+    <!-- First minute in the first hour to ring at -->
+    <string-array name="normalizeEntryValues" translatable="false">
+        <item>-1</item>
+        <item>0</item>
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>25</item>
+        <item>30</item>
+        <item>35</item>
+        <item>40</item>
+        <item>45</item>
+        <item>50</item>
+        <item>55</item>
+    </string-array>
+
+    <!-- Starting and ending time hours -->
+    <string-array name="hourEntryValues" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+    </string-array>
+
+    <!-- Vibration patterns -->
+    <string-array name="patternEntryValues" translatable="false">
+        <item>0:20</item> <!-- r -->
+        <item>100:600</item> <!-- -brrrrrr -->
+        <item>100:200:100:600</item> <!-- -brr-brrrrrr -->
+        <item>100:200:100:200:100:600</item> <!-- -brr-brr-brrrrrr -->
+        <item>100:200</item> <!-- -brr -->
+        <item>100:200:100:200</item> <!-- -brr-brr -->
+        <item>100:200:100:200:100:200</item> <!-- -brr-brr-brr -->
+    </string-array>
 
     <!-- Number of rings for beginning/interrupting/ending the meditation -->
     <string-array name="bellEntryValues" translatable="false">

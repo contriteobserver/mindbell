@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
@@ -17,7 +17,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ */
 
 package com.googlecode.mindbell.preference;
 
@@ -36,11 +36,6 @@ import com.googlecode.mindbell.R;
  */
 public class SeekBarPreference extends DialogPreference {
     private static final String TAG = "SeekBarPreference";
-
-    protected static SeekBar getSeekBar(View dialogView) {
-        return (SeekBar) dialogView.findViewById(R.id.seekbar);
-    }
-
     private final Drawable mMyIcon;
 
     public SeekBarPreference(Context context, AttributeSet attrs) {
@@ -53,6 +48,10 @@ public class SeekBarPreference extends DialogPreference {
         // Steal the XML dialogIcon attribute's value
         mMyIcon = getDialogIcon();
         setDialogIcon(null);
+    }
+
+    protected static SeekBar getSeekBar(View dialogView) {
+        return (SeekBar) dialogView.findViewById(R.id.seekbar);
     }
 
     @Override

@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
@@ -16,7 +16,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ */
 package com.googlecode.mindbell.logic;
 
 import com.googlecode.mindbell.accessors.PrefsAccessor;
@@ -36,44 +36,6 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SchedulerLogicTest {
-
-    private PrefsAccessor getDayPrefs() {
-        PrefsAccessor prefs = mock(PrefsAccessor.class);
-        when(prefs.getDaytimeStart()).thenReturn(new TimeOfDay(9, 0));
-        when(prefs.getDaytimeEnd()).thenReturn(new TimeOfDay(21, 0));
-        when(prefs.getActiveOnDaysOfWeek()).thenReturn(new HashSet<>(Arrays.asList(new Integer[]{2, 3, 4, 5, 6})));
-        when(prefs.isRandomize()).thenReturn(true);
-        when(prefs.getNormalize()).thenReturn(-1);
-        when(prefs.getInterval()).thenReturn(60 * 60000L);
-        return prefs;
-    }
-
-    private PrefsAccessor getNightPrefs() {
-        PrefsAccessor prefs = mock(PrefsAccessor.class);
-        when(prefs.getDaytimeStart()).thenReturn(new TimeOfDay(13, 0));
-        when(prefs.getDaytimeEnd()).thenReturn(new TimeOfDay(2, 0));
-        when(prefs.getActiveOnDaysOfWeek()).thenReturn(new HashSet<>(Arrays.asList(new Integer[]{2, 3, 4, 5, 6})));
-        when(prefs.isRandomize()).thenReturn(true);
-        when(prefs.getNormalize()).thenReturn(-1);
-        when(prefs.getInterval()).thenReturn(60 * 60000L);
-        return prefs;
-    }
-
-    private long getTimeMillis(int hour, int minute, int weekday) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, hour);
-        cal.set(Calendar.MINUTE, minute);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        cal.set(Calendar.DAY_OF_WEEK, weekday);
-        return cal.getTimeInMillis();
-    }
-
-    private int getWeekday(long timeMillis) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(timeMillis);
-        return cal.get(Calendar.DAY_OF_WEEK);
-    }
 
     @Test
     public void testRescheduleNotRandomized() {
@@ -95,6 +57,27 @@ public class SchedulerLogicTest {
         targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
         Assert.assertEquals(getTimeMillis(11, 0, Calendar.FRIDAY), targetTimeMillis);
+    }
+
+    private PrefsAccessor getDayPrefs() {
+        PrefsAccessor prefs = mock(PrefsAccessor.class);
+        when(prefs.getDaytimeStart()).thenReturn(new TimeOfDay(9, 0));
+        when(prefs.getDaytimeEnd()).thenReturn(new TimeOfDay(21, 0));
+        when(prefs.getActiveOnDaysOfWeek()).thenReturn(new HashSet<>(Arrays.asList(new Integer[]{2, 3, 4, 5, 6})));
+        when(prefs.isRandomize()).thenReturn(true);
+        when(prefs.getNormalize()).thenReturn(-1);
+        when(prefs.getInterval()).thenReturn(60 * 60000L);
+        return prefs;
+    }
+
+    private long getTimeMillis(int hour, int minute, int weekday) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, hour);
+        cal.set(Calendar.MINUTE, minute);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.DAY_OF_WEEK, weekday);
+        return cal.getTimeInMillis();
     }
 
     @Test
@@ -283,6 +266,14 @@ public class SchedulerLogicTest {
     }
 
     @Test
+    public void testRescheduleRandomizedRepeated() {
+        // Retest several times to reduce the risk that it works by chance
+        for (int i = 0; i < 1000; i++) {
+            testRescheduleRandomized();
+        }
+    }
+
+    @Test
     public void testRescheduleRandomized() {
         PrefsAccessor prefs = getDayPrefs();
         when(prefs.isRandomize()).thenReturn(true);
@@ -314,14 +305,6 @@ public class SchedulerLogicTest {
     }
 
     @Test
-    public void testRescheduleRandomizedRepeated() {
-        // Retest several times to reduce the risk that it works by chance
-        for (int i = 0; i < 1000; i++) {
-            testRescheduleRandomized();
-        }
-    }
-
-    @Test
     public void testRescheduleYieldsDayFriday1() {
         PrefsAccessor prefs = getDayPrefs();
         long nowTimeMillis = getTimeMillis(12, 0, Calendar.FRIDAY);
@@ -330,6 +313,12 @@ public class SchedulerLogicTest {
         Assert.assertTrue(targetTimeMillis > nowTimeMillis);
         Assert.assertEquals(Calendar.FRIDAY, getWeekday(targetTimeMillis));
         Assert.assertTrue((new TimeOfDay(targetTimeMillis)).isDaytime(prefs));
+    }
+
+    private int getWeekday(long timeMillis) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(timeMillis);
+        return cal.get(Calendar.DAY_OF_WEEK);
     }
 
     @Test
@@ -374,6 +363,17 @@ public class SchedulerLogicTest {
         Assert.assertTrue(targetTimeMillis > nowTimeMillis);
         Assert.assertEquals(Calendar.FRIDAY, getWeekday(targetTimeMillis));
         Assert.assertTrue((new TimeOfDay(targetTimeMillis)).isDaytime(prefs));
+    }
+
+    private PrefsAccessor getNightPrefs() {
+        PrefsAccessor prefs = mock(PrefsAccessor.class);
+        when(prefs.getDaytimeStart()).thenReturn(new TimeOfDay(13, 0));
+        when(prefs.getDaytimeEnd()).thenReturn(new TimeOfDay(2, 0));
+        when(prefs.getActiveOnDaysOfWeek()).thenReturn(new HashSet<>(Arrays.asList(new Integer[]{2, 3, 4, 5, 6})));
+        when(prefs.isRandomize()).thenReturn(true);
+        when(prefs.getNormalize()).thenReturn(-1);
+        when(prefs.getInterval()).thenReturn(60 * 60000L);
+        return prefs;
     }
 
     @Test

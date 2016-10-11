@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
@@ -16,7 +16,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ */
 package com.googlecode.mindbell;
 
 import android.app.Activity;
@@ -33,7 +33,9 @@ public class MindBell extends Activity {
         Log.d(TAG, message);
     }
 
-    /** Called when the activity is first created. */
+    /**
+     * Called when the activity is first created.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

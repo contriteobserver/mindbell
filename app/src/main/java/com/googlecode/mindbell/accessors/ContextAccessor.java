@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
@@ -16,7 +16,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ */
 package com.googlecode.mindbell.accessors;
 
 import android.app.PendingIntent;
@@ -41,6 +41,21 @@ public abstract class ContextAccessor {
 
     public abstract int getAlarmVolume();
 
+    public abstract void setAlarmVolume(int volume);
+
+    public PrefsAccessor getPrefs() {
+        return prefs;
+    }
+
+    public abstract boolean isBellSoundPlaying();
+
+    /**
+     * Return whether bell should be muted and show reason message if shouldShowMessage is true.
+     */
+    public boolean isMuteRequested(boolean shouldShowMessage) { // FIXME dkn Always called with true
+        return getMuteRequestReason(shouldShowMessage) != null;
+    }
+
     /**
      * Check whether bell should be muted, show reason if requested, and return reason, null otherwise.
      */
@@ -61,23 +76,11 @@ public abstract class ContextAccessor {
         return reason;
     }
 
-    public PrefsAccessor getPrefs() {
-        return prefs;
+    protected String getReasonMutedTill() {
+        return "bell manually muted till hh:mm";
     }
 
-    /**
-     * Returns reason to mute bell as String, override when concrete context is available.
-     */
-    protected String getReasonMutedInFlightMode() {
-        return "bell muted in flight mode";
-    }
-
-    /**
-     * Returns reason to mute bell as String, override when concrete context is available.
-     */
-    protected String getReasonMutedOffHook() {
-        return "bell muted during calls";
-    }
+    public abstract boolean isPhoneMuted();
 
     /**
      * Returns reason to mute bell as String, override when concrete context is available.
@@ -86,26 +89,23 @@ public abstract class ContextAccessor {
         return "bell muted with phone";
     }
 
-    protected String getReasonMutedTill() {
-        return"bell manually muted till hh:mm";
-    }
-
-    public abstract boolean isBellSoundPlaying();
+    public abstract boolean isPhoneOffHook();
 
     /**
-     * Return whether bell should be muted and show reason message if shouldShowMessage is true.
+     * Returns reason to mute bell as String, override when concrete context is available.
      */
-    public boolean isMuteRequested(boolean shouldShowMessage) { // FIXME dkn Always called with true
-        return getMuteRequestReason(shouldShowMessage) != null;
+    protected String getReasonMutedOffHook() {
+        return "bell muted during calls";
     }
 
     public abstract boolean isPhoneInFlightMode();
 
-    public abstract boolean isPhoneMuted();
-
-    public abstract boolean isPhoneOffHook();
-
-    public abstract void setAlarmVolume(int volume);
+    /**
+     * Returns reason to mute bell as String, override when concrete context is available.
+     */
+    protected String getReasonMutedInFlightMode() {
+        return "bell muted in flight mode";
+    }
 
     public abstract void showMessage(String message);
 

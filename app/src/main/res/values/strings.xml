@@ -129,8 +129,8 @@
     <string name="ringtoneNotAccessible">MindBell can not access the chosen ringtone (probably on external storage)</string>
     <string name="ringtoneDurationTooLongOrInvalid">Duration of chosen ringtone is too long</string>
 
-	<!-- AboutActivity -->
-	<string name="title_activity_about">About MindBell</string>
+    <!-- AboutActivity -->
+    <string name="title_activity_about">About MindBell</string>
 
     <!-- Status bar notifications -->
     <string name="statusTitleNotificationsDisabled">Please check notification settings</string>

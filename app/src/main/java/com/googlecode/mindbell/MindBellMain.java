@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  * for remembering what really counts
  * <p/>
@@ -16,7 +16,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ */
 package com.googlecode.mindbell;
 
 import android.Manifest;
@@ -53,48 +53,6 @@ import com.googlecode.mindbell.util.Utils;
 public class MindBellMain extends Activity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     private ContextAccessor contextAccessor;
-
-    private void checkWhetherToShowPopup() {
-        if (!hasShownPopup()) {
-            setPopupShown(true);
-            requestPermissionsAndOpenHelpDialog(); // calls onMenuItemClickHelp() afterwards
-        }
-    }
-
-    private boolean hasShownPopup() {
-        int versionCode = Utils.getApplicationVersionCode(getPackageManager(), getPackageName());
-        int versionCodePopupShownFor = contextAccessor.getPrefs().getPopup();
-        return versionCode == versionCodePopupShownFor;
-    }
-
-    /**
-     * Return information to be sent by mail.
-     */
-    private String getInfoMailText(boolean withLog) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\n");
-        sb.append(getText(R.string.main_message6_popup));
-        sb.append("\n\n");
-        sb.append(getText(R.string.main_message7_popup));
-        sb.append("\n\n");
-        sb.append(Utils.getApplicationInformation(getPackageManager(), getPackageName()));
-        sb.append("\n");
-        sb.append(Utils.getSystemInformation());
-        if (withLog) {
-            sb.append("\n");
-            sb.append(Utils.getLimitedLogEntriesAsString());
-        }
-        return sb.toString();
-    }
-
-    /**
-     * Show hint how to activate the bell.
-     */
-    private void notifyIfNotActive() {
-        if (!contextAccessor.getPrefs().setActive()) {
-            Toast.makeText(this, R.string.howToSet, Toast.LENGTH_LONG).show();
-        }
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -143,16 +101,29 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
         return true;
     }
 
-    /**
-     * Handles click on menu item active.
-     */
-    private boolean onMenuItemClickActive() {
-        PrefsAccessor prefsAccessor = contextAccessor.getPrefs();
-        prefsAccessor.setActive(!prefsAccessor.setActive()); // toggle active/inactive
-        contextAccessor.updateBellSchedule();
-        invalidateOptionsMenu(); // re-call onPrepareOptionsMenu()
-        CharSequence feedback = getText((prefsAccessor.setActive()) ? R.string.summaryActive : R.string.summaryNotActive);
-        Toast.makeText(this, feedback, Toast.LENGTH_SHORT).show();
+    private boolean onMenuItemClickHelp() {
+        View popupView = LayoutInflater.from(this).inflate(R.layout.popup_dialog, null);
+        String versionName = Utils.getApplicationVersionName(getPackageManager(), getPackageName());
+        AlertDialog.Builder builder = new AlertDialog.Builder(this) //
+                .setTitle(getText(R.string.app_name) + " " + versionName) //
+                .setIcon(R.drawable.icon) //
+                .setView(popupView) //
+                .setPositiveButton(R.string.main_yes_popup, null) //
+                .setNegativeButton(R.string.main_no_popup, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        onMenuItemClickSendInfo(true);
+                    }
+                });
+        if (Build.VERSION.SDK_INT >= 23) {
+            builder.setNeutralButton(R.string.main_neutral_popup, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    onMenuItemClickBatteryOptimizationSettings();
+                }
+            });
+        }
+        builder.show();
         return true;
     }
 
@@ -164,26 +135,29 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
         if (!prefs.setMeditating()) {
             View view = getLayoutInflater().inflate(R.layout.meditation_dialog, null);
             final TextView textViewRampUpTime = (TextView) view.findViewById(R.id.rampUpTime);
-            attachNumberPickerDialog(textViewRampUpTime, R.string.prefsRampUpTime, 5, 999, prefs.getRampUpTime(), new OnPickListener() {
-                @Override
-                public void onPick(int number) {
-                    prefs.setRampUpTime(number);
-                }
-            });
+            attachNumberPickerDialog(textViewRampUpTime, R.string.prefsRampUpTime, 5, 999, prefs.getRampUpTime(),
+                    new OnPickListener() {
+                        @Override
+                        public void onPick(int number) {
+                            prefs.setRampUpTime(number);
+                        }
+                    });
             final TextView textViewNumberOfPeriods = (TextView) view.findViewById(R.id.numberOfPeriods);
-            attachNumberPickerDialog(textViewNumberOfPeriods, R.string.prefsNumberOfPeriods, 1, 99, prefs.getNumberOfPeriods(), new OnPickListener() {
-                @Override
-                public void onPick(int number) {
-                    prefs.setNumberOfPeriods(number);
-                }
-            });
+            attachNumberPickerDialog(textViewNumberOfPeriods, R.string.prefsNumberOfPeriods, 1, 99, prefs.getNumberOfPeriods(),
+                    new OnPickListener() {
+                        @Override
+                        public void onPick(int number) {
+                            prefs.setNumberOfPeriods(number);
+                        }
+                    });
             final TextView textViewMeditationDuration = (TextView) view.findViewById(R.id.meditationDuration);
-            attachNumberPickerDialog(textViewMeditationDuration, R.string.prefsMeditationDuration, 1, 999, prefs.getMeditationDuration(), new OnPickListener() {
-                @Override
-                public void onPick(int number) {
-                    prefs.setMeditationDuration(number);
-                }
-            });
+            attachNumberPickerDialog(textViewMeditationDuration, R.string.prefsMeditationDuration, 1, 999,
+                    prefs.getMeditationDuration(), new OnPickListener() {
+                        @Override
+                        public void onPick(int number) {
+                            prefs.setMeditationDuration(number);
+                        }
+                    });
             final CheckBox checkBoxKeepScreenOn = (CheckBox) view.findViewById(R.id.keepScreenOn);
             checkBoxKeepScreenOn.setChecked(prefs.isKeepScreenOn());
             new AlertDialog.Builder(this) //
@@ -208,6 +182,51 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
     }
 
     /**
+     * Handles click on menu item active.
+     */
+    private boolean onMenuItemClickActive() {
+        PrefsAccessor prefsAccessor = contextAccessor.getPrefs();
+        prefsAccessor.setActive(!prefsAccessor.setActive()); // toggle active/inactive
+        contextAccessor.updateBellSchedule();
+        invalidateOptionsMenu(); // re-call onPrepareOptionsMenu()
+        CharSequence feedback = getText((prefsAccessor.setActive()) ? R.string.summaryActive : R.string.summaryNotActive);
+        Toast.makeText(this, feedback, Toast.LENGTH_SHORT).show();
+        return true;
+    }
+
+    /**
+     * Handles click on menu item send info.
+     */
+    private void onMenuItemClickSendInfo(boolean withLog) {
+        if (withLog) {
+            AndroidContextAccessor.getInstanceAndLogPreferences(this); // write settings to log
+            MindBell.logDebug("Excluded from battery optimization (always false for SDK < 23)? -> " + Utils.isAppWhitelisted(this));
+        }
+        Intent i = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getText(R.string.emailAddress).toString(), null));
+        i.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.emailSubject));
+        i.putExtra(Intent.EXTRA_TEXT, getInfoMailText(withLog));
+        try {
+            startActivity(Intent.createChooser(i, getText(R.string.emailChooseApp)));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this, getText(R.string.noEmailClients), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Handles click on menu item battery optimization settings.
+     *
+     * Warning: Caller must ensure SDK >= 23.
+     */
+    private void onMenuItemClickBatteryOptimizationSettings() {
+        if (Utils.isAppWhitelisted(this)) {
+            Toast.makeText(this, getText(R.string.alreadyWhitelisted), Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, getText(R.string.shouldGetWhitelisted), Toast.LENGTH_LONG).show();
+        }
+        startActivity(new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS));
+    }
+
+    /**
      * Sets an OnClickListener upon the text view to open a number picker dialog when it is clicked.
      *
      * @param textView
@@ -218,7 +237,8 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
      * @param onPickListener
      * @return
      */
-    private void attachNumberPickerDialog(final TextView textView, final int residTitle, final int min, final int max, final int value, final OnPickListener onPickListener) {
+    private void attachNumberPickerDialog(final TextView textView, final int residTitle, final int min, final int max,
+                                          final int value, final OnPickListener onPickListener) {
         textView.setText(String.valueOf(value));
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -230,7 +250,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                 new AlertDialog.Builder(MindBellMain.this) //
                         .setTitle(residTitle) //
                         .setView(numberPicker) //
-                        .setPositiveButton(android.R.string.ok,  new DialogInterface.OnClickListener() {
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 int newValue = numberPicker.getValue();
@@ -281,6 +301,26 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
     }
 
     /**
+     * Return information to be sent by mail.
+     */
+    private String getInfoMailText(boolean withLog) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n");
+        sb.append(getText(R.string.main_message6_popup));
+        sb.append("\n\n");
+        sb.append(getText(R.string.main_message7_popup));
+        sb.append("\n\n");
+        sb.append(Utils.getApplicationInformation(getPackageManager(), getPackageName()));
+        sb.append("\n");
+        sb.append(Utils.getSystemInformation());
+        if (withLog) {
+            sb.append("\n");
+            sb.append(Utils.getLimitedLogEntriesAsString());
+        }
+        return sb.toString();
+    }
+
+    /**
      * Flip to meditation view if setMeditating is true, to bell view otherwise.
      */
     private void flipToAppropriateView() {
@@ -288,45 +328,14 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
         viewFlipper.setDisplayedChild(contextAccessor.getPrefs().setMeditating() ? 1 : 2);
     }
 
-    /**
-     * Handles click on menu item send info.
-     */
-    private void onMenuItemClickSendInfo(boolean withLog) {
-        if (withLog) {
-            AndroidContextAccessor.getInstanceAndLogPreferences(this); // write settings to log
-            MindBell.logDebug("Excluded from battery optimization (always false for SDK < 23)? -> " + Utils.isAppWhitelisted(this));
-        }
-        Intent i = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                "mailto", getText(R.string.emailAddress).toString(), null));
-        i.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.emailSubject));
-        i.putExtra(Intent.EXTRA_TEXT, getInfoMailText(withLog));
-        try {
-            startActivity(Intent.createChooser(i, getText(R.string.emailChooseApp)));
-        } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(this, getText(R.string.noEmailClients), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /**
-     * Handles click on menu item battery optimization settings.
-     *
-     * Warning: Caller must ensure SDK >= 23.
-     */
-    private void onMenuItemClickBatteryOptimizationSettings() {
-        if (Utils.isAppWhitelisted(this)) {
-            Toast.makeText(this, getText(R.string.alreadyWhitelisted), Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this, getText(R.string.shouldGetWhitelisted), Toast.LENGTH_LONG).show();
-        }
-        startActivity(new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS));
-    }
-
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem activeItem = menu.findItem(R.id.active);
         activeItem.setIcon((contextAccessor.getPrefs().setActive()) ? R.drawable.ic_action_bell_off : R.drawable.ic_action_bell_on);
         MenuItem meditatingItem = menu.findItem(R.id.meditating);
-        meditatingItem.setIcon((contextAccessor.getPrefs().setMeditating()) ? R.drawable.ic_action_meditating_off : R.drawable.ic_action_meditating_on);
+        meditatingItem.setIcon((contextAccessor.getPrefs().setMeditating()) ?
+                R.drawable.ic_action_meditating_off :
+                R.drawable.ic_action_meditating_on);
         return true;
     }
 
@@ -361,12 +370,34 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
         return true;
     }
 
+    /**
+     * Show hint how to activate the bell.
+     */
+    private void notifyIfNotActive() {
+        if (!contextAccessor.getPrefs().setActive()) {
+            Toast.makeText(this, R.string.howToSet, Toast.LENGTH_LONG).show();
+        }
+    }
+
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
             checkWhetherToShowPopup();
         }
+    }
+
+    private void checkWhetherToShowPopup() {
+        if (!hasShownPopup()) {
+            setPopupShown(true);
+            requestPermissionsAndOpenHelpDialog(); // calls onMenuItemClickHelp() afterwards
+        }
+    }
+
+    private boolean hasShownPopup() {
+        int versionCode = Utils.getApplicationVersionCode(getPackageManager(), getPackageName());
+        int versionCodePopupShownFor = contextAccessor.getPrefs().getPopup();
+        return versionCode == versionCodePopupShownFor;
     }
 
     private void setPopupShown(boolean shown) {
@@ -380,7 +411,8 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
 
     private void requestPermissionsAndOpenHelpDialog() {
         if (!contextAccessor.getPrefs().isStatus() || !contextAccessor.getPrefs().isMuteOffHook() ||
-                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) ==
+                        PackageManager.PERMISSION_GRANTED) {
             onMenuItemClickHelp(); // Permission not needed or already granted => go directly to the next dialog
         } else {
             new AlertDialog.Builder(this) //
@@ -388,7 +420,8 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                     .setMessage(R.string.requestReadPhoneStateText) //
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            ActivityCompat.requestPermissions(MindBellMain.this, new String[]{Manifest.permission.READ_PHONE_STATE}, 0);
+                            ActivityCompat.requestPermissions(MindBellMain.this, new String[]{Manifest.permission.READ_PHONE_STATE},
+                                    0);
                         }
                     }) //
                     .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -407,32 +440,6 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
         // Request permission without handling the result but calling the popup dialog. If permissions are not sufficient for
         // the settings the user will get a warning notification and can grant permission via settings.
         onMenuItemClickHelp();
-    }
-
-    private boolean onMenuItemClickHelp() {
-        View popupView = LayoutInflater.from(this).inflate(R.layout.popup_dialog, null);
-        String versionName = Utils.getApplicationVersionName(getPackageManager(), getPackageName());
-        AlertDialog.Builder builder = new AlertDialog.Builder(this) //
-                .setTitle(getText(R.string.app_name) + " " + versionName) //
-                .setIcon(R.drawable.icon) //
-                .setView(popupView) //
-                .setPositiveButton(R.string.main_yes_popup, null) //
-                .setNegativeButton(R.string.main_no_popup, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        onMenuItemClickSendInfo(true);
-                    }
-                });
-        if (Build.VERSION.SDK_INT >= 23) {
-            builder.setNeutralButton(R.string.main_neutral_popup, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    onMenuItemClickBatteryOptimizationSettings();
-                }
-            });
-        }
-        builder.show();
-        return true;
     }
 
     /**

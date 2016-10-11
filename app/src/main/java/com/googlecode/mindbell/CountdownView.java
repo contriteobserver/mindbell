@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
@@ -15,7 +15,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ */
 package com.googlecode.mindbell;
 
 import android.content.Context;
@@ -40,24 +40,18 @@ import java.util.TimerTask;
  */
 public class CountdownView extends View {
     public static final long ONE_SECOND = 1000;
-
+    // Bound of the text to be displayed
+    Rect textBounds = new Rect();
     private long rampUpStartingTimeMillis;
     private long meditationStartingTimeMillis;
     private long meditationEndingTimeMillis;
-
     // Style information about the time slice to be drawn
     private Paint timeSlicePaint = new Paint();
     private Paint backgroundPaint = new Paint();
-
     // Style information about the countdown string to be displayed during ramp-up
     private TextPaint textPaintRampUp;
-
     // Style information about the countdown string to be displayed during meditation
     private TextPaint textPaintMeditation;
-
-    // Bound of the text to be displayed
-    Rect textBounds = new Rect();
-
     // Time to update the display with a time slice drawing regularly
     private Timer displayUpdateTimer;
 
@@ -84,21 +78,11 @@ public class CountdownView extends View {
         init(null, 0);
     }
 
-    public CountdownView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(attrs, 0);
-    }
-
-    public CountdownView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        init(attrs, defStyle);
-    }
-
     private void init(AttributeSet attrs, int defStyle) {
 
         // Load application and system attributes
         final TypedArray app = getContext().obtainStyledAttributes(attrs, R.styleable.CountdownView, defStyle, 0);
-        final TypedArray sys = getContext().obtainStyledAttributes(attrs, new int[] { android.R.attr.background });
+        final TypedArray sys = getContext().obtainStyledAttributes(attrs, new int[]{android.R.attr.background});
 
         // Set up a TextPaint object for writing the remaining time onto the time slice
         timeSlicePaint.setColor(Color.WHITE);
@@ -115,6 +99,16 @@ public class CountdownView extends View {
         textPaintMeditation.setFlags(Paint.ANTI_ALIAS_FLAG);
         textPaintMeditation.setColor(app.getColor(R.styleable.CountdownView_meditationColor, Color.RED));
         textPaintMeditation.setTextSize(app.getDimension(R.styleable.CountdownView_meditationSize, 100));
+    }
+
+    public CountdownView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(attrs, 0);
+    }
+
+    public CountdownView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init(attrs, defStyle);
     }
 
     /**
@@ -138,17 +132,6 @@ public class CountdownView extends View {
         }, 0, ONE_SECOND); // draw at once and then every second
 
         MindBell.logDebug("Countdown timers started");
-    }
-
-    /**
-     * Stops a meditation by stopping timers and releasing wake lock
-     */
-    public void stopDisplayUpdateTimer() {
-        if (displayUpdateTimer != null) {
-            displayUpdateTimer.cancel();
-            displayUpdateTimer = null;
-        }
-        MindBell.logDebug("Countdown timers stopped");
     }
 
     @Override
@@ -230,7 +213,7 @@ public class CountdownView extends View {
             rampUp = false;
             meditationSeconds = (meditationEndingTimeMillis - meditationStartingTimeMillis) / ONE_SECOND;
             elapsedMeditationSeconds = (currentTimeMillis - meditationStartingTimeMillis) / ONE_SECOND;
-        } else  {
+        } else {
             stopDisplayUpdateTimer(); // meditation is over therefore stop further drawing
             rampUp = false;
             meditationSeconds = (meditationEndingTimeMillis - meditationStartingTimeMillis) / ONE_SECOND;
@@ -247,7 +230,8 @@ public class CountdownView extends View {
 
         // Draw sector that represents the elapsed seconds versus the total number of seconds
         if (!rampUp && elapsedMeditationSeconds > 0) {
-            canvas.drawArc(timeSliceDimensions, -90, elapsedMeditationSeconds * 360 / (float) meditationSeconds, true, timeSlicePaint);
+            canvas.drawArc(timeSliceDimensions, -90, elapsedMeditationSeconds * 360 / (float) meditationSeconds, true,
+                    timeSlicePaint);
         }
 
         // Draw the text on top of the circle
@@ -257,6 +241,17 @@ public class CountdownView extends View {
         float textX = centerX - textBounds.exactCenterX();
         float textY = centerY - textBounds.exactCenterY();
         canvas.drawText(countdownString, textX, textY, textPaint);
+    }
+
+    /**
+     * Stops a meditation by stopping timers and releasing wake lock
+     */
+    public void stopDisplayUpdateTimer() {
+        if (displayUpdateTimer != null) {
+            displayUpdateTimer.cancel();
+            displayUpdateTimer = null;
+        }
+        MindBell.logDebug("Countdown timers stopped");
     }
 
     /**

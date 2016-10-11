@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
@@ -15,14 +15,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ */
 package com.googlecode.mindbell.accessors;
 
 import android.net.Uri;
 
 /**
- * All preference getter methods that influence the activities when the bell rings if active or meditating.
- * It is used to enable using different tones for different periods of meditation and for regular activity.
+ * All preference getter methods that influence the activities when the bell rings if active or meditating. It is used to enable
+ * using different tones for different periods of meditation and for regular activity.
  */
 public interface ActivityPrefsAccessor {
 

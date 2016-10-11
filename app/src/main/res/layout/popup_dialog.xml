@@ -19,10 +19,10 @@
  -->
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fadeScrollbars="false"
-    android:gravity="center_horizontal">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fadeScrollbars="false"
+            android:gravity="center_horizontal">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -33,81 +33,81 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autoLink="web"
+            android:paddingBottom="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:paddingTop="20dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="@string/main_message1_popup" />
+            android:text="@string/main_message1_popup"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autoLink="web"
-            android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:text="@string/main_message2_popup" />
+            android:paddingTop="10dp"
+            android:text="@string/main_message2_popup"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autoLink="web"
-            android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:text="@string/main_message3_popup" />
+            android:paddingTop="10dp"
+            android:text="@string/main_message3_popup"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autoLink="web"
-            android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:text="@string/main_message4_popup" />
+            android:paddingTop="10dp"
+            android:text="@string/main_message4_popup"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autoLink="web"
-            android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:text="@string/main_message5_popup" />
+            android:paddingTop="10dp"
+            android:text="@string/main_message5_popup"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autoLink="web"
-            android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:text="@string/main_message6_popup" />
+            android:paddingTop="10dp"
+            android:text="@string/main_message6_popup"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autoLink="web"
-            android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:text="@string/main_message7_popup" />
+            android:paddingTop="10dp"
+            android:text="@string/main_message7_popup"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autoLink="web"
-            android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:text="@string/main_message8_popup" />
+            android:paddingTop="10dp"
+            android:text="@string/main_message8_popup"/>
 
     </LinearLayout>
 

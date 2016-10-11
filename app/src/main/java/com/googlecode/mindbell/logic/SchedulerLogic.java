@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
@@ -16,7 +16,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ */
 package com.googlecode.mindbell.logic;
 
 import com.googlecode.mindbell.accessors.PrefsAccessor;
@@ -28,7 +28,9 @@ import java.util.Set;
 
 public class SchedulerLogic {
 
-    /** Random for generation of randomized intervals */
+    /**
+     * Random for generation of randomized intervals
+     */
     private static Random random = new Random();
 
     /**
@@ -48,16 +50,18 @@ public class SchedulerLogic {
         long normalizeMillis = normalizeValue * 60000L;
         targetTimeMillis = normalize(targetTimeMillis, meanInterval, normalize, normalizeMillis);
         if (!(new TimeOfDay(targetTimeMillis)).isDaytime(prefs)) { // inactive time?
-            targetTimeMillis = getNextDaytimeStartInMillis(targetTimeMillis, prefs.getDaytimeStart(), prefs.getActiveOnDaysOfWeek()) // start of next day time millis
-                    + (randomize ? randomizedInterval - meanInterval / 2 : 0) // if requested randomize but never before start of day
+            targetTimeMillis = getNextDaytimeStartInMillis(targetTimeMillis, prefs.getDaytimeStart(), prefs.getActiveOnDaysOfWeek())
+                    // start of next day time millis
+                    + (randomize ? randomizedInterval - meanInterval / 2 : 0)
+                    // if requested randomize but never before start of day
                     + (normalize ? normalizeMillis : 0); // if requested normalize to minute of first ring a day
         }
         return targetTimeMillis;
     }
 
     /**
-     * Compute a random value following a Gaussian distribution around the given mean. The value is guaranteed not to fall below
-     * 0.5 * mean and not above 1.5 * mean.
+     * Compute a random value following a Gaussian distribution around the given mean. The value is guaranteed not to fall below 0.5
+     * * mean and not above 1.5 * mean.
      *
      * @param mean
      * @return

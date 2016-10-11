@@ -18,10 +18,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  -->
- 
- <resources>
- 
-	<color name="aboutGrey">#ffa0a0a0</color>
-	<color name="notificationBackground">#ff0d1445</color>
-	
- </resources>
+
+<resources>
+
+    <color name="aboutGrey">#ffa0a0a0</color>
+    <color name="notificationBackground">#ff0d1445</color>
+
+</resources>

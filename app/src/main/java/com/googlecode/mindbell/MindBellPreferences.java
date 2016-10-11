@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
@@ -16,7 +16,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ */
 package com.googlecode.mindbell;
 
 import android.Manifest;
@@ -60,78 +60,6 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
     // Weird, but ringtone cannot be retrieved from RingtonePreference, only from SharedPreference or in ChangeListener
     private String preferenceRingtoneValue;
 
-    private void handleMuteHookOffAndStatusPermissionRequestResult(CheckBoxPreference one, int[] grantResults) {
-        if (grantResults.length == 0) {
-            // if request is cancelled, the result arrays are empty, so leave this option "off" and don't explain it
-        } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            // User granted the needed permission therefore this option is set to "on"
-            one.setChecked(true);
-        } else if (ActivityCompat.shouldShowRequestPermissionRationale(MindBellPreferences.this,
-                Manifest.permission.READ_PHONE_STATE)) {
-            // User denied the needed permission and can be given an explanation, so we show an explanation
-            new AlertDialog.Builder(MindBellPreferences.this) //
-                    .setTitle(R.string.reasonReadPhoneStateTitle) //
-                    .setMessage(R.string.reasonReadPhoneStateText) //
-                    .setPositiveButton(android.R.string.ok, null) //
-                    .create() //
-                    .show();
-        } else {
-            // User denied the needed permission and checked never ask again
-            new AlertDialog.Builder(MindBellPreferences.this) //
-                    .setTitle(R.string.neverAskAgainReadPhoneStateTitle) //
-                    .setMessage(R.string.neverAskAgainReadPhoneStateText) //
-                    .setPositiveButton(android.R.string.ok, null) //
-                    .create()//
-                    .show();
-        }
-    }
-
-    /**
-     * Returns true, if frequency divides an hour in whole numbers, e.g. true for 20 minutes.
-     */
-    private boolean isFrequencyDividesAnHour(String frequencyValue) {
-        long frequencyValueInMinutes = Long.parseLong(frequencyValue) / 60000L;
-        return 60 % frequencyValueInMinutes == 0;
-    }
-
-    /**
-     * Returns true, if normalize - ringing on the minute - is requested
-     */
-    private boolean isNormalize(String normalizeValue) {
-        return !AndroidPrefsAccessor.NORMALIZE_NONE.equals(normalizeValue);
-    }
-
-    /**
-     * Ensures that the CheckBoxPreferences checkBoxPreferenceMuteOffHook and checkBoxPreferenceStatus cannot be both "on" without
-     * having READ_PHONE_STATE permission by returning false when this rule is violated.
-     */
-    private boolean mediateMuteOffHookAndStatus(CheckBoxPreference other, Object newValue, int requestCode) {
-        if (!other.isChecked() || !((Boolean) newValue) || ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-            // Allow setting this option to "on" if other option is "off" or permission is granted
-            return true;
-        } else {
-            // Ask for permission if other option is "on" and this option shall be set to "on" but permission is missing
-            ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.READ_PHONE_STATE },
-                    requestCode);
-            // As the permission request is asynchronous we have to deny setting this option (to "on")
-            return false;
-        }
-    }
-
-    /**
-     * Ensures that the CheckBoxPreferences checkBoxPreferenceShow, checkBoxPreferenceSound and
-     * checkBoxPreferenceVibrate cannot be all "off", at least one must be checked.
-     */
-    private boolean mediateShowAndSoundAndVibrate(CheckBoxPreference firstOther, CheckBoxPreference secondOther, Object newValue) {
-        if (!firstOther.isChecked() && !secondOther.isChecked() && !((Boolean) newValue)) {
-            Toast.makeText(this, R.string.atLeastOneRingingActionNeeded,
-                    Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        return true;
-    }
-
     @SuppressWarnings("deprecation") // deprecation is because MindBell is not fragment-based
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,32 +73,33 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         addPreferencesFromResource(R.xml.preferences_2); // notifications depend on SDK
         addPreferencesFromResource(R.xml.preferences_3);
 
-        final CheckBoxPreference preferenceStatus = (CheckBoxPreference) getPreferenceScreen()
-                .findPreference(getText(R.string.keyStatus));
-        final CheckBoxPreference preferenceShow = (CheckBoxPreference) getPreferenceScreen()
-                .findPreference(getText(R.string.keyShow));
-        final CheckBoxPreference preferenceSound = (CheckBoxPreference) getPreferenceScreen()
-                .findPreference(getText(R.string.keySound));
-        final CheckBoxPreference preferenceUseStandardBell = (CheckBoxPreference) getPreferenceScreen()
-                .findPreference(getText(R.string.keyUseStandardBell));
-        final MediaVolumePreference preferenceVolume = (MediaVolumePreference) getPreferenceScreen()
-                .findPreference(getText(R.string.keyVolume));
-        final RingtonePreference preferenceRingtone = (RingtonePreference) getPreferenceScreen()
-                .findPreference(getText(R.string.keyRingtone));
-        final CheckBoxPreference preferenceVibrate = (CheckBoxPreference) getPreferenceScreen()
-                .findPreference(getText(R.string.keyVibrate));
-        final ListPreferenceWithSummaryFix preferencePattern = (ListPreferenceWithSummaryFix) getPreferenceScreen()
-                .findPreference(getText(R.string.keyPattern));
-        final CheckBoxPreference preferenceMuteOffHook = (CheckBoxPreference) getPreferenceScreen()
-                .findPreference(getText(R.string.keyMuteOffHook));
-        final ListPreferenceWithSummaryFix preferenceFrequency = (ListPreferenceWithSummaryFix) getPreferenceScreen()
-                .findPreference(getText(R.string.keyFrequency));
-        final CheckBoxPreference preferenceRandomize = (CheckBoxPreference) getPreferenceScreen()
-                .findPreference(getText(R.string.keyRandomize));
-        final ListPreferenceWithSummaryFix preferenceNormalize = (ListPreferenceWithSummaryFix) getPreferenceScreen()
-                .findPreference(getText(R.string.keyNormalize));
-        final MultiSelectListPreferenceWithSummary preferenceActiveOnDaysOfWeek = (MultiSelectListPreferenceWithSummary) getPreferenceScreen()
-                .findPreference(getText(R.string.keyActiveOnDaysOfWeek));
+        final CheckBoxPreference preferenceStatus =
+                (CheckBoxPreference) getPreferenceScreen().findPreference(getText(R.string.keyStatus));
+        final CheckBoxPreference preferenceShow =
+                (CheckBoxPreference) getPreferenceScreen().findPreference(getText(R.string.keyShow));
+        final CheckBoxPreference preferenceSound =
+                (CheckBoxPreference) getPreferenceScreen().findPreference(getText(R.string.keySound));
+        final CheckBoxPreference preferenceUseStandardBell =
+                (CheckBoxPreference) getPreferenceScreen().findPreference(getText(R.string.keyUseStandardBell));
+        final MediaVolumePreference preferenceVolume =
+                (MediaVolumePreference) getPreferenceScreen().findPreference(getText(R.string.keyVolume));
+        final RingtonePreference preferenceRingtone =
+                (RingtonePreference) getPreferenceScreen().findPreference(getText(R.string.keyRingtone));
+        final CheckBoxPreference preferenceVibrate =
+                (CheckBoxPreference) getPreferenceScreen().findPreference(getText(R.string.keyVibrate));
+        final ListPreferenceWithSummaryFix preferencePattern =
+                (ListPreferenceWithSummaryFix) getPreferenceScreen().findPreference(getText(R.string.keyPattern));
+        final CheckBoxPreference preferenceMuteOffHook =
+                (CheckBoxPreference) getPreferenceScreen().findPreference(getText(R.string.keyMuteOffHook));
+        final ListPreferenceWithSummaryFix preferenceFrequency =
+                (ListPreferenceWithSummaryFix) getPreferenceScreen().findPreference(getText(R.string.keyFrequency));
+        final CheckBoxPreference preferenceRandomize =
+                (CheckBoxPreference) getPreferenceScreen().findPreference(getText(R.string.keyRandomize));
+        final ListPreferenceWithSummaryFix preferenceNormalize =
+                (ListPreferenceWithSummaryFix) getPreferenceScreen().findPreference(getText(R.string.keyNormalize));
+        final MultiSelectListPreferenceWithSummary preferenceActiveOnDaysOfWeek =
+                (MultiSelectListPreferenceWithSummary) getPreferenceScreen().findPreference(
+                        getText(R.string.keyActiveOnDaysOfWeek));
 
         preferenceStatus.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
@@ -282,8 +211,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                 } else {
                     // if frequency is NOT factor of an hour, ringing on the minute may NOT be set
                     if (preferenceNormalize.isEnabled() && isNormalize(preferenceNormalize.getValue())) {
-                        Toast.makeText(MindBellPreferences.this, R.string.frequencyDoesNotFitIntoAnHour,
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MindBellPreferences.this, R.string.frequencyDoesNotFitIntoAnHour, Toast.LENGTH_SHORT).show();
                         return false;
                     } else {
                         preferenceNormalize.setEnabled(false);
@@ -305,8 +233,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                     return true;
                 } else {
                     // if frequency is NOT factor of an hour, ringing on the minute may NOT be set
-                    Toast.makeText(MindBellPreferences.this, R.string.frequencyDoesNotFitIntoAnHour,
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MindBellPreferences.this, R.string.frequencyDoesNotFitIntoAnHour, Toast.LENGTH_SHORT).show();
                     return false;
                 }
             }
@@ -317,8 +244,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
 
             public boolean onPreferenceChange(Preference preference, Object newValues) {
                 if (((Set<?>) newValues).isEmpty()) {
-                    Toast.makeText(MindBellPreferences.this, R.string.atLeastOneActiveDayNeeded,
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MindBellPreferences.this, R.string.atLeastOneActiveDayNeeded, Toast.LENGTH_SHORT).show();
                     return false;
                 }
                 return true;
@@ -330,19 +256,51 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         preferenceUseStandardBell.setEnabled(preferenceSound.isChecked());
         preferenceRingtone.setEnabled(preferenceSound.isChecked() && !preferenceUseStandardBell.isChecked());
         preferenceRingtoneValue = prefs.getRingtone(); // cannot be retrieved from preference
-        setPreferenceRingtoneSummary(preferenceRingtone, preferenceRingtoneValue );
-        setPreferenceVolumeSoundUri(preferenceVolume, preferenceUseStandardBell.isChecked(), preferenceRingtoneValue );
+        setPreferenceRingtoneSummary(preferenceRingtone, preferenceRingtoneValue);
+        setPreferenceVolumeSoundUri(preferenceVolume, preferenceUseStandardBell.isChecked(), preferenceRingtoneValue);
 
     }
 
     /**
-     * Set sound uri in preferenceVolume depending on preferenceUseStandardBell and preferenceRingtone, so real sound is used for volume setting.
+     * Ensures that the CheckBoxPreferences checkBoxPreferenceMuteOffHook and checkBoxPreferenceStatus cannot be both "on" without
+     * having READ_PHONE_STATE permission by returning false when this rule is violated.
+     */
+    private boolean mediateMuteOffHookAndStatus(CheckBoxPreference other, Object newValue, int requestCode) {
+        if (!other.isChecked() || !((Boolean) newValue) ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) ==
+                        PackageManager.PERMISSION_GRANTED) {
+            // Allow setting this option to "on" if other option is "off" or permission is granted
+            return true;
+        } else {
+            // Ask for permission if other option is "on" and this option shall be set to "on" but permission is missing
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, requestCode);
+            // As the permission request is asynchronous we have to deny setting this option (to "on")
+            return false;
+        }
+    }
+
+    /**
+     * Ensures that the CheckBoxPreferences checkBoxPreferenceShow, checkBoxPreferenceSound and checkBoxPreferenceVibrate cannot be
+     * all "off", at least one must be checked.
+     */
+    private boolean mediateShowAndSoundAndVibrate(CheckBoxPreference firstOther, CheckBoxPreference secondOther, Object newValue) {
+        if (!firstOther.isChecked() && !secondOther.isChecked() && !((Boolean) newValue)) {
+            Toast.makeText(this, R.string.atLeastOneRingingActionNeeded, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Set sound uri in preferenceVolume depending on preferenceUseStandardBell and preferenceRingtone, so real sound is used for
+     * volume setting.
      *
      * @param preferenceVolume
      * @param useStandardBell
      * @param ringtoneUriString
      */
-    private void setPreferenceVolumeSoundUri(MediaVolumePreference preferenceVolume, boolean useStandardBell, String ringtoneUriString) {
+    private void setPreferenceVolumeSoundUri(MediaVolumePreference preferenceVolume, boolean useStandardBell,
+                                             String ringtoneUriString) {
         Uri soundUri;
         // This implementation is almost the same as AndroidPrefsAccessor#getSoundUri()
         if (useStandardBell || ringtoneUriString.isEmpty()) {
@@ -397,6 +355,21 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         preferenceRingtone.setSummary(summary);
     }
 
+    /**
+     * Returns true, if frequency divides an hour in whole numbers, e.g. true for 20 minutes.
+     */
+    private boolean isFrequencyDividesAnHour(String frequencyValue) {
+        long frequencyValueInMinutes = Long.parseLong(frequencyValue) / 60000L;
+        return 60 % frequencyValueInMinutes == 0;
+    }
+
+    /**
+     * Returns true, if normalize - ringing on the minute - is requested
+     */
+    private boolean isNormalize(String normalizeValue) {
+        return !AndroidPrefsAccessor.NORMALIZE_NONE.equals(normalizeValue);
+    }
+
     @Override
     public void onPause() {
         super.onPause();
@@ -407,18 +380,44 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
-        case REQUEST_CODE_STATUS:
-            CheckBoxPreference checkBoxPreferenceStatus = (CheckBoxPreference) getPreferenceScreen()
-                    .findPreference(getText(R.string.keyStatus));
-            handleMuteHookOffAndStatusPermissionRequestResult(checkBoxPreferenceStatus, grantResults);
-            break;
-        case REQUEST_CODE_MUTE_OFF_HOOK:
-            CheckBoxPreference checkBoxPreferenceMuteOffHook = (CheckBoxPreference) getPreferenceScreen()
-                    .findPreference(getText(R.string.keyMuteOffHook));
-            handleMuteHookOffAndStatusPermissionRequestResult(checkBoxPreferenceMuteOffHook, grantResults);
-            break;
-        default:
-            break;
+            case REQUEST_CODE_STATUS:
+                CheckBoxPreference checkBoxPreferenceStatus =
+                        (CheckBoxPreference) getPreferenceScreen().findPreference(getText(R.string.keyStatus));
+                handleMuteHookOffAndStatusPermissionRequestResult(checkBoxPreferenceStatus, grantResults);
+                break;
+            case REQUEST_CODE_MUTE_OFF_HOOK:
+                CheckBoxPreference checkBoxPreferenceMuteOffHook =
+                        (CheckBoxPreference) getPreferenceScreen().findPreference(getText(R.string.keyMuteOffHook));
+                handleMuteHookOffAndStatusPermissionRequestResult(checkBoxPreferenceMuteOffHook, grantResults);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void handleMuteHookOffAndStatusPermissionRequestResult(CheckBoxPreference one, int[] grantResults) {
+        if (grantResults.length == 0) {
+            // if request is cancelled, the result arrays are empty, so leave this option "off" and don't explain it
+        } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // User granted the needed permission therefore this option is set to "on"
+            one.setChecked(true);
+        } else if (ActivityCompat.shouldShowRequestPermissionRationale(MindBellPreferences.this,
+                Manifest.permission.READ_PHONE_STATE)) {
+            // User denied the needed permission and can be given an explanation, so we show an explanation
+            new AlertDialog.Builder(MindBellPreferences.this) //
+                    .setTitle(R.string.reasonReadPhoneStateTitle) //
+                    .setMessage(R.string.reasonReadPhoneStateText) //
+                    .setPositiveButton(android.R.string.ok, null) //
+                    .create() //
+                    .show();
+        } else {
+            // User denied the needed permission and checked never ask again
+            new AlertDialog.Builder(MindBellPreferences.this) //
+                    .setTitle(R.string.neverAskAgainReadPhoneStateTitle) //
+                    .setMessage(R.string.neverAskAgainReadPhoneStateText) //
+                    .setPositiveButton(android.R.string.ok, null) //
+                    .create()//
+                    .show();
         }
     }
 

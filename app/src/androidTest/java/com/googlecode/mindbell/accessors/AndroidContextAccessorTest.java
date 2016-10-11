@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
@@ -16,7 +16,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ */
 package com.googlecode.mindbell.accessors;
 
 import android.content.Context;
@@ -34,11 +34,6 @@ import org.junit.runner.RunWith;
 @SmallTest
 public class AndroidContextAccessorTest extends AndroidTestCase {
 
-    private ContextAccessor createContextAccessor() {
-        Context context = new RenamingDelegatingContext(InstrumentationRegistry.getTargetContext(), "test_");;
-        return AndroidContextAccessor.getInstance(context);
-    }
-
     @Test
     public void testBellVolume() {
         // setup
@@ -48,6 +43,12 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
         ca.startPlayingSoundAndVibrate(ca.getPrefs().forRegularOperation(), null);
         // verify ... be sure to have sound checked as an activity on your emulated device
         assertEquals(ca.getAlarmMaxVolume(), ca.getAlarmVolume());
+    }
+
+    private ContextAccessor createContextAccessor() {
+        Context context = new RenamingDelegatingContext(InstrumentationRegistry.getTargetContext(), "test_");
+        ;
+        return AndroidContextAccessor.getInstance(context);
     }
 
     @Test

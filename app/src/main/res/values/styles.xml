@@ -17,12 +17,12 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  -->
- 
- <resources>
- 
-	<style name="aboutDialog" parent="android:Theme.Dialog">
-		<item name="android:windowBackground">@color/aboutGrey</item>
-		<item name="android:colorForeground">#ff000000</item>
-	</style>
-   
+
+<resources>
+
+    <style name="aboutDialog" parent="android:Theme.Dialog">
+        <item name="android:windowBackground">@color/aboutGrey</item>
+        <item name="android:colorForeground">#ff000000</item>
+    </style>
+
 </resources>

@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
@@ -16,7 +16,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ */
 package com.googlecode.mindbell.util;
 
 import android.content.ContentResolver;
@@ -45,10 +45,10 @@ public class Utils {
      */
     private static final String CUT_OFF_MESSAGE = "[... log to long ... cut off ...]";
     /**
-     * A TransactionTooLargeException is thrown if extra data transferred by an intent is too large (community is experiencing
-     * 90KB, 500KB, 1MB to be the max, on emulator with API level 16, 100KB is already too much, so 70KB should be enough to
-     * read), this results in a FAILED BINDER TRANSACTION crash of the caller app but exception is thrown in the called app.
-     * Therefore log output is limited to this size.
+     * A TransactionTooLargeException is thrown if extra data transferred by an intent is too large (community is experiencing 90KB,
+     * 500KB, 1MB to be the max, on emulator with API level 16, 100KB is already too much, so 70KB should be enough to read), this
+     * results in a FAILED BINDER TRANSACTION crash of the caller app but exception is thrown in the called app. Therefore log
+     * output is limited to this size.
      */
     private static final int MAX_LOG_LENGTH = 70000;
 
@@ -56,13 +56,21 @@ public class Utils {
      * Read application information and return them as concatenated string.
      */
     public static String getApplicationInformation(PackageManager packageManager, String packageName) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("===== beginning of application information =====").append("\n");
-            sb.append("packageName").append("=").append(packageName).append("\n");
-            sb.append("packageInfo.versionName").append("=").append(getApplicationVersionName(packageManager, packageName)).append("\n");
-            sb.append("packageInfo.versionCode").append("=").append(getApplicationVersionCode(packageManager, packageName)).append("\n");
-            sb.append("===== end of application information =====").append("\n");
-            return sb.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("===== beginning of application information =====").append("\n");
+        sb.append("packageName").append("=").append(packageName).append("\n");
+        sb
+                .append("packageInfo.versionName")
+                .append("=")
+                .append(getApplicationVersionName(packageManager, packageName))
+                .append("\n");
+        sb
+                .append("packageInfo.versionCode")
+                .append("=")
+                .append(getApplicationVersionCode(packageManager, packageName))
+                .append("\n");
+        sb.append("===== end of application information =====").append("\n");
+        return sb.toString();
     }
 
     /**
@@ -70,8 +78,8 @@ public class Utils {
      */
     public static String getApplicationVersionName(PackageManager packageManager, String packageName) {
         try {
-        PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
-        return packageInfo.versionName;
+            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
+            return packageInfo.versionName;
         } catch (NameNotFoundException e) {
             Log.e(TAG, "Could not retrieve package information" + e);
             return ("N/A");
@@ -83,8 +91,8 @@ public class Utils {
      */
     public static int getApplicationVersionCode(PackageManager packageManager, String packageName) {
         try {
-        PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
-        return packageInfo.versionCode;
+            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
+            return packageInfo.versionCode;
         } catch (NameNotFoundException e) {
             Log.e(TAG, "Could not retrieve package information" + e);
             return 0;

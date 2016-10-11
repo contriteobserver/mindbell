@@ -20,25 +20,31 @@
  -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/active"
-        android:title="@string/prefsActive"
-        android:showAsAction="always"/> <!-- icon to be set in MindBellMain#onPrepareOptionsMenu() -->
-    <item android:id="@+id/meditating"
-        android:title="@string/prefsMeditating"
-        android:showAsAction="always"/> <!-- icon to be set in MindBellMain#onPrepareOptionsMenu() -->
-    <item android:id="@+id/settings"
-        android:title="@string/menuSettings"
+    <item
+        android:id="@+id/active"
         android:showAsAction="always"
-        android:icon="@drawable/ic_settings_white_24dp"/>
-    <item android:id="@+id/help"
-        android:title="@string/menuHelp"
+        android:title="@string/prefsActive"/> <!-- icon to be set in MindBellMain#onPrepareOptionsMenu() -->
+    <item
+        android:id="@+id/meditating"
+        android:showAsAction="always"
+        android:title="@string/prefsMeditating"/> <!-- icon to be set in MindBellMain#onPrepareOptionsMenu() -->
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/ic_settings_white_24dp"
+        android:showAsAction="always"
+        android:title="@string/menuSettings"/>
+    <item
+        android:id="@+id/help"
+        android:icon="@drawable/ic_help_white_24px"
         android:showAsAction="ifRoom"
-        android:icon="@drawable/ic_help_white_24px"/>
-    <item android:id="@+id/about"
-        android:title="@string/menuAbout"
+        android:title="@string/menuHelp"/>
+    <item
+        android:id="@+id/about"
+        android:icon="@drawable/ic_info_white_24dp"
         android:showAsAction="ifRoom"
-        android:icon="@drawable/ic_info_white_24dp"/>
-    <item android:id="@+id/muteFor"
-        android:title="@string/statusActionMuteFor"
-        android:showAsAction="never"/>
+        android:title="@string/menuAbout"/>
+    <item
+        android:id="@+id/muteFor"
+        android:showAsAction="never"
+        android:title="@string/statusActionMuteFor"/>
 </menu>

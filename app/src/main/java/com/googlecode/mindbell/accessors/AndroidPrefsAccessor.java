@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
@@ -16,7 +16,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ */
 package com.googlecode.mindbell.accessors;
 
 import android.content.Context;
@@ -82,7 +82,9 @@ import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.Preference.
 
 public class AndroidPrefsAccessor extends PrefsAccessor {
 
-    /** Time to wait for displayed bell to be send back */
+    /**
+     * Time to wait for displayed bell to be send back
+     */
     public static final long WAITING_TIME = 15000L;
 
     public static final String NORMALIZE_NONE = "-1";
@@ -115,8 +117,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private ActivityPrefsAccessor activityPrefsForMeditationEnding = new ActivityPrefsAccessorForMeditationEnding();
 
     /**
-     * Constructs an accessor for preferences in the given context, please use {@link AndroidContextAccessor#getPrefs()} instead
-     * of calling this directly.
+     * Constructs an accessor for preferences in the given context, please use {@link AndroidContextAccessor#getPrefs()} instead of
+     * calling this directly.
      */
     protected AndroidPrefsAccessor(Context context, boolean logSettings) {
         settings = context.getSharedPreferences(context.getPackageName() + "_preferences", Context.MODE_PRIVATE);
@@ -128,9 +130,9 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
         // Define bell resource uri values ... doing it here because this needs a context
         bellResourceUriMap = new HashMap<>();
-        bellResourceUriMap.put("1" ,Utils.getResourceUri(context, R.raw.bell10s));
-        bellResourceUriMap.put("2" ,Utils.getResourceUri(context, R.raw.bell20s));
-        bellResourceUriMap.put("3" ,Utils.getResourceUri(context, R.raw.bell30s));
+        bellResourceUriMap.put("1", Utils.getResourceUri(context, R.raw.bell10s));
+        bellResourceUriMap.put("2", Utils.getResourceUri(context, R.raw.bell20s));
+        bellResourceUriMap.put("3", Utils.getResourceUri(context, R.raw.bell30s));
 
         // Check the settings and reset invalid ones
         checkSettings(context, logSettings);
@@ -144,8 +146,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
         // Define all preference keys and their default values
         addPreference(keyActive, false, BOOLEAN, context);
-        addPreference(keyActiveOnDaysOfWeek, new HashSet<>(
-                Arrays.asList(new String[]{"1", "2", "3", "4", "5", "6", "7"})), STRING_SET, context);
+        addPreference(keyActiveOnDaysOfWeek, new HashSet<>(Arrays.asList(new String[]{"1", "2", "3", "4", "5", "6", "7"})),
+                STRING_SET, context);
         addPreference(keyEnd, "21", STRING, context);
         addPreference(keyFrequency, "900000", STRING, context); // 15 min
         addPreference(keyKeepScreenOn, false, BOOLEAN, context);
@@ -188,7 +190,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         entryValuesMap.put(keyMeditationInterruptingBell, context.getResources().getStringArray(R.array.bellEntryValues));
         entryValuesMap.put(keyNormalize, context.getResources().getStringArray(R.array.normalizeEntryValues));
         entryValuesMap.put(keyPattern, context.getResources().getStringArray(R.array.patternEntryValues));
-        entryValuesMap.put(keyRingtone, new String[] {}); // we don't need to know the possible ringtone values
+        entryValuesMap.put(keyRingtone, new String[]{}); // we don't need to know the possible ringtone values
         entryValuesMap.put(keyStart, context.getResources().getStringArray(R.array.hourEntryValues));
 
         // Track whether a stacktrace shall be logged to find out the reason for sometimes deleted preferences
@@ -206,7 +208,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         } else {
             MindBell.logDebug("Preferences checked and found to be ok");
         }
-        
+
         // Finally report all currently existing settings if requested
         if (logSettings) {
             StringBuilder sb = new StringBuilder();
@@ -223,7 +225,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     /**
      * Puts a newly created Preference into the referenceMap with the given resid as key of the map.
-     *  @param resid
+     *
+     * @param resid
      * @param defaultValue
      * @param type
      * @param context
@@ -266,7 +269,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
                             List<String> entryValues = Arrays.asList(entryValuesMap.get(preference.resid));
                             if (aStringInSet != null && !entryValues.contains(aStringInSet)) {
                                 settings.edit().remove(preference.key).apply();
-                                Log.w(TAG, "Removed setting '" + preference + "' since it had (at least one) wrong value '" + aStringInSet + "'");
+                                Log.w(TAG, "Removed setting '" + preference + "' since it had (at least one) wrong value '" +
+                                        aStringInSet + "'");
                                 return true;
                             }
                         }
@@ -283,7 +287,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     /**
      * Resets a preference to its default value if it is missing and in that case returns true.
-     * 
+     *
      * @param preference
      * @return
      */
@@ -297,78 +301,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     /**
-     * Returns the current boolean setting of the preference with the given resid.
-     *
-     * @param resid
-     * @return
-     */
-    private boolean getBooleanSetting(int resid) {
-        return (Boolean) getSetting(resid);
-    }
-    
-    /**
-     * Returns the current float setting of the preference with the given resid.
-     *
-     * @param resid
-     * @return
-     */
-    private float getFloatSetting(int resid) {
-        return (Float) getSetting(resid);
-    }
-    
-    /**
-     * Returns the current int setting of the preference with the given resid.
-     *
-     * @param resid
-     * @return
-     */
-    private int getIntSetting(int resid) {
-        return (Integer) getSetting(resid);
-    }
-    
-    /**
-     * Returns the current long setting of the preference with the given resid.
-     *
-     * @param resid
-     * @return
-     */
-    private long getLongSetting(int resid) {
-        return (Long) getSetting(resid);
-    }
-    
-    /**
-     * Returns the current string setting of the preference with the given resid.
-     *
-     * @param resid
-     * @return
-     */
-    private String getStringSetting(int resid) {
-        return (String) getSetting(resid);
-    }
-    
-    /**
-     * Returns the current string set setting of the preference with the given resid.
-     *
-     * @param resid
-     * @return
-     */
-    private Set<String> getStringSetSetting(int resid) {
-        return (Set<String>) getSetting(resid);
-    }
-    
-    /**
-     * Returns the current setting of the preference with the given resid
-     * 
-     * @param resid
-     * @return
-     */
-    private Object getSetting(int resid) {
-        return getSetting(preferenceMap.get(resid));
-    }
-    
-    /**
      * Returns the current setting of the preference.
-     * 
+     *
      * @param preference
      * @return
      */
@@ -393,15 +327,14 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     /**
-     * Sets the preference with the given resid to the given value.
+     * Resets the preference with the given resid to its default value.
      *
-     * @param resid
-     * @param value
+     * @param preference
      */
-    private void setSetting(int resid, Object value) {
-        setSetting(preferenceMap.get(resid), value);
+    private void resetSetting(Preference preference) {
+        setSetting(preference, preference.defaultValue);
     }
-    
+
     /**
      * Sets the preference to the given value.
      *
@@ -434,27 +367,29 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         }
     }
 
-    /**
-     * Resets the preference with the given resid to its default value.
-     *
-     * @param resid
-     */
-    private void resetSetting(int resid) {
-        resetSetting(preferenceMap.get(resid));
-    }
-
-    /**
-     * Resets the preference with the given resid to its default value.
-     *
-     * @param preference
-     */
-    private void resetSetting(Preference preference) {
-        setSetting(preference, preference.defaultValue);
-    }
-
     @Override
     public boolean isShow() {
         return getBooleanSetting(keyShow);
+    }
+
+    /**
+     * Returns the current boolean setting of the preference with the given resid.
+     *
+     * @param resid
+     * @return
+     */
+    private boolean getBooleanSetting(int resid) {
+        return (Boolean) getSetting(resid);
+    }
+
+    /**
+     * Returns the current setting of the preference with the given resid
+     *
+     * @param resid
+     * @return
+     */
+    private Object getSetting(int resid) {
+        return getSetting(preferenceMap.get(resid));
     }
 
     @Override
@@ -468,13 +403,18 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public Set<Integer> getActiveOnDaysOfWeek() {
-        Set<String> strings = getStringSetSetting(keyActiveOnDaysOfWeek);
-        Set<Integer> integers = new HashSet<>();
-        for (String string : strings) {
-            integers.add(Integer.valueOf(string));
-        }
-        return integers;
+    public void setStatus(boolean statusNotification) {
+        setSetting(keyStatus, statusNotification);
+    }
+
+    /**
+     * Sets the preference with the given resid to the given value.
+     *
+     * @param resid
+     * @param value
+     */
+    private void setSetting(int resid, Object value) {
+        setSetting(preferenceMap.get(resid), value);
     }
 
     @Override
@@ -495,8 +435,38 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
+    public Set<Integer> getActiveOnDaysOfWeek() {
+        Set<String> strings = getStringSetSetting(keyActiveOnDaysOfWeek);
+        Set<Integer> integers = new HashSet<>();
+        for (String string : strings) {
+            integers.add(Integer.valueOf(string));
+        }
+        return integers;
+    }
+
+    /**
+     * Returns the current string set setting of the preference with the given resid.
+     *
+     * @param resid
+     * @return
+     */
+    private Set<String> getStringSetSetting(int resid) {
+        return (Set<String>) getSetting(resid);
+    }
+
+    @Override
     public float getVolume() {
         return getFloatSetting(keyVolume);
+    }
+
+    /**
+     * Returns the current float setting of the preference with the given resid.
+     *
+     * @param resid
+     * @return
+     */
+    private float getFloatSetting(int resid) {
+        return (Float) getSetting(resid);
     }
 
     @Override
@@ -522,6 +492,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     private int getDaytimeEndHour() {
         return Integer.valueOf(getStringSetting(keyEnd));
+    }
+
+    /**
+     * Returns the current string setting of the preference with the given resid.
+     *
+     * @param resid
+     * @return
+     */
+    private String getStringSetting(int resid) {
+        return (String) getSetting(resid);
     }
 
     @Override
@@ -619,11 +599,6 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public void setStatus(boolean statusNotification) {
-        setSetting(keyStatus, statusNotification);
-    }
-
-    @Override
     public boolean useStatusIconMaterialDesign() {
         return getBooleanSetting(keyStatusIconMaterialDesign);
     }
@@ -636,6 +611,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public int getRampUpTime() {
         return getIntSetting(keyRampUpTime);
+    }
+
+    /**
+     * Returns the current int setting of the preference with the given resid.
+     *
+     * @param resid
+     * @return
+     */
+    private int getIntSetting(int resid) {
+        return (Integer) getSetting(resid);
     }
 
     @Override
@@ -671,6 +656,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public long getRampUpStartingTimeMillis() {
         return getLongSetting(keyRampUpStartingTimeMillis);
+    }
+
+    /**
+     * Returns the current long setting of the preference with the given resid.
+     *
+     * @param resid
+     * @return
+     */
+    private long getLongSetting(int resid) {
+        return (Long) getSetting(resid);
     }
 
     @Override
@@ -738,6 +733,15 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         resetSetting(keyOriginalVolume);
     }
 
+    /**
+     * Resets the preference with the given resid to its default value.
+     *
+     * @param resid
+     */
+    private void resetSetting(int resid) {
+        resetSetting(preferenceMap.get(resid));
+    }
+
     @Override
     public int getPopup() {
         return getIntSetting(keyPopup);
@@ -755,17 +759,17 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     @Override
     public ActivityPrefsAccessor forRegularOperation() {
-       return activityPrefsForRegularOperation;
+        return activityPrefsForRegularOperation;
     }
 
     @Override
     public ActivityPrefsAccessor forTapping() {
-       return activityPrefsForTapping;
+        return activityPrefsForTapping;
     }
 
     @Override
     public ActivityPrefsAccessor forMeditationBeginning() {
-       return activityPrefsForMeditationBeginning;
+        return activityPrefsForMeditationBeginning;
     }
 
     @Override
@@ -777,17 +781,14 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     public ActivityPrefsAccessor forMeditationEnding() {
         return activityPrefsForMeditationEnding;
     }
-    
+
     static class Preference {
-        
-        enum Type { BOOLEAN, FLOAT, INTEGER, LONG, STRING, STRING_SET };
-        
+
         private int resid;
-        
+
+        ;
         private String key;
-
         private Object defaultValue;
-
         private Type type;
 
         public Preference(int resid, String key, Object defaultValue, Type type) {
@@ -796,6 +797,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             this.type = type;
             this.defaultValue = defaultValue;
         }
+
+        enum Type {BOOLEAN, FLOAT, INTEGER, LONG, STRING, STRING_SET}
 
     }
 
@@ -879,7 +882,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         public float getVolume() {
             return AndroidPrefsAccessor.this.getVolume();
         }
-        
+
     }
 
     private class ActivityPrefsAccessorForMeditationBeginning extends ActivityPrefsAccessorForMeditation {
@@ -888,7 +891,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         public Uri getSoundUri() {
             return bellResourceUriMap.get(getMeditationBeginningBell());
         }
-        
+
     }
 
     private class ActivityPrefsAccessorForMeditationInterrupting extends ActivityPrefsAccessorForMeditation {

@@ -20,22 +20,22 @@
  -->
 
 <LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:mindbell="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:mindbell="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <ViewFlipper
         android:id="@+id/viewFlipper"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:gravity="center" >
+        android:gravity="center">
 
         <RelativeLayout
-            android:background="#ff0f0f41"
-            android:gravity="right"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="#ff0f0f41"
+            android:gravity="right">
 
             <TextView
                 android:id="@+id/tvExplanation"
@@ -44,25 +44,25 @@
                 android:layout_alignParentBottom="true"
                 android:background="@drawable/semitransparent"
                 android:padding="20px"
-                android:text="@string/explanation" />
+                android:text="@string/explanation"/>
 
             <TextView
                 android:id="@+id/tvHowToRing"
+                style="@android:style/TextAppearance.DeviceDefault.Large"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@id/tvExplanation"
                 android:layout_centerHorizontal="true"
-                android:textColor="#ffffffff"
                 android:padding="20px"
-                style="@android:style/TextAppearance.DeviceDefault.Large"
-                android:text="@string/howToRing" />
+                android:text="@string/howToRing"
+                android:textColor="#ffffffff"/>
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_above="@id/tvExplanation"
                 android:scaleType="centerInside"
-                android:src="@drawable/bell" />
+                android:src="@drawable/bell"/>
 
         </RelativeLayout>
 
@@ -71,14 +71,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#ff0f0f41"
+            android:paddingBottom="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            mindbell:rampUpColor="#00FF00"
-            mindbell:rampUpSize="144sp"
             mindbell:meditationColor="#FF6600"
-            mindbell:meditationSize="144sp" />
+            mindbell:meditationSize="144sp"
+            mindbell:rampUpColor="#00FF00"
+            mindbell:rampUpSize="144sp"/>
 
     </ViewFlipper>
 

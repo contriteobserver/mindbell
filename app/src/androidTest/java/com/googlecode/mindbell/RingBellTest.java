@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
@@ -16,7 +16,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ */
 package com.googlecode.mindbell;
 
 import android.content.Context;
@@ -46,16 +46,21 @@ import static org.junit.Assert.assertTrue;
 @SmallTest
 public class RingBellTest {
 
-    private Context context = null;
     private final Map<String, Boolean> booleanSettings = new HashMap<String, Boolean>();
-
     private final Runnable dummyRunnable = new Runnable() {
         public void run() {
-        };
+        }
+
+        ;
     };
+    private Context context = null;
 
     private Runnable getDummyRunnable() {
         return dummyRunnable;
+    }
+
+    private void setContextMuteInFlightMode(boolean value) {
+        setBooleanContext(R.string.keyMuteInFlightMode, value);
     }
 
     private void setBooleanContext(int keyID, boolean value) {
@@ -80,21 +85,10 @@ public class RingBellTest {
         spe.commit();
     }
 
-    private void setContextMuteInFlightMode(boolean value) {
-        setBooleanContext(R.string.keyMuteInFlightMode, value);
-    }
-
-    private void setContextMuteOffHook(boolean value) {
-        setBooleanContext(R.string.keyMuteOffHook, value);
-    }
-
-    private void setContextMuteWithPhone(boolean value) {
-        setBooleanContext(R.string.keyMuteWithPhone, value);
-    }
-
     @Before
     public void setUp() throws Exception {
-        context = new RenamingDelegatingContext(InstrumentationRegistry.getTargetContext(), "test_");;
+        context = new RenamingDelegatingContext(InstrumentationRegistry.getTargetContext(), "test_");
+        ;
     }
 
     @After
@@ -124,6 +118,10 @@ public class RingBellTest {
         assertFalse(ca.getPrefs().isMuteOffHook());
     }
 
+    private void setContextMuteOffHook(boolean value) {
+        setBooleanContext(R.string.keyMuteOffHook, value);
+    }
+
     @Test
     public void testMuteOffHook_true() {
         // setup
@@ -142,6 +140,10 @@ public class RingBellTest {
         ContextAccessor ca = AndroidContextAccessor.getInstance(context);
         // verify
         assertFalse(ca.getPrefs().isMuteWithPhone());
+    }
+
+    private void setContextMuteWithPhone(boolean value) {
+        setBooleanContext(R.string.keyMuteWithPhone, value);
     }
 
     @Test

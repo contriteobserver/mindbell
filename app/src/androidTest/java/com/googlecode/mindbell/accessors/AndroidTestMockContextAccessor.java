@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
@@ -16,7 +16,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ */
 package com.googlecode.mindbell.accessors;
 
 import android.app.PendingIntent;
@@ -29,15 +29,15 @@ public class AndroidTestMockContextAccessor extends ContextAccessor {
 
     private boolean isPhoneInFlightMode = false;
 
+    private AndroidTestMockContextAccessor() {
+        this.prefs = new AndroidTestMockPrefsAccessor();
+    }
+
     /**
      * Returns an accessor for the given context, just in case we want to make this a Singleton.
      */
     public static AndroidTestMockContextAccessor getInstance() {
         return new AndroidTestMockContextAccessor();
-    }
-
-    private AndroidTestMockContextAccessor() {
-        this.prefs = new AndroidTestMockPrefsAccessor();
     }
 
     @Override
@@ -56,11 +56,20 @@ public class AndroidTestMockContextAccessor extends ContextAccessor {
     }
 
     @Override
+    public void setAlarmVolume(int volume) {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
     public AndroidTestMockPrefsAccessor getPrefs() {
         return (AndroidTestMockPrefsAccessor) prefs;
     }
 
     public long getSoundDuration() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    public void setSoundDuration(long duration) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
@@ -74,9 +83,17 @@ public class AndroidTestMockContextAccessor extends ContextAccessor {
         return isPhoneInFlightMode;
     }
 
+    public void setPhoneInFlightMode(boolean isPhoneInFlightMode) {
+        this.isPhoneInFlightMode = isPhoneInFlightMode;
+    }
+
     @Override
     public boolean isPhoneMuted() {
         return isPhoneMuted;
+    }
+
+    public void setPhoneMuted(boolean value) {
+        isPhoneMuted = value;
     }
 
     @Override
@@ -84,25 +101,8 @@ public class AndroidTestMockContextAccessor extends ContextAccessor {
         return isPhoneOffHook;
     }
 
-    @Override
-    public void setAlarmVolume(int volume) {
-        throw new UnsupportedOperationException("Test terminated ... method not implemented");
-    }
-
-    public void setPhoneInFlightMode(boolean isPhoneInFlightMode) {
-        this.isPhoneInFlightMode = isPhoneInFlightMode;
-    }
-
-    public void setPhoneMuted(boolean value) {
-        isPhoneMuted = value;
-    }
-
     public void setPhoneOffHook(boolean value) {
         isPhoneOffHook = value;
-    }
-
-    public void setSoundDuration(long duration) {
-        throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
     @Override

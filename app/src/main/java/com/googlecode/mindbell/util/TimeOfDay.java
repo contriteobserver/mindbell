@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
@@ -16,7 +16,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ */
 package com.googlecode.mindbell.util;
 
 import com.googlecode.mindbell.accessors.PrefsAccessor;
@@ -46,10 +46,6 @@ public class TimeOfDay {
         this(cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), cal.get(Calendar.DAY_OF_WEEK));
     }
 
-    public TimeOfDay(int hour, int minute) {
-        this(hour, minute, null);
-    }
-
     public TimeOfDay(int hour, int minute, Integer weekday) {
         if (hour > 23 || hour < 0) {
             throw new IllegalArgumentException("Hour must be between 0 and 23, but is " + hour);
@@ -64,6 +60,10 @@ public class TimeOfDay {
         this.minute = minute;
         this.weekday = weekday;
         this.representation = String.format("%02d:%02d(%d)", hour, minute, weekday);
+    }
+
+    public TimeOfDay(int hour, int minute) {
+        this(hour, minute, null);
     }
 
     public TimeOfDay(long millisecondsSince1970) {
@@ -140,8 +140,8 @@ public class TimeOfDay {
     }
 
     /**
-     * Returns true if the bell should ring at this TimeOfDay, so it must be in the active time interval and the weekday of it
-     * must be activated. The method name carries the historical meaning.
+     * Returns true if the bell should ring at this TimeOfDay, so it must be in the active time interval and the weekday of it must
+     * be activated. The method name carries the historical meaning.
      *
      * @return whether bell should ring
      */
@@ -150,8 +150,8 @@ public class TimeOfDay {
     }
 
     /**
-     * Returns true if the bell should ring at this TimeOfDay, so it must be in the active time interval and the weekday of it
-     * must be activated. The method name carries the historical meaning.
+     * Returns true if the bell should ring at this TimeOfDay, so it must be in the active time interval and the weekday of it must
+     * be activated. The method name carries the historical meaning.
      *
      * @return whether bell should ring
      */
@@ -160,27 +160,6 @@ public class TimeOfDay {
             return false; // time is before or after active time interval
         }
         return isActiveOnThatDay(activeOnDaysOfWeek);
-    }
-
-    /**
-     * Returns true if this weekday is one on which the bell is active.
-     *
-     * @param activeOnDaysOfWeek
-     * @return
-     */
-    public boolean isActiveOnThatDay(Set<Integer> activeOnDaysOfWeek) {
-        boolean result = activeOnDaysOfWeek.contains(Integer.valueOf(weekday));
-        return result;
-    }
-
-    /**
-     * Return true if this time is earlier than the other regardless of the weekday.
-     *
-     * @param other
-     * @return
-     */
-    public boolean isBefore(TimeOfDay other) {
-        return hour < other.hour || hour == other.hour && minute < other.minute;
     }
 
     /**
@@ -203,6 +182,17 @@ public class TimeOfDay {
     }
 
     /**
+     * Returns true if this weekday is one on which the bell is active.
+     *
+     * @param activeOnDaysOfWeek
+     * @return
+     */
+    public boolean isActiveOnThatDay(Set<Integer> activeOnDaysOfWeek) {
+        boolean result = activeOnDaysOfWeek.contains(Integer.valueOf(weekday));
+        return result;
+    }
+
+    /**
      * Return true if this time is the same than the other regardless of the weekday.
      *
      * @param other
@@ -210,6 +200,16 @@ public class TimeOfDay {
      */
     public boolean isSameTime(TimeOfDay other) {
         return hour == other.hour && minute == other.minute;
+    }
+
+    /**
+     * Return true if this time is earlier than the other regardless of the weekday.
+     *
+     * @param other
+     * @return
+     */
+    public boolean isBefore(TimeOfDay other) {
+        return hour < other.hour || hour == other.hour && minute < other.minute;
     }
 
     /*

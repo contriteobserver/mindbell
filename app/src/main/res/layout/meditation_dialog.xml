@@ -18,101 +18,108 @@
  -->
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center_horizontal">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView android:id="@+id/label_rampUpTime"
+        <TextView
+            android:id="@+id/label_rampUpTime"
             style="?android:attr/textAppearanceMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/prefsRampUpTime"
-            android:textIsSelectable="false"
             android:labelFor="@+id/rampUpTime"
-            android:paddingTop="20dp"
             android:paddingBottom="2dp"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp" />
+            android:paddingRight="10dp"
+            android:paddingTop="20dp"
+            android:text="@string/prefsRampUpTime"
+            android:textIsSelectable="false"/>
 
         <TextView
             android:id="@+id/rampUpTime"
             style="?android:attr/textAppearanceSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="2dp"
             android:paddingBottom="10dp"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp" />
+            android:paddingRight="10dp"
+            android:paddingTop="2dp"/>
 
-        <TextView android:id="@+id/label_numberOfPeriods"
+        <TextView
+            android:id="@+id/label_numberOfPeriods"
             style="?android:attr/textAppearanceMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/prefsNumberOfPeriods"
-            android:textIsSelectable="false"
             android:labelFor="@+id/numberOfPeriods"
-            android:paddingTop="10dp"
             android:paddingBottom="2dp"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp" />
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            android:text="@string/prefsNumberOfPeriods"
+            android:textIsSelectable="false"/>
 
-        <TextView android:id="@+id/numberOfPeriods"
+        <TextView
+            android:id="@+id/numberOfPeriods"
             style="?android:attr/textAppearanceSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="2dp"
             android:paddingBottom="10dp"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp" />
+            android:paddingRight="10dp"
+            android:paddingTop="2dp"/>
 
-        <TextView android:id="@+id/label_meditationDuration"
+        <TextView
+            android:id="@+id/label_meditationDuration"
             style="?android:attr/textAppearanceMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/prefsMeditationDuration"
-            android:textIsSelectable="false"
             android:labelFor="@+id/meditationDuration"
-            android:paddingTop="10dp"
             android:paddingBottom="2dp"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp" />
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            android:text="@string/prefsMeditationDuration"
+            android:textIsSelectable="false"/>
 
-        <TextView android:id="@+id/meditationDuration"
+        <TextView
+            android:id="@+id/meditationDuration"
             style="?android:attr/textAppearanceSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="2dp"
             android:paddingBottom="10dp"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp" />
+            android:paddingRight="10dp"
+            android:paddingTop="2dp"/>
 
-        <TextView android:id="@+id/label_keepScreenOn"
+        <TextView
+            android:id="@+id/label_keepScreenOn"
             style="?android:attr/textAppearanceMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/prefsKeepScreenOn"
-            android:textIsSelectable="false"
             android:labelFor="@+id/keepScreenOn"
-            android:paddingTop="10dp"
             android:paddingBottom="2dp"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp" />
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            android:text="@string/prefsKeepScreenOn"
+            android:textIsSelectable="false"/>
 
-        <CheckBox android:id="@+id/keepScreenOn"
+        <CheckBox
+            android:id="@+id/keepScreenOn"
             style="?android:attr/textAppearanceSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/prefsKeepScreenOn"
             android:layout_marginLeft="5dp"
-            android:paddingTop="2dp"
+            android:hint="@string/prefsKeepScreenOn"
             android:paddingBottom="10dp"
             android:paddingLeft="0dp"
-            android:paddingRight="10dp" />
+            android:paddingRight="10dp"
+            android:paddingTop="2dp"/>
 
     </LinearLayout>
 

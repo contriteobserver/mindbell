@@ -1,12 +1,12 @@
 package com.googlecode.mindbell.preference;
 
-import java.util.Set;
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.preference.MultiSelectListPreference;
 import android.util.AttributeSet;
+
+import java.util.Set;
 
 /**
  * Adds a summary to MultiSelectListPreference by showing all selected entries.
@@ -32,6 +32,12 @@ public class MultiSelectListPreferenceWithSummary extends MultiSelectListPrefere
     }
 
     @Override
+    public void setValues(Set<String> values) {
+        super.setValues(values);
+        setSummary(getSummary());
+    }
+
+    @Override
     public CharSequence getSummary() {
         CharSequence[] entries = getEntries(); // entries as shown to the user
         CharSequence[] entryValues = getEntryValues(); // values internally representing the entries
@@ -46,12 +52,6 @@ public class MultiSelectListPreferenceWithSummary extends MultiSelectListPrefere
             }
         }
         return sb.toString();
-    }
-
-    @Override
-    public void setValues(Set<String> values) {
-        super.setValues(values);
-        setSummary(getSummary());
     }
 
 }

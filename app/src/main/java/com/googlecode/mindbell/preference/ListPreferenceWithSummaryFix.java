@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
@@ -16,7 +16,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ */
 
 package com.googlecode.mindbell.preference;
 
@@ -27,11 +27,10 @@ import android.preference.ListPreference;
 import android.util.AttributeSet;
 
 /**
- * If specifying android:summary="%s" in xml for a ListPreference the summary is set at first time and when checking or unchecking
- * a CheckBoxPreference but not when choosing a different entry from the list. According to my tests this seems to be fixed in API
- * level 19. I have taken this approach (http://stackoverflow.com/a/7018053) and reduced it to call notifyChanged() in every call
- * of setValue(), but only for API level < 19 as it might produce some overhead to call value changed events if value has not
- * changed.
+ * If specifying android:summary="%s" in xml for a ListPreference the summary is set at first time and when checking or unchecking a
+ * CheckBoxPreference but not when choosing a different entry from the list. According to my tests this seems to be fixed in API
+ * level 19. I have taken this approach (http://stackoverflow.com/a/7018053) and reduced it to call notifyChanged() in every call of
+ * setValue(), but only for API level < 19 as it might produce some overhead to call value changed events if value has not changed.
  */
 public class ListPreferenceWithSummaryFix extends ListPreference {
 

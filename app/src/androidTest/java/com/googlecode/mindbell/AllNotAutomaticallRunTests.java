@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
@@ -15,11 +15,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ */
 package com.googlecode.mindbell;
 
-import org.junit.runners.Suite;
 import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
  * AndroidStudio does not run all JUnit4 test classes automatically probably not those implementing
@@ -28,5 +28,5 @@ import org.junit.runner.RunWith;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({MindBellTest.class})
 public class AllNotAutomaticallRunTests {
-//nothing
+    //nothing
 }

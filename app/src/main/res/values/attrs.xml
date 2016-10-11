@@ -19,10 +19,10 @@
 <resources>
 
     <declare-styleable name="CountdownView">
-        <attr name="rampUpColor" format="color" />
-        <attr name="rampUpSize" format="dimension" />
-        <attr name="meditationColor" format="color" />
-        <attr name="meditationSize" format="dimension" />
+        <attr name="rampUpColor" format="color"/>
+        <attr name="rampUpSize" format="dimension"/>
+        <attr name="meditationColor" format="color"/>
+        <attr name="meditationSize" format="dimension"/>
     </declare-styleable>
 
 </resources>
