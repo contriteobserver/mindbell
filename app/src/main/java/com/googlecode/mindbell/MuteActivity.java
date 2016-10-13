@@ -44,7 +44,7 @@ public class MuteActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final ContextAccessor contextAccessor = AndroidContextAccessor.getInstanceAndLogPreferences(this);
+        final ContextAccessor contextAccessor = AndroidContextAccessor.getInstance(this);
         final NumberPicker numberPicker = new NumberPicker(this);
         final int hours = 24;
         numberPicker.setMinValue(0);

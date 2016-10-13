@@ -56,7 +56,7 @@ public class Scheduler extends BroadcastReceiver {
                 ", meditationPeriod=" + meditationPeriod);
 
         // Create working environment
-        ContextAccessor contextAccessor = AndroidContextAccessor.getInstanceAndLogPreferences(context);
+        ContextAccessor contextAccessor = AndroidContextAccessor.getInstance(context);
         PrefsAccessor prefs = contextAccessor.getPrefs();
 
         // Update notification just in case state has changed or MindBell missed a muting

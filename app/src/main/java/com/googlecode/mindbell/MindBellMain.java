@@ -58,7 +58,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MindBell.logDebug("Main activity is being created");
-        contextAccessor = AndroidContextAccessor.getInstanceAndLogPreferences(this);
+        contextAccessor = AndroidContextAccessor.getInstance(this);
         // Use the following line to show popup dialog on every start
         // setPopupShown(false);
         setContentView(R.layout.main);

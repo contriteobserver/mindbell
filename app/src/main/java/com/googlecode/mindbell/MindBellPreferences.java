@@ -373,7 +373,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
     @Override
     public void onPause() {
         super.onPause();
-        AndroidContextAccessor.getInstance(this).updateBellSchedule();
+        AndroidContextAccessor.getInstanceAndLogPreferences(this).updateBellSchedule();
     }
 
     @SuppressWarnings("deprecation") // deprecation is because MindBell is not fragment-based
