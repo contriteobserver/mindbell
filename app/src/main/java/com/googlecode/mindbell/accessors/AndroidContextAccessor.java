@@ -49,7 +49,6 @@ import com.googlecode.mindbell.util.AlarmManagerCompat;
 import com.googlecode.mindbell.util.TimeOfDay;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.text.MessageFormat;
 
 import static com.googlecode.mindbell.MindBellPreferences.TAG;
@@ -58,8 +57,8 @@ public class AndroidContextAccessor extends ContextAccessor {
 
     private static final int uniqueNotificationID = R.layout.bell;
 
-    // Keep MediaPlayer to finish a started sound explicitly but avoid producing a memory leak
-    private static WeakReference<MediaPlayer> mediaPlayerWeakReference = null;
+    // Keep MediaPlayer to finish a started sound explicitly, reclaimed when app gets destroyed: http://stackoverflow.com/a/2476171
+    private static MediaPlayer mediaPlayer = null;
 
     // ApplicationContext of MindBell
     private final Context context;
@@ -164,16 +163,14 @@ public class AndroidContextAccessor extends ContextAccessor {
     @Override
     public void finishBellSound() {
         if (isBellSoundPlaying()) { // do we hold a reference to a MediaPlayer?
-            MediaPlayer mediaPlayer = mediaPlayerWeakReference.get();
             if (mediaPlayer.isPlaying()) {
                 mediaPlayer.stop();
                 MindBell.logDebug("Ongoing MediaPlayer stopped");
             }
             mediaPlayer.reset(); // get rid of "mediaplayer went away with unhandled events" log entries
             mediaPlayer.release();
-            mediaPlayerWeakReference.clear();
-            mediaPlayerWeakReference = null;
-            MindBell.logDebug("Weak reference to MediaPlayer released");
+            mediaPlayer = null;
+            MindBell.logDebug("Reference to MediaPlayer released");
         }
         // Reset volume to originalVolume if it has been set before (does not equal -1)
         int originalVolume = prefs.getOriginalVolume();
@@ -212,8 +209,7 @@ public class AndroidContextAccessor extends ContextAccessor {
         }
         float bellVolume = activityPrefs.getVolume();
         Uri bellUri = activityPrefs.getSoundUri();
-        MediaPlayer mediaPlayer = new MediaPlayer();
-        mediaPlayerWeakReference = new WeakReference<MediaPlayer>(mediaPlayer); // store it for finishBellSound
+        mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
         mediaPlayer.setVolume(bellVolume, bellVolume);
         try {
@@ -265,7 +261,7 @@ public class AndroidContextAccessor extends ContextAccessor {
     @Override
     public boolean isBellSoundPlaying() {
         // if we hold a reference we haven't finished bell sound completely so only the reference is checked
-        return mediaPlayerWeakReference != null && mediaPlayerWeakReference.get() != null;
+        return mediaPlayer != null;
     }
 
     @Override
