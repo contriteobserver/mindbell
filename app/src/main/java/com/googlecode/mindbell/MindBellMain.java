@@ -363,6 +363,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
     @Override
     public boolean onTouchEvent(MotionEvent e) {
         if (e.getAction() == MotionEvent.ACTION_DOWN) {
+            MindBell.logDebug("Bell tapped");
             notifyIfNotActive();
             contextAccessor.updateStatusNotification();
             contextAccessor.startPlayingSoundAndVibrate(contextAccessor.getPrefs().forTapping(), null);
