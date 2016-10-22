@@ -105,7 +105,7 @@ public class AndroidContextAccessor extends ContextAccessor {
     @Override
     protected String getReasonMutedTill() {
         TimeOfDay mutedTill = new TimeOfDay(prefs.getMutedTill());
-        return MessageFormat.format(context.getText(R.string.reasonMutedTill).toString(), mutedTill.getDisplayString());
+        return MessageFormat.format(context.getText(R.string.reasonMutedTill).toString(), mutedTill.getDisplayString(context));
     }
 
     @Override
@@ -421,14 +421,14 @@ public class AndroidContextAccessor extends ContextAccessor {
             contentTitle = context.getText(R.string.statusTitleBellMeditating);
             contentText = MessageFormat.format(context.getText(R.string.statusTextBellMeditating).toString(), //
                     Integer.valueOf(prefs.getMeditationDuration()), //
-                    new TimeOfDay(prefs.getMeditationEndingTimeMillis()).getDisplayString());
+                    new TimeOfDay(prefs.getMeditationEndingTimeMillis()).getDisplayString(context));
         } else if (muteRequestReason != null) { // Bell muted => override icon and notification text
             statusDrawable = bellActiveButMutedDrawable;
             contentText = muteRequestReason;
         } else { // enrich standard notification by times and days
             contentText = MessageFormat.format(context.getText(R.string.statusTextBellActive).toString(), //
-                    prefs.getDaytimeStartString(), //
-                    prefs.getDaytimeEndString(), //
+                    prefs.getDaytimeStart().getDisplayString(context), //
+                    prefs.getDaytimeEnd().getDisplayString(context), //
                     prefs.getActiveOnDaysOfWeekString());
         }
         // Now do the notification update

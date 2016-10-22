@@ -84,7 +84,7 @@ public class SchedulerLogic {
      * @param timeMillis
      * @param interval
      * @param normalize
-     * @param normalizeValue
+     * @param normalizeMillis
      * @return
      */
     private static long normalize(long timeMillis, long interval, boolean normalize, long normalizeMillis) {
@@ -103,8 +103,8 @@ public class SchedulerLogic {
     public static long getNextDaytimeStartInMillis(long nightTimeMillis, TimeOfDay tStart, Set<Integer> activeOnDaysOfWeek) {
         Calendar morning = Calendar.getInstance();
         morning.setTimeInMillis(nightTimeMillis);
-        morning.set(Calendar.HOUR_OF_DAY, tStart.hour);
-        morning.set(Calendar.MINUTE, tStart.minute);
+        morning.set(Calendar.HOUR_OF_DAY, tStart.getHour());
+        morning.set(Calendar.MINUTE, tStart.getMinute());
         morning.set(Calendar.SECOND, 0);
         morning.set(Calendar.MILLISECOND, 0);
         if (morning.getTimeInMillis() <= nightTimeMillis) { // today's start time has already passed

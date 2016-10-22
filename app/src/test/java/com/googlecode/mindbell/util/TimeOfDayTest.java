@@ -143,9 +143,9 @@ public class TimeOfDayTest {
         int hour = 1;
         int minute = 2;
         TimeOfDay t = new TimeOfDay(hour, minute);
-        assertEquals(hour, t.hour);
-        assertEquals(minute, t.minute);
-        assertNull(t.weekday);
+        assertEquals(hour, t.getHour());
+        assertEquals(minute, t.getMinute());
+        assertNull(t.getWeekday());
     }
 
     @Test
@@ -154,9 +154,9 @@ public class TimeOfDayTest {
         int minute = 2;
         int weekday = 5;
         TimeOfDay t = new TimeOfDay(hour, minute, weekday);
-        assertEquals(hour, t.hour);
-        assertEquals(minute, t.minute);
-        assertEquals(weekday, t.weekday.intValue());
+        assertEquals(hour, t.getHour());
+        assertEquals(minute, t.getMinute());
+        assertEquals(weekday, t.getWeekday().intValue());
     }
 
     @Test

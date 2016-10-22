@@ -47,11 +47,7 @@ public abstract class PrefsAccessor {
 
     public abstract TimeOfDay getDaytimeEnd();
 
-    public abstract String getDaytimeEndString();
-
     public abstract TimeOfDay getDaytimeStart();
-
-    public abstract String getDaytimeStartString();
 
     public abstract long getInterval();
 

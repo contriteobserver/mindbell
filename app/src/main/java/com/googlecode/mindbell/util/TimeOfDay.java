@@ -19,21 +19,27 @@
  */
 package com.googlecode.mindbell.util;
 
+import android.content.Context;
+
 import com.googlecode.mindbell.accessors.PrefsAccessor;
 
 import java.util.Calendar;
 import java.util.Set;
 
 /**
- * Represents a time of day by storing only hour, minute and weekday.
+ * Represents an immutable time of day by storing only hour, minute and weekday.
  */
 public class TimeOfDay {
 
-    public final int hour;
-    public final int minute;
-    public final Integer weekday; // null or 1-Calendar.SUNDAY ... 7-Calendar.SATURDAY
+    private int hour;
 
-    private final String representation;
+    private int minute;
+
+    private Integer second;
+
+    private Integer millisecond;
+
+    private Integer weekday; // null or 1-Calendar.SUNDAY ... 7-Calendar.SATURDAY
 
     /**
      * The current time of day, as provided by the Calendar.getInstance().
@@ -42,11 +48,17 @@ public class TimeOfDay {
         this(Calendar.getInstance());
     }
 
+    /**
+     * The time of day, as provided by the given Calendar.
+     */
     public TimeOfDay(Calendar cal) {
-        this(cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), cal.get(Calendar.DAY_OF_WEEK));
+        init(cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), null, null, cal.get(Calendar.DAY_OF_WEEK));
     }
 
-    public TimeOfDay(int hour, int minute, Integer weekday) {
+    /**
+     * Checks values and initialize fields.
+     */
+    private void init(int hour, int minute, Integer second, Integer millisecond, Integer weekday) {
         if (hour > 23 || hour < 0) {
             throw new IllegalArgumentException("Hour must be between 0 and 23, but is " + hour);
         }
@@ -58,23 +70,47 @@ public class TimeOfDay {
         }
         this.hour = hour;
         this.minute = minute;
+        this.second = second;
+        this.millisecond = millisecond;
         this.weekday = weekday;
-        this.representation = String.format("%02d:%02d(%d)", hour, minute, weekday);
     }
 
+    /**
+     * The time of day, as provided by hour, minute and weekday (which my be null).
+     */
+    public TimeOfDay(int hour, int minute, Integer weekday) {
+        init(hour, minute, null, null, weekday);
+    }
+
+    /**
+     * The time of day, as provided by hour, minute without a weekday.
+     */
     public TimeOfDay(int hour, int minute) {
-        this(hour, minute, null);
+        init(hour, minute, null, null, null);
+    }
+
+    /**
+     * The time of day, as provided by the given String with the format "hour[:minute]" without a weekday.
+     */
+    public TimeOfDay(String time) {
+        String[] parts = time.split(":");
+        switch (parts.length) {
+            case 2:
+                init(Integer.valueOf(parts[0]), Integer.valueOf(parts[1]), null, null, null);
+                break;
+            case 1:
+                init(Integer.valueOf(parts[0]), 0, null, null, null);
+                break;
+            default:
+                throw new IllegalArgumentException("Time <" + time + "> not formatted as hh[:mm]");
+        }
     }
 
     public TimeOfDay(long millisecondsSince1970) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(millisecondsSince1970);
-        this.hour = cal.get(Calendar.HOUR_OF_DAY);
-        this.minute = cal.get(Calendar.MINUTE);
-        int second = cal.get(Calendar.SECOND);
-        int millisecond = cal.get(Calendar.MILLISECOND);
-        this.weekday = cal.get(Calendar.DAY_OF_WEEK);
-        this.representation = String.format("%02d:%02d:%02d.%03d(%d)", hour, minute, second, millisecond, weekday);
+        init(cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND), cal.get(Calendar.MILLISECOND),
+                cal.get(Calendar.DAY_OF_WEEK));
     }
 
     /*
@@ -111,17 +147,24 @@ public class TimeOfDay {
     }
 
     /**
-     * Returns a String readily representing this TimeOfDay to be used for logging.
+     * Returns a String readily representing this TimeOfDay to be used for displaying (with am/pm if locale requires).
      */
-    public String getLogString() {
-        return representation;
+    public String getDisplayString(Context context) {
+        final boolean hasSeconds = second != null && millisecond != null;
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, hour);
+        cal.set(Calendar.MINUTE, minute);
+        cal.set(Calendar.SECOND, (hasSeconds) ? second : 0);
+        cal.set(Calendar.MILLISECOND, (hasSeconds) ? millisecond : 0);
+        return android.text.format.DateFormat.getTimeFormat(context).format(cal.getTime());
+
     }
 
     /**
-     * Returns a String readily representing this TimeOfDay to be used for displaying.
+     * Returns a String readily representing this TimeOfDay to be used for persisting.
      */
-    public String getDisplayString() {
-        return representation.substring(0, 5);
+    public String getPersistString() {
+        return String.format("%02d:%02d", hour, minute);
     }
 
     /*
@@ -219,7 +262,45 @@ public class TimeOfDay {
      */
     @Override
     public String toString() {
-        return "TimeOfDay [representation=" + representation + "]";
+        return "TimeOfDay [" + getLogString() + "]";
+    }
+
+    /**
+     * Returns a String readily representing this TimeOfDay to be used for logging.
+     */
+    public String getLogString() {
+        final boolean hasSeconds = second != null && millisecond != null;
+        final boolean hasWeekday = weekday != null;
+        if (hasSeconds && hasWeekday) {
+            return String.format("%02d:%02d:%02d.%03d(%d)", hour, minute, second, millisecond, weekday);
+        } else if (hasSeconds && !hasWeekday) {
+            return String.format("%02d:%02d:%02d.%03d", hour, minute, second, millisecond);
+        } else if (!hasSeconds && hasWeekday) {
+            return String.format("%02d:%02d(%d)", hour, minute, weekday);
+        } else { // !hasSeconds && !hasWeekday
+            return String.format("%02d:%02d", hour, minute);
+        }
+    }
+
+    /**
+     * Returns the hour value.
+     */
+    public int getHour() {
+        return hour;
+    }
+
+    /**
+     * Returns the minute value.
+     */
+    public int getMinute() {
+        return minute;
+    }
+
+    /**
+     * Returns the weekday value which may be null.
+     */
+    public Integer getWeekday() {
+        return weekday;
     }
 
 }

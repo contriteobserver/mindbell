@@ -102,11 +102,6 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
-    @Override
-    public String getDaytimeEndString() {
-        throw new UnsupportedOperationException("Test terminated ... method not implemented");
-    }
-
     public void setDaytimeEndString(String theDaytimeEndString) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
@@ -117,11 +112,6 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     public void setDaytimeStart(TimeOfDay theDaytimeStart) {
-        throw new UnsupportedOperationException("Test terminated ... method not implemented");
-    }
-
-    @Override
-    public String getDaytimeStartString() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 

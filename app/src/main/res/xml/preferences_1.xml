@@ -28,19 +28,13 @@
 
         <!-- keyActive can only be toggled by the meditation button -->
 
-        <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
-            android:dialogTitle="@string/prefsStart"
-            android:entries="@array/hourEntries"
-            android:entryValues="@array/hourEntryValues"
+        <com.googlecode.mindbell.preference.TimePickerPreference
+            android:dialogTitle=""
             android:key="@string/keyStart"
-            android:summary="%s"
             android:title="@string/prefsStart"/>
-        <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
-            android:dialogTitle="@string/prefsEnd"
-            android:entries="@array/hourEntries"
-            android:entryValues="@array/hourEntryValues"
+        <com.googlecode.mindbell.preference.TimePickerPreference
+            android:dialogTitle=""
             android:key="@string/keyEnd"
-            android:summary="%s"
             android:title="@string/prefsEnd"/>
         <com.googlecode.mindbell.preference.MultiSelectListPreferenceWithSummary
             android:dialogTitle="@string/prefsActiveOnDaysOfWeek"

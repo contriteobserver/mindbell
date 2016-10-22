@@ -79,6 +79,7 @@ import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.Preference.
 import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.Preference.Type.LONG;
 import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.Preference.Type.STRING;
 import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.Preference.Type.STRING_SET;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.Preference.Type.TIME_STRING;
 
 public class AndroidPrefsAccessor extends PrefsAccessor {
 
@@ -91,17 +92,21 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     public static final float DEFAULT_VOLUME = 0.501187234f;
 
+    /**
+     * Regular expression to verify a time string preference
+     */
+    private static final String TIME_STRING_REGEX = "\\d\\d(:\\d\\d)?";
+
     // *The* SharedPreferences
     private final SharedPreferences settings;
 
     // Map of all used preferences - with type and default value - by resid
     private final SortedMap<Integer, Preference> preferenceMap = new TreeMap<>();
 
-    // Map of allowed internal values for a string set preference by resid
+    // Map of allowed internal values for a string or string set preference by resid
     private final Map<Integer, String[]> entryValuesMap = new HashMap<>();
 
     private final String[] weekdayEntryValues;
-    private final String[] hourEntries;
     private final String[] weekdayAbbreviationEntries;
 
     private final Map<String, Uri> bellResourceUriMap;
@@ -124,7 +129,6 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         settings = context.getSharedPreferences(context.getPackageName() + "_preferences", Context.MODE_PRIVATE);
 
         // Define entries and entry values
-        hourEntries = context.getResources().getStringArray(R.array.hourEntries);
         weekdayEntryValues = context.getResources().getStringArray(R.array.weekdayEntryValues);
         weekdayAbbreviationEntries = context.getResources().getStringArray(R.array.weekdayAbbreviationEntries);
 
@@ -148,7 +152,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         addPreference(keyActive, false, BOOLEAN, context);
         addPreference(keyActiveOnDaysOfWeek, new HashSet<>(Arrays.asList(new String[]{"1", "2", "3", "4", "5", "6", "7"})),
                 STRING_SET, context);
-        addPreference(keyEnd, "21", STRING, context);
+        addPreference(keyEnd, "21:00", TIME_STRING, context);
         addPreference(keyFrequency, "900000", STRING, context); // 15 min
         addPreference(keyKeepScreenOn, false, BOOLEAN, context);
         addPreference(keyMeditating, false, BOOLEAN, context);
@@ -173,7 +177,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         addPreference(keyRingtone, "", STRING, context); // no useful default, code relies on <defaultValue>.isEmpty()
         addPreference(keyShow, true, BOOLEAN, context);
         addPreference(keySound, true, BOOLEAN, context);
-        addPreference(keyStart, "9", STRING, context);
+        addPreference(keyStart, "09:00", TIME_STRING, context);
         addPreference(keyStatus, true, BOOLEAN, context);
         addPreference(keyStatusIconMaterialDesign, true, BOOLEAN, context);
         addPreference(keyStatusVisibilityPublic, true, BOOLEAN, context);
@@ -183,7 +187,6 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
         // Map preference keys to their allowed entryValues
         entryValuesMap.put(keyActiveOnDaysOfWeek, context.getResources().getStringArray(R.array.weekdayEntryValues));
-        entryValuesMap.put(keyEnd, context.getResources().getStringArray(R.array.hourEntryValues));
         entryValuesMap.put(keyFrequency, context.getResources().getStringArray(R.array.frequencyEntryValues));
         entryValuesMap.put(keyMeditationBeginningBell, context.getResources().getStringArray(R.array.bellEntryValues));
         entryValuesMap.put(keyMeditationEndingBell, context.getResources().getStringArray(R.array.bellEntryValues));
@@ -191,7 +194,6 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         entryValuesMap.put(keyNormalize, context.getResources().getStringArray(R.array.normalizeEntryValues));
         entryValuesMap.put(keyPattern, context.getResources().getStringArray(R.array.patternEntryValues));
         entryValuesMap.put(keyRingtone, new String[]{}); // we don't need to know the possible ringtone values
-        entryValuesMap.put(keyStart, context.getResources().getStringArray(R.array.hourEntryValues));
 
         // Track whether a stacktrace shall be logged to find out the reason for sometimes deleted preferences
         boolean logStackTrace = false;
@@ -276,6 +278,17 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
                         }
                     }
                     break;
+                case TIME_STRING:
+                    String timeStringValue = (String) value;
+                    if (timeStringValue != null) {
+                        if (!timeStringValue.matches(TIME_STRING_REGEX)) {
+                            settings.edit().remove(preference.key).apply();
+                            Log.w(TAG, "Removed setting '" + preference + "' since it is not a time string '" +
+                                    timeStringValue + "'");
+                            return true;
+                        }
+                    }
+                    break;
             }
             return false;
         } catch (ClassCastException e) {
@@ -317,6 +330,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             case LONG:
                 return settings.getLong(preference.key, (Long) preference.defaultValue);
             case STRING:
+            case TIME_STRING:
                 return settings.getString(preference.key, (String) preference.defaultValue);
             case STRING_SET:
                 return settings.getStringSet(preference.key, (Set<String>) preference.defaultValue);
@@ -356,6 +370,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
                 settings.edit().putLong(preference.key, (Long) value).apply();
                 break;
             case STRING:
+            case TIME_STRING:
                 settings.edit().putString(preference.key, (String) value).apply();
                 break;
             case STRING_SET:
@@ -487,11 +502,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     @Override
     public TimeOfDay getDaytimeEnd() {
-        return new TimeOfDay(getDaytimeEndHour(), 0);
-    }
-
-    private int getDaytimeEndHour() {
-        return Integer.valueOf(getStringSetting(keyEnd));
+        return new TimeOfDay(getStringSetting(keyEnd));
     }
 
     /**
@@ -505,22 +516,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public String getDaytimeEndString() {
-        return hourEntries[getDaytimeEndHour()];
-    }
-
-    @Override
     public TimeOfDay getDaytimeStart() {
-        return new TimeOfDay(getDaytimeStartHour(), 0);
-    }
-
-    private int getDaytimeStartHour() {
-        return Integer.valueOf(getStringSetting(keyStart));
-    }
-
-    @Override
-    public String getDaytimeStartString() {
-        return hourEntries[getDaytimeStartHour()];
+        return new TimeOfDay(getStringSetting(keyStart));
     }
 
     @Override
@@ -798,7 +795,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             this.defaultValue = defaultValue;
         }
 
-        enum Type {BOOLEAN, FLOAT, INTEGER, LONG, STRING, STRING_SET}
+        enum Type {BOOLEAN, FLOAT, INTEGER, LONG, STRING, STRING_SET, TIME_STRING}
 
     }
 
