@@ -22,6 +22,7 @@ package com.googlecode.mindbell.preference;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
+import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TimePicker;
@@ -43,6 +44,7 @@ public class TimePickerPreference extends DialogPreference {
     @Override
     protected View onCreateDialogView() {
         picker = new TimePicker(getContext());
+        picker.setIs24HourView(DateFormat.is24HourFormat(getContext()));
         return (picker);
     }
 
