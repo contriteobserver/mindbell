@@ -177,9 +177,8 @@
     <string name="main_message6_popup">Der generierte E-Mail-Text enthält Ihre MindBell- und Android-Version plus ein paar Geräteinformationen und alle von MindBell erzeugten Log-Einträge, die bei der Fehlersuche helfen sollen.</string>
     <string name="main_message7_popup">Bitte ergänzen Sie im E-Mail-Text Ihre Frage oder eine Beschreibung des Problems.</string>
     <string name="main_message8_popup">Die Privacy Policy von MindBell finden Sie hier: http://dknapps.de/mindbell-privacy</string>
-    <string name="main_yes_popup">OK</string>
-    <string name="main_no_popup">E-Mail senden</string>
-    <string name="main_neutral_popup">Akku</string>
+    <string name="sendMail">E-Mail senden</string>
+    <string name="batterySettings">Akku</string>
     <string name="noEmailClients">Es ist keine E-Mail-App installiert.</string>
     <string name="alreadyWhitelisted">MindBell ist bereits von Akku-Leistungsoptimierungen ausgenommen.</string>
     <string name="shouldGetWhitelisted">Wenn MindBell nicht regelmäßig läutet, dann bitte von den Akku-Leistungsoptimierungen ausnehmen.</string>

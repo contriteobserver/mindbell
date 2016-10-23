@@ -108,15 +108,15 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                 .setTitle(getText(R.string.app_name) + " " + versionName) //
                 .setIcon(R.drawable.icon) //
                 .setView(popupView) //
-                .setPositiveButton(R.string.main_yes_popup, null) //
-                .setNegativeButton(R.string.main_no_popup, new DialogInterface.OnClickListener() {
+                .setPositiveButton(android.R.string.ok, null) //
+                .setNegativeButton(R.string.sendMail, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        onMenuItemClickSendInfo(true);
+                        onMenuItemClickSendInfo();
                     }
                 });
         if (Build.VERSION.SDK_INT >= 23) {
-            builder.setNeutralButton(R.string.main_neutral_popup, new DialogInterface.OnClickListener() {
+            builder.setNeutralButton(R.string.batterySettings, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     onMenuItemClickBatteryOptimizationSettings();
@@ -169,11 +169,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                             toggleMeditating();
                         }
                     }) //
-                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            //Put actions for CANCEL button here, or leave in blank
-                        }
-                    })//
+                    .setNegativeButton(android.R.string.cancel, null) //
                     .show();
         } else {
             toggleMeditating();
@@ -197,14 +193,12 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
     /**
      * Handles click on menu item send info.
      */
-    private void onMenuItemClickSendInfo(boolean withLog) {
-        if (withLog) {
-            AndroidContextAccessor.getInstanceAndLogPreferences(this); // write settings to log
-            MindBell.logDebug("Excluded from battery optimization (always false for SDK < 23)? -> " + Utils.isAppWhitelisted(this));
-        }
+    private void onMenuItemClickSendInfo() {
+        AndroidContextAccessor.getInstanceAndLogPreferences(this); // write settings to log
+        MindBell.logDebug("Excluded from battery optimization (always false for SDK < 23)? -> " + Utils.isAppWhitelisted(this));
         Intent i = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getText(R.string.emailAddress).toString(), null));
         i.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.emailSubject));
-        i.putExtra(Intent.EXTRA_TEXT, getInfoMailText(withLog));
+        i.putExtra(Intent.EXTRA_TEXT, getInfoMailText());
         try {
             startActivity(Intent.createChooser(i, getText(R.string.emailChooseApp)));
         } catch (android.content.ActivityNotFoundException ex) {
@@ -303,20 +297,22 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
     /**
      * Return information to be sent by mail.
      */
-    private String getInfoMailText(boolean withLog) {
+    private String getInfoMailText() {
         StringBuilder sb = new StringBuilder();
         sb.append("\n");
-        sb.append(getText(R.string.main_message6_popup));
-        sb.append("\n\n");
         sb.append(getText(R.string.main_message7_popup));
+        sb.append("\n\n");
+        sb.append(getText(R.string.main_message6_popup));
         sb.append("\n\n");
         sb.append(Utils.getApplicationInformation(getPackageManager(), getPackageName()));
         sb.append("\n");
         sb.append(Utils.getSystemInformation());
-        if (withLog) {
-            sb.append("\n");
-            sb.append(Utils.getLimitedLogEntriesAsString());
-        }
+        sb.append("\n");
+        sb.append(Utils.getLimitedLogEntriesAsString());
+        sb.append("\n");
+        sb.append(getText(R.string.main_message6_popup));
+        sb.append("\n\n");
+        sb.append(getText(R.string.main_message7_popup));
         return sb.toString();
     }
 
