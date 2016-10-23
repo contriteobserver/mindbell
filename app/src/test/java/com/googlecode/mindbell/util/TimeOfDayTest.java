@@ -504,4 +504,26 @@ public class TimeOfDayTest {
         assertFalse(t.isInInterval(start, end));
     }
 
+    @Test
+    public void testStringConstructorOldValues() {
+        for (int hh = 0; hh < 24; hh++) {
+            TimeOfDay time = new TimeOfDay(String.valueOf(hh));
+            assertEquals(hh, time.getHour());
+            assertEquals(0, time.getMinute());
+            assertNull(time.getWeekday());
+        }
+    }
+
+    @Test
+    public void testStringConstructorNewValues() {
+        for (int hh = 0; hh < 24; hh++) {
+            for (int mm = 0; mm < 60; mm++) {
+                TimeOfDay time = new TimeOfDay(String.format("%02d:%02d", hh, mm));
+                assertEquals(hh, time.getHour());
+                assertEquals(mm, time.getMinute());
+                assertNull(time.getWeekday());
+            }
+        }
+    }
+
 }
