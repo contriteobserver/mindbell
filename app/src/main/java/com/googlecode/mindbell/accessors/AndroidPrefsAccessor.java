@@ -95,7 +95,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     /**
      * Regular expression to verify a time string preference
      */
-    private static final String TIME_STRING_REGEX = "\\d\\d(:\\d\\d)?";
+    private static final String TIME_STRING_REGEX = "\\d?\\d(:\\d\\d)?";
 
     // *The* SharedPreferences
     private final SharedPreferences settings;
