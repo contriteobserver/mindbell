@@ -29,7 +29,7 @@
 	    dem buddhistischen Lehrer Thich Nhat Hanh ist dies ein wirksames Mittel, um Achtsamkeit
 	    zu entwickeln.</string>
     <string name="howToRing">Tippen zum Läuten</string>
-    <string name="howToSet">MindBell mit dem Ein-Icon aktivieren</string>
+    <string name="howToSet">MindBell mit dem Schalter aktivieren</string>
 
     <!-- Menu of MindBellMain -->
     <string name="menuSettings">Einstellungen</string>
@@ -108,7 +108,8 @@
     <string name="summaryNotMutedInFlightMode">Glocke läutet auch im Flugmodus</string>
 
     <string name="prefsCategoryMeditation">Meditation</string>
-    <string name="prefsMeditating">Meditation an/aus</string>
+    <string name="prefsMeditatingOn">Meditation starten</string>
+    <string name="prefsMeditatingOff">Meditation stoppen</string>
     <string name="summaryMeditating">Meditation läuft</string>
     <string name="summaryNotMeditating">Meditation ist gestoppt</string>
     <string name="prefsMeditationBeginningBell">Anfangsglocken</string>
@@ -170,8 +171,8 @@
 
     <!-- Help popup -->
     <string name="main_message1_popup">Diese Information kann über \'Hilfe\' im Menü erneut angezeigt werden.</string>
-    <string name="main_message2_popup">MindBell läutet nicht regelmäßig? Haben Sie die Glocke in den Einstellungen aktiviert? Eventuell müssen Sie MindBell aus geräteabhängigen Akkusparoptionen herausnehmen. Wenn es dann immer noch nicht geht, hilft vielleicht diese Check-Liste: http://dknapps.de/mindbell-notringing</string>
-    <string name="main_message3_popup">Anhand der folgenden Änderungshistorie ist einsehbar, was zuletzt an MindBell geändert wurde: http://dknapps.de/mindbell-changelog</string>
+    <string name="main_message2_popup">MindBell läutet nicht regelmäßig? Haben Sie die Glocke mit dem Schalter aktiviert? Eventuell müssen Sie MindBell aus geräteabhängigen Akkusparoptionen herausnehmen. Wenn es dann immer noch nicht geht, hilft vielleicht diese Check-Liste: http://dknapps.de/mindbell-notringing</string>
+    <string name="main_message3_popup">In dieser Änderungshistorie steht, was zuletzt an MindBell geändert wurde: http://dknapps.de/mindbell-changelog</string>
     <string name="main_message4_popup">Konsultieren Sie bitte zunächst die FAQ für weitere Fragen unter http://dknapps.de/mindbell</string>
     <string name="main_message5_popup">Für andere Fragen oder wenn das Problem bestehen bleibt, senden Sie mir bitte eine E-Mail, indem sie unten \'E-Mail senden\' anklicken.</string>
     <string name="main_message6_popup">Der generierte E-Mail-Text enthält Ihre MindBell- und Android-Version plus ein paar Geräteinformationen und alle von MindBell erzeugten Log-Einträge, die bei der Fehlersuche helfen sollen.</string>

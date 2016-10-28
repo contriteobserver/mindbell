@@ -536,13 +536,23 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public boolean setActive() {
+    public boolean isActive() {
         return getBooleanSetting(keyActive);
     }
 
     @Override
-    public boolean setMeditating() {
+    public void setActive(boolean active) {
+        setSetting(keyActive, active);
+    }
+
+    @Override
+    public boolean isMeditating() {
         return getBooleanSetting(keyMeditating);
+    }
+
+    @Override
+    public void setMeditating(boolean meditating) {
+        setSetting(keyMeditating, meditating);
     }
 
     @Override
@@ -583,16 +593,6 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public boolean isStatusNotificationVisibilityPublic() {
         return getBooleanSetting(keyStatusVisibilityPublic);
-    }
-
-    @Override
-    public void setActive(boolean active) {
-        setSetting(keyActive, active);
-    }
-
-    @Override
-    public void setMeditating(boolean meditating) {
-        setSetting(keyMeditating, meditating);
     }
 
     @Override

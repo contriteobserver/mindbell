@@ -69,9 +69,13 @@ public abstract class PrefsAccessor {
 
     public abstract String getPattern();
 
-    public abstract boolean setActive();
+    public abstract boolean isActive();
 
-    public abstract boolean setMeditating();
+    public abstract void setActive(boolean active);
+
+    public abstract boolean isMeditating();
+
+    public abstract void setMeditating(boolean meditating);
 
     public boolean isNormalize() {
         return isNormalize(getNormalize());
@@ -109,10 +113,6 @@ public abstract class PrefsAccessor {
     public abstract void setKeepScreenOn(boolean keepScreenOn);
 
     public abstract boolean isStatusNotificationVisibilityPublic();
-
-    public abstract void setActive(boolean active);
-
-    public abstract void setMeditating(boolean meditating);
 
     public abstract boolean useStatusIconMaterialDesign();
 

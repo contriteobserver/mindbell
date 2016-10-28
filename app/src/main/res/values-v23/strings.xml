@@ -20,7 +20,7 @@
 <resources>
 
     <!-- Override description regarding go to battery optimization settings (not available before Android Marshmallow) -->
-    <string name="main_message2_popup">MindBell does not ring periodically? Have you activated the bell in the settings? Maybe you have to exclude MindBell from battery saver options that depend on your device - go to the settings by clicking \'Battery\' below. If it doesn\'t work anyway please consult this checklist: http://dknapps.de/mindbell-notringing</string>
+    <string name="main_message2_popup">MindBell does not ring periodically? Have you activated the bell with the switch? Maybe you have to exclude MindBell from battery saver options that depend on your device - go to the settings by clicking \'Battery\' below. If it doesn\'t work anyway please consult this checklist: http://dknapps.de/mindbell-notringing</string>
 
     <!-- Override description regarding do-not-disturb modes introduced with Android Marshmallow -->
     <string name="summaryMuteWithPhone">No display/sound/vibration in modes \'total-silence\' and \'alarms-only\' and with zero-volume in modes \'priority-only\' and \'do-not-disturb-off\', display/sound/vibration in modes \'priority-only\' and \'do-not-disturb-off\' with non-zero-volume; see also Menu&gt;Help&gt;FAQ</string>

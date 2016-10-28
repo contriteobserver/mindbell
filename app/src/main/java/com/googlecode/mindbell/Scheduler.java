@@ -63,11 +63,11 @@ public class Scheduler extends BroadcastReceiver {
         contextAccessor.updateStatusNotification();
 
         // Evaluate next time to ring and reschedule or terminate method if neither active nor meditating
-        if (prefs.setMeditating()) { // Meditating overrides Active therefore check this first
+        if (prefs.isMeditating()) { // Meditating overrides Active therefore check this first
 
             handleMeditatingBell(contextAccessor, nowTimeMillis, meditationPeriod);
 
-        } else if (prefs.setActive()) {
+        } else if (prefs.isActive()) {
 
             handleActiveBell(contextAccessor, nowTimeMillis, isRescheduling);
 
