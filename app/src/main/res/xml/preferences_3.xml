@@ -39,6 +39,16 @@
             android:summaryOff="@string/summaryNotMutedInFlightMode"
             android:summaryOn="@string/summaryMutedInFlightMode"
             android:title="@string/prefsMuteInFlightMode"/>
+        <CheckBoxPreference
+            android:key="@string/keyNoSoundOnMusic"
+            android:summaryOff="@string/summaryNotNoSoundOnMusic"
+            android:summaryOn="@string/summaryNoSoundOnMusic"
+            android:title="@string/prefsNoSoundOnMusic"/>
+        <CheckBoxPreference
+            android:key="@string/keyPauseAudioOnSound"
+            android:summaryOff="@string/summaryNotPauseAudioOnSound"
+            android:summaryOn="@string/summaryPauseAudioOnSound"
+            android:title="@string/prefsPauseAudioOnSound"/>
 
     </PreferenceScreen>
 

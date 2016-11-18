@@ -100,6 +100,10 @@ public abstract class PrefsAccessor {
         return true;
     }
 
+    public abstract boolean isNoSoundOnMusic();
+
+    public abstract boolean isPauseAudioOnSound();
+
     public boolean isMuteWithPhone() {
         return true;
     }

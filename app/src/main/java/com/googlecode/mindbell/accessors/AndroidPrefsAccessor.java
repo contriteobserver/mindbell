@@ -55,10 +55,12 @@ import static com.googlecode.mindbell.R.string.keyMuteInFlightMode;
 import static com.googlecode.mindbell.R.string.keyMuteOffHook;
 import static com.googlecode.mindbell.R.string.keyMuteWithPhone;
 import static com.googlecode.mindbell.R.string.keyMutedTill;
+import static com.googlecode.mindbell.R.string.keyNoSoundOnMusic;
 import static com.googlecode.mindbell.R.string.keyNormalize;
 import static com.googlecode.mindbell.R.string.keyNumberOfPeriods;
 import static com.googlecode.mindbell.R.string.keyOriginalVolume;
 import static com.googlecode.mindbell.R.string.keyPattern;
+import static com.googlecode.mindbell.R.string.keyPauseAudioOnSound;
 import static com.googlecode.mindbell.R.string.keyPopup;
 import static com.googlecode.mindbell.R.string.keyRampUpStartingTimeMillis;
 import static com.googlecode.mindbell.R.string.keyRampUpTime;
@@ -167,9 +169,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         addPreference(keyMuteOffHook, true, BOOLEAN, context);
         addPreference(keyMuteWithPhone, true, BOOLEAN, context);
         addPreference(keyNormalize, NORMALIZE_NONE, STRING, context);
+        addPreference(keyNoSoundOnMusic, false, BOOLEAN, context);
         addPreference(keyNumberOfPeriods, 1, INTEGER, context);
         addPreference(keyOriginalVolume, -1, INTEGER, context);
         addPreference(keyPattern, "100:200:100:600", STRING, context);
+        addPreference(keyPauseAudioOnSound, true, BOOLEAN, context);
         addPreference(keyPopup, -1, INTEGER, context);
         addPreference(keyRampUpStartingTimeMillis, -1L, LONG, context);
         addPreference(keyRampUpTime, 30, INTEGER, context);
@@ -571,6 +575,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
+    public boolean isNoSoundOnMusic() {
+        return getBooleanSetting(keyNoSoundOnMusic);
+    }
+
+    @Override
+    public boolean isPauseAudioOnSound() {
+        return getBooleanSetting(keyPauseAudioOnSound);
+    }
+
+    @Override
     public boolean isMuteWithPhone() {
         return getBooleanSetting(keyMuteWithPhone);
     }
@@ -825,6 +839,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         public float getVolume() {
             return AndroidPrefsAccessor.this.getVolume();
         }
+
     }
 
     private class ActivityPrefsAccessorForTapping implements ActivityPrefsAccessor {
@@ -853,6 +868,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         public float getVolume() {
             return AndroidPrefsAccessor.this.getVolume();
         }
+
     }
 
     private abstract class ActivityPrefsAccessorForMeditation implements ActivityPrefsAccessor {

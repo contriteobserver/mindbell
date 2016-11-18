@@ -190,6 +190,16 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
+    public boolean isNoSoundOnMusic() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public boolean isPauseAudioOnSound() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
     public boolean isMuteWithPhone() {
         return muteWithPhone;
     }

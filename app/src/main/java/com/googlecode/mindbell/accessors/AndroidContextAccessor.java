@@ -30,9 +30,11 @@ import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.provider.Settings.Global;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
@@ -51,22 +53,28 @@ import com.googlecode.mindbell.util.TimeOfDay;
 import java.io.IOException;
 import java.text.MessageFormat;
 
+import static android.media.AudioManager.AUDIOFOCUS_GAIN_TRANSIENT;
+import static android.media.AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE;
+import static android.media.AudioManager.AUDIOFOCUS_LOSS;
+import static android.media.AudioManager.AUDIOFOCUS_LOSS_TRANSIENT;
+import static android.media.AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK;
+import static android.media.AudioManager.AUDIOFOCUS_REQUEST_FAILED;
+import static android.media.AudioManager.STREAM_ALARM;
 import static com.googlecode.mindbell.MindBellPreferences.TAG;
 
-public class AndroidContextAccessor extends ContextAccessor {
+public class AndroidContextAccessor extends ContextAccessor implements AudioManager.OnAudioFocusChangeListener {
 
     private static final int uniqueNotificationID = R.layout.bell;
 
     // Keep MediaPlayer to finish a started sound explicitly, reclaimed when app gets destroyed: http://stackoverflow.com/a/2476171
     private static MediaPlayer mediaPlayer = null;
+    private static AudioManager audioManager = null;
 
     // ApplicationContext of MindBell
     private final Context context;
 
     /**
      * Constructor is private just in case we want to make this a singleton.
-     *
-     * @param context
      */
     private AndroidContextAccessor(Context context, boolean logSettings) {
         this.context = context.getApplicationContext();
@@ -110,7 +118,19 @@ public class AndroidContextAccessor extends ContextAccessor {
 
     @Override
     public boolean isPhoneInFlightMode() {
-        return Settings.System.getInt(context.getContentResolver(), Global.AIRPLANE_MODE_ON, 0) == 1;
+        return Settings.System.getInt(context.getContentResolver(), retrieveAirplaneModeOnConstantName(), 0) == 1;
+    }
+
+    /**
+     * Returns name of the airplane-mode-on constant depending on the version of Android.
+     */
+    @NonNull
+    private String retrieveAirplaneModeOnConstantName() {
+        if (Build.VERSION.SDK_INT >= 17) {
+            return Global.AIRPLANE_MODE_ON;
+        } else {
+            return Settings.System.AIRPLANE_MODE_ON;
+        }
     }
 
     @Override
@@ -171,6 +191,13 @@ public class AndroidContextAccessor extends ContextAccessor {
             mediaPlayer.release();
             mediaPlayer = null;
             MindBell.logDebug("Reference to MediaPlayer released");
+            if (prefs.isPauseAudioOnSound()) {
+                if (audioManager.abandonAudioFocus(this) == AUDIOFOCUS_REQUEST_FAILED) {
+                    MindBell.logDebug("Abandon of audio focus failed");
+                } else {
+                    MindBell.logDebug("Audio focus successfully abandoned");
+                }
+            }
         }
         // Reset volume to originalVolume if it has been set before (does not equal -1)
         int originalVolume = prefs.getOriginalVolume();
@@ -191,11 +218,20 @@ public class AndroidContextAccessor extends ContextAccessor {
 
     /**
      * Start playing bell sound and call runWhenDone when playing finishes but only if bell is not muted.
-     *
-     * @param activityPrefs
-     * @param runWhenDone
      */
     private void startPlayingSound(ActivityPrefsAccessor activityPrefs, final Runnable runWhenDone) {
+        audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        if (prefs.isNoSoundOnMusic() && audioManager.isMusicActive()) {
+            MindBell.logDebug("Sound suppressed because setting is no sound on music and music is playing");
+            return;
+        } else if (prefs.isPauseAudioOnSound()) {
+            int requestResult = audioManager.requestAudioFocus(this, STREAM_ALARM, retrieveDurationHint());
+            if (requestResult == AUDIOFOCUS_REQUEST_FAILED) {
+                MindBell.logDebug("Sound suppressed because setting is pause audio on sound and request of audio focus failed");
+                return;
+            }
+            MindBell.logDebug("Audio focus successfully requested");
+        }
         int originalVolume = getAlarmVolume();
         int alarmMaxVolume = getAlarmMaxVolume();
         if (originalVolume == alarmMaxVolume) { // "someone" else set it to max, so we don't touch it
@@ -210,7 +246,7 @@ public class AndroidContextAccessor extends ContextAccessor {
         float bellVolume = activityPrefs.getVolume();
         Uri bellUri = activityPrefs.getSoundUri();
         mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
+        mediaPlayer.setAudioStreamType(STREAM_ALARM);
         mediaPlayer.setVolume(bellVolume, bellVolume);
         try {
             mediaPlayer.setDataSource(context, bellUri);
@@ -242,8 +278,6 @@ public class AndroidContextAccessor extends ContextAccessor {
 
     /**
      * Start waiting for a specific time period and call runWhenDone when time is over.
-     *
-     * @param runWhenDone
      */
     private void startWaiting(final Runnable runWhenDone) {
         new Thread(new Runnable() {
@@ -270,11 +304,21 @@ public class AndroidContextAccessor extends ContextAccessor {
         return audioMan.getStreamMaxVolume(AudioManager.STREAM_ALARM);
     }
 
+    /**
+     * Returns duration hint for requesting audio focus depending on the version of Android.
+     */
+    private int retrieveDurationHint() {
+        if (Build.VERSION.SDK_INT >= 19) {
+            return AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE;
+        } else {
+            return AUDIOFOCUS_GAIN_TRANSIENT;
+        }
+    }
+
     @Override
     public int getAlarmVolume() {
         AudioManager audioMan = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        int alarmVolume = audioMan.getStreamVolume(AudioManager.STREAM_ALARM);
-        return alarmVolume;
+        return audioMan.getStreamVolume(AudioManager.STREAM_ALARM);
     }
 
     @Override
@@ -420,7 +464,7 @@ public class AndroidContextAccessor extends ContextAccessor {
             statusDrawable = R.drawable.ic_stat_bell_meditating;
             contentTitle = context.getText(R.string.statusTitleBellMeditating);
             contentText = MessageFormat.format(context.getText(R.string.statusTextBellMeditating).toString(), //
-                    Integer.valueOf(prefs.getMeditationDuration()), //
+                    prefs.getMeditationDuration(), //
                     new TimeOfDay(prefs.getMeditationEndingTimeMillis()).getDisplayString(context));
         } else if (muteRequestReason != null) { // Bell muted => override icon and notification text
             statusDrawable = bellActiveButMutedDrawable;
@@ -484,4 +528,17 @@ public class AndroidContextAccessor extends ContextAccessor {
                 PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
+    @Override
+    public void onAudioFocusChange(int focusChange) {
+        MindBell.logDebug("Callback onAudioFocusChange() received focusChange=" + focusChange);
+        switch (focusChange) {
+            case AUDIOFOCUS_LOSS:
+            case AUDIOFOCUS_LOSS_TRANSIENT: // could be handled by only pausing playback (not useful for bell sound)
+            case AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK: // could also be handled by lowering volume (not useful for bell sound)
+                finishBellSound();
+                break;
+            default:
+                break;
+        }
+    }
 }

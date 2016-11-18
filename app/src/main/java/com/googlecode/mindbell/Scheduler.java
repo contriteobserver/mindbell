@@ -129,7 +129,7 @@ public class Scheduler extends BroadcastReceiver {
 
         } else if (contextAccessor.isMuteRequested(true)) {
 
-            Log.d(TAG, "Not ringing (show/sound/vibrate), bell is muted with phone or manually");
+            Log.d(TAG, "Not ringing (show/sound/vibrate), bell is muted");
 
         } else if (prefs.isShow()) {
 

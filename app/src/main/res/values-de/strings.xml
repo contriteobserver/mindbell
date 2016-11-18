@@ -106,6 +106,12 @@
     <string name="prefsMuteInFlightMode">Im Flugmodus still</string>
     <string name="summaryMutedInFlightMode">Glocke läutet nicht im Flugmodus</string>
     <string name="summaryNotMutedInFlightMode">Glocke läutet auch im Flugmodus</string>
+    <string name="prefsNoSoundOnMusic">Kein Klang bei Musik</string>
+    <string name="summaryNoSoundOnMusic">Bei laufender Musik Klang nicht abspielen</string>
+    <string name="summaryNotNoSoundOnMusic">Auch bei laufender Musik Klang abspielen</string>
+    <string name="prefsPauseAudioOnSound">Audio bei Klang pausieren</string>
+    <string name="summaryPauseAudioOnSound">Andere Audioquellen während des Klangs pausieren oder Klang nicht abspielen</string>
+    <string name="summaryNotPauseAudioOnSound">Andere Audioquellen während des Klangs nicht pausieren</string>
 
     <string name="prefsCategoryMeditation">Meditation</string>
     <string name="prefsMeditatingOn">Meditation starten</string>
