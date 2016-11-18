@@ -23,6 +23,8 @@
         <attr name="rampUpSize" format="dimension"/>
         <attr name="meditationColor" format="color"/>
         <attr name="meditationSize" format="dimension"/>
+        <attr name="beyondColor" format="color"/>
+        <attr name="beyondSize" format="dimension"/>
     </declare-styleable>
 
 </resources>

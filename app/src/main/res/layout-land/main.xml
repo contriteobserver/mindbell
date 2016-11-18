@@ -65,6 +65,8 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="10dp"
+            mindbell:beyondColor="#00FF00"
+            mindbell:beyondSize="48sp"
             mindbell:meditationColor="#FF6600"
             mindbell:meditationSize="96sp"
             mindbell:rampUpColor="#00FF00"

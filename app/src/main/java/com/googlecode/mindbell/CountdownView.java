@@ -39,19 +39,33 @@ import java.util.TimerTask;
  * Regularly show current state of meditation by updating a time slice drawing regularly.
  */
 public class CountdownView extends View {
+
     public static final long ONE_SECOND = 1000;
+
     // Bound of the text to be displayed
     Rect textBounds = new Rect();
+
     private long rampUpStartingTimeMillis;
+
     private long meditationStartingTimeMillis;
-    private long meditationEndingTimeMillis;
+
+    // Style information about the background
+    private Paint backgroundPaint = new Paint();
+
     // Style information about the time slice to be drawn
     private Paint timeSlicePaint = new Paint();
-    private Paint backgroundPaint = new Paint();
+
+    private long meditationEndingTimeMillis;
+
     // Style information about the countdown string to be displayed during ramp-up
     private TextPaint textPaintRampUp;
+
     // Style information about the countdown string to be displayed during meditation
     private TextPaint textPaintMeditation;
+
+    // Style information about the countdown string to be displayed after meditation
+    private TextPaint textPaintBeyond;
+
     // Time to update the display with a time slice drawing regularly
     private Timer displayUpdateTimer;
 
@@ -99,6 +113,12 @@ public class CountdownView extends View {
         textPaintMeditation.setFlags(Paint.ANTI_ALIAS_FLAG);
         textPaintMeditation.setColor(app.getColor(R.styleable.CountdownView_meditationColor, Color.RED));
         textPaintMeditation.setTextSize(app.getDimension(R.styleable.CountdownView_meditationSize, 100));
+
+        // Set up a TextPaint object for writing the remaining time onto the time slice during meditation
+        textPaintBeyond = new TextPaint();
+        textPaintBeyond.setFlags(Paint.ANTI_ALIAS_FLAG);
+        textPaintBeyond.setColor(app.getColor(R.styleable.CountdownView_beyondColor, Color.GREEN));
+        textPaintBeyond.setTextSize(app.getDimension(R.styleable.CountdownView_beyondSize, 50));
     }
 
     public CountdownView(Context context, AttributeSet attrs) {
@@ -202,22 +222,28 @@ public class CountdownView extends View {
         super.onDraw(canvas);
 
         boolean rampUp;
-        long currentTimeMillis = Math.min(System.currentTimeMillis(), meditationEndingTimeMillis);
-        long meditationSeconds;
-        long elapsedMeditationSeconds;
-        if (currentTimeMillis < meditationStartingTimeMillis) {
+        boolean beyond;
+        long currentTimeMillis = System.currentTimeMillis();
+        long meditationSeconds = (meditationEndingTimeMillis - meditationStartingTimeMillis) / ONE_SECOND;
+        long displaySeconds;
+        if (currentTimeMillis < meditationStartingTimeMillis) { // ramp up
             rampUp = true;
+            beyond = false;
             meditationSeconds = (meditationStartingTimeMillis - rampUpStartingTimeMillis) / ONE_SECOND;
-            elapsedMeditationSeconds = (currentTimeMillis - rampUpStartingTimeMillis) / ONE_SECOND;
-        } else if (currentTimeMillis < meditationEndingTimeMillis) {
+            displaySeconds = (currentTimeMillis - rampUpStartingTimeMillis) / ONE_SECOND;
+        } else if (currentTimeMillis < meditationEndingTimeMillis) { // meditation
             rampUp = false;
-            meditationSeconds = (meditationEndingTimeMillis - meditationStartingTimeMillis) / ONE_SECOND;
-            elapsedMeditationSeconds = (currentTimeMillis - meditationStartingTimeMillis) / ONE_SECOND;
-        } else {
-            stopDisplayUpdateTimer(); // meditation is over therefore stop further drawing
+            beyond = false;
+            displaySeconds = (currentTimeMillis - meditationStartingTimeMillis) / ONE_SECOND;
+        } else if (currentTimeMillis < meditationEndingTimeMillis + meditationSeconds * ONE_SECOND) { // beyond
             rampUp = false;
-            meditationSeconds = (meditationEndingTimeMillis - meditationStartingTimeMillis) / ONE_SECOND;
-            elapsedMeditationSeconds = meditationSeconds;
+            beyond = true;
+            displaySeconds = (currentTimeMillis - meditationEndingTimeMillis) / ONE_SECOND;
+        } else { // meditation time twice over
+            stopDisplayUpdateTimer();
+            rampUp = false;
+            beyond = true;
+            displaySeconds = meditationSeconds;
         }
 
         // Draw bowl by drawing a bowl circle, a gap circle and a rectangle to crop the top
@@ -225,18 +251,29 @@ public class CountdownView extends View {
         canvas.drawArc(gapDimensions, -90, 360, true, backgroundPaint);
         canvas.drawRect(cropDimensions, backgroundPaint);
 
-        // Always draw a vertical line just in case elapsedMeditationSeconds doesn't make a sector with more than zero degrees
-        canvas.drawLine(centerX, centerY, centerX, timeSliceDimensions.top, timeSlicePaint);
+        // Always draw a vertical line just in case displaySeconds doesn't make a sector with more than zero degrees
 
-        // Draw sector that represents the elapsed seconds versus the total number of seconds
-        if (!rampUp && elapsedMeditationSeconds > 0) {
-            canvas.drawArc(timeSliceDimensions, -90, elapsedMeditationSeconds * 360 / (float) meditationSeconds, true,
-                    timeSlicePaint);
+        if (rampUp) {
+            // do not draw a sector during ramp up
+        } else if (!beyond) { // meditation
+            if (displaySeconds == 0) {
+                canvas.drawLine(centerX, centerY, centerX, timeSliceDimensions.top, timeSlicePaint); // just a vertical line
+            } else {
+                canvas.drawArc(timeSliceDimensions, -90, displaySeconds * 360 / (float) meditationSeconds, true, timeSlicePaint);
+            }
+        } else { // beyond
+            if (displaySeconds == 0) {
+                canvas.drawArc(timeSliceDimensions, -90, 360, true, timeSlicePaint);
+                canvas.drawLine(centerX, centerY, centerX, timeSliceDimensions.top, backgroundPaint); // just a vertical line
+            } else {
+                canvas.drawArc(timeSliceDimensions, -90, -(meditationSeconds - displaySeconds) * 360 / (float) meditationSeconds,
+                        true, timeSlicePaint);
+            }
         }
 
         // Draw the text on top of the circle
-        String countdownString = getCountdownString(meditationSeconds, elapsedMeditationSeconds, rampUp);
-        TextPaint textPaint = (rampUp) ? textPaintRampUp : textPaintMeditation;
+        String countdownString = getCountdownString(meditationSeconds, displaySeconds, rampUp, beyond);
+        TextPaint textPaint = (rampUp) ? textPaintRampUp : ((!beyond) ? textPaintMeditation : textPaintBeyond);
         textPaint.getTextBounds(countdownString, 0, countdownString.length(), textBounds);
         float textX = centerX - textBounds.exactCenterX();
         float textY = centerY - textBounds.exactCenterY();
@@ -257,13 +294,16 @@ public class CountdownView extends View {
     /**
      * Returns the string with the remaining time to be displayed.
      */
-    private String getCountdownString(long seconds, long elapsedSeconds, boolean rampUp) {
+    private String getCountdownString(long seconds, long displaySeconds, boolean rampUp, boolean beyond) {
         StringBuilder sb = new StringBuilder();
         if (rampUp) {
-            sb.append(seconds - elapsedSeconds);
-        } else {
-            long remainingBeganMinutes = (long) Math.ceil((seconds - elapsedSeconds) / 60d);
-            sb.append(remainingBeganMinutes);
+            sb.append(seconds - displaySeconds);
+        } else if (!beyond) { // meditation
+            sb.append((int) Math.ceil((seconds - displaySeconds) / 60d));
+        } else { // beyond
+            sb.append("-");
+            sb.append((int) Math.floor(displaySeconds / 60d));
+            sb.append("-");
         }
         return sb.toString();
     }
