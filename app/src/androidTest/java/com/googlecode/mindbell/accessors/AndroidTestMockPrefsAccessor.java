@@ -71,6 +71,11 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
+    public boolean isNotification() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
     public Set<Integer> getActiveOnDaysOfWeek() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
@@ -139,6 +144,16 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
 
     @Override
     public String getPattern() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public String getNotificationText() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public String getNotificationTitle() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
@@ -219,7 +234,12 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public boolean isStatusNotificationVisibilityPublic() {
+    public boolean isStatusVisibilityPublic() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public boolean isNotificationVisibilityPublic() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 

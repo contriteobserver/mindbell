@@ -22,7 +22,6 @@ package com.googlecode.mindbell.accessors;
 import android.Manifest;
 import android.app.AlarmManager;
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -36,6 +35,7 @@ import android.provider.Settings;
 import android.provider.Settings.Global;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -64,7 +64,9 @@ import static com.googlecode.mindbell.MindBellPreferences.TAG;
 
 public class AndroidContextAccessor extends ContextAccessor implements AudioManager.OnAudioFocusChangeListener {
 
-    private static final int uniqueNotificationID = R.layout.bell;
+    private static final int STATUS_NOTIFICATION_ID = 0x7f030001; // historically, has been R.layout.bell for a long time
+
+    private static final int RING_NOTIFICATION_ID = STATUS_NOTIFICATION_ID + 1;
 
     // Keep MediaPlayer to finish a started sound explicitly, reclaimed when app gets destroyed: http://stackoverflow.com/a/2476171
     private static MediaPlayer mediaPlayer = null;
@@ -157,14 +159,19 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
         // Stop an already ongoing sound, this isn't wrong when phone and bell are muted, too
         finishBellSound();
 
+        // Update ring notification and vibrate on either phone or wearable
+        if (activityPrefs.isNotification()) {
+            updateRingNotification(activityPrefs);
+        }
+
         // Raise alarm volume to the max but keep the original volume for reset by finishBellSound()
         // Start playing sound if requested by preferences
         if (activityPrefs.isSound()) {
             startPlayingSound(activityPrefs, runWhenDone);
         }
 
-        // Vibrate if requested by preferences
-        if (activityPrefs.isVibrate()) {
+        // Explicitly start vibration if not already done by ring notification
+        if (activityPrefs.isVibrate() && !activityPrefs.isNotification()) {
             startVibration();
         }
 
@@ -214,6 +221,28 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
             }
             prefs.resetOriginalVolume(); // no longer needed therefore invalidate it
         }
+    }
+
+    /**
+     * This is about updating the ring notification when ringing the bell.
+     */
+    public void updateRingNotification(ActivityPrefsAccessor activityPrefs) {
+        int visibility = (prefs.isNotificationVisibilityPublic()) ?
+                NotificationCompat.VISIBILITY_PUBLIC :
+                NotificationCompat.VISIBILITY_PRIVATE;
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context.getApplicationContext()) //
+                .setCategory(NotificationCompat.CATEGORY_ALARM) //
+                .setAutoCancel(true) // cancel notification on touch
+                .setColor(context.getResources().getColor(R.color.notificationBackground)) //
+                .setContentTitle(prefs.getNotificationTitle()) //
+                .setContentText(prefs.getNotificationText())
+                .setSmallIcon(R.drawable.ic_stat_bell_ring) //
+                .setVisibility(visibility);
+        if (activityPrefs.isVibrate()) {
+            notificationBuilder.setVibrate(prefs.getVibrationPattern());
+        }
+        Notification notification = notificationBuilder.build();
+        NotificationManagerCompat.from(context).notify(RING_NOTIFICATION_ID, notification);
     }
 
     /**
@@ -424,12 +453,12 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
     }
 
     /**
-     * This is about updating status notifcation on changes in system settings or when ringing the bell.
+     * This is about updating the status notification on changes in system settings.
      */
     @Override
     public void updateStatusNotification() {
         if ((!prefs.isActive() && !prefs.isMeditating()) || !prefs.isStatus()) {// bell inactive or no notification wanted?
-            Log.i(TAG, "Remove status notification because of inactive and non-meditating bell or unwanted notification");
+            Log.i(TAG, "Remove status notification because of inactive and non-meditating bell or unwanted status notification");
             removeStatusNotification();
             return;
         }
@@ -477,33 +506,31 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
         }
         // Now do the notification update
         Log.i(TAG, "Update status notification: " + contentText);
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         PendingIntent openAppIntent =
                 PendingIntent.getActivity(context, 0, new Intent(context, targetClass), PendingIntent.FLAG_UPDATE_CURRENT);
         PendingIntent muteIntent =
                 PendingIntent.getActivity(context, 2, new Intent(context, MuteActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
-        int visibility = (prefs.isStatusNotificationVisibilityPublic()) ?
+        int visibility = (prefs.isStatusVisibilityPublic()) ?
                 NotificationCompat.VISIBILITY_PUBLIC :
                 NotificationCompat.VISIBILITY_PRIVATE;
         Notification notification = new NotificationCompat.Builder(context.getApplicationContext()) //
-                .setCategory(NotificationCompat.CATEGORY_ALARM) //
+                .setCategory(NotificationCompat.CATEGORY_STATUS) //
                 .setColor(context.getResources().getColor(R.color.notificationBackground)) //
                 .setContentTitle(contentTitle) //
                 .setContentText(contentText) //
                 .setContentIntent(openAppIntent) //
-                .setOngoing(true) //
+                .setOngoing(true) // ongoing is *not* shown on wearable
                 .setSmallIcon(statusDrawable) //
                 .setVisibility(visibility) //
                 .addAction(R.drawable.ic_action_refresh_status, context.getText(R.string.statusActionRefreshStatus),
                         createRefreshBroadcastIntent()) //
                 .addAction(R.drawable.ic_stat_bell_active_but_muted, context.getText(R.string.statusActionMuteFor), muteIntent) //
                 .build();
-        notificationManager.notify(uniqueNotificationID, notification);
+        NotificationManagerCompat.from(context).notify(STATUS_NOTIFICATION_ID, notification);
     }
 
     private void removeStatusNotification() {
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(uniqueNotificationID);
+        NotificationManagerCompat.from(context).cancel(STATUS_NOTIFICATION_ID);
     }
 
     /**

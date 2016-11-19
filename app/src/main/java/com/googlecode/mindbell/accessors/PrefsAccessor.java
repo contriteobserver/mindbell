@@ -35,6 +35,8 @@ public abstract class PrefsAccessor {
 
     public abstract void setStatus(boolean statusNotification);
 
+    public abstract boolean isNotification();
+
     public abstract String getRingtone();
 
     public abstract Uri getSoundUri();
@@ -68,6 +70,10 @@ public abstract class PrefsAccessor {
     }
 
     public abstract String getPattern();
+
+    public abstract String getNotificationText();
+
+    public abstract String getNotificationTitle();
 
     public abstract boolean isActive();
 
@@ -116,7 +122,9 @@ public abstract class PrefsAccessor {
 
     public abstract void setKeepScreenOn(boolean keepScreenOn);
 
-    public abstract boolean isStatusNotificationVisibilityPublic();
+    public abstract boolean isStatusVisibilityPublic();
+
+    public abstract boolean isNotificationVisibilityPublic();
 
     public abstract boolean useStatusIconMaterialDesign();
 

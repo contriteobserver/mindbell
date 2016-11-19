@@ -57,6 +57,10 @@ import static com.googlecode.mindbell.R.string.keyMuteWithPhone;
 import static com.googlecode.mindbell.R.string.keyMutedTill;
 import static com.googlecode.mindbell.R.string.keyNoSoundOnMusic;
 import static com.googlecode.mindbell.R.string.keyNormalize;
+import static com.googlecode.mindbell.R.string.keyNotification;
+import static com.googlecode.mindbell.R.string.keyNotificationText;
+import static com.googlecode.mindbell.R.string.keyNotificationTitle;
+import static com.googlecode.mindbell.R.string.keyNotificationVisibilityPublic;
 import static com.googlecode.mindbell.R.string.keyNumberOfPeriods;
 import static com.googlecode.mindbell.R.string.keyOriginalVolume;
 import static com.googlecode.mindbell.R.string.keyPattern;
@@ -170,6 +174,10 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         addPreference(keyMuteWithPhone, true, BOOLEAN, context);
         addPreference(keyNormalize, NORMALIZE_NONE, STRING, context);
         addPreference(keyNoSoundOnMusic, false, BOOLEAN, context);
+        addPreference(keyNotification, true, BOOLEAN, context);
+        addPreference(keyNotificationText, context.getText(R.string.prefsNotificationTextDefault), STRING, context);
+        addPreference(keyNotificationTitle, context.getText(R.string.prefsNotificationTitleDefault), STRING, context);
+        addPreference(keyNotificationVisibilityPublic, true, BOOLEAN, context);
         addPreference(keyNumberOfPeriods, 1, INTEGER, context);
         addPreference(keyOriginalVolume, -1, INTEGER, context);
         addPreference(keyPattern, "100:200:100:600", STRING, context);
@@ -196,6 +204,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         entryValuesMap.put(keyMeditationEndingBell, context.getResources().getStringArray(R.array.bellEntryValues));
         entryValuesMap.put(keyMeditationInterruptingBell, context.getResources().getStringArray(R.array.bellEntryValues));
         entryValuesMap.put(keyNormalize, context.getResources().getStringArray(R.array.normalizeEntryValues));
+        entryValuesMap.put(keyNotificationText, new String[]{}); // we cannot verify the entered notification text
+        entryValuesMap.put(keyNotificationTitle, new String[]{}); // we cannot verify the entered notification title
         entryValuesMap.put(keyPattern, context.getResources().getStringArray(R.array.patternEntryValues));
         entryValuesMap.put(keyRingtone, new String[]{}); // we don't need to know the possible ringtone values
 
@@ -437,6 +447,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
+    public boolean isNotification() {
+        return getBooleanSetting(keyNotification);
+    }
+
+    @Override
     public String getActiveOnDaysOfWeekString() {
         // Warning: Similar code in MindBellPreferences#setMultiSelectListPreferenceSummary()
         Set<Integer> activeOnDaysOfWeek = getActiveOnDaysOfWeek();
@@ -540,6 +555,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
+    public String getNotificationText() {
+        return getStringSetting(keyNotificationText);
+    }
+
+    @Override
+    public String getNotificationTitle() {
+        return getStringSetting(keyNotificationTitle);
+    }
+
+    @Override
     public boolean isActive() {
         return getBooleanSetting(keyActive);
     }
@@ -605,8 +630,13 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public boolean isStatusNotificationVisibilityPublic() {
+    public boolean isStatusVisibilityPublic() {
         return getBooleanSetting(keyStatusVisibilityPublic);
+    }
+
+    @Override
+    public boolean isNotificationVisibilityPublic() {
+        return getBooleanSetting(keyNotificationVisibilityPublic);
     }
 
     @Override
@@ -840,6 +870,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             return AndroidPrefsAccessor.this.getVolume();
         }
 
+        @Override
+        public boolean isNotification() {
+            return AndroidPrefsAccessor.this.isNotification();
+        }
+
     }
 
     private class ActivityPrefsAccessorForTapping implements ActivityPrefsAccessor {
@@ -869,6 +904,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             return AndroidPrefsAccessor.this.getVolume();
         }
 
+        @Override
+        public boolean isNotification() {
+            return false;
+        }
+
     }
 
     private abstract class ActivityPrefsAccessorForMeditation implements ActivityPrefsAccessor {
@@ -894,6 +934,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         @Override
         public float getVolume() {
             return AndroidPrefsAccessor.this.getVolume();
+        }
+
+        @Override
+        public boolean isNotification() {
+            return false;
         }
 
     }

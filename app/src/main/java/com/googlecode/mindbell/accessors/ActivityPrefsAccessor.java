@@ -36,4 +36,6 @@ public interface ActivityPrefsAccessor {
 
     float getVolume();
 
+    boolean isNotification();
+
 }

@@ -35,6 +35,21 @@
             android:summaryOff="@string/summaryStatusIconPreMaterialDesign"
             android:summaryOn="@string/summaryStatusIconMaterialDesign"
             android:title="@string/prefsStatusIconMaterialDesign"/>
+        <CheckBoxPreference
+            android:key="@string/keyNotification"
+            android:summaryOff="@string/summaryNoNotification"
+            android:summaryOn="@string/summaryNotification"
+            android:title="@string/prefsNotification"/>
+        <com.googlecode.mindbell.preference.EditTextPreferenceWithSummary
+            android:defaultValue="@string/prefsNotificationTitleDefault"
+            android:key="@string/keyNotificationTitle"
+            android:summary="%s"
+            android:title="@string/prefsNotificationTitle"/>
+        <com.googlecode.mindbell.preference.EditTextPreferenceWithSummary
+            android:defaultValue="@string/prefsNotificationTextDefault"
+            android:key="@string/keyNotificationText"
+            android:summary="%s"
+            android:title="@string/prefsNotificationText"/>
 
     </PreferenceScreen>
 

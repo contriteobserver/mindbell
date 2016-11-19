@@ -87,14 +87,24 @@
 
     <string name="prefsCategoryNotifications">Benachrichtigungen</string>
     <string name="prefsStatus">Status-Icon anzeigen</string>
-    <string name="summaryStatus">Zeige Status-Icon bei aktiver Glocke</string>
-    <string name="summaryNoStatus">Kein Status-Icon</string>
-    <string name="prefsStatusVisibilityPublic">Zeige Text auf Sperrbildschirm</string>
-    <string name="summaryStatusVisibilityPublic">Text auf Sperrbildschirm anzeigen</string>
-    <string name="summaryStatusVisibilityPrivate">Text auf Sperrbildschirm ausblenden</string>
     <string name="prefsStatusIconMaterialDesign">Status-Icon im Material Design</string>
     <string name="summaryStatusIconMaterialDesign">Stilisierte weiße Glocke</string>
     <string name="summaryStatusIconPreMaterialDesign">Goldene Glocke (bei manchen Geräten nur ein weißer Fleck)</string>
+    <string name="summaryStatus">Zeige Status-Icon bei aktiver Glocke</string>
+    <string name="summaryNoStatus">Kein Status-Icon</string>
+    <string name="prefsStatusVisibilityPublic">Zeige Statustext auf Sperrbildschirm</string>
+    <string name="summaryStatusVisibilityPublic">Statustext auf Sperrbildschirm anzeigen</string>
+    <string name="summaryStatusVisibilityPrivate">Statustext auf Sperrbildschirm ausblenden</string>
+    <string name="prefsNotification">Benachrichtigung beim Läuten</string>
+    <string name="summaryNotification">Zeige Benachrichtigung (auf Wearables) beim Läuten</string>
+    <string name="summaryNoNotification">Keine Benachrichtigung beim Läuten</string>
+    <string name="prefsNotificationTitle">Titel der Benachrichtung</string>
+    <string name="prefsNotificationTitleDefault">MindBell &#8230;</string>
+    <string name="prefsNotificationText">Text der Benachrichtung</string>
+    <string name="prefsNotificationTextDefault">Atme und lächle</string>
+    <string name="prefsNotificationVisibilityPublic">Benachrichtigungstext auf Sperrbildschirm</string>
+    <string name="summaryNotificationVisibilityPublic">Benachrichtigungstext auf Sperrbildschirm anzeigen</string>
+    <string name="summaryNotificationVisibilityPrivate">Benachrichtigungstext auf Sperrbildschirm ausblenden</string>
 
     <string name="prefsCategoryMuteRules">Stillstellregeln</string>
     <string name="prefsMuteWithPhone">Mit Telefon stummschalten</string>

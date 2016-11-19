@@ -89,12 +89,22 @@
     <string name="prefsStatus">Show status icon</string>
     <string name="summaryStatus">Show status icon when bell is active</string>
     <string name="summaryNoStatus">No status icon, set and forget</string>
-    <string name="prefsStatusVisibilityPublic">Show text on lock screen</string>
-    <string name="summaryStatusVisibilityPublic">Show text on lock screen</string>
-    <string name="summaryStatusVisibilityPrivate">Hide text on lock screen</string>
     <string name="prefsStatusIconMaterialDesign">Status icon in Material Design</string>
     <string name="summaryStatusIconMaterialDesign">Stylized white bell</string>
     <string name="summaryStatusIconPreMaterialDesign">Golden bell (just a white splotch on some devices)</string>
+    <string name="prefsStatusVisibilityPublic">Show status text on lock screen</string>
+    <string name="summaryStatusVisibilityPublic">Show status text on lock screen</string>
+    <string name="summaryStatusVisibilityPrivate">Hide status text on lock screen</string>
+    <string name="prefsNotification">Notification when ringing</string>
+    <string name="summaryNotification">Show notification (on wearables) when bell is ringing</string>
+    <string name="summaryNoNotification">No ring notification, wearables remain to be unaware</string>
+    <string name="prefsNotificationTitle">Title of ring notification</string>
+    <string name="prefsNotificationTitleDefault">MindBell &#8230;</string>
+    <string name="prefsNotificationText">Text of ring notification</string>
+    <string name="prefsNotificationTextDefault">Breathe and smile</string>
+    <string name="prefsNotificationVisibilityPublic">Show ring notification text on lock screen</string>
+    <string name="summaryNotificationVisibilityPublic">Show ring notification text on lock screen</string>
+    <string name="summaryNotificationVisibilityPrivate">Hide ring notification text on lock screen</string>
 
     <string name="prefsCategoryMuteRules">Mute rules</string>
     <string name="prefsMuteWithPhone">Mute with phone</string>
@@ -208,6 +218,10 @@
     <string name="keyMuteWithPhone" translatable="false">muteWithPhone</string>
     <string name="keyNormalize" translatable="false">normalize</string>
     <string name="keyNoSoundOnMusic" translatable="false">noSoundOnMusic</string>
+    <string name="keyNotification" translatable="false">notification</string>
+    <string name="keyNotificationText" translatable="false">notificationText</string>
+    <string name="keyNotificationTitle" translatable="false">notificationTitle</string>
+    <string name="keyNotificationVisibilityPublic" translatable="false">notificationVisibilityPublic</string>
     <string name="keyNumberOfPeriods" translatable="false">numberOfPeriods</string>
     <string name="keyOriginalVolume" translatable="false">originalVolume</string>
     <string name="keyPattern" translatable="false">pattern</string>
@@ -220,8 +234,8 @@
     <string name="keyShow" translatable="false">show</string>
     <string name="keySound" translatable="false">sound</string>
     <string name="keyStart" translatable="false">start</string>
-    <string name="keyStatusIconMaterialDesign" translatable="false">statusIconMaterialDesign</string>
     <string name="keyStatus" translatable="false">status</string>
+    <string name="keyStatusIconMaterialDesign" translatable="false">statusIconMaterialDesign</string>
     <string name="keyStatusVisibilityPublic" translatable="false">statusVisiblityPublic</string>
     <string name="keyUseStandardBell" translatable="false">useStandardBell</string>
     <string name="keyVibrate" translatable="false">vibrate</string>
