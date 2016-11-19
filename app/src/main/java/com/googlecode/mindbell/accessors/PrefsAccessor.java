@@ -27,6 +27,42 @@ import java.util.Set;
 
 public abstract class PrefsAccessor {
 
+    /**
+     * One minute in milliseconds.
+     */
+    public static final long ONE_MINUTE_MILLIS = 60000L;
+
+    /**
+     * One minute in milliseconds plus an error indicator millisecond value.
+     */
+    public static final long ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION = ONE_MINUTE_MILLIS + 1L;
+    public static final long ONE_MINUTE_MILLIS_VARIABLE_PERIOD_MISSING = ONE_MINUTE_MILLIS + 2L;
+    public static final long ONE_MINUTE_MILLIS_NEGATIVE_PERIOD = ONE_MINUTE_MILLIS + 3L;
+    public static final long ONE_MINUTE_MILLIS_PERIOD_TOO_SHORT = ONE_MINUTE_MILLIS + 4L;
+    public static final long ONE_MINUTE_MILLIS_PERIOD_NOT_EXISTING = ONE_MINUTE_MILLIS + 5L;
+
+    /**
+     * Regular expressions to verify a pattern of periods string.
+     */
+    public static final String STATIC_PERIOD_REGEX = "(\\d+)";
+    public static final String VARIABLE_PERIOD_REGEX = "(x)";
+    public static final String PERIOD_REGEX = "(" + STATIC_PERIOD_REGEX + "|" + VARIABLE_PERIOD_REGEX + ")";
+    public static final String PERIOD_SEPARATOR_REGEX = ", ?";
+
+    /**
+     * Returns a patternOfPeriods string that corresponds with the numberOfPeriods: 1 -> "x", 2 -> "x, x", ...
+     */
+    public static String derivePatternOfPeriods(int numberOfPeriods) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < numberOfPeriods; i++) {
+            if (sb.length() > 0) {
+                sb.append(", ");
+            }
+            sb.append("x");
+        }
+        return sb.toString();
+    }
+
     public abstract boolean isShow();
 
     public abstract boolean isSound();
@@ -98,6 +134,70 @@ public abstract class PrefsAccessor {
 
     public abstract boolean isRandomize();
 
+    /**
+     * Returns the number of meditation periods derived from the pattern of periods lengths.
+     */
+    public int getNumberOfPeriods() {
+        return deriveNumberOfPeriods(getPatternOfPeriods());
+    }
+
+    /**
+     * Returns a numberOfPeriods string that corresponds with the patternOfPeriods: "x" -> 1, "3, x" -> 2, ...
+     */
+    public static int deriveNumberOfPeriods(String patternOfPeriods) {
+        return patternOfPeriods.split(PERIOD_SEPARATOR_REGEX).length;
+    }
+
+    public abstract String getPatternOfPeriods();
+
+    public abstract void setPatternOfPeriods(String patternOfPeriods);
+
+    public long getMeditationPeriodMillis(int meditationPeriod) {
+        return derivePeriodMillis(getPatternOfPeriods(), getMeditationDuration(), meditationPeriod);
+    }
+
+    /**
+     * Returns the length of a specific meditation period in millis, or 6000xL in case of inconsistent arguments. The latter makes
+     * MindBell more robust. If for any reason the patterns string is invalid the periods get one minute lengths instead of
+     * experiencing exceptions.
+     */
+    public static long derivePeriodMillis(String patternOfPeriods, int meditationDuration, int meditationPeriod) {
+        int periodIndex = meditationPeriod - 1;
+        String[] periods = patternOfPeriods.split(PERIOD_SEPARATOR_REGEX);
+        // Verify the patternOfPeriods string and calculate the length of a variable period
+        int numberOfVariablePeriods = 0;
+        int sumOfPeriodsLengths = 0;
+        for (String period : periods) {
+            if (period.matches(STATIC_PERIOD_REGEX)) {
+                sumOfPeriodsLengths += Integer.valueOf(period);
+            } else if (period.matches(VARIABLE_PERIOD_REGEX)) {
+                numberOfVariablePeriods++;
+            } else {
+                return ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION;
+            }
+        }
+        if (numberOfVariablePeriods == 0) {
+            return ONE_MINUTE_MILLIS_VARIABLE_PERIOD_MISSING;
+        }
+        long millisOfVariablePeriods = (meditationDuration - sumOfPeriodsLengths) * ONE_MINUTE_MILLIS / numberOfVariablePeriods;
+        if (millisOfVariablePeriods < 0) {
+            return ONE_MINUTE_MILLIS_NEGATIVE_PERIOD;
+        } else if (millisOfVariablePeriods < ONE_MINUTE_MILLIS) {
+            return ONE_MINUTE_MILLIS_PERIOD_TOO_SHORT;
+        }
+        if (periodIndex < 0 || periodIndex >= periods.length) {
+            return ONE_MINUTE_MILLIS_PERIOD_NOT_EXISTING; // avoid IndexOutOfBoundsException
+        } else if (periods[periodIndex].matches(STATIC_PERIOD_REGEX)) {
+            return Integer.valueOf(periods[periodIndex]) * ONE_MINUTE_MILLIS;
+        } else {
+            return millisOfVariablePeriods;
+        }
+    }
+
+    public abstract int getMeditationDuration();
+
+    public abstract void setMeditationDuration(int meditationDuration);
+
     public boolean isMuteInFlightMode() {
         return true;
     }
@@ -134,15 +234,7 @@ public abstract class PrefsAccessor {
 
     public abstract void setRampUpTime(int rampUpTime);
 
-    public abstract int getNumberOfPeriods();
-
-    public abstract void setNumberOfPeriods(int numberOfPeriods);
-
     public abstract long getMeditationDurationMillis();
-
-    public abstract int getMeditationDuration();
-
-    public abstract void setMeditationDuration(int meditationDuration);
 
     public abstract long getRampUpStartingTimeMillis();
 

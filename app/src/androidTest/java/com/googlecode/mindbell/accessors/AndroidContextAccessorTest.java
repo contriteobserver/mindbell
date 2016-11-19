@@ -42,6 +42,7 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
         // exercise
         ca.startPlayingSoundAndVibrate(ca.getPrefs().forRegularOperation(), null);
         // verify ... be sure to have sound checked as an activity on your emulated device
+        // verify ... be sure to have pause audio unchecked on your emulated device
         assertEquals(ca.getAlarmMaxVolume(), ca.getAlarmVolume());
     }
 

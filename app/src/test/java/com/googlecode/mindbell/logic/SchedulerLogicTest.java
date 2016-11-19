@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
 
+import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -66,7 +67,7 @@ public class SchedulerLogicTest {
         when(prefs.getActiveOnDaysOfWeek()).thenReturn(new HashSet<>(Arrays.asList(new Integer[]{2, 3, 4, 5, 6})));
         when(prefs.isRandomize()).thenReturn(true);
         when(prefs.getNormalize()).thenReturn(-1);
-        when(prefs.getInterval()).thenReturn(60 * 60000L);
+        when(prefs.getInterval()).thenReturn(60 * ONE_MINUTE_MILLIS);
         return prefs;
     }
 
@@ -85,7 +86,7 @@ public class SchedulerLogicTest {
         PrefsAccessor prefs = getDayPrefs();
         when(prefs.isRandomize()).thenReturn(false);
         when(prefs.getNormalize()).thenReturn(5);
-        when(prefs.getInterval()).thenReturn(5 * 60000L);
+        when(prefs.getInterval()).thenReturn(5 * ONE_MINUTE_MILLIS);
         {
             // Current time setting in the middle of the evening (18:52)
             long targetTimeMillis = getTimeMillis(18, 52, Calendar.FRIDAY);
@@ -136,7 +137,7 @@ public class SchedulerLogicTest {
         PrefsAccessor prefs = getDayPrefs();
         when(prefs.isRandomize()).thenReturn(false);
         when(prefs.getNormalize()).thenReturn(30);
-        when(prefs.getInterval()).thenReturn(20 * 60000L);
+        when(prefs.getInterval()).thenReturn(20 * ONE_MINUTE_MILLIS);
         // Current time setting in the middle of the night (05:00)
         long targetTimeMillis = getTimeMillis(5, 0, Calendar.FRIDAY);
         Assert.assertEquals(getTimeMillis(5, 0, Calendar.FRIDAY), targetTimeMillis);
@@ -167,7 +168,7 @@ public class SchedulerLogicTest {
         PrefsAccessor prefs = getDayPrefs();
         when(prefs.isRandomize()).thenReturn(false);
         when(prefs.getNormalize()).thenReturn(15);
-        when(prefs.getInterval()).thenReturn(30 * 60000L);
+        when(prefs.getInterval()).thenReturn(30 * ONE_MINUTE_MILLIS);
         {
             // Current time setting in the middle of the night (05:00)
             long targetTimeMillis = getTimeMillis(5, 0, Calendar.FRIDAY);
@@ -239,7 +240,7 @@ public class SchedulerLogicTest {
         PrefsAccessor prefs = getDayPrefs();
         when(prefs.isRandomize()).thenReturn(false);
         when(prefs.getNormalize()).thenReturn(10);
-        when(prefs.getInterval()).thenReturn(20 * 60000L);
+        when(prefs.getInterval()).thenReturn(20 * ONE_MINUTE_MILLIS);
         // Current time setting in the middle of the night (05:00)
         long targetTimeMillis = getTimeMillis(5, 0, Calendar.FRIDAY);
         Assert.assertEquals(getTimeMillis(5, 0, Calendar.FRIDAY), targetTimeMillis);
@@ -372,7 +373,7 @@ public class SchedulerLogicTest {
         when(prefs.getActiveOnDaysOfWeek()).thenReturn(new HashSet<>(Arrays.asList(new Integer[]{2, 3, 4, 5, 6})));
         when(prefs.isRandomize()).thenReturn(true);
         when(prefs.getNormalize()).thenReturn(-1);
-        when(prefs.getInterval()).thenReturn(60 * 60000L);
+        when(prefs.getInterval()).thenReturn(60 * ONE_MINUTE_MILLIS);
         return prefs;
     }
 

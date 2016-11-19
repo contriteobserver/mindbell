@@ -61,9 +61,9 @@ import static com.googlecode.mindbell.R.string.keyNotification;
 import static com.googlecode.mindbell.R.string.keyNotificationText;
 import static com.googlecode.mindbell.R.string.keyNotificationTitle;
 import static com.googlecode.mindbell.R.string.keyNotificationVisibilityPublic;
-import static com.googlecode.mindbell.R.string.keyNumberOfPeriods;
 import static com.googlecode.mindbell.R.string.keyOriginalVolume;
 import static com.googlecode.mindbell.R.string.keyPattern;
+import static com.googlecode.mindbell.R.string.keyPatternOfPeriods;
 import static com.googlecode.mindbell.R.string.keyPauseAudioOnSound;
 import static com.googlecode.mindbell.R.string.keyPopup;
 import static com.googlecode.mindbell.R.string.keyRampUpStartingTimeMillis;
@@ -174,13 +174,13 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         addPreference(keyMuteWithPhone, true, BOOLEAN, context);
         addPreference(keyNormalize, NORMALIZE_NONE, STRING, context);
         addPreference(keyNoSoundOnMusic, false, BOOLEAN, context);
-        addPreference(keyNotification, true, BOOLEAN, context);
+        addPreference(keyNotification, false, BOOLEAN, context);
         addPreference(keyNotificationText, context.getText(R.string.prefsNotificationTextDefault), STRING, context);
         addPreference(keyNotificationTitle, context.getText(R.string.prefsNotificationTitleDefault), STRING, context);
         addPreference(keyNotificationVisibilityPublic, true, BOOLEAN, context);
-        addPreference(keyNumberOfPeriods, 1, INTEGER, context);
         addPreference(keyOriginalVolume, -1, INTEGER, context);
         addPreference(keyPattern, "100:200:100:600", STRING, context);
+        addPreference(keyPatternOfPeriods, "x", STRING, context);
         addPreference(keyPauseAudioOnSound, true, BOOLEAN, context);
         addPreference(keyPopup, -1, INTEGER, context);
         addPreference(keyRampUpStartingTimeMillis, -1L, LONG, context);
@@ -207,7 +207,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         entryValuesMap.put(keyNotificationText, new String[]{}); // we cannot verify the entered notification text
         entryValuesMap.put(keyNotificationTitle, new String[]{}); // we cannot verify the entered notification title
         entryValuesMap.put(keyPattern, context.getResources().getStringArray(R.array.patternEntryValues));
+        entryValuesMap.put(keyPatternOfPeriods, new String[]{}); // we cannot verify the entered notification text
         entryValuesMap.put(keyRingtone, new String[]{}); // we don't need to know the possible ringtone values
+
+        // Convert old settings from previous versions
+        convertOldSettings(context);
 
         // Track whether a stacktrace shall be logged to find out the reason for sometimes deleted preferences
         boolean logStackTrace = false;
@@ -238,7 +242,6 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         }
     }
 
-
     /**
      * Puts a newly created Preference into the referenceMap with the given resid as key of the map.
      *
@@ -249,6 +252,23 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
      */
     private void addPreference(int resid, Object defaultValue, Preference.Type type, Context context) {
         preferenceMap.put(resid, new Preference(resid, context.getString(resid), defaultValue, type));
+    }
+
+    /**
+     * Convert old settings from previous versions ... remove code after a while.
+     */
+    private void convertOldSettings(Context context) {
+        // Version 3.1.0 replaced numberOfPeriods by patternOfPeriods
+        String keyNumberOfPeriods = "numberOfPeriods";
+        int numberOfPeriods = settings.getInt(keyNumberOfPeriods, 0);
+        if (numberOfPeriods > 0) {
+            String patternOfPeriods = derivePatternOfPeriods(numberOfPeriods);
+            setPatternOfPeriods(patternOfPeriods);
+            settings.edit().remove(keyNumberOfPeriods).apply();
+            Log.w(TAG,
+                    "Converted old setting for '" + keyNumberOfPeriods + "' (" + numberOfPeriods + ") to '" + keyPatternOfPeriods +
+                            "' (" + patternOfPeriods + ")");
+        }
     }
 
     /**
@@ -364,6 +384,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     /**
+     * Sets the preference with the given resid to the given value.
+     *
+     * @param resid
+     * @param value
+     */
+    private void setSetting(int resid, Object value) {
+        setSetting(preferenceMap.get(resid), value);
+    }
+
+    /**
      * Sets the preference to the given value.
      *
      * @param preference
@@ -434,16 +464,6 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public void setStatus(boolean statusNotification) {
         setSetting(keyStatus, statusNotification);
-    }
-
-    /**
-     * Sets the preference with the given resid to the given value.
-     *
-     * @param resid
-     * @param value
-     */
-    private void setSetting(int resid, Object value) {
-        setSetting(preferenceMap.get(resid), value);
     }
 
     @Override
@@ -552,6 +572,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public String getPattern() {
         return getStringSetting(keyPattern);
+    }
+
+    @Override
+    public String getPatternOfPeriods() {
+        return getStringSetting(keyPatternOfPeriods);
+    }
+
+    @Override
+    public void setPatternOfPeriods(String patternOfPeriods) {
+        setSetting(keyPatternOfPeriods, patternOfPeriods);
     }
 
     @Override
@@ -670,18 +700,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public int getNumberOfPeriods() {
-        return getIntSetting(keyNumberOfPeriods);
-    }
-
-    @Override
-    public void setNumberOfPeriods(int numberOfPeriods) {
-        setSetting(keyNumberOfPeriods, numberOfPeriods);
-    }
-
-    @Override
     public long getMeditationDurationMillis() {
-        return getMeditationDuration() * 60000L;
+        return getMeditationDuration() * ONE_MINUTE_MILLIS;
     }
 
     @Override

@@ -26,6 +26,8 @@ import java.util.Calendar;
 import java.util.Random;
 import java.util.Set;
 
+import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS;
+
 public class SchedulerLogic {
 
     /**
@@ -47,7 +49,7 @@ public class SchedulerLogic {
         final boolean normalize = prefs.isNormalize(normalizeValue);
         long randomizedInterval = randomize ? getRandomInterval(meanInterval) : meanInterval;
         long targetTimeMillis = nowTimeMillis + randomizedInterval;
-        long normalizeMillis = normalizeValue * 60000L;
+        long normalizeMillis = normalizeValue * ONE_MINUTE_MILLIS;
         targetTimeMillis = normalize(targetTimeMillis, meanInterval, normalize, normalizeMillis);
         if (!(new TimeOfDay(targetTimeMillis)).isDaytime(prefs)) { // inactive time?
             targetTimeMillis = getNextDaytimeStartInMillis(targetTimeMillis, prefs.getDaytimeStart(), prefs.getActiveOnDaysOfWeek())

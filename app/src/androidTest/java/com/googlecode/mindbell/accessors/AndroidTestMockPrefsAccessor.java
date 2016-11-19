@@ -148,6 +148,16 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
+    public String getPatternOfPeriods() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public void setPatternOfPeriods(String patternOfPeriods) {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
     public String getNotificationText() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
@@ -269,11 +279,6 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
 
     @Override
     public int getNumberOfPeriods() {
-        throw new UnsupportedOperationException("Test terminated ... method not implemented");
-    }
-
-    @Override
-    public void setNumberOfPeriods(int numberOfPeriods) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 

@@ -41,6 +41,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -51,6 +52,12 @@ import com.googlecode.mindbell.accessors.AndroidContextAccessor;
 import com.googlecode.mindbell.accessors.ContextAccessor;
 import com.googlecode.mindbell.accessors.PrefsAccessor;
 import com.googlecode.mindbell.util.Utils;
+
+import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION;
+import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS_NEGATIVE_PERIOD;
+import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS_PERIOD_NOT_EXISTING;
+import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS_PERIOD_TOO_SHORT;
+import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS_VARIABLE_PERIOD_MISSING;
 
 public class MindBellMain extends Activity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -141,30 +148,95 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
         if (!prefs.isMeditating()) {
             View view = getLayoutInflater().inflate(R.layout.meditation_dialog, null);
             final TextView textViewRampUpTime = (TextView) view.findViewById(R.id.rampUpTime);
-            attachNumberPickerDialog(textViewRampUpTime, R.string.prefsRampUpTime, 5, 999, prefs.getRampUpTime(),
-                    new OnPickListener() {
-                        @Override
-                        public void onPick(int number) {
-                            prefs.setRampUpTime(number);
-                        }
-                    });
             final TextView textViewNumberOfPeriods = (TextView) view.findViewById(R.id.numberOfPeriods);
-            attachNumberPickerDialog(textViewNumberOfPeriods, R.string.prefsNumberOfPeriods, 1, 99, prefs.getNumberOfPeriods(),
-                    new OnPickListener() {
-                        @Override
-                        public void onPick(int number) {
-                            prefs.setNumberOfPeriods(number);
-                        }
-                    });
+            final TextView textViewExplanationNumberOfPeriods = (TextView) view.findViewById(R.id.explanationNumberOfPeriods);
+            final TextView textViewPatternOfPeriods = (TextView) view.findViewById(R.id.patternOfPeriods);
+            final TextView textViewExplanationPatternOfPeriods = (TextView) view.findViewById(R.id.explanationPatternOfPeriods);
             final TextView textViewMeditationDuration = (TextView) view.findViewById(R.id.meditationDuration);
-            attachNumberPickerDialog(textViewMeditationDuration, R.string.prefsMeditationDuration, 1, 999,
-                    prefs.getMeditationDuration(), new OnPickListener() {
-                        @Override
-                        public void onPick(int number) {
-                            prefs.setMeditationDuration(number);
-                        }
-                    });
             final CheckBox checkBoxKeepScreenOn = (CheckBox) view.findViewById(R.id.keepScreenOn);
+            attachNumberPickerDialog(textViewRampUpTime, R.string.prefsRampUpTime, 5, 999, new IntAccessor() {
+                @Override
+                public int getValue() {
+                    return prefs.getRampUpTime();
+                }
+            }, new OnPickListener() {
+                @Override
+                public boolean onPick(int value) {
+                    prefs.setRampUpTime(value);
+                    return true;
+                }
+            });
+            attachNumberPickerDialog(textViewNumberOfPeriods, R.string.prefsNumberOfPeriods, 1, 99, new IntAccessor() {
+                @Override
+                public int getValue() {
+                    return PrefsAccessor.deriveNumberOfPeriods(prefs.getPatternOfPeriods());
+                }
+            }, new OnPickListener() {
+                @Override
+                public boolean onPick(int value) {
+                    String patternOfPeriods = PrefsAccessor.derivePatternOfPeriods(value);
+                    if (isValidMeditationSetup(patternOfPeriods, prefs.getMeditationDuration())) {
+                        prefs.setPatternOfPeriods(patternOfPeriods);
+                        textViewPatternOfPeriods.setText(patternOfPeriods);
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            });
+            textViewExplanationNumberOfPeriods.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new AlertDialog.Builder(MindBellMain.this) //
+                            .setTitle(R.string.prefsNumberOfPeriods) //
+                            .setMessage(R.string.explanationNumberOfPeriods) //
+                            .setPositiveButton(android.R.string.ok, null) //
+                            .show();
+                }
+            });
+            attachEditTextDialog(textViewPatternOfPeriods, R.string.prefsPatternOfPeriods, new TextAccessor() {
+                @Override
+                public String getText() {
+                    return prefs.getPatternOfPeriods();
+                }
+            }, new OnEnterListener() {
+                @Override
+                public boolean onEnter(String value) {
+                    if (isValidMeditationSetup(value, prefs.getMeditationDuration())) {
+                        prefs.setPatternOfPeriods(value);
+                        textViewNumberOfPeriods.setText(String.valueOf(PrefsAccessor.deriveNumberOfPeriods(value)));
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            });
+            textViewExplanationPatternOfPeriods.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new AlertDialog.Builder(MindBellMain.this) //
+                            .setTitle(R.string.prefsNumberOfPeriods) //
+                            .setMessage(R.string.explanationPatternOfPeriods) //
+                            .setPositiveButton(android.R.string.ok, null) //
+                            .show();
+                }
+            });
+            attachNumberPickerDialog(textViewMeditationDuration, R.string.prefsMeditationDuration, 1, 999, new IntAccessor() {
+                @Override
+                public int getValue() {
+                    return prefs.getMeditationDuration();
+                }
+            }, new OnPickListener() {
+                @Override
+                public boolean onPick(int value) {
+                    if (isValidMeditationSetup(prefs.getPatternOfPeriods(), value)) {
+                        prefs.setMeditationDuration(value);
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            });
             checkBoxKeepScreenOn.setChecked(prefs.isKeepScreenOn());
             new AlertDialog.Builder(this) //
                     .setTitle(R.string.title_meditation_dialog) //
@@ -237,38 +309,94 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
 
     /**
      * Sets an OnClickListener upon the text view to open a number picker dialog when it is clicked.
-     *
-     * @param textView
-     * @param residTitle
-     * @param min
-     * @param max
-     * @param value
-     * @param onPickListener
-     * @return
      */
     private void attachNumberPickerDialog(final TextView textView, final int residTitle, final int min, final int max,
-                                          final int value, final OnPickListener onPickListener) {
-        textView.setText(String.valueOf(value));
+                                          final IntAccessor intAccessor, final OnPickListener onPickListener) {
+        textView.setText(String.valueOf(intAccessor.getValue()));
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final NumberPicker numberPicker = new NumberPicker(MindBellMain.this);
                 numberPicker.setMinValue(min);
                 numberPicker.setMaxValue(max);
-                numberPicker.setValue(value);
-                new AlertDialog.Builder(MindBellMain.this) //
+                numberPicker.setValue(intAccessor.getValue());
+                final AlertDialog numberPickerDialog = new AlertDialog.Builder(MindBellMain.this) //
                         .setTitle(residTitle) //
                         .setView(numberPicker) //
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                int newValue = numberPicker.getValue();
-                                textView.setText(String.valueOf(newValue));
-                                onPickListener.onPick(numberPicker.getValue());
-                            }
-                        }) //
+                        .setPositiveButton(android.R.string.ok, null) // avoid default implementation that dismisses the dialog
                         .setNegativeButton(android.R.string.cancel, null) //
                         .show();
+                // Ensure dialog is dismissed if input has been successfully validated
+                numberPickerDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        int newValue = numberPicker.getValue();
+                        if (onPickListener.onPick(newValue)) {
+                            textView.setText(String.valueOf(newValue));
+                            numberPickerDialog.dismiss();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * Returns true if patternOfPeriods and meditationDuration can be used together to setup a meditation.
+     */
+    private boolean isValidMeditationSetup(String patternOfPeriods, int meditationDuration) {
+        MindBell.logDebug(patternOfPeriods + " / " + meditationDuration);
+        int numberOfPeriods = PrefsAccessor.deriveNumberOfPeriods(patternOfPeriods);
+        // validate by validating every period, this i not very efficient but all is reduced to a single implementation
+        for (int i = 1; i <= numberOfPeriods; i++) {
+            long periodMillis = PrefsAccessor.derivePeriodMillis(patternOfPeriods, meditationDuration, i);
+            Integer message = null;
+            if (periodMillis == ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION ||
+                    periodMillis == ONE_MINUTE_MILLIS_PERIOD_NOT_EXISTING) {
+                message = R.string.invalidPeriodSpecification;
+            } else if (periodMillis == ONE_MINUTE_MILLIS_VARIABLE_PERIOD_MISSING) {
+                message = R.string.variablePeriodMissing;
+            } else if (periodMillis == ONE_MINUTE_MILLIS_PERIOD_TOO_SHORT) {
+                message = R.string.periodTooShort;
+            } else if (periodMillis == ONE_MINUTE_MILLIS_NEGATIVE_PERIOD) {
+                message = R.string.negativePeriod;
+            }
+            if (message != null) {
+                Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Sets an OnClickListener upon the text view to open a edit text dialog when it is clicked.
+     */
+    private void attachEditTextDialog(final TextView textView, final int residTitle, final TextAccessor textAccessor,
+                                      final OnEnterListener onEnterListener) {
+        textView.setText(textAccessor.getText());
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final EditText editText = new EditText(MindBellMain.this);
+                editText.setText(textAccessor.getText());
+                final AlertDialog editTextDialog = new AlertDialog.Builder(MindBellMain.this) //
+                        .setTitle(residTitle) //
+                        .setView(editText) //
+                        .setPositiveButton(android.R.string.ok, null) // avoid default implementation that dismisses the dialog
+                        .setNegativeButton(android.R.string.cancel, null) //
+                        .show();
+                // Ensure dialog is dismissed if input has been successfully validated
+                editTextDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String newValue = editText.getText().toString();
+                        if (onEnterListener.onEnter(newValue)) {
+                            textView.setText(newValue);
+                            editTextDialog.dismiss();
+                        }
+                    }
+                });
             }
         });
     }
@@ -471,11 +599,38 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
     }
 
     /**
-     * Listener that is called when a number is picked in dialog created by createNumberPickerDialog().
+     * Callback interface to retrieve an int value from the caller for use in a dialog created by attachNumberPickerDialog().
+     */
+    private interface IntAccessor {
+
+        int getValue();
+
+    }
+
+    /**
+     * Callback interface to retrieve a string value from the caller for use in a dialog created by attachEditTextDialog().
+     */
+    private interface TextAccessor {
+
+        String getText();
+
+    }
+
+    /**
+     * Listener that is called when a number is picked in dialog a created by attachNumberPickerDialog().
      */
     private interface OnPickListener {
 
-        void onPick(int number);
+        boolean onPick(int value);
+
+    }
+
+    /**
+     * Listener that is called when an edit text has been entered in a dialog created by attachEditTextDialog().
+     */
+    private interface OnEnterListener {
+
+        boolean onEnter(String value);
 
     }
 

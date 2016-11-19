@@ -49,6 +49,8 @@ import com.googlecode.mindbell.util.Utils;
 
 import java.util.Set;
 
+import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS;
+
 public class MindBellPreferences extends PreferenceActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     public static final String TAG = "MindBell";
@@ -359,7 +361,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
      * Returns true, if frequency divides an hour in whole numbers, e.g. true for 20 minutes.
      */
     private boolean isFrequencyDividesAnHour(String frequencyValue) {
-        long frequencyValueInMinutes = Long.parseLong(frequencyValue) / 60000L;
+        long frequencyValueInMinutes = Long.parseLong(frequencyValue) / ONE_MINUTE_MILLIS;
         return 60 % frequencyValueInMinutes == 0;
     }
 

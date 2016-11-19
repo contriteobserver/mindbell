@@ -135,7 +135,12 @@
     <!-- MeditationDialog Preferences -->
     <string name="title_meditation_dialog">Start meditation</string>
     <string name="prefsRampUpTime">Ramp-up time (s)</string>
-    <string name="prefsNumberOfPeriods">Number of periods</string>
+    <string name="prefsNumberOfPeriods">Number of periods</string> <!-- to be stored in patternOfPeriods -->
+    <string name="explanationNumberOfPeriods">For periods of same length please choose the number of periods.</string>
+    <string name="prefsPatternOfPeriods">Lengths of periods (min)</string>
+    <string name="explanationPatternOfPeriods">For periods of different lengths please specify for each period the minutes or
+        the letter x. Separate them by commas. The remaining time is distributed over the x-periods.\n\nFor example, if you
+        want to meditate 15 minutes and want to get a two-minute-period at the beginning and the end, then specify: 2, x, 2</string>
     <string name="prefsMeditationDuration">Duration of meditation (min)</string>
     <string name="prefsKeepScreenOn">Keep screen on</string>
 
@@ -145,6 +150,11 @@
     <string name="frequencyDoesNotFitIntoAnHour">Ringing on the minute not possible with chosen interval</string>
     <string name="ringtoneNotAccessible">MindBell can not access the chosen ringtone (probably on external storage)</string>
     <string name="ringtoneDurationTooLongOrInvalid">Duration of chosen ringtone is too long</string>
+    <string name="invalidPeriodSpecification">Specify periods as minutes or x</string>
+    <string name="variablePeriodMissing">Specify at least one x</string>
+    <string name="negativePeriod">Periods must fit in duration</string>
+    <string name="periodTooShort">All periods must last at least one minute</string>
+    <!--<string name="periodNotExisting">periodNotExisting</string>-->
 
     <!-- AboutActivity -->
     <string name="title_activity_about">About MindBell</string>
@@ -224,9 +234,9 @@
     <string name="keyNotificationText" translatable="false">notificationText</string>
     <string name="keyNotificationTitle" translatable="false">notificationTitle</string>
     <string name="keyNotificationVisibilityPublic" translatable="false">notificationVisibilityPublic</string>
-    <string name="keyNumberOfPeriods" translatable="false">numberOfPeriods</string>
     <string name="keyOriginalVolume" translatable="false">originalVolume</string>
     <string name="keyPattern" translatable="false">pattern</string>
+    <string name="keyPatternOfPeriods" translatable="false">patternOfPeriods</string>
     <string name="keyPauseAudioOnSound" translatable="false">pauseAudioOnSound</string>
     <string name="keyPopup" translatable="false">popup</string>
     <string name="keyRampUpStartingTimeMillis" translatable="false">rampUpStartingTimeMillis</string>
