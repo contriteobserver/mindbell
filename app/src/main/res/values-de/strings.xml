@@ -186,14 +186,15 @@
         abgeschaltet sein. Möchten Sie die Berechtigung jetzt erteilen?</string>
 
     <!-- Help popup -->
-    <string name="main_message1_popup">Diese Information kann über \'Hilfe\' im Menü erneut angezeigt werden.</string>
-    <string name="main_message2_popup">MindBell läutet nicht regelmäßig? Haben Sie die Glocke mit dem Schalter aktiviert? Eventuell müssen Sie MindBell aus geräteabhängigen Akkusparoptionen herausnehmen. Wenn es dann immer noch nicht geht, hilft vielleicht diese Check-Liste: http://dknapps.de/mindbell-notringing</string>
-    <string name="main_message3_popup">In dieser Änderungshistorie steht, was zuletzt an MindBell geändert wurde: http://dknapps.de/mindbell-changelog</string>
-    <string name="main_message4_popup">Konsultieren Sie bitte zunächst die FAQ für weitere Fragen unter http://dknapps.de/mindbell</string>
-    <string name="main_message5_popup">Für andere Fragen oder wenn das Problem bestehen bleibt, senden Sie mir bitte eine E-Mail, indem sie unten \'E-Mail senden\' anklicken.</string>
-    <string name="main_message6_popup">Der generierte E-Mail-Text enthält Ihre MindBell- und Android-Version plus ein paar Geräteinformationen und alle von MindBell erzeugten Log-Einträge, die bei der Fehlersuche helfen sollen.</string>
-    <string name="main_message7_popup">Bitte ergänzen Sie im E-Mail-Text Ihre Frage oder eine Beschreibung des Problems.</string>
-    <string name="main_message8_popup">Die Privacy Policy von MindBell finden Sie hier: http://dknapps.de/mindbell-privacy</string>
+    <string name="main_message1_popup">Wie funktioniert MindBell?\nhttp://dknapps.de/mindbell-intro</string>
+    <string name="main_message2_popup">Was hat sich geändert?\nhttp://dknapps.de/mindbell-changelog</string>
+    <string name="main_message3_popup">MindBell läutet nicht (regelmäßig)?\nhttp://dknapps.de/mindbell-notringing</string>
+    <string name="main_message4_popup">Häufige Fragen (FAQ)?\nhttp://dknapps.de/mindbell</string>
+    <string name="main_message5_popup">Andere Fragen oder Probleme?\nBitte \'E-Mail senden\' unten verwenden.</string>
+    <string name="main_message6_popup">Privacy Policy?\nhttp://dknapps.de/mindbell-privacy</string>
+    <string name="mailInfo1">Der generierte E-Mail-Text enthält Ihre MindBell- und Android-Version plus ein paar Geräteinformationen und alle von MindBell erzeugten Log-Einträge, die bei der Fehlersuche helfen sollen.</string>
+    <string name="mailInfo2">Bitte ergänzen Sie im E-Mail-Text Ihre Frage oder eine Beschreibung des Problems, sonst wird
+        die E-Mail ignoriert.</string>
     <string name="sendMail">E-Mail senden</string>
     <string name="batterySettings">Akku</string>
     <string name="noEmailClients">Es ist keine E-Mail-App installiert.</string>

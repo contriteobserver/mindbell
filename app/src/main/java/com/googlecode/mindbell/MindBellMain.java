@@ -118,7 +118,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                 .setNegativeButton(R.string.sendMail, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        onMenuItemClickSendInfo();
+                        onClickSendInfo();
                     }
                 });
         if (Build.VERSION.SDK_INT >= 23) {
@@ -196,19 +196,29 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
     }
 
     /**
-     * Handles click on menu item send info.
+     * Handles click on send info button.
      */
-    private void onMenuItemClickSendInfo() {
-        AndroidContextAccessor.getInstanceAndLogPreferences(this); // write settings to log
-        MindBell.logDebug("Excluded from battery optimization (always false for SDK < 23)? -> " + Utils.isAppWhitelisted(this));
-        Intent i = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getText(R.string.emailAddress).toString(), null));
-        i.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.emailSubject));
-        i.putExtra(Intent.EXTRA_TEXT, getInfoMailText());
-        try {
-            startActivity(Intent.createChooser(i, getText(R.string.emailChooseApp)));
-        } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(this, getText(R.string.noEmailClients), Toast.LENGTH_SHORT).show();
+    private void onClickSendInfo() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this) //
+                .setTitle(R.string.sendMail) //
+                .setMessage(R.string.mailInfo2) //
+                .setIcon(R.drawable.icon) //
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        onClickReallySendInfo();
+                    }
+                }) //
+                .setNegativeButton(android.R.string.cancel, null);
+        if (Build.VERSION.SDK_INT >= 23) {
+            builder.setNeutralButton(R.string.batterySettings, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    onMenuItemClickBatteryOptimizationSettings();
+                }
+            });
         }
+        builder.show();
     }
 
     /**
@@ -300,25 +310,19 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
     }
 
     /**
-     * Return information to be sent by mail.
+     * Handles click on confirmation to send info.
      */
-    private String getInfoMailText() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\n");
-        sb.append(getText(R.string.main_message7_popup));
-        sb.append("\n\n");
-        sb.append(getText(R.string.main_message6_popup));
-        sb.append("\n\n");
-        sb.append(Utils.getApplicationInformation(getPackageManager(), getPackageName()));
-        sb.append("\n");
-        sb.append(Utils.getSystemInformation());
-        sb.append("\n");
-        sb.append(Utils.getLimitedLogEntriesAsString());
-        sb.append("\n");
-        sb.append(getText(R.string.main_message6_popup));
-        sb.append("\n\n");
-        sb.append(getText(R.string.main_message7_popup));
-        return sb.toString();
+    private void onClickReallySendInfo() {
+        AndroidContextAccessor.getInstanceAndLogPreferences(this); // write settings to log
+        MindBell.logDebug("Excluded from battery optimization (always false for SDK < 23)? -> " + Utils.isAppWhitelisted(this));
+        Intent i = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getText(R.string.emailAddress).toString(), null));
+        i.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.emailSubject));
+        i.putExtra(Intent.EXTRA_TEXT, getInfoMailText());
+        try {
+            startActivity(Intent.createChooser(i, getText(R.string.emailChooseApp)));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this, getText(R.string.noEmailClients), Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
@@ -327,6 +331,28 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
     private void flipToAppropriateView() {
         ViewFlipper viewFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
         viewFlipper.setDisplayedChild(contextAccessor.getPrefs().isMeditating() ? 1 : 2);
+    }
+
+    /**
+     * Return information to be sent by mail.
+     */
+    private String getInfoMailText() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n");
+        sb.append(getText(R.string.mailInfo1));
+        sb.append("\n\n");
+        sb.append(getText(R.string.mailInfo2));
+        sb.append("\n\n");
+        sb.append(Utils.getApplicationInformation(getPackageManager(), getPackageName()));
+        sb.append("\n");
+        sb.append(Utils.getSystemInformation());
+        sb.append("\n");
+        sb.append(Utils.getLimitedLogEntriesAsString());
+        sb.append("\n");
+        sb.append(getText(R.string.mailInfo2));
+        sb.append("\n\n");
+        sb.append(getText(R.string.mailInfo1));
+        return sb.toString();
     }
 
     @Override
