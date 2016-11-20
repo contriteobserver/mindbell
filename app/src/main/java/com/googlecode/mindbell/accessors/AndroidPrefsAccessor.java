@@ -265,8 +265,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             String patternOfPeriods = derivePatternOfPeriods(numberOfPeriods);
             setPatternOfPeriods(patternOfPeriods);
             settings.edit().remove(keyNumberOfPeriods).apply();
-            Log.w(TAG,
-                    "Converted old setting for '" + keyNumberOfPeriods + "' (" + numberOfPeriods + ") to '" + keyPatternOfPeriods +
+            Log.w(TAG, "Converted old setting for '" + keyNumberOfPeriods + "' (" + numberOfPeriods + ") to '" +
+                    context.getText(keyPatternOfPeriods) +
                             "' (" + patternOfPeriods + ")");
         }
     }
@@ -847,7 +847,6 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
         private int resid;
 
-        ;
         private String key;
         private Object defaultValue;
         private Type type;
