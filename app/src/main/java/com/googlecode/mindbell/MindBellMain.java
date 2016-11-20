@@ -271,7 +271,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
      * Handles click on send info button.
      */
     private void onClickSendInfo() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this) //
+        new AlertDialog.Builder(this) //
                 .setTitle(R.string.sendMail) //
                 .setMessage(R.string.mailInfo2) //
                 .setIcon(R.drawable.icon) //
@@ -281,16 +281,8 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                         onClickReallySendInfo();
                     }
                 }) //
-                .setNegativeButton(android.R.string.cancel, null);
-        if (Build.VERSION.SDK_INT >= 23) {
-            builder.setNeutralButton(R.string.batterySettings, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    onMenuItemClickBatteryOptimizationSettings();
-                }
-            });
-        }
-        builder.show();
+                .setNegativeButton(android.R.string.cancel, null) //
+                .show();
     }
 
     /**
