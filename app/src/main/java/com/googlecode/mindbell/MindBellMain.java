@@ -215,7 +215,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                 @Override
                 public void onClick(View v) {
                     new AlertDialog.Builder(MindBellMain.this) //
-                            .setTitle(R.string.prefsNumberOfPeriods) //
+                            .setTitle(R.string.prefsPatternOfPeriods) //
                             .setMessage(R.string.explanationPatternOfPeriods) //
                             .setPositiveButton(android.R.string.ok, null) //
                             .show();
