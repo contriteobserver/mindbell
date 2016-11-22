@@ -76,10 +76,10 @@
             android:paddingRight="10dp"
             android:paddingTop="10dp"
             mindbell:beyondColor="#00FF00"
-            mindbell:beyondSize="77sp"
+            mindbell:beyondSize="144sp"
             mindbell:meditationColor="#FF6600"
             mindbell:meditationSize="144sp"
-            mindbell:rampUpColor="#00FF00"
+            mindbell:rampUpColor="#FFFF00"
             mindbell:rampUpSize="144sp"/>
 
     </ViewFlipper>
