@@ -96,8 +96,8 @@
     <string name="summaryStatusVisibilityPublic">Show status text on lock screen</string>
     <string name="summaryStatusVisibilityPrivate">Hide status text on lock screen</string>
     <string name="prefsNotification">Notification when ringing</string>
-    <string name="summaryNotification">Show notification (on wearables) when bell is ringing</string>
-    <string name="summaryNoNotification">No ring notification, wearables remain to be unaware</string>
+    <string name="summaryNotification">Notification when bell is ringing (also on wearables)</string>
+    <string name="summaryNoNotification">No ring notification (wearables remain to be unaware)</string>
     <string name="prefsNotificationTitle">Title of ring notification</string>
     <string name="prefsNotificationTitleDefault">MindBell &#8230;</string>
     <string name="prefsNotificationText">Text of ring notification</string>
