@@ -20,7 +20,7 @@
 <resources>
 
     <!-- Override description regarding do-not-disturb modes introduced with Android Lollipop -->
-    <string name="summaryMuteWithPhone">No display/sound/vibration in mode \'none\' and with zero-volume in modes \'prio\' and \'all\', display/sound/vibration in modes \'prio\' and \'all\' with non-zero-volume; see also Menu&gt;Help&gt;FAQ</string>
-    <string name="summaryNoMuteWithPhone">No sound but display/vibration in mode \'none\', display/sound/vibration in modes \'prio\' and \'all\'; see also Menu&gt;Help&gt;FAQ</string>
+    <string name="summaryMuteWithPhone">Bell will not ring when phone is muted (depends on mode, see FAQ for details)</string>
+    <string name="summaryNoMuteWithPhone">Bell will also ring in some mute modes (see FAQ for details)</string>
 
 </resources>

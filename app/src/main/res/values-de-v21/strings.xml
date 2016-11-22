@@ -20,7 +20,8 @@
 <resources>
 
     <!-- Override description regarding do-not-disturb modes introduced with Android Lollipop -->
-    <string name="summaryMuteWithPhone">Kein/e Anzeige/Klang/Vibration im \'Keine\'-Modus sowie bei 0-Lautstärke im \'Wichtig\'- und \'Alle\'-Modus, Anzeige/Klang/Vibration im \'Wichtig\'- und \'Alle\'-Modus bei Nicht-0-Lautstärke; s.a. Menü&gt;Hilfe&gt;FAQ</string>
-    <string name="summaryNoMuteWithPhone">Kein Klang, aber Anzeige/Vibration im \'Keine\'-Modus, Anzeige/Klang/Vibration im \'Prio\'- und \'Alle\'-Modus; s.a. Menü&gt;Hilfe&gt;FAQ</string>
+    <string name="summaryMuteWithPhone">Glocke läutet bei still gestelltem Telefon nicht (hängt vom Modus ab, für Details
+        siehe FAQ)</string>
+    <string name="summaryNoMuteWithPhone">Glocke läutet auch bei manchen lautlosen Modi (für Details siehe FAQ)</string>
 
 </resources>
