@@ -148,11 +148,11 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
         if (!prefs.isMeditating()) {
             View view = getLayoutInflater().inflate(R.layout.meditation_dialog, null);
             final TextView textViewRampUpTime = (TextView) view.findViewById(R.id.rampUpTime);
+            final TextView textViewMeditationDuration = (TextView) view.findViewById(R.id.meditationDuration);
             final TextView textViewNumberOfPeriods = (TextView) view.findViewById(R.id.numberOfPeriods);
             final TextView textViewExplanationNumberOfPeriods = (TextView) view.findViewById(R.id.explanationNumberOfPeriods);
             final TextView textViewPatternOfPeriods = (TextView) view.findViewById(R.id.patternOfPeriods);
             final TextView textViewExplanationPatternOfPeriods = (TextView) view.findViewById(R.id.explanationPatternOfPeriods);
-            final TextView textViewMeditationDuration = (TextView) view.findViewById(R.id.meditationDuration);
             final CheckBox checkBoxKeepScreenOn = (CheckBox) view.findViewById(R.id.keepScreenOn);
             attachNumberPickerDialog(textViewRampUpTime, R.string.prefsRampUpTime, 5, 999, new IntAccessor() {
                 @Override
@@ -166,6 +166,22 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                     return true;
                 }
             });
+            attachNumberPickerDialog(textViewMeditationDuration, R.string.prefsMeditationDuration, 1, 999, new IntAccessor() {
+                @Override
+                public int getValue() {
+                    return prefs.getMeditationDuration();
+                }
+            }, new OnPickListener() {
+                @Override
+                public boolean onPick(int value) {
+                    if (isValidMeditationSetup(value, prefs.getPatternOfPeriods())) {
+                        prefs.setMeditationDuration(value);
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            });
             attachNumberPickerDialog(textViewNumberOfPeriods, R.string.prefsNumberOfPeriods, 1, 99, new IntAccessor() {
                 @Override
                 public int getValue() {
@@ -175,7 +191,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                 @Override
                 public boolean onPick(int value) {
                     String patternOfPeriods = PrefsAccessor.derivePatternOfPeriods(value);
-                    if (isValidMeditationSetup(patternOfPeriods, prefs.getMeditationDuration())) {
+                    if (isValidMeditationSetup(prefs.getMeditationDuration(), patternOfPeriods)) {
                         prefs.setPatternOfPeriods(patternOfPeriods);
                         textViewPatternOfPeriods.setText(patternOfPeriods);
                         return true;
@@ -202,7 +218,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
             }, new OnEnterListener() {
                 @Override
                 public boolean onEnter(String value) {
-                    if (isValidMeditationSetup(value, prefs.getMeditationDuration())) {
+                    if (isValidMeditationSetup(prefs.getMeditationDuration(), value)) {
                         prefs.setPatternOfPeriods(value);
                         textViewNumberOfPeriods.setText(String.valueOf(PrefsAccessor.deriveNumberOfPeriods(value)));
                         return true;
@@ -219,22 +235,6 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                             .setMessage(R.string.explanationPatternOfPeriods) //
                             .setPositiveButton(android.R.string.ok, null) //
                             .show();
-                }
-            });
-            attachNumberPickerDialog(textViewMeditationDuration, R.string.prefsMeditationDuration, 1, 999, new IntAccessor() {
-                @Override
-                public int getValue() {
-                    return prefs.getMeditationDuration();
-                }
-            }, new OnPickListener() {
-                @Override
-                public boolean onPick(int value) {
-                    if (isValidMeditationSetup(prefs.getPatternOfPeriods(), value)) {
-                        prefs.setMeditationDuration(value);
-                        return true;
-                    } else {
-                        return false;
-                    }
                 }
             });
             checkBoxKeepScreenOn.setChecked(prefs.isKeepScreenOn());
@@ -334,9 +334,9 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
     }
 
     /**
-     * Returns true if patternOfPeriods and meditationDuration can be used together to setup a meditation.
+     * Returns true if meditationDuration and patternOfPeriods can be used together to setup a meditation.
      */
-    private boolean isValidMeditationSetup(String patternOfPeriods, int meditationDuration) {
+    private boolean isValidMeditationSetup(int meditationDuration, String patternOfPeriods) {
         MindBell.logDebug(patternOfPeriods + " / " + meditationDuration);
         int numberOfPeriods = PrefsAccessor.deriveNumberOfPeriods(patternOfPeriods);
         // validate by validating every period, this i not very efficient but all is reduced to a single implementation

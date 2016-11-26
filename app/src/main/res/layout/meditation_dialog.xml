@@ -52,6 +52,29 @@
             android:paddingTop="2dp"/>
 
         <TextView
+            android:id="@+id/label_meditationDuration"
+            style="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:labelFor="@+id/meditationDuration"
+            android:paddingBottom="2dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            android:text="@string/prefsMeditationDuration"
+            android:textIsSelectable="false"/>
+
+        <TextView
+            android:id="@+id/meditationDuration"
+            style="?android:attr/textAppearanceSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="2dp"/>
+
+        <TextView
             android:id="@+id/explanationNumberOfPeriods"
             style="?android:attr/textAppearanceMedium"
             android:layout_width="match_parent"
@@ -95,29 +118,6 @@
 
         <TextView
             android:id="@+id/patternOfPeriods"
-            style="?android:attr/textAppearanceSmall"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="10dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="2dp"/>
-
-        <TextView
-            android:id="@+id/label_meditationDuration"
-            style="?android:attr/textAppearanceMedium"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:labelFor="@+id/meditationDuration"
-            android:paddingBottom="2dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="10dp"
-            android:text="@string/prefsMeditationDuration"
-            android:textIsSelectable="false"/>
-
-        <TextView
-            android:id="@+id/meditationDuration"
             style="?android:attr/textAppearanceSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
