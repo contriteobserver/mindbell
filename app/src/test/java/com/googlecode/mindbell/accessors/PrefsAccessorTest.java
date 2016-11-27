@@ -81,6 +81,12 @@ public class PrefsAccessorTest {
         // valid results
         assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("x, x", 2, 1));
         assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("x, x", 2, 2));
+        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis(" x, x", 2, 1));
+        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis(" x, x", 2, 2));
+        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis(" 1, x", 2, 1));
+        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis(" 1, x", 2, 2));
+        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("1 , x", 2, 1));
+        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("1 , x", 2, 2));
         // can we get an error minute value with a valid request? yes, if we meditate 60001 minutes in 60000 periods => unlikely
         {
             String patternOfPeriods = PrefsAccessor.derivePatternOfPeriods((int) ONE_MINUTE_MILLIS);

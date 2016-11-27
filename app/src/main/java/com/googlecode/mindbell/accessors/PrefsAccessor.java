@@ -47,7 +47,7 @@ public abstract class PrefsAccessor {
     public static final String STATIC_PERIOD_REGEX = "([0-9]*[1-9]+)";
     public static final String VARIABLE_PERIOD_REGEX = "(x)";
     public static final String PERIOD_REGEX = "(" + STATIC_PERIOD_REGEX + "|" + VARIABLE_PERIOD_REGEX + ")";
-    public static final String PERIOD_SEPARATOR_REGEX = ", ?";
+    public static final String PERIOD_SEPARATOR_REGEX = ",";
 
     /**
      * Returns a patternOfPeriods string that corresponds with the numberOfPeriods: 1 -> "x", 2 -> "x, x", ...
@@ -167,7 +167,9 @@ public abstract class PrefsAccessor {
         // Verify the patternOfPeriods string and calculate the length of a variable period
         int numberOfVariablePeriods = 0;
         int sumOfPeriodsLengths = 0;
-        for (String period : periods) {
+        for (int i = 0; i < periods.length; i++) {
+            periods[i] = periods[i].trim();
+            String period = periods[i];
             if (period.matches(STATIC_PERIOD_REGEX)) {
                 sumOfPeriodsLengths += Integer.valueOf(period);
             } else if (period.matches(VARIABLE_PERIOD_REGEX)) {
