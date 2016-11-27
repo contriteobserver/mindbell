@@ -44,7 +44,7 @@ public abstract class PrefsAccessor {
     /**
      * Regular expressions to verify a pattern of periods string.
      */
-    public static final String STATIC_PERIOD_REGEX = "(\\d+)";
+    public static final String STATIC_PERIOD_REGEX = "([0-9]*[1-9]+)";
     public static final String VARIABLE_PERIOD_REGEX = "(x)";
     public static final String PERIOD_REGEX = "(" + STATIC_PERIOD_REGEX + "|" + VARIABLE_PERIOD_REGEX + ")";
     public static final String PERIOD_SEPARATOR_REGEX = ", ?";

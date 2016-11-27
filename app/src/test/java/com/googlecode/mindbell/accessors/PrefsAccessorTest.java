@@ -67,6 +67,10 @@ public class PrefsAccessorTest {
     @Test
     public void testDerivePeriodMillis() {
         // error minute defaults
+        assertEquals(ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION, PrefsAccessor.derivePeriodMillis("0, x", 25, 1));
+        assertEquals(ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION, PrefsAccessor.derivePeriodMillis("0, x", 25, 2));
+        assertEquals(ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION, PrefsAccessor.derivePeriodMillis("-1, x", 25, 1));
+        assertEquals(ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION, PrefsAccessor.derivePeriodMillis("-1, x", 25, 2));
         assertEquals(ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION, PrefsAccessor.derivePeriodMillis("y, x", 25, 1));
         assertEquals(ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION, PrefsAccessor.derivePeriodMillis("y, x", 25, 2));
         assertEquals(ONE_MINUTE_MILLIS_VARIABLE_PERIOD_MISSING, PrefsAccessor.derivePeriodMillis("1, 2", 25, 2));
@@ -77,7 +81,7 @@ public class PrefsAccessorTest {
         // valid results
         assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("x, x", 2, 1));
         assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("x, x", 2, 2));
-        // can we get an error minute default with a valid request? yes, if we meditate 60001 minutes in 60000 periods => unlikely
+        // can we get an error minute value with a valid request? yes, if we meditate 60001 minutes in 60000 periods => unlikely
         {
             String patternOfPeriods = PrefsAccessor.derivePatternOfPeriods((int) ONE_MINUTE_MILLIS);
             long periodMillis =
