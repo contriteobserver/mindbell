@@ -154,50 +154,23 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
             final TextView textViewPatternOfPeriods = (TextView) view.findViewById(R.id.patternOfPeriods);
             final TextView textViewExplanationPatternOfPeriods = (TextView) view.findViewById(R.id.explanationPatternOfPeriods);
             final CheckBox checkBoxKeepScreenOn = (CheckBox) view.findViewById(R.id.keepScreenOn);
-            attachNumberPickerDialog(textViewRampUpTime, R.string.prefsRampUpTime, 5, 999, new IntAccessor() {
-                @Override
-                public int getValue() {
-                    return prefs.getRampUpTime();
-                }
-            }, new OnPickListener() {
+            textViewRampUpTime.setText(String.valueOf(prefs.getRampUpTime()));
+            attachNumberPickerDialog(textViewRampUpTime, R.string.prefsRampUpTime, 5, 999, null);
+            textViewMeditationDuration.setText(String.valueOf(prefs.getMeditationDuration()));
+            attachNumberPickerDialog(textViewMeditationDuration, R.string.prefsMeditationDuration, 1, 999, new OnPickListener() {
                 @Override
                 public boolean onPick(int value) {
-                    prefs.setRampUpTime(value);
-                    return true;
+                    return isValidMeditationSetup(textViewMeditationDuration, textViewMeditationDuration, textViewNumberOfPeriods,
+                            textViewPatternOfPeriods);
                 }
             });
-            attachNumberPickerDialog(textViewMeditationDuration, R.string.prefsMeditationDuration, 1, 999, new IntAccessor() {
-                @Override
-                public int getValue() {
-                    return prefs.getMeditationDuration();
-                }
-            }, new OnPickListener() {
+            textViewNumberOfPeriods.setText(String.valueOf(prefs.getNumberOfPeriods()));
+            attachNumberPickerDialog(textViewNumberOfPeriods, R.string.prefsNumberOfPeriods, 1, 99, new OnPickListener() {
                 @Override
                 public boolean onPick(int value) {
-                    if (isValidMeditationSetup(value, prefs.getPatternOfPeriods())) {
-                        prefs.setMeditationDuration(value);
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            });
-            attachNumberPickerDialog(textViewNumberOfPeriods, R.string.prefsNumberOfPeriods, 1, 99, new IntAccessor() {
-                @Override
-                public int getValue() {
-                    return PrefsAccessor.deriveNumberOfPeriods(prefs.getPatternOfPeriods());
-                }
-            }, new OnPickListener() {
-                @Override
-                public boolean onPick(int value) {
-                    String patternOfPeriods = PrefsAccessor.derivePatternOfPeriods(value);
-                    if (isValidMeditationSetup(prefs.getMeditationDuration(), patternOfPeriods)) {
-                        prefs.setPatternOfPeriods(patternOfPeriods);
-                        textViewPatternOfPeriods.setText(patternOfPeriods);
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    textViewPatternOfPeriods.setText(PrefsAccessor.derivePatternOfPeriods(value));
+                    return isValidMeditationSetup(textViewNumberOfPeriods, textViewMeditationDuration, textViewNumberOfPeriods,
+                            textViewPatternOfPeriods);
                 }
             });
             textViewExplanationNumberOfPeriods.setOnClickListener(new View.OnClickListener() {
@@ -210,21 +183,13 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                             .show();
                 }
             });
-            attachEditTextDialog(textViewPatternOfPeriods, R.string.prefsPatternOfPeriods, new TextAccessor() {
-                @Override
-                public String getText() {
-                    return prefs.getPatternOfPeriods();
-                }
-            }, new OnEnterListener() {
+            textViewPatternOfPeriods.setText(prefs.getPatternOfPeriods());
+            attachEditTextDialog(textViewPatternOfPeriods, R.string.prefsPatternOfPeriods, new OnEnterListener() {
                 @Override
                 public boolean onEnter(String value) {
-                    if (isValidMeditationSetup(prefs.getMeditationDuration(), value)) {
-                        prefs.setPatternOfPeriods(value);
-                        textViewNumberOfPeriods.setText(String.valueOf(PrefsAccessor.deriveNumberOfPeriods(value)));
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    textViewNumberOfPeriods.setText(String.valueOf(PrefsAccessor.deriveNumberOfPeriods(value)));
+                    return isValidMeditationSetup(textViewPatternOfPeriods, textViewMeditationDuration, textViewNumberOfPeriods,
+                            textViewPatternOfPeriods);
                 }
             });
             textViewExplanationPatternOfPeriods.setOnClickListener(new View.OnClickListener() {
@@ -238,17 +203,28 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                 }
             });
             checkBoxKeepScreenOn.setChecked(prefs.isKeepScreenOn());
-            new AlertDialog.Builder(this) //
+            final AlertDialog meditationDialog = new AlertDialog.Builder(this) //
                     .setTitle(R.string.title_meditation_dialog) //
                     .setView(view) //
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            prefs.setKeepScreenOn(checkBoxKeepScreenOn.isChecked());
-                            toggleMeditating();
-                        }
-                    }) //
+                    .setPositiveButton(android.R.string.ok, null) // avoid default implementation that dismisses the dialog
                     .setNegativeButton(android.R.string.cancel, null) //
                     .show();
+            // Ensure dialog is dismissed if input has been successfully validated
+            meditationDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (isValidMeditationSetup(null, textViewMeditationDuration, textViewNumberOfPeriods,
+                            textViewPatternOfPeriods)) {
+                        prefs.setRampUpTime(Integer.valueOf(textViewRampUpTime.getText().toString()));
+                        prefs.setMeditationDuration(Integer.valueOf(textViewMeditationDuration.getText().toString()));
+                        prefs.setPatternOfPeriods(textViewPatternOfPeriods.getText().toString());
+                        prefs.setKeepScreenOn(checkBoxKeepScreenOn.isChecked());
+                        meditationDialog.dismiss();
+                        toggleMeditating();
+                    }
+                }
+            });
+            meditationDialog.show();
         } else {
             toggleMeditating();
         }
@@ -303,43 +279,46 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
      * Sets an OnClickListener upon the text view to open a number picker dialog when it is clicked.
      */
     private void attachNumberPickerDialog(final TextView textView, final int residTitle, final int min, final int max,
-                                          final IntAccessor intAccessor, final OnPickListener onPickListener) {
-        textView.setText(String.valueOf(intAccessor.getValue()));
+                                          final OnPickListener onPickListener) {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final NumberPicker numberPicker = new NumberPicker(MindBellMain.this);
                 numberPicker.setMinValue(min);
                 numberPicker.setMaxValue(max);
-                numberPicker.setValue(intAccessor.getValue());
+                numberPicker.setValue(Integer.valueOf(textView.getText().toString()));
                 final AlertDialog numberPickerDialog = new AlertDialog.Builder(MindBellMain.this) //
                         .setTitle(residTitle) //
                         .setView(numberPicker) //
-                        .setPositiveButton(android.R.string.ok, null) // avoid default implementation that dismisses the dialog
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                int newValue = numberPicker.getValue();
+                                textView.setText(String.valueOf(newValue));
+                                if (onPickListener != null) {
+                                    onPickListener.onPick(newValue);
+                                }
+                            }
+                        }) //
                         .setNegativeButton(android.R.string.cancel, null) //
                         .show();
-                // Ensure dialog is dismissed if input has been successfully validated
-                numberPickerDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        int newValue = numberPicker.getValue();
-                        if (onPickListener.onPick(newValue)) {
-                            textView.setText(String.valueOf(newValue));
-                            numberPickerDialog.dismiss();
-                        }
-                    }
-                });
             }
         });
     }
 
     /**
-     * Returns true if meditationDuration and patternOfPeriods can be used together to setup a meditation.
+     * Returns true if meditationDuration, numberOfPeriods and patternOfPeriods can be used together to setup a meditation,
+     * otherwise it returns false, error messages are set and focus is request appropriately.
      */
-    private boolean isValidMeditationSetup(int meditationDuration, String patternOfPeriods) {
-        MindBell.logDebug(patternOfPeriods + " / " + meditationDuration);
-        int numberOfPeriods = PrefsAccessor.deriveNumberOfPeriods(patternOfPeriods);
-        // validate by validating every period, this i not very efficient but all is reduced to a single implementation
+    private boolean isValidMeditationSetup(TextView editedTextView, TextView textViewMeditationDuration,
+                                           TextView textViewNumberOfPeriods, TextView textViewPatternOfPeriods) {
+        textViewMeditationDuration.setError(null);
+        textViewNumberOfPeriods.setError(null);
+        textViewPatternOfPeriods.setError(null);
+        int meditationDuration = Integer.valueOf(textViewMeditationDuration.getText().toString());
+        int numberOfPeriods = Integer.valueOf(textViewNumberOfPeriods.getText().toString());
+        String patternOfPeriods = textViewPatternOfPeriods.getText().toString();
+        // validate by validating every period, this is not very efficient but all is reduced to a single implementation
         for (int i = 1; i <= numberOfPeriods; i++) {
             long periodMillis = PrefsAccessor.derivePeriodMillis(patternOfPeriods, meditationDuration, i);
             Integer message = null;
@@ -354,7 +333,17 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                 message = R.string.negativePeriod;
             }
             if (message != null) {
-                Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+                String messageText = getText(message).toString();
+                if (message.equals(R.string.periodTooShort) || message.equals(R.string.negativePeriod)) { // error for all fields?
+                    textViewMeditationDuration.setError(messageText);
+                    textViewNumberOfPeriods.setError(messageText);
+                }
+                textViewPatternOfPeriods.setError(messageText);
+                if (editedTextView == null) { // called from ok button in meditation dialog and not after editing one field?
+                    textViewPatternOfPeriods.requestFocus(); // on this field is always an error message
+                } else {
+                    editedTextView.requestFocus();
+                }
                 return false;
             }
         }
@@ -364,31 +353,27 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
     /**
      * Sets an OnClickListener upon the text view to open a edit text dialog when it is clicked.
      */
-    private void attachEditTextDialog(final TextView textView, final int residTitle, final TextAccessor textAccessor,
-                                      final OnEnterListener onEnterListener) {
-        textView.setText(textAccessor.getText());
+    private void attachEditTextDialog(final TextView textView, final int residTitle, final OnEnterListener onEnterListener) {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final EditText editText = new EditText(MindBellMain.this);
-                editText.setText(textAccessor.getText());
+                editText.setText(textView.getText());
                 final AlertDialog editTextDialog = new AlertDialog.Builder(MindBellMain.this) //
                         .setTitle(residTitle) //
                         .setView(editText) //
-                        .setPositiveButton(android.R.string.ok, null) // avoid default implementation that dismisses the dialog
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String newValue = editText.getText().toString();
+                                textView.setText(newValue);
+                                if (onEnterListener != null) {
+                                    onEnterListener.onEnter(newValue);
+                                }
+                            }
+                        }) //
                         .setNegativeButton(android.R.string.cancel, null) //
                         .show();
-                // Ensure dialog is dismissed if input has been successfully validated
-                editTextDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String newValue = editText.getText().toString();
-                        if (onEnterListener.onEnter(newValue)) {
-                            textView.setText(newValue);
-                            editTextDialog.dismiss();
-                        }
-                    }
-                });
             }
         });
     }
