@@ -214,7 +214,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
             final AlertDialog meditationDialog = new AlertDialog.Builder(this) //
                     .setTitle(R.string.title_meditation_dialog) //
                     .setView(view) //
-                    .setPositiveButton(android.R.string.ok, null) // avoid default implementation that dismisses the dialog
+                    .setPositiveButton(R.string.buttonStartMeditation, null) // avoid implementation that dismisses the dialog
                     .setNegativeButton(android.R.string.cancel, null) //
                     .show();
             // Ensure dialog is dismissed if input has been successfully validated
@@ -295,7 +295,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                 numberPicker.setMinValue(min);
                 numberPicker.setMaxValue(max);
                 numberPicker.setValue(Integer.valueOf(textView.getText().toString()));
-                final AlertDialog numberPickerDialog = new AlertDialog.Builder(MindBellMain.this) //
+                new AlertDialog.Builder(MindBellMain.this) //
                         .setTitle(residTitle) //
                         .setView(numberPicker) //
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -360,7 +360,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
             public void onClick(final View v) {
                 final EditText editText = new EditText(MindBellMain.this);
                 editText.setText(textView.getText());
-                final AlertDialog editTextDialog = new AlertDialog.Builder(MindBellMain.this) //
+                new AlertDialog.Builder(MindBellMain.this) //
                         .setTitle(residTitle) //
                         .setView(editText) //
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {

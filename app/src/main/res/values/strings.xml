@@ -143,6 +143,7 @@
         want to meditate 15 minutes and want to get a two-minute-period at the beginning and the end, then specify: 2, x, 2</string>
     <string name="prefsMeditationDuration">Duration of meditation (min)</string>
     <string name="prefsKeepScreenOn">Keep screen on</string>
+    <string name="buttonStartMeditation">Start</string>
 
     <!-- Validation messages -->
     <string name="atLeastOneRingingActionNeeded">Specify at least one ringing action</string>
@@ -150,10 +151,10 @@
     <string name="frequencyDoesNotFitIntoAnHour">Ringing on the minute not possible with chosen interval</string>
     <string name="ringtoneNotAccessible">MindBell can not access the chosen ringtone (probably on external storage)</string>
     <string name="ringtoneDurationTooLongOrInvalid">Duration of chosen ringtone is too long</string>
-    <string name="invalidPeriodSpecification">Specify periods as minutes or x.</string>
-    <string name="variablePeriodMissing">Specify at least one x.</string>
-    <string name="negativePeriod">Periods must fit into duration: Increase duration or reduce or shorten periods.</string>
-    <string name="periodTooShort">All periods must last at least one minute: Increase duration or reduce or shorten
+    <string name="invalidPeriodSpecification">Please specify periods as minutes or x.</string>
+    <string name="variablePeriodMissing">Please specify at least one x.</string>
+    <string name="negativePeriod">Periods must fit into duration: Please increase duration or reduce or shorten periods.</string>
+    <string name="periodTooShort">All periods must last at least one minute: Please increase duration or reduce or shorten
         periods.</string>
     <!--<string name="periodNotExisting">periodNotExisting</string>-->
 
