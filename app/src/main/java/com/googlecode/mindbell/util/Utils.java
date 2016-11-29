@@ -30,6 +30,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.PowerManager;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -194,6 +196,15 @@ public class Utils {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Closes the virtual keyboard that has been opened automatically when entering the text view. It's absolutely weird that the
+     * application has to care about closing the keyboard but it has to.
+     */
+    public static void hideKeyboard(Context context, TextView textView) {
+        InputMethodManager inputManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(textView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
 }

@@ -221,7 +221,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
             meditationDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (isValidMeditationSetup(null, textViewMeditationDuration, textViewNumberOfPeriods,
+                    if (isValidMeditationSetup(textViewPatternOfPeriods, textViewMeditationDuration, textViewNumberOfPeriods,
                             textViewPatternOfPeriods)) {
                         prefs.setRampUpTime(Integer.valueOf(textViewRampUpTime.getText().toString()));
                         prefs.setMeditationDuration(Integer.valueOf(textViewMeditationDuration.getText().toString()));
@@ -316,7 +316,8 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
 
     /**
      * Returns true if meditationDuration, numberOfPeriods and patternOfPeriods can be used together to setup a meditation,
-     * otherwise it returns false, error messages are set and focus is request appropriately.
+     * otherwise it returns false and sets an error messages to the view specified as edited view. The latter gets the focus
+     * otherwise the error message would not be displayed.
      */
     private boolean isValidMeditationSetup(TextView editedTextView, TextView textViewMeditationDuration,
                                            TextView textViewNumberOfPeriods, TextView textViewPatternOfPeriods) {
@@ -341,17 +342,8 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                 message = R.string.negativePeriod;
             }
             if (message != null) {
-                String messageText = getText(message).toString();
-                if (message.equals(R.string.periodTooShort) || message.equals(R.string.negativePeriod)) { // error for all fields?
-                    textViewMeditationDuration.setError(messageText);
-                    textViewNumberOfPeriods.setError(messageText);
-                }
-                textViewPatternOfPeriods.setError(messageText);
-                if (editedTextView == null) { // called from ok button in meditation dialog and not after editing one field?
-                    textViewPatternOfPeriods.requestFocus(); // on this field is always an error message
-                } else {
-                    editedTextView.requestFocus();
-                }
+                editedTextView.setError(getText(message).toString());
+                editedTextView.requestFocus();
                 return false;
             }
         }
@@ -365,7 +357,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                                       final OnEnterListener onEnterListener) {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 final EditText editText = new EditText(MindBellMain.this);
                 editText.setText(textView.getText());
                 final AlertDialog editTextDialog = new AlertDialog.Builder(MindBellMain.this) //
@@ -374,6 +366,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                Utils.hideKeyboard(MindBellMain.this, editText);
                                 String newValue = editText.getText().toString();
                                 if (normalizer != null) {
                                     newValue = normalizer.normalize(newValue);
@@ -384,7 +377,12 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                                 }
                             }
                         }) //
-                        .setNegativeButton(android.R.string.cancel, null) //
+                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Utils.hideKeyboard(MindBellMain.this, editText);
+                            }
+                        }) //
                         .show();
             }
         });
