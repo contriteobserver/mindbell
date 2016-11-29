@@ -51,6 +51,7 @@ import static com.googlecode.mindbell.R.string.keyMeditationEndingBell;
 import static com.googlecode.mindbell.R.string.keyMeditationEndingTimeMillis;
 import static com.googlecode.mindbell.R.string.keyMeditationInterruptingBell;
 import static com.googlecode.mindbell.R.string.keyMeditationStartingTimeMillis;
+import static com.googlecode.mindbell.R.string.keyMeditationVolume;
 import static com.googlecode.mindbell.R.string.keyMuteInFlightMode;
 import static com.googlecode.mindbell.R.string.keyMuteOffHook;
 import static com.googlecode.mindbell.R.string.keyMuteWithPhone;
@@ -196,6 +197,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         addPreference(keyUseStandardBell, true, BOOLEAN, context);
         addPreference(keyVibrate, false, BOOLEAN, context);
         addPreference(keyVolume, DEFAULT_VOLUME, FLOAT, context);
+        addPreference(keyMeditationVolume, getVolume(), FLOAT, context); // for existing users: use standard volume as default here
 
         // Map preference keys to their allowed entryValues
         entryValuesMap.put(keyActiveOnDaysOfWeek, context.getResources().getStringArray(R.array.weekdayEntryValues));
@@ -252,6 +254,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
      */
     private void addPreference(int resid, Object defaultValue, Preference.Type type, Context context) {
         preferenceMap.put(resid, new Preference(resid, context.getString(resid), defaultValue, type));
+    }
+
+    @Override
+    public float getVolume() {
+        return getFloatSetting(keyVolume);
     }
 
     /**
@@ -348,6 +355,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     /**
+     * Returns the current float setting of the preference with the given resid.
+     *
+     * @param resid
+     * @return
+     */
+    private float getFloatSetting(int resid) {
+        return (Float) getSetting(resid);
+    }
+
+    /**
      * Returns the current setting of the preference.
      *
      * @param preference
@@ -381,6 +398,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
      */
     private void resetSetting(Preference preference) {
         setSetting(preference, preference.defaultValue);
+    }
+
+    /**
+     * Returns the current setting of the preference with the given resid
+     *
+     * @param resid
+     * @return
+     */
+    private Object getSetting(int resid) {
+        return getSetting(preferenceMap.get(resid));
     }
 
     /**
@@ -441,16 +468,6 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         return (Boolean) getSetting(resid);
     }
 
-    /**
-     * Returns the current setting of the preference with the given resid
-     *
-     * @param resid
-     * @return
-     */
-    private Object getSetting(int resid) {
-        return getSetting(preferenceMap.get(resid));
-    }
-
     @Override
     public boolean isSound() {
         return getBooleanSetting(keySound);
@@ -509,18 +526,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public float getVolume() {
-        return getFloatSetting(keyVolume);
-    }
-
-    /**
-     * Returns the current float setting of the preference with the given resid.
-     *
-     * @param resid
-     * @return
-     */
-    private float getFloatSetting(int resid) {
-        return (Float) getSetting(resid);
+    public float getMeditationVolume() {
+        return getFloatSetting(keyMeditationVolume);
     }
 
     @Override
@@ -952,7 +959,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
         @Override
         public float getVolume() {
-            return AndroidPrefsAccessor.this.getVolume();
+            return AndroidPrefsAccessor.this.getMeditationVolume();
         }
 
         @Override

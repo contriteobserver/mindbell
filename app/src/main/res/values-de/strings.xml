@@ -131,6 +131,7 @@
     <string name="prefsMeditationBeginningBell">Anfangsglocken</string>
     <string name="prefsMeditationInterruptingBell">Zwischenglocken</string>
     <string name="prefsMeditationEndingBell">Abschlussglocken</string>
+    <string name="prefsMeditationVolume">Lautstärke</string>
 
     <!-- MeditationDialog Preferences -->
     <string name="title_meditation_dialog">Meditation starten</string>

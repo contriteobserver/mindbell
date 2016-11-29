@@ -20,7 +20,9 @@
  -->
 
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:mindful="http://dknapps.de/ns">
 
     <PreferenceScreen android:title="@string/prefsCategoryMuteRules">
 
@@ -79,6 +81,13 @@
             android:key="@string/keyMeditationEndingBell"
             android:summary="%s"
             android:title="@string/prefsMeditationEndingBell"/>
+
+        <com.googlecode.mindbell.preference.MediaVolumePreference
+            android:dialogTitle="@string/prefsMeditationVolume"
+            android:key="@string/keyMeditationVolume"
+            android:title="@string/prefsMeditationVolume"
+            mindful:ringtone="@raw/bell10s"
+            mindful:streamType="4"/>
 
     </PreferenceScreen>
 

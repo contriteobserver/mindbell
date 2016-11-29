@@ -84,6 +84,8 @@ public abstract class PrefsAccessor {
 
     public abstract String getActiveOnDaysOfWeekString();
 
+    public abstract float getMeditationVolume();
+
     public abstract float getVolume();
 
     public abstract TimeOfDay getDaytimeEnd();

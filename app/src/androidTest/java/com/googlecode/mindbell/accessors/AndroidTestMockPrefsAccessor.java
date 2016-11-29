@@ -94,6 +94,11 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
+    public float getMeditationVolume() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
     public float getVolume() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
