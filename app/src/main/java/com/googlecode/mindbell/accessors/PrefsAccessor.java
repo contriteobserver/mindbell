@@ -47,7 +47,10 @@ public abstract class PrefsAccessor {
     public static final String STATIC_PERIOD_REGEX = "([0-9]*[1-9]+)";
     public static final String VARIABLE_PERIOD_REGEX = "(x)";
     public static final String PERIOD_REGEX = "(" + STATIC_PERIOD_REGEX + "|" + VARIABLE_PERIOD_REGEX + ")";
-    public static final String PERIOD_SEPARATOR_REGEX = ",";
+    public static final String PERIOD_SEPARATOR = ",";
+    public static final String PERIOD_SEPARATOR_REGEX = PERIOD_SEPARATOR;
+    public static final String PERIOD_SEPARATOR_WITH_BLANKS_REGEX = " *" + PERIOD_SEPARATOR_REGEX + " *";
+    public static final String PERIOD_SEPARATOR_WITH_BLANK = ", ";
 
     /**
      * Returns a patternOfPeriods string that corresponds with the numberOfPeriods: 1 -> "x", 2 -> "x, x", ...

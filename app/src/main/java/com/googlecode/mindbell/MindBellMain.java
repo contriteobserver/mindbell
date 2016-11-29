@@ -184,7 +184,15 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                 }
             });
             textViewPatternOfPeriods.setText(prefs.getPatternOfPeriods());
-            attachEditTextDialog(textViewPatternOfPeriods, R.string.prefsPatternOfPeriods, new OnEnterListener() {
+            attachEditTextDialog(textViewPatternOfPeriods, R.string.prefsPatternOfPeriods, new Normalizer() {
+                @Override
+                public String normalize(String value) {
+                    return value
+                            .trim()
+                            .replaceAll(PrefsAccessor.PERIOD_SEPARATOR_WITH_BLANKS_REGEX,
+                                    PrefsAccessor.PERIOD_SEPARATOR_WITH_BLANK);
+                }
+            }, new OnEnterListener() {
                 @Override
                 public boolean onEnter(String value) {
                     textViewNumberOfPeriods.setText(String.valueOf(PrefsAccessor.deriveNumberOfPeriods(value)));
@@ -353,7 +361,8 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
     /**
      * Sets an OnClickListener upon the text view to open a edit text dialog when it is clicked.
      */
-    private void attachEditTextDialog(final TextView textView, final int residTitle, final OnEnterListener onEnterListener) {
+    private void attachEditTextDialog(final TextView textView, final int residTitle, final Normalizer normalizer,
+                                      final OnEnterListener onEnterListener) {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -366,6 +375,9 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 String newValue = editText.getText().toString();
+                                if (normalizer != null) {
+                                    newValue = normalizer.normalize(newValue);
+                                }
                                 textView.setText(newValue);
                                 if (onEnterListener != null) {
                                     onEnterListener.onEnter(newValue);
@@ -576,20 +588,11 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
     }
 
     /**
-     * Callback interface to retrieve an int value from the caller for use in a dialog created by attachNumberPickerDialog().
+     * Callback interface to normalize a string value.
      */
-    private interface IntAccessor {
+    private interface Normalizer {
 
-        int getValue();
-
-    }
-
-    /**
-     * Callback interface to retrieve a string value from the caller for use in a dialog created by attachEditTextDialog().
-     */
-    private interface TextAccessor {
-
-        String getText();
+        String normalize(String value);
 
     }
 
