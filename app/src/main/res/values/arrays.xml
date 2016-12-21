@@ -28,6 +28,7 @@
         <item>5 minutes</item>
         <item>10 minutes</item>
         <item>15 minutes</item>
+        <item>20 minutes</item>
         <item>half hour</item>
         <item>45 minutes</item>
         <item>hour</item>
@@ -114,6 +115,7 @@
         <item>300000</item><!-- 5 minutes -->
         <item>600000</item><!-- 10 minutes -->
         <item>900000</item><!-- 15 minutes -->
+        <item>1200000</item><!-- 20 minutes -->
         <item>1800000</item><!-- half hour -->
         <item>2700000</item><!-- 45 minutes -->
         <item>3600000</item><!-- hour -->
