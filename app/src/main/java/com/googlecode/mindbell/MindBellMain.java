@@ -119,7 +119,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
         String versionName = Utils.getApplicationVersionName(getPackageManager(), getPackageName());
         AlertDialog.Builder builder = new AlertDialog.Builder(this) //
                 .setTitle(getText(R.string.app_name) + " " + versionName) //
-                .setIcon(R.drawable.icon) //
+                .setIcon(R.mipmap.ic_launcher) //
                 .setView(popupView) //
                 .setPositiveButton(android.R.string.ok, null) //
                 .setNegativeButton(R.string.sendMail, new DialogInterface.OnClickListener() {
@@ -258,7 +258,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
         new AlertDialog.Builder(this) //
                 .setTitle(R.string.sendMail) //
                 .setMessage(R.string.mailInfo2) //
-                .setIcon(R.drawable.icon) //
+                .setIcon(R.mipmap.ic_launcher) //
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
