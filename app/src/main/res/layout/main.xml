@@ -33,7 +33,6 @@
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#ff0f0f41"
             android:gravity="right">
 
             <TextView
@@ -41,9 +40,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:background="@drawable/semitransparent"
+                android:background="@color/backgroundColorDark"
                 android:padding="20px"
-                android:text="@string/explanation"/>
+                android:text="@string/explanation"
+                android:textColor="@color/textColor"/>
 
             <TextView
                 android:id="@+id/tvHowToRing"
@@ -53,8 +53,7 @@
                 android:layout_above="@id/tvExplanation"
                 android:layout_centerHorizontal="true"
                 android:padding="20px"
-                android:text="@string/howToRing"
-                android:textColor="#ffffffff"/>
+                android:text="@string/howToRing"/>
 
             <ImageView
                 android:layout_width="fill_parent"

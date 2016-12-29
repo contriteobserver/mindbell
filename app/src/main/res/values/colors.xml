@@ -2,26 +2,41 @@
 <!--
     MindBell - Aims to give you a support for staying mindful in a busy life -
                for remembering what really counts
-   
+
         Copyright (C) 2010-2014 Marc Schroeder
         Copyright (C) 2014-2016 Uwe Damken
-   
+
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
-   
+
         http://www.apache.org/licenses/LICENSE-2.0
-   
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
  -->
-
 <resources>
 
-    <color name="aboutGrey">#ffa0a0a0</color>
-    <color name="notificationBackground">#ff0d1445</color>
+    <color name="dknapps_de_blue">#0D1445</color>
+    <color name="dknapps_de_blue_dark">#060A22</color>
+    <color name="dknapps_de_green">#00FF00</color>
+    <color name="dknapps_de_orange">#FF6600</color>
+    <color name="dknapps_de_white">#FFFFFF</color>
+    <color name="dknapps_de_yellow">#FFFF00</color>
+
+    <!--<color name="colorPrimary">@color/windowBackgroundDark</color>-->
+    <!--<color name="colorPrimaryDark">@android:color/holo_green_dark</color>-->
+    <!--<color name="navigationBarColor">@color/windowBackgroundDark</color>-->
+    <!--<color name="textColorPrimary">#ffff8888</color>-->
+    <!--<color name="windowBackground">@color/dknapps_de_blue</color>-->
+    <!--<color name="windowBackgroundDark">@color/dknapps_de_blue_dark</color>-->
+
+    <color name="accentColor">@color/dknapps_de_orange</color>
+    <color name="backgroundColor">@color/dknapps_de_blue</color>
+    <color name="backgroundColorDark">@color/dknapps_de_blue_dark</color>
+    <color name="textColor">@color/dknapps_de_white</color>
 
 </resources>

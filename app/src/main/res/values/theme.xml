@@ -18,14 +18,11 @@
  -->
 <resources>
 
-    <declare-styleable name="CountdownView">
-        <attr name="bellColor" format="color"/>
-        <attr name="rampUpColor" format="color"/>
-        <attr name="rampUpSize" format="dimension"/>
-        <attr name="meditationColor" format="color"/>
-        <attr name="meditationSize" format="dimension"/>
-        <attr name="beyondColor" format="color"/>
-        <attr name="beyondSize" format="dimension"/>
-    </declare-styleable>
+    <style name="MindBellTheme" parent="@android:style/Theme.DeviceDefault">
+        <!--<item name="colorAccent">@color/accentColor</item>-->
+        <!--<item name="colorPrimary">@color/backgroundColorDark</item>-->
+        <item name="android:textColorPrimary">@color/textColor</item>
+        <item name="android:windowBackground">@color/backgroundColor</item>
+    </style>
 
 </resources>

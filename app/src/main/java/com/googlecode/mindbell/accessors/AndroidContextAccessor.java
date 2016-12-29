@@ -233,7 +233,7 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context.getApplicationContext()) //
                 .setCategory(NotificationCompat.CATEGORY_ALARM) //
                 .setAutoCancel(true) // cancel notification on touch
-                .setColor(context.getResources().getColor(R.color.notificationBackground)) //
+                .setColor(context.getResources().getColor(R.color.backgroundColor)) //
                 .setContentTitle(prefs.getNotificationTitle()) //
                 .setContentText(prefs.getNotificationText())
                 .setSmallIcon(R.drawable.ic_stat_bell_ring) //
@@ -515,7 +515,7 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
                 NotificationCompat.VISIBILITY_PRIVATE;
         Notification notification = new NotificationCompat.Builder(context.getApplicationContext()) //
                 .setCategory(NotificationCompat.CATEGORY_STATUS) //
-                .setColor(context.getResources().getColor(R.color.notificationBackground)) //
+                .setColor(context.getResources().getColor(R.color.backgroundColor)) //
                 .setContentTitle(contentTitle) //
                 .setContentText(contentText) //
                 .setContentIntent(openAppIntent) //

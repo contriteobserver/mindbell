@@ -28,16 +28,17 @@
         android:id="@+id/countdown"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ff0f0f41"
+        android:background="@color/backgroundColor"
         android:paddingBottom="10dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:paddingTop="10dp"
-        mindbell:beyondColor="#00FF00"
+        mindbell:bellColor="@color/textColor"
+        mindbell:beyondColor="@color/dknapps_de_green"
         mindbell:beyondSize="96sp"
-        mindbell:meditationColor="#FF6600"
+        mindbell:meditationColor="@color/dknapps_de_orange"
         mindbell:meditationSize="96sp"
-        mindbell:rampUpColor="#FFFF00"
+        mindbell:rampUpColor="@color/dknapps_de_yellow"
         mindbell:rampUpSize="96sp"/>
 
 </LinearLayout>

@@ -98,9 +98,9 @@ public class CountdownView extends View {
         final TypedArray app = getContext().obtainStyledAttributes(attrs, R.styleable.CountdownView, defStyle, 0);
         final TypedArray sys = getContext().obtainStyledAttributes(attrs, new int[]{android.R.attr.background});
 
-        // Set up a TextPaint object for writing the remaining time onto the time slice
-        timeSlicePaint.setColor(Color.WHITE);
-        backgroundPaint.setColor(sys.getColor(0, Color.GREEN));
+        // Set up the colors for painting the time slice from background color of the view and the given color of the bell
+        backgroundPaint.setColor(sys.getColor(0, Color.BLUE));
+        timeSlicePaint.setColor(app.getColor(R.styleable.CountdownView_bellColor, Color.WHITE));
 
         // Set up a TextPaint object for writing the remaining time onto the time slice during ramp-up
         textPaintRampUp = new TextPaint();
