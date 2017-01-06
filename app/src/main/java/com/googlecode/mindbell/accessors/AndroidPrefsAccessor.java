@@ -161,7 +161,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
                 STRING_SET, context);
         addPreference(keyEnd, "21:00", TIME_STRING, context);
         addPreference(keyFrequency, "900000", STRING, context); // 15 min
-        addPreference(keyKeepScreenOn, false, BOOLEAN, context);
+        addPreference(keyKeepScreenOn, true, BOOLEAN, context);
         addPreference(keyMeditating, false, BOOLEAN, context);
         addPreference(keyMeditationBeginningBell, "3", STRING, context);
         addPreference(keyMeditationDuration, 25, INTEGER, context);
@@ -182,7 +182,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         addPreference(keyOriginalVolume, -1, INTEGER, context);
         addPreference(keyPattern, "100:200:100:600", STRING, context);
         addPreference(keyPatternOfPeriods, "x", STRING, context);
-        addPreference(keyPauseAudioOnSound, true, BOOLEAN, context);
+        addPreference(keyPauseAudioOnSound, false, BOOLEAN, context);
         addPreference(keyPopup, -1, INTEGER, context);
         addPreference(keyRampUpStartingTimeMillis, -1L, LONG, context);
         addPreference(keyRampUpTime, 30, INTEGER, context);
