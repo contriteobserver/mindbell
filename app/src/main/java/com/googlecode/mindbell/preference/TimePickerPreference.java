@@ -2,7 +2,7 @@
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
- *     Copyright (C) 2014-2016 Uwe Damken
+ *     Copyright (C) 2014-2017 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import com.googlecode.mindbell.util.TimeOfDay;
 
 public class TimePickerPreference extends DialogPreference {
 
-    private TimeOfDay time = new TimeOfDay(0, 0, null);
+    protected TimeOfDay time = new TimeOfDay(0, 0, null);
 
     private TimePicker picker = null;
 
@@ -44,8 +44,15 @@ public class TimePickerPreference extends DialogPreference {
     @Override
     protected View onCreateDialogView() {
         picker = new TimePicker(getContext());
-        picker.setIs24HourView(DateFormat.is24HourFormat(getContext()));
+        picker.setIs24HourView(isUse24HourView());
         return (picker);
+    }
+
+    /**
+     * Returns true if the picker should use 24 hour format.
+     */
+    protected boolean isUse24HourView() {
+        return DateFormat.is24HourFormat(getContext());
     }
 
     @Override
@@ -67,6 +74,13 @@ public class TimePickerPreference extends DialogPreference {
                 setTime(newTime);
             }
         }
+    }
+
+    /**
+     * Returns a summary string derived from the set time value.
+     */
+    protected String deriveSummary() {
+        return time.getDisplayString(getContext());
     }
 
     @Override
@@ -95,7 +109,7 @@ public class TimePickerPreference extends DialogPreference {
 
     public void setTime(TimeOfDay newTime) {
         time = newTime;
-        setSummary(time.getDisplayString(getContext()));
+        setSummary(deriveSummary());
     }
 
 }

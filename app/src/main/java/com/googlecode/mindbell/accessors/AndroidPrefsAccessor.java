@@ -3,7 +3,7 @@
  *            for remembering what really counts
  *
  *     Copyright (C) 2010-2014 Marc Schroeder
- *     Copyright (C) 2014-2016 Uwe Damken
+ *     Copyright (C) 2014-2017 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -160,7 +160,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         addPreference(keyActiveOnDaysOfWeek, new HashSet<>(Arrays.asList(new String[]{"1", "2", "3", "4", "5", "6", "7"})),
                 STRING_SET, context);
         addPreference(keyEnd, "21:00", TIME_STRING, context);
-        addPreference(keyFrequency, "900000", STRING, context); // 15 min
+        addPreference(keyFrequency, "00:15", TIME_STRING, context); // 15 min
         addPreference(keyKeepScreenOn, true, BOOLEAN, context);
         addPreference(keyMeditating, false, BOOLEAN, context);
         addPreference(keyMeditationBeginningBell, "3", STRING, context);
@@ -201,7 +201,6 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
         // Map preference keys to their allowed entryValues
         entryValuesMap.put(keyActiveOnDaysOfWeek, context.getResources().getStringArray(R.array.weekdayEntryValues));
-        entryValuesMap.put(keyFrequency, context.getResources().getStringArray(R.array.frequencyEntryValues));
         entryValuesMap.put(keyMeditationBeginningBell, context.getResources().getStringArray(R.array.bellEntryValues));
         entryValuesMap.put(keyMeditationEndingBell, context.getResources().getStringArray(R.array.bellEntryValues));
         entryValuesMap.put(keyMeditationInterruptingBell, context.getResources().getStringArray(R.array.bellEntryValues));
@@ -274,7 +273,20 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             settings.edit().remove(keyNumberOfPeriods).apply();
             Log.w(TAG, "Converted old setting for '" + keyNumberOfPeriods + "' (" + numberOfPeriods + ") to '" +
                     context.getText(keyPatternOfPeriods) +
-                            "' (" + patternOfPeriods + ")");
+                    "' (" + patternOfPeriods + ")");
+        }
+        // Version 3.1.4 replaces frequency milliseconds string by time string
+        String keyFrequency = context.getString(R.string.keyFrequency);
+        String longFrequency = (String) getSetting(R.string.keyFrequency);
+        if (longFrequency != null && !longFrequency.contains(":")) {
+            try {
+                String frequency = new TimeOfDay(Long.parseLong(longFrequency)).getPersistString();
+                setSetting(R.string.keyFrequency, frequency);
+                Log.w(TAG, "Converted old value for '" + keyFrequency + "' from '" + longFrequency +
+                        "' to '" + frequency + "'");
+            } catch (NumberFormatException e) {
+                // invalid preference will be removed by removeInvalidSetting()
+            }
         }
     }
 
@@ -354,14 +366,29 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         return false;
     }
 
+    @Override
+    public boolean isShow() {
+        return getBooleanSetting(keyShow);
+    }
+
     /**
-     * Returns the current float setting of the preference with the given resid.
+     * Returns the current boolean setting of the preference with the given resid.
      *
      * @param resid
      * @return
      */
-    private float getFloatSetting(int resid) {
-        return (Float) getSetting(resid);
+    private boolean getBooleanSetting(int resid) {
+        return (Boolean) getSetting(resid);
+    }
+
+    /**
+     * Returns the current setting of the preference with the given resid
+     *
+     * @param resid
+     * @return
+     */
+    private Object getSetting(int resid) {
+        return getSetting(preferenceMap.get(resid));
     }
 
     /**
@@ -391,23 +418,19 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         }
     }
 
-    /**
-     * Resets the preference with the given resid to its default value.
-     *
-     * @param preference
-     */
-    private void resetSetting(Preference preference) {
-        setSetting(preference, preference.defaultValue);
+    @Override
+    public boolean isSound() {
+        return getBooleanSetting(keySound);
     }
 
-    /**
-     * Returns the current setting of the preference with the given resid
-     *
-     * @param resid
-     * @return
-     */
-    private Object getSetting(int resid) {
-        return getSetting(preferenceMap.get(resid));
+    @Override
+    public boolean isStatus() {
+        return getBooleanSetting(keyStatus);
+    }
+
+    @Override
+    public void setStatus(boolean statusNotification) {
+        setSetting(keyStatus, statusNotification);
     }
 
     /**
@@ -451,36 +474,6 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
                 Log.e(TAG, "Preference '" + preference.key + "' has a non supported type: " + preference.type);
                 break;
         }
-    }
-
-    @Override
-    public boolean isShow() {
-        return getBooleanSetting(keyShow);
-    }
-
-    /**
-     * Returns the current boolean setting of the preference with the given resid.
-     *
-     * @param resid
-     * @return
-     */
-    private boolean getBooleanSetting(int resid) {
-        return (Boolean) getSetting(resid);
-    }
-
-    @Override
-    public boolean isSound() {
-        return getBooleanSetting(keySound);
-    }
-
-    @Override
-    public boolean isStatus() {
-        return getBooleanSetting(keyStatus);
-    }
-
-    @Override
-    public void setStatus(boolean statusNotification) {
-        setSetting(keyStatus, statusNotification);
     }
 
     @Override
@@ -530,6 +523,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         return getFloatSetting(keyMeditationVolume);
     }
 
+    /**
+     * Returns the current float setting of the preference with the given resid.
+     *
+     * @param resid
+     * @return
+     */
+    private float getFloatSetting(int resid) {
+        return (Float) getSetting(resid);
+    }
+
     @Override
     public String getRingtone() {
         return getStringSetting(keyRingtone);
@@ -568,7 +571,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     @Override
     public long getInterval() {
-        return Long.valueOf(getStringSetting(keyFrequency));
+        return new TimeOfDay(getStringSetting(keyFrequency)).getInterval() * ONE_MINUTE_MILLIS;
     }
 
     @Override
@@ -808,6 +811,15 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
      */
     private void resetSetting(int resid) {
         resetSetting(preferenceMap.get(resid));
+    }
+
+    /**
+     * Resets the preference with the given resid to its default value.
+     *
+     * @param preference
+     */
+    private void resetSetting(Preference preference) {
+        setSetting(preference, preference.defaultValue);
     }
 
     @Override

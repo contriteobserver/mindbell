@@ -3,7 +3,7 @@
  *            for remembering what really counts
  *
  *     Copyright (C) 2010-2014 Marc Schroeder
- *     Copyright (C) 2014-2016 Uwe Damken
+ *     Copyright (C) 2014-2017 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,11 +45,11 @@ import com.googlecode.mindbell.accessors.PrefsAccessor;
 import com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix;
 import com.googlecode.mindbell.preference.MediaVolumePreference;
 import com.googlecode.mindbell.preference.MultiSelectListPreferenceWithSummary;
+import com.googlecode.mindbell.preference.TimePickerPreference;
+import com.googlecode.mindbell.util.TimeOfDay;
 import com.googlecode.mindbell.util.Utils;
 
 import java.util.Set;
-
-import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS;
 
 public class MindBellPreferences extends PreferenceActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -93,8 +93,8 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                 (ListPreferenceWithSummaryFix) getPreferenceScreen().findPreference(getText(R.string.keyPattern));
         final CheckBoxPreference preferenceMuteOffHook =
                 (CheckBoxPreference) getPreferenceScreen().findPreference(getText(R.string.keyMuteOffHook));
-        final ListPreferenceWithSummaryFix preferenceFrequency =
-                (ListPreferenceWithSummaryFix) getPreferenceScreen().findPreference(getText(R.string.keyFrequency));
+        final TimePickerPreference preferenceFrequency =
+                (TimePickerPreference) getPreferenceScreen().findPreference(getText(R.string.keyFrequency));
         final CheckBoxPreference preferenceRandomize =
                 (CheckBoxPreference) getPreferenceScreen().findPreference(getText(R.string.keyRandomize));
         final ListPreferenceWithSummaryFix preferenceNormalize =
@@ -207,7 +207,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                 if (preferenceRandomize.isChecked()) {
                     // if interval varies randomly, ringing on the minute is disabled and set to "no" anyway
                     return true;
-                } else if (isFrequencyDividesAnHour((String) newValue)) {
+                } else if (isFrequencyDividesAnHour(new TimeOfDay((String) newValue))) {
                     // if frequency is factor of an hour, ringing on the minute may be requested
                     preferenceNormalize.setEnabled(true);
                 } else {
@@ -230,7 +230,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                 if (!isNormalize((String) newValue)) {
                     // if normalize - ringing on the minute - is not wanted, it's fine, no more to check here
                     return true;
-                } else if (isFrequencyDividesAnHour(preferenceFrequency.getValue())) {
+                } else if (isFrequencyDividesAnHour(preferenceFrequency.getTime())) {
                     // if frequency is factor of an hour, requesting ringing on the minute is allowed
                     return true;
                 } else {
@@ -360,9 +360,8 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
     /**
      * Returns true, if frequency divides an hour in whole numbers, e.g. true for 20 minutes.
      */
-    private boolean isFrequencyDividesAnHour(String frequencyValue) {
-        long frequencyValueInMinutes = Long.parseLong(frequencyValue) / ONE_MINUTE_MILLIS;
-        return 60 % frequencyValueInMinutes == 0;
+    private boolean isFrequencyDividesAnHour(TimeOfDay frequencyValue) {
+        return 60 % frequencyValue.getInterval() == 0;
     }
 
     /**

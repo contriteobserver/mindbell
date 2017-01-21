@@ -4,7 +4,7 @@
                for remembering what really counts
    
         Copyright (C) 2010-2014 Marc Schroeder
-        Copyright (C) 2014-2016 Uwe Damken
+        Copyright (C) 2014-2017 Uwe Damken
    
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@
     <string name="prefsActiveOnDaysOfWeek">Days of week to be active &#8230;</string>
 
     <string name="prefsCategoryRhythm">Rhythm</string>
-    <string name="prefsFrequency">Ring bell (about) every &#8230;</string>
+    <string name="prefsFrequency">Ring bell (about) every hh:mm &#8230;</string>
     <string name="prefsRandomize">Use interval deviation</string>
     <string name="prefsNormalize">Ring to the minute &#8230;</string>
     <string name="summaryRandomize">Bell ring interval will vary</string>

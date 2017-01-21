@@ -4,7 +4,7 @@
                for remembering what really counts
    
         Copyright (C) 2010-2014 Marc Schroeder
-        Copyright (C) 2014-2016 Uwe Damken
+        Copyright (C) 2014-2017 Uwe Damken
    
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -109,12 +109,9 @@
 
     <PreferenceScreen android:title="@string/prefsCategoryRhythm">
 
-        <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
+        <com.googlecode.mindbell.preference.MinutesIntervalPickerPreference
             android:dialogTitle="@string/prefsFrequency"
-            android:entries="@array/frequencyEntries"
-            android:entryValues="@array/frequencyEntryValues"
             android:key="@string/keyFrequency"
-            android:summary="%s"
             android:title="@string/prefsFrequency"/>
         <CheckBoxPreference
             android:disableDependentsState="true"

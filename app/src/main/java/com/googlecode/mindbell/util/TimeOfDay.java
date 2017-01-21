@@ -3,7 +3,7 @@
  *            for remembering what really counts
  *
  *     Copyright (C) 2010-2014 Marc Schroeder
- *     Copyright (C) 2014-2016 Uwe Damken
+ *     Copyright (C) 2014-2017 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -161,6 +161,13 @@ public class TimeOfDay {
     }
 
     /**
+     * Returns a String readily representing this TimeOfDay to be used for displaying with a context.
+     */
+    public String getDisplayString() {
+        return getPersistString();
+    }
+
+    /**
      * Returns a String readily representing this TimeOfDay to be used for persisting.
      */
     public String getPersistString() {
@@ -301,6 +308,14 @@ public class TimeOfDay {
      */
     public Integer getWeekday() {
         return weekday;
+    }
+
+    /**
+     * Returns the hour and minute value as minutes. If this is an hh:mm-TimeOfDay the result are minutes. If this is a
+     * mm:ss-TimeOfDay the result are seconds. However, the interpretation depends on the caller.
+     */
+    public int getInterval() {
+        return hour * 60 + minute;
     }
 
 }
