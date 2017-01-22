@@ -91,6 +91,16 @@ public class PrefsAccessorTest {
         assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("1 , x", 2, 2));
         assertEquals(999 * ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("999 , x", 1000, 1));
         assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("999 , x", 1000, 2));
+        assertEquals(4 * ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("4, x, 11, x, x", 18, 1));
+        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("4, x, 11, x, x", 18, 2));
+        assertEquals(11 * ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("4, x, 11, x, x", 18, 3));
+        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("4, x, 11, x, x", 18, 4));
+        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("4, x, 11, x, x", 18, 5));
+        assertEquals(4 * ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("4, x, 10, x, x", 17, 1));
+        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("4, x, 10, x, x", 17, 2));
+        assertEquals(10 * ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("4, x, 10, x, x", 17, 3));
+        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("4, x, 10, x, x", 17, 4));
+        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("4, x, 10, x, x", 17, 5));
         // can we get an error minute value with a valid request? yes, if we meditate 60001 minutes in 60000 periods => unlikely
         {
             String patternOfPeriods = PrefsAccessor.derivePatternOfPeriods((int) ONE_MINUTE_MILLIS);
