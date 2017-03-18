@@ -135,14 +135,14 @@
 
     <!-- MeditationDialog Preferences -->
     <string name="title_meditation_dialog">Start meditation</string>
-    <string name="prefsRampUpTime">Ramp-up time (s)</string>
+    <string name="prefsRampUpTime">Ramp-up time (mm:ss)</string>
     <string name="prefsNumberOfPeriods">Number of periods</string> <!-- to be stored in patternOfPeriods -->
     <string name="explanationNumberOfPeriods">For periods of same length please choose the number of periods.</string>
     <string name="prefsPatternOfPeriods">Lengths of periods (min)</string>
     <string name="explanationPatternOfPeriods">For periods of different lengths please specify for each period the minutes or
         the letter x. Separate them by commas. The remaining time is distributed over the x-periods.\n\nFor example, if you
         want to meditate 15 minutes and want to get a two-minute-period at the beginning and the end, then specify: 2, x, 2</string>
-    <string name="prefsMeditationDuration">Duration of meditation (min)</string>
+    <string name="prefsMeditationDuration">Duration of meditation (hh:mm)</string>
     <string name="prefsKeepScreenOn">Keep screen on</string>
     <string name="buttonStartMeditation">Start</string>
 

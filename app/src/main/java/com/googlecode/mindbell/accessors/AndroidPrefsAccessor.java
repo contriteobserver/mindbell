@@ -164,7 +164,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         addPreference(keyKeepScreenOn, true, BOOLEAN, context);
         addPreference(keyMeditating, false, BOOLEAN, context);
         addPreference(keyMeditationBeginningBell, "3", STRING, context);
-        addPreference(keyMeditationDuration, 25, INTEGER, context);
+        addPreference(keyMeditationDuration, "00:25", TIME_STRING, context);
         addPreference(keyMeditationEndingBell, "2", STRING, context);
         addPreference(keyMeditationEndingTimeMillis, -1L, LONG, context);
         addPreference(keyMeditationInterruptingBell, "1", STRING, context);
@@ -185,7 +185,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         addPreference(keyPauseAudioOnSound, false, BOOLEAN, context);
         addPreference(keyPopup, -1, INTEGER, context);
         addPreference(keyRampUpStartingTimeMillis, -1L, LONG, context);
-        addPreference(keyRampUpTime, 30, INTEGER, context);
+        addPreference(keyRampUpTime, "00:30", TIME_STRING, context);
         addPreference(keyRandomize, true, BOOLEAN, context);
         addPreference(keyRingtone, "", STRING, context); // no useful default, code relies on <defaultValue>.isEmpty()
         addPreference(keyShow, true, BOOLEAN, context);
@@ -275,7 +275,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
                     context.getText(keyPatternOfPeriods) +
                     "' (" + patternOfPeriods + ")");
         }
-        // Version 3.1.4 replaces frequency milliseconds string by time string
+        // Version 3.2.0 replaces frequency milliseconds string by time string
         String keyFrequency = context.getString(R.string.keyFrequency);
         String longFrequency = (String) getSetting(R.string.keyFrequency);
         if (longFrequency != null && !longFrequency.contains(":")) {
@@ -287,6 +287,33 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             } catch (NumberFormatException e) {
                 // invalid preference will be removed by removeInvalidSetting()
             }
+        }
+        // Version 3.2.0 replaces rampup time seconds by time string
+        String keyRampUpTime = context.getString(R.string.keyRampUpTime);
+        try {
+            Integer intRampUpTime = getIntSetting(R.string.keyRampUpTime);
+            if (intRampUpTime != null) {
+                String rampUpTime = new TimeOfDay(intRampUpTime / 60, intRampUpTime % 60).getPersistString();
+                setSetting(R.string.keyRampUpTime, rampUpTime);
+                Log.w(TAG, "Converted old value for '" + keyRampUpTime + "' from '" + intRampUpTime +
+                        "' to '" + rampUpTime + "'");
+            }
+        } catch (ClassCastException e) {
+            // preference has already been converted
+        }
+        // Version 3.2.0 replaces meditation duration minutes by time string
+        String keyMeditationDuration = context.getString(R.string.keyMeditationDuration);
+        try {
+            Integer intMeditationDuration = getIntSetting(R.string.keyMeditationDuration);
+            if (intMeditationDuration != null) {
+                String meditationDuration =
+                        new TimeOfDay(intMeditationDuration / 60, intMeditationDuration % 60).getPersistString();
+                setSetting(R.string.keyMeditationDuration, meditationDuration);
+                Log.w(TAG, "Converted old value for '" + keyMeditationDuration + "' from '" + intMeditationDuration +
+                        "' to '" + meditationDuration + "'");
+            }
+        } catch (ClassCastException e) {
+            // preference has already been converted
         }
     }
 
@@ -686,42 +713,32 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     @Override
     public long getRampUpTimeMillis() {
-        return getRampUpTime() * 1000L;
+        return getRampUpTime().getInterval() * 1000L;
     }
 
     @Override
-    public int getRampUpTime() {
-        return getIntSetting(keyRampUpTime);
-    }
-
-    /**
-     * Returns the current int setting of the preference with the given resid.
-     *
-     * @param resid
-     * @return
-     */
-    private int getIntSetting(int resid) {
-        return (Integer) getSetting(resid);
+    public TimeOfDay getRampUpTime() {
+        return new TimeOfDay(getStringSetting(keyRampUpTime));
     }
 
     @Override
-    public void setRampUpTime(int rampUpTime) {
-        setSetting(keyRampUpTime, rampUpTime);
+    public void setRampUpTime(TimeOfDay rampUpTime) {
+        setSetting(keyRampUpTime, rampUpTime.getPersistString());
     }
 
     @Override
     public long getMeditationDurationMillis() {
-        return getMeditationDuration() * ONE_MINUTE_MILLIS;
+        return getMeditationDuration().getInterval() * ONE_MINUTE_MILLIS;
     }
 
     @Override
-    public int getMeditationDuration() {
-        return getIntSetting(keyMeditationDuration);
+    public TimeOfDay getMeditationDuration() {
+        return new TimeOfDay(getStringSetting(keyMeditationDuration));
     }
 
     @Override
-    public void setMeditationDuration(int meditationDuration) {
-        setSetting(keyMeditationDuration, meditationDuration);
+    public void setMeditationDuration(TimeOfDay meditationDuration) {
+        setSetting(keyMeditationDuration, meditationDuration.getPersistString());
     }
 
     @Override
@@ -792,6 +809,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public int getOriginalVolume() {
         return getIntSetting(keyOriginalVolume);
+    }
+
+    /**
+     * Returns the current int setting of the preference with the given resid.
+     *
+     * @param resid
+     * @return
+     */
+    private int getIntSetting(int resid) {
+        return (Integer) getSetting(resid);
     }
 
     @Override

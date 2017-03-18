@@ -45,14 +45,19 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.googlecode.mindbell.accessors.AndroidContextAccessor;
 import com.googlecode.mindbell.accessors.ContextAccessor;
 import com.googlecode.mindbell.accessors.PrefsAccessor;
+import com.googlecode.mindbell.preference.MinutesIntervalPickerPreference;
+import com.googlecode.mindbell.util.TimeOfDay;
 import com.googlecode.mindbell.util.Utils;
 
+import static com.googlecode.mindbell.accessors.PrefsAccessor.MIN_MEDITATION_DURATION;
+import static com.googlecode.mindbell.accessors.PrefsAccessor.MIN_RAMP_UP_TIME;
 import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION;
 import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS_NEGATIVE_PERIOD;
 import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS_PERIOD_NOT_EXISTING;
@@ -154,21 +159,23 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
             final TextView textViewPatternOfPeriods = (TextView) view.findViewById(R.id.patternOfPeriods);
             final TextView textViewExplanationPatternOfPeriods = (TextView) view.findViewById(R.id.explanationPatternOfPeriods);
             final CheckBox checkBoxKeepScreenOn = (CheckBox) view.findViewById(R.id.keepScreenOn);
-            textViewRampUpTime.setText(String.valueOf(prefs.getRampUpTime()));
-            attachNumberPickerDialog(textViewRampUpTime, R.string.prefsRampUpTime, 5, 999, null);
-            textViewMeditationDuration.setText(String.valueOf(prefs.getMeditationDuration()));
-            attachNumberPickerDialog(textViewMeditationDuration, R.string.prefsMeditationDuration, 1, 999, new OnPickListener() {
-                @Override
-                public boolean onPick(int value) {
-                    return isValidMeditationSetup(textViewMeditationDuration, textViewMeditationDuration, textViewNumberOfPeriods,
-                            textViewPatternOfPeriods);
-                }
-            });
+            textViewRampUpTime.setText(MinutesIntervalPickerPreference.deriveSummary(prefs.getRampUpTime(), false));
+            attachIntervalPickerDialog(textViewRampUpTime, R.string.prefsRampUpTime, MIN_RAMP_UP_TIME, false, null);
+            textViewMeditationDuration.setText(MinutesIntervalPickerPreference.deriveSummary(prefs.getMeditationDuration(), true));
+            attachIntervalPickerDialog(textViewMeditationDuration, R.string.prefsMeditationDuration, MIN_MEDITATION_DURATION, true,
+                    new OnPickListener() {
+                        @Override
+                        public boolean onPick() {
+                            return isValidMeditationSetup(textViewMeditationDuration, textViewMeditationDuration,
+                                    textViewNumberOfPeriods, textViewPatternOfPeriods);
+                        }
+                    });
             textViewNumberOfPeriods.setText(String.valueOf(prefs.getNumberOfPeriods()));
             attachNumberPickerDialog(textViewNumberOfPeriods, R.string.prefsNumberOfPeriods, 1, 99, new OnPickListener() {
                 @Override
-                public boolean onPick(int value) {
-                    textViewPatternOfPeriods.setText(PrefsAccessor.derivePatternOfPeriods(value));
+                public boolean onPick() {
+                    int numberOfPeriods = Integer.valueOf(textViewNumberOfPeriods.getText().toString());
+                    textViewPatternOfPeriods.setText(PrefsAccessor.derivePatternOfPeriods(numberOfPeriods));
                     return isValidMeditationSetup(textViewNumberOfPeriods, textViewMeditationDuration, textViewNumberOfPeriods,
                             textViewPatternOfPeriods);
                 }
@@ -223,8 +230,10 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                 public void onClick(View v) {
                     if (isValidMeditationSetup(textViewPatternOfPeriods, textViewMeditationDuration, textViewNumberOfPeriods,
                             textViewPatternOfPeriods)) {
-                        prefs.setRampUpTime(Integer.valueOf(textViewRampUpTime.getText().toString()));
-                        prefs.setMeditationDuration(Integer.valueOf(textViewMeditationDuration.getText().toString()));
+                        prefs.setRampUpTime(
+                                MinutesIntervalPickerPreference.parseTimeOfDayFromSummary(textViewRampUpTime.getText().toString()));
+                        prefs.setMeditationDuration(MinutesIntervalPickerPreference.parseTimeOfDayFromSummary(
+                                textViewMeditationDuration.getText().toString()));
                         prefs.setPatternOfPeriods(textViewPatternOfPeriods.getText().toString());
                         prefs.setKeepScreenOn(checkBoxKeepScreenOn.isChecked());
                         meditationDialog.dismiss();
@@ -284,27 +293,31 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
     }
 
     /**
-     * Sets an OnClickListener upon the text view to open a number picker dialog when it is clicked.
+     * Sets an OnClickListener upon the text view to open a time picker dialog when it is clicked.
      */
-    private void attachNumberPickerDialog(final TextView textView, final int residTitle, final int min, final int max,
-                                          final OnPickListener onPickListener) {
+    private void attachIntervalPickerDialog(final TextView textView, final int residTitle, final TimeOfDay min,
+                                            final boolean isMinutesInterval, final OnPickListener onPickListener) {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final NumberPicker numberPicker = new NumberPicker(MindBellMain.this);
-                numberPicker.setMinValue(min);
-                numberPicker.setMaxValue(max);
-                numberPicker.setValue(Integer.valueOf(textView.getText().toString()));
+                final TimePicker timePicker = new TimePicker(MindBellMain.this);
+                timePicker.setIs24HourView(true);
+                TimeOfDay time = MinutesIntervalPickerPreference.parseTimeOfDayFromSummary(textView.getText().toString());
+                timePicker.setCurrentHour(time.getHour());
+                timePicker.setCurrentMinute(time.getMinute());
                 new AlertDialog.Builder(MindBellMain.this) //
                         .setTitle(residTitle) //
-                        .setView(numberPicker) //
+                        .setView(timePicker) //
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                int newValue = numberPicker.getValue();
-                                textView.setText(String.valueOf(newValue));
+                                TimeOfDay newTime = new TimeOfDay(timePicker.getCurrentHour(), timePicker.getCurrentMinute());
+                                if (newTime.getInterval() < min.getInterval()) {
+                                    newTime = min;
+                                }
+                                textView.setText(MinutesIntervalPickerPreference.deriveSummary(newTime, isMinutesInterval));
                                 if (onPickListener != null) {
-                                    onPickListener.onPick(newValue);
+                                    onPickListener.onPick();
                                 }
                             }
                         }) //
@@ -324,7 +337,9 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
         textViewMeditationDuration.setError(null);
         textViewNumberOfPeriods.setError(null);
         textViewPatternOfPeriods.setError(null);
-        int meditationDuration = Integer.valueOf(textViewMeditationDuration.getText().toString());
+        int meditationDuration = MinutesIntervalPickerPreference
+                .parseTimeOfDayFromSummary(textViewMeditationDuration.getText().toString())
+                .getInterval();
         int numberOfPeriods = Integer.valueOf(textViewNumberOfPeriods.getText().toString());
         String patternOfPeriods = textViewPatternOfPeriods.getText().toString();
         // validate by validating every period, this is not very efficient but all is reduced to a single implementation
@@ -348,6 +363,37 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
             }
         }
         return true;
+    }
+
+    /**
+     * Sets an OnClickListener upon the text view to open a number picker dialog when it is clicked.
+     */
+    private void attachNumberPickerDialog(final TextView textView, final int residTitle, final int min, final int max,
+                                          final OnPickListener onPickListener) {
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final NumberPicker numberPicker = new NumberPicker(MindBellMain.this);
+                numberPicker.setMinValue(min);
+                numberPicker.setMaxValue(max);
+                numberPicker.setValue(Integer.valueOf(textView.getText().toString()));
+                new AlertDialog.Builder(MindBellMain.this) //
+                        .setTitle(residTitle) //
+                        .setView(numberPicker) //
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                int newValue = numberPicker.getValue();
+                                textView.setText(String.valueOf(newValue));
+                                if (onPickListener != null) {
+                                    onPickListener.onPick();
+                                }
+                            }
+                        }) //
+                        .setNegativeButton(android.R.string.cancel, null) //
+                        .show();
+            }
+        });
     }
 
     /**
@@ -595,11 +641,11 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
     }
 
     /**
-     * Listener that is called when a number is picked in dialog a created by attachNumberPickerDialog().
+     * Listener that is called when an item has been picked in dialog a created by attach*PickerDialog().
      */
     private interface OnPickListener {
 
-        boolean onPick(int value);
+        boolean onPick();
 
     }
 

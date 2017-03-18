@@ -493,7 +493,7 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
             statusDrawable = R.drawable.ic_stat_bell_meditating;
             contentTitle = context.getText(R.string.statusTitleBellMeditating);
             contentText = MessageFormat.format(context.getText(R.string.statusTextBellMeditating).toString(), //
-                    prefs.getMeditationDuration(), //
+                    prefs.getMeditationDuration().getInterval(), //
                     new TimeOfDay(prefs.getMeditationEndingTimeMillis()).getDisplayString(context));
         } else if (muteRequestReason != null) { // Bell muted => override icon and notification text
             statusDrawable = bellActiveButMutedDrawable;

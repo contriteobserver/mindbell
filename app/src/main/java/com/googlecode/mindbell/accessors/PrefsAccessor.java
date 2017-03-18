@@ -53,6 +53,16 @@ public abstract class PrefsAccessor {
     public static final String PERIOD_SEPARATOR_WITH_BLANK = ", ";
 
     /**
+     * Minimum value for ramp up time
+     */
+    public static final TimeOfDay MIN_RAMP_UP_TIME = new TimeOfDay(0, 5);
+
+    /**
+     * Minimum value for meditation duration
+     */
+    public static final TimeOfDay MIN_MEDITATION_DURATION = new TimeOfDay(0, 1);
+
+    /**
      * Returns a patternOfPeriods string that corresponds with the numberOfPeriods: 1 -> "x", 2 -> "x, x", ...
      */
     public static String derivePatternOfPeriods(int numberOfPeriods) {
@@ -158,7 +168,7 @@ public abstract class PrefsAccessor {
     public abstract void setPatternOfPeriods(String patternOfPeriods);
 
     public long getMeditationPeriodMillis(int meditationPeriod) {
-        return derivePeriodMillis(getPatternOfPeriods(), getMeditationDuration(), meditationPeriod);
+        return derivePeriodMillis(getPatternOfPeriods(), getMeditationDuration().getInterval(), meditationPeriod);
     }
 
     /**
@@ -201,9 +211,9 @@ public abstract class PrefsAccessor {
         }
     }
 
-    public abstract int getMeditationDuration();
+    public abstract TimeOfDay getMeditationDuration();
 
-    public abstract void setMeditationDuration(int meditationDuration);
+    public abstract void setMeditationDuration(TimeOfDay meditationDuration);
 
     public boolean isMuteInFlightMode() {
         return true;
@@ -237,9 +247,9 @@ public abstract class PrefsAccessor {
 
     public abstract long getRampUpTimeMillis();
 
-    public abstract int getRampUpTime();
+    public abstract TimeOfDay getRampUpTime();
 
-    public abstract void setRampUpTime(int rampUpTime);
+    public abstract void setRampUpTime(TimeOfDay rampUpTime);
 
     public abstract long getMeditationDurationMillis();
 

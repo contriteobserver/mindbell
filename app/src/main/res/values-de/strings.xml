@@ -135,7 +135,7 @@
 
     <!-- MeditationDialog Preferences -->
     <string name="title_meditation_dialog">Meditation starten</string>
-    <string name="prefsRampUpTime">Vorbereitungszeit (s)</string>
+    <string name="prefsRampUpTime">Vorbereitungszeit (mm:ss)</string>
     <string name="prefsNumberOfPeriods">Anzahl der Abschnitte</string> <!-- to be stored in patternOfPeriods -->
     <string name="explanationNumberOfPeriods">Für Abschnitte gleicher Länge wählen Sie bitte die Anzahl der Abschnitte.</string>
     <string name="prefsPatternOfPeriods">Längen der Abschnitte (min)</string>
@@ -143,7 +143,7 @@
         Minuten oder den Buchstaben x an. Trennen Sie diese durch Kommas. Die verbleibende Zeit wird auf die x-Abschnitte
         verteilt.\n\nWenn Sie z.B. fünfzehn Minuten meditieren und am Anfang und Ende einen zweiminütigen Abschnitt haben
         möchten, geben Sie folgendes ein: 2, x, 2</string>
-    <string name="prefsMeditationDuration">Meditationsdauer (min)</string>
+    <string name="prefsMeditationDuration">Meditationsdauer (hh:mm)</string>
     <string name="prefsKeepScreenOn">Bildschirm anlassen</string>
     <string name="buttonStartMeditation">Starten</string>
 

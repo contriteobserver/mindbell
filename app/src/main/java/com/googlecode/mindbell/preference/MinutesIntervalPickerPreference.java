@@ -22,6 +22,8 @@ package com.googlecode.mindbell.preference;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import com.googlecode.mindbell.util.TimeOfDay;
+
 /**
  * Allows to pick an interval specified as hours:minutes with a TimePickerPreference.
  */
@@ -31,6 +33,10 @@ public class MinutesIntervalPickerPreference extends TimePickerPreference {
         super(ctxt, attrs);
     }
 
+    public static TimeOfDay parseTimeOfDayFromSummary(String summary) {
+        return new TimeOfDay(summary.split(" ")[0]);
+    }
+
     @Override
     protected boolean isUse24HourView() {
         return true;
@@ -38,7 +44,12 @@ public class MinutesIntervalPickerPreference extends TimePickerPreference {
 
     @Override
     protected String deriveSummary() {
-        return time.getDisplayString() + " (" + time.getInterval() + " min)";
+        return deriveSummary(time, true);
+    }
+
+    public static String deriveSummary(TimeOfDay time, boolean isMinutesInterval) {
+        String unit = (isMinutesInterval) ? "min" : "s";
+        return time.getDisplayString() + " (" + time.getInterval() + " " + unit + ")";
     }
 
 }

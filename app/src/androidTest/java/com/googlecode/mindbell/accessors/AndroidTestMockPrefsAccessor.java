@@ -273,12 +273,12 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public int getRampUpTime() {
+    public TimeOfDay getRampUpTime() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
     @Override
-    public void setRampUpTime(int rampUpTime) {
+    public void setRampUpTime(TimeOfDay rampUpTime) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
@@ -293,12 +293,12 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public int getMeditationDuration() {
+    public TimeOfDay getMeditationDuration() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
     @Override
-    public void setMeditationDuration(int meditationDuration) {
+    public void setMeditationDuration(TimeOfDay meditationDuration) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
