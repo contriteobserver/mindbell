@@ -141,6 +141,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
         // Define bell resource uri values ... doing it here because this needs a context
         bellResourceUriMap = new HashMap<>();
+        // no entry for "0", let getSoundUri() return null to play no sound at all
         bellResourceUriMap.put("1", Utils.getResourceUri(context, R.raw.bell10s));
         bellResourceUriMap.put("2", Utils.getResourceUri(context, R.raw.bell20s));
         bellResourceUriMap.put("3", Utils.getResourceUri(context, R.raw.bell30s));
@@ -201,7 +202,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
         // Map preference keys to their allowed entryValues
         entryValuesMap.put(keyActiveOnDaysOfWeek, context.getResources().getStringArray(R.array.weekdayEntryValues));
-        entryValuesMap.put(keyMeditationBeginningBell, context.getResources().getStringArray(R.array.bellEntryValues));
+        entryValuesMap.put(keyMeditationBeginningBell, context.getResources().getStringArray(R.array.beginningBellEntryValues));
         entryValuesMap.put(keyMeditationEndingBell, context.getResources().getStringArray(R.array.bellEntryValues));
         entryValuesMap.put(keyMeditationInterruptingBell, context.getResources().getStringArray(R.array.bellEntryValues));
         entryValuesMap.put(keyNormalize, context.getResources().getStringArray(R.array.normalizeEntryValues));
@@ -570,10 +571,15 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         // This implementation is almost the same as MindBellPreferences#setPreferenceVolumeSoundUri()
         String ringtone = getRingtone();
         if (getBooleanSetting(keyUseStandardBell) || ringtone.isEmpty()) {
-            return bellResourceUriMap.get("1");
+            return getStandardSoundUri();
         } else {
             return Uri.parse(ringtone);
         }
+    }
+
+    @Override
+    public Uri getStandardSoundUri() {
+        return bellResourceUriMap.get("1");
     }
 
     @Override

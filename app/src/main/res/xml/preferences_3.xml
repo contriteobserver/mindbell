@@ -60,8 +60,8 @@
 
         <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
             android:dialogTitle="@string/prefsMeditationBeginningBell"
-            android:entries="@array/bellEntries"
-            android:entryValues="@array/bellEntryValues"
+            android:entries="@array/beginningBellEntries"
+            android:entryValues="@array/beginningBellEntryValues"
             android:key="@string/keyMeditationBeginningBell"
             android:summary="%s"
             android:title="@string/prefsMeditationBeginningBell"/>

@@ -249,9 +249,13 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
      * Start playing bell sound and call runWhenDone when playing finishes but only if bell is not muted.
      */
     private void startPlayingSound(ActivityPrefsAccessor activityPrefs, final Runnable runWhenDone) {
+        Uri bellUri = activityPrefs.getSoundUri();
         audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         if (prefs.isNoSoundOnMusic() && audioManager.isMusicActive()) {
             MindBell.logDebug("Sound suppressed because setting is no sound on music and music is playing");
+            return;
+        } else if (bellUri == null) {
+            MindBell.logDebug("Sound suppressed because no sound has been set");
             return;
         } else if (prefs.isPauseAudioOnSound()) {
             int requestResult = audioManager.requestAudioFocus(this, STREAM_ALARM, retrieveDurationHint());
@@ -273,12 +277,15 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
             prefs.setOriginalVolume(originalVolume);
         }
         float bellVolume = activityPrefs.getVolume();
-        Uri bellUri = activityPrefs.getSoundUri();
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(STREAM_ALARM);
         mediaPlayer.setVolume(bellVolume, bellVolume);
         try {
-            mediaPlayer.setDataSource(context, bellUri);
+            try {
+                mediaPlayer.setDataSource(context, bellUri);
+            } catch (IOException e) { // probably because of withdrawn permissions, hence use default bell
+                mediaPlayer.setDataSource(context, prefs.getStandardSoundUri());
+            }
             mediaPlayer.prepare();
             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 public void onCompletion(MediaPlayer mp) {

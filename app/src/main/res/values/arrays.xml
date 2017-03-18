@@ -88,7 +88,15 @@
 
     <!-- ==================== don't localize ==================== -->
 
-    <!-- Number of rings for beginning/interrupting/ending the meditation -->
+    <!-- Number of rings for beginning the meditation -->
+    <string-array name="beginningBellEntries" translatable="false">
+        <item>0 x</item>
+        <item>1 x</item>
+        <item>2 x</item>
+        <item>3 x</item>
+    </string-array>
+
+    <!-- Number of rings for interrupting/ending the meditation -->
     <string-array name="bellEntries" translatable="false">
         <item>1 x</item>
         <item>2 x</item>
@@ -152,7 +160,15 @@
         <item>100:200:100:200:100:200</item> <!-- -brr-brr-brr -->
     </string-array>
 
-    <!-- Number of rings for beginning/interrupting/ending the meditation -->
+    <!-- Number of rings for beginning the meditation -->
+    <string-array name="beginningBellEntryValues" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <!-- Number of rings for interrupting/ending the meditation -->
     <string-array name="bellEntryValues" translatable="false">
         <item>1</item>
         <item>2</item>

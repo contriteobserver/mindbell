@@ -98,6 +98,8 @@ public abstract class PrefsAccessor {
 
     public abstract float getVolume();
 
+    public abstract Uri getStandardSoundUri();
+
     public abstract TimeOfDay getDaytimeEnd();
 
     public abstract TimeOfDay getDaytimeStart();
