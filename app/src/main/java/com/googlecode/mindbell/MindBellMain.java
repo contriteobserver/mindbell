@@ -266,7 +266,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
     private void onClickSendInfo() {
         new AlertDialog.Builder(this) //
                 .setTitle(R.string.sendMail) //
-                .setMessage(R.string.mailInfo2) //
+                .setMessage(R.string.mailInfo1) //
                 .setIcon(R.mipmap.ic_launcher) //
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override

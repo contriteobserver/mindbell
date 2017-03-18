@@ -204,10 +204,10 @@
     <string name="main_message4_popup">Frequently asked questions (FAQ)?\nhttp://dknapps.de/mindbell</string>
     <string name="main_message5_popup">Other questions or problems?\nPlease use \'Send e-mail\' below.</string>
     <string name="main_message6_popup">Privacy Policy?\nhttp://dknapps.de/mindbell-privacy</string>
-    <string name="mailInfo1">The generated e-mail text contains your version of MindBell and Android plus some device information
-        and all log entries produced by MindBell to help finding a possible bug.</string>
-    <string name="mailInfo2">Please add your question or a description of the problem you are experiencing to the e-mail text,
+    <string name="mailInfo1">Please add your question or a description of the problem you are experiencing to the e-mail text,
         otherwise the e-mail will be ignored.</string>
+    <string name="mailInfo2">The generated e-mail text contains your version of MindBell and Android plus some device information
+        and all log entries produced by MindBell to help finding a possible bug.</string>
     <string name="sendMail">Send e-mail</string>
     <string name="batterySettings">Battery</string>
     <string name="noEmailClients">There are no email clients installed.</string>
