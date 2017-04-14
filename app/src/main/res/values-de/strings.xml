@@ -187,9 +187,9 @@
     <string name="reasonReadPhoneStateTitle">Wozu diese Berechtigung?</string>
     <string name="reasonReadPhoneStateText">\'Status-Icon anzeigen\' und \'Beim Telefonieren still\' wurden
         ausgewählt. Das bedeutet, dass MindBell die Glocke in der Benachrichtigungsleiste umdreht, wenn
-        ein Anruf ein- oder ausgeht. Um das zu erreichen, muss MindBell über Anrufe informiert werden.
-        Nur mit der Berechtigung READ_PHONE_STATE kann MindBell darüber auf dem Laufenden gehalten werden.
-        Wenn die Berechtigung abgelehnt wird, muss daher entweder \'Status-Icon anzeigen\' oder
+        ein Anruf ein- oder ausgeht.\n\nUm das zu erreichen, muss MindBell über Anrufe informiert werden.
+        Nur mit der Berechtigung READ_PHONE_STATE kann MindBell darüber auf dem Laufenden gehalten
+        werden.\n\nWenn die Berechtigung abgelehnt wird, muss daher entweder \'Status-Icon anzeigen\' oder
         \'Beim Telefonieren still\' abgeschaltet sein.</string>
 
     <!-- Permission READ_PHONE_STATE denied but user checked 'never ask again' -->

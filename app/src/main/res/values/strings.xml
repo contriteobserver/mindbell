@@ -184,10 +184,10 @@
     <!-- Reasons why permission READ_PHONE_STATE should be granted -->
     <string name="reasonReadPhoneStateTitle">Why this permission?</string>
     <string name="reasonReadPhoneStateText">\'Show status icon\' and \'Mute during phone calls\' has been
-        selected. That means that MindBell turns over the bell in the notification bar when a phone
-        call is incoming or outgoing. To achieve this, MindBell has to be informed of calls. Only when
-        permission READ_PHONE_STATE is granted MindBell can be kept informed. If the permission is denied
-        either \'Show status icon\' or \'Mute during phone calls\' must be switched off.</string>
+        selected. So MindBell turns the bell in the notification bar to be shown upside down when a
+        phone call is incoming or outgoing.\n\nTo achieve this, MindBell has to be informed of
+        calls. Only when permission READ_PHONE_STATE is granted MindBell can be kept informed.\n\nIf the
+        permission is denied either \'Show status icon\' or \'Mute during phone calls\' must be switched off.</string>
 
     <!-- Permission READ_PHONE_STATE denied but user checked 'never ask again' -->
     <string name="neverAskAgainReadPhoneStateTitle">Missing permission</string>
