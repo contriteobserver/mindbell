@@ -31,8 +31,14 @@ import java.util.Set;
  */
 public class TimeOfDay {
 
+    /**
+     * For a hh:mm-TimeOfDay the hour value, for a mm:ss-TimeOfDay the minutes value.
+     */
     private int hour;
 
+    /**
+     * For a hh:mm-TimeOfDay the minutes value, for a mm:ss-TimeOfDay the seconds value.
+     */
     private int minute;
 
     private Integer second;
@@ -106,11 +112,29 @@ public class TimeOfDay {
         }
     }
 
+    /**
+     * The time of day, as provides by milliseconds since 1970.
+     */
     public TimeOfDay(long millisecondsSince1970) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(millisecondsSince1970);
         init(cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND), cal.get(Calendar.MILLISECOND),
                 cal.get(Calendar.DAY_OF_WEEK));
+    }
+
+    /**
+     * The hh:mm-TimeOfDay, as provided by an interval given in milliseconds.
+     */
+    public static TimeOfDay fromMillisecondsInterval(long milliseconds) {
+        return fromSecondsInterval((int) (milliseconds / PrefsAccessor.ONE_MINUTE_MILLIS));
+    }
+
+    /**
+     * The hh:mm-TimeOfDay, as provided by an interval given in minute, or the mm:ss-TimeOfDay, as provided by an interval given in
+     * seconds.
+     */
+    public static TimeOfDay fromSecondsInterval(int interval) {
+        return new TimeOfDay(interval / 60, interval % 60);
     }
 
     /*

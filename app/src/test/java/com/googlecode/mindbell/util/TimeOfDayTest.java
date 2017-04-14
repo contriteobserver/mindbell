@@ -19,6 +19,8 @@
  */
 package com.googlecode.mindbell.util;
 
+import com.googlecode.mindbell.accessors.PrefsAccessor;
+
 import org.junit.Test;
 
 import java.util.Calendar;
@@ -523,6 +525,22 @@ public class TimeOfDayTest {
                 assertEquals(mm, time.getMinute());
                 assertNull(time.getWeekday());
             }
+        }
+    }
+
+    @Test
+    public void testFromMillisecondsInterval() {
+        for (int min = 0; min < 1440; min++) {
+            TimeOfDay time = TimeOfDay.fromMillisecondsInterval(min * PrefsAccessor.ONE_MINUTE_MILLIS);
+            assertEquals(min, time.getInterval());
+        }
+    }
+
+    @Test
+    public void testfromSecondsInterval() {
+        for (int s = 0; s < s * 60 * 60; s++) {
+            TimeOfDay time = TimeOfDay.fromSecondsInterval(s);
+            assertEquals(s, time.getInterval());
         }
     }
 

@@ -269,23 +269,24 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private void convertOldSettings(Context context) {
         // Version 3.1.0 replaced numberOfPeriods by patternOfPeriods
         String keyNumberOfPeriods = "numberOfPeriods";
-        int numberOfPeriods = settings.getInt(keyNumberOfPeriods, 0);
-        if (numberOfPeriods > 0) {
-            String patternOfPeriods = derivePatternOfPeriods(numberOfPeriods);
+        int oldNumberOfPeriods = settings.getInt(keyNumberOfPeriods, 0);
+        if (oldNumberOfPeriods > 0) {
+            String patternOfPeriods = derivePatternOfPeriods(oldNumberOfPeriods);
             setPatternOfPeriods(patternOfPeriods);
             settings.edit().remove(keyNumberOfPeriods).apply();
-            Log.w(TAG, "Converted old setting for '" + keyNumberOfPeriods + "' (" + numberOfPeriods + ") to '" +
+            Log.w(TAG, "Converted old setting for '" + keyNumberOfPeriods + "' (" + oldNumberOfPeriods + ") to '" +
                     context.getText(keyPatternOfPeriods) +
                     "' (" + patternOfPeriods + ")");
         }
         // Version 3.2.0 replaces frequency milliseconds string by time string
         String keyFrequency = context.getString(R.string.keyFrequency);
-        String longFrequency = (String) getSetting(R.string.keyFrequency);
-        if (longFrequency != null && !longFrequency.contains(":")) {
+        String oldFrequency = settings.getString(keyFrequency, null);
+        if (oldFrequency != null && !oldFrequency.contains(":")) {
             try {
-                String frequency = new TimeOfDay(Long.parseLong(longFrequency)).getPersistString();
+                long milliseconds = Long.parseLong(oldFrequency);
+                String frequency = TimeOfDay.fromMillisecondsInterval(milliseconds).getPersistString();
                 setSetting(R.string.keyFrequency, frequency);
-                Log.w(TAG, "Converted old value for '" + keyFrequency + "' from '" + longFrequency +
+                Log.w(TAG, "Converted old value for '" + keyFrequency + "' from '" + oldFrequency +
                         "' to '" + frequency + "'");
             } catch (NumberFormatException e) {
                 // invalid preference will be removed by removeInvalidSetting()
@@ -294,11 +295,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         // Version 3.2.0 replaces rampup time seconds by time string
         String keyRampUpTime = context.getString(R.string.keyRampUpTime);
         try {
-            Integer intRampUpTime = getIntSetting(R.string.keyRampUpTime);
-            if (intRampUpTime != null) {
-                String rampUpTime = new TimeOfDay(intRampUpTime / 60, intRampUpTime % 60).getPersistString();
+            int oldRampUpTime = settings.getInt(keyRampUpTime, -1);
+            if (oldRampUpTime >= 0) {
+                String rampUpTime = TimeOfDay.fromSecondsInterval(oldRampUpTime).getPersistString();
                 setSetting(R.string.keyRampUpTime, rampUpTime);
-                Log.w(TAG, "Converted old value for '" + keyRampUpTime + "' from '" + intRampUpTime +
+                Log.w(TAG, "Converted old value for '" + keyRampUpTime + "' from '" + oldRampUpTime +
                         "' to '" + rampUpTime + "'");
             }
         } catch (ClassCastException e) {
@@ -307,12 +308,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         // Version 3.2.0 replaces meditation duration minutes by time string
         String keyMeditationDuration = context.getString(R.string.keyMeditationDuration);
         try {
-            Integer intMeditationDuration = getIntSetting(R.string.keyMeditationDuration);
-            if (intMeditationDuration != null) {
-                String meditationDuration =
-                        new TimeOfDay(intMeditationDuration / 60, intMeditationDuration % 60).getPersistString();
+            int oldMeditationDuration = settings.getInt(keyMeditationDuration, -1);
+            if (oldMeditationDuration >= 0) {
+                String meditationDuration = TimeOfDay.fromSecondsInterval(oldMeditationDuration).getPersistString();
                 setSetting(R.string.keyMeditationDuration, meditationDuration);
-                Log.w(TAG, "Converted old value for '" + keyMeditationDuration + "' from '" + intMeditationDuration +
+                Log.w(TAG, "Converted old value for '" + keyMeditationDuration + "' from '" + oldMeditationDuration +
                         "' to '" + meditationDuration + "'");
             }
         } catch (ClassCastException e) {

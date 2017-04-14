@@ -33,7 +33,7 @@ public class TimePickerPreference extends DialogPreference {
 
     protected TimeOfDay time = new TimeOfDay(0, 0, null);
 
-    private TimePicker picker = null;
+    protected TimePicker picker = null;
 
     public TimePickerPreference(Context ctxt, AttributeSet attrs) {
         super(ctxt, attrs);
