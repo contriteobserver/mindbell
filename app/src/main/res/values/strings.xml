@@ -105,6 +105,9 @@
     <string name="prefsNotificationVisibilityPublic">Show ring notification text on lock screen</string>
     <string name="summaryNotificationVisibilityPublic">Show ring notification text on lock screen</string>
     <string name="summaryNotificationVisibilityPrivate">Hide ring notification text on lock screen</string>
+    <string name="prefsDismissNotification">Dismiss notification afterwards</string>
+    <string name="summaryDismissNotification">Dismiss notification after ringing (also on wearables)</string>
+    <string name="summaryDontDismissNotification">Keep notification after ringing (also on wearables)</string>
 
     <string name="prefsCategoryMuteRules">Mute rules</string>
     <string name="prefsMuteWithPhone">Mute with phone</string>
@@ -217,6 +220,7 @@
     <!-- Preference keys (don't localize) -->
     <string name="keyActiveOnDaysOfWeek" translatable="false">activeOnDaysOfWeek</string>
     <string name="keyActive" translatable="false">active</string>
+    <string name="keyDismissNotification" translatable="false">dismissNotification</string>
     <string name="keyEnd" translatable="false">end</string>
     <string name="keyFrequency" translatable="false">frequency</string>
     <string name="keyKeepScreenOn" translatable="false">keepScreenOn</string>

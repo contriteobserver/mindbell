@@ -41,6 +41,7 @@ import java.util.TreeMap;
 import static com.googlecode.mindbell.MindBellPreferences.TAG;
 import static com.googlecode.mindbell.R.string.keyActive;
 import static com.googlecode.mindbell.R.string.keyActiveOnDaysOfWeek;
+import static com.googlecode.mindbell.R.string.keyDismissNotification;
 import static com.googlecode.mindbell.R.string.keyEnd;
 import static com.googlecode.mindbell.R.string.keyFrequency;
 import static com.googlecode.mindbell.R.string.keyKeepScreenOn;
@@ -160,6 +161,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         addPreference(keyActive, false, BOOLEAN, context);
         addPreference(keyActiveOnDaysOfWeek, new HashSet<>(Arrays.asList(new String[]{"1", "2", "3", "4", "5", "6", "7"})),
                 STRING_SET, context);
+        addPreference(keyDismissNotification, false, BOOLEAN, context);
         addPreference(keyEnd, "21:00", TIME_STRING, context);
         addPreference(keyFrequency, "00:15", TIME_STRING, context); // 15 min
         addPreference(keyKeepScreenOn, true, BOOLEAN, context);
@@ -507,6 +509,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public boolean isNotification() {
         return getBooleanSetting(keyNotification);
+    }
+
+    @Override
+    public boolean isDismissNotification() {
+        return getBooleanSetting(keyDismissNotification);
     }
 
     @Override
@@ -946,6 +953,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             return AndroidPrefsAccessor.this.isNotification();
         }
 
+        @Override
+        public boolean isDismissNotification() {
+            return AndroidPrefsAccessor.this.isDismissNotification();
+        }
+
     }
 
     private class ActivityPrefsAccessorForTapping implements ActivityPrefsAccessor {
@@ -980,6 +992,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             return false;
         }
 
+        @Override
+        public boolean isDismissNotification() {
+            return false;
+        }
+
     }
 
     private abstract class ActivityPrefsAccessorForMeditation implements ActivityPrefsAccessor {
@@ -1009,6 +1026,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
         @Override
         public boolean isNotification() {
+            return false;
+        }
+
+        @Override
+        public boolean isDismissNotification() {
             return false;
         }
 

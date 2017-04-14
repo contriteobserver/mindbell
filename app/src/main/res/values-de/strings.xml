@@ -105,6 +105,9 @@
     <string name="prefsNotificationVisibilityPublic">Benachrichtigungstext auf Sperrbildschirm</string>
     <string name="summaryNotificationVisibilityPublic">Benachrichtigungstext auf Sperrbildschirm anzeigen</string>
     <string name="summaryNotificationVisibilityPrivate">Benachrichtigungstext auf Sperrbildschirm ausblenden</string>
+    <string name="prefsDismissNotification">Benachrichtigung danach verwerfen</string>
+    <string name="summaryDismissNotification">Verwerfe Benachrichtigung nach dem Läuten (auch auf Wearables)</string>
+    <string name="summaryDontDismissNotification">Benachrichtigung nach dem Läuten stehen lassen (auch auf Wearables)</string>
 
     <string name="prefsCategoryMuteRules">Stillstellregeln</string>
     <string name="prefsMuteWithPhone">Mit Telefon stummschalten</string>

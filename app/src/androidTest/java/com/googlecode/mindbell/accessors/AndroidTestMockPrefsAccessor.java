@@ -46,6 +46,11 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
+    public boolean isDismissNotification() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
     public String getRingtone() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }

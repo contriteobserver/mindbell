@@ -38,4 +38,6 @@ public interface ActivityPrefsAccessor {
 
     boolean isNotification();
 
+    boolean isDismissNotification();
+
 }

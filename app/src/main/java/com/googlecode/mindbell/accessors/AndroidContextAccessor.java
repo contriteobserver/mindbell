@@ -154,7 +154,7 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
     }
 
     @Override
-    public void startPlayingSoundAndVibrate(ActivityPrefsAccessor activityPrefs, final Runnable runWhenDone) {
+    public void startPlayingSoundAndVibrate(final ActivityPrefsAccessor activityPrefs, final Runnable runWhenDone) {
 
         // Stop an already ongoing sound, this isn't wrong when phone and bell are muted, too
         finishBellSound();
@@ -173,6 +173,17 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
         // Explicitly start vibration if not already done by ring notification
         if (activityPrefs.isVibrate() && !activityPrefs.isNotification()) {
             startVibration();
+        }
+
+        // If ring notification and its dismissal is requested, then we have to wait for a while to dismiss the ring notification
+        // afterwards. So a new thread is created that waits and dismisses the ring notification afterwards.
+        if (activityPrefs.isNotification() && activityPrefs.isDismissNotification()) {
+            startWaiting(new Runnable() {
+                @Override
+                public void run() {
+                    cancelRingNotification(activityPrefs);
+                }
+            });
         }
 
         // If displaying the bell is requested by the preferences but playing a sound is not, then
@@ -326,6 +337,13 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
                 runWhenDone.run();
             }
         }).start();
+    }
+
+    /**
+     * Cancel the ring notification (after ringing the bell).
+     */
+    public void cancelRingNotification(ActivityPrefsAccessor activityPrefs) {
+        NotificationManagerCompat.from(context).cancel(RING_NOTIFICATION_ID);
     }
 
     @Override
