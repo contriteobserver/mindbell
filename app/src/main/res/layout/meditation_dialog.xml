@@ -76,78 +76,85 @@
             android:paddingRight="10dp"
             android:paddingTop="2dp"/>
 
-        <TextView
-            android:id="@+id/explanationNumberOfPeriods"
-            style="?android:attr/textAppearanceMedium"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:drawableRight="@drawable/ic_help_white_24px"
-            android:gravity="center_vertical"
-            android:labelFor="@+id/numberOfPeriods"
-            android:paddingBottom="2dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="10dp"
-            android:text="@string/prefsNumberOfPeriods"
-            android:textIsSelectable="false"/>
-
-        <TextView
-            android:id="@+id/numberOfPeriods"
-            style="?android:attr/textAppearanceSmall"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
             android:paddingBottom="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:paddingTop="2dp"/>
+            android:paddingTop="2dp">
 
-        <TextView
-            android:id="@+id/explanationPatternOfPeriods"
-            style="?android:attr/textAppearanceMedium"
+            <TextView
+                android:id="@+id/label_numberOfPeriods"
+                style="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/numberOfPeriods"
+                android:text="@string/prefsNumberOfPeriods"
+                android:textIsSelectable="false"/>
+
+            <TextView
+                android:id="@+id/numberOfPeriods"
+                style="?android:attr/textAppearanceSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/label_numberOfPeriods"
+                android:focusable="true"
+                android:focusableInTouchMode="true"/>
+
+            <ImageView
+                android:id="@+id/explanationNumberOfPeriods"
+                style="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:src="@drawable/ic_help_white_24px"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:drawableRight="@drawable/ic_help_white_24px"
-            android:gravity="center_vertical"
-            android:labelFor="@+id/patternOfPeriods"
-            android:paddingBottom="2dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="10dp"
-            android:text="@string/prefsPatternOfPeriods"
-            android:textIsSelectable="false"/>
-
-        <TextView
-            android:id="@+id/patternOfPeriods"
-            style="?android:attr/textAppearanceSmall"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
             android:paddingBottom="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:paddingTop="2dp"/>
+            android:paddingTop="2dp">
 
-        <TextView
-            android:id="@+id/label_keepScreenOn"
-            style="?android:attr/textAppearanceMedium"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:labelFor="@+id/keepScreenOn"
-            android:paddingBottom="2dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="10dp"
-            android:text="@string/prefsKeepScreenOn"
-            android:textIsSelectable="false"/>
+            <TextView
+                android:id="@+id/label_patternOfPeriods"
+                style="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/patternOfPeriods"
+                android:text="@string/prefsPatternOfPeriods"
+                android:textIsSelectable="false"/>
+
+            <TextView
+                android:id="@+id/patternOfPeriods"
+                style="?android:attr/textAppearanceSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/label_patternOfPeriods"
+                android:focusable="true"
+                android:focusableInTouchMode="true"/>
+
+            <ImageView
+                android:id="@+id/explanationPatternOfPeriods"
+                style="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:src="@drawable/ic_help_white_24px"/>
+
+        </RelativeLayout>
 
         <CheckBox
             android:id="@+id/keepScreenOn"
-            style="?android:attr/textAppearanceSmall"
+            style="?android:attr/textAppearanceMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"

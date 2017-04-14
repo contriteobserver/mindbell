@@ -42,6 +42,7 @@ import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -152,17 +153,23 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
         final PrefsAccessor prefs = contextAccessor.getPrefs();
         if (!prefs.isMeditating()) {
             View view = getLayoutInflater().inflate(R.layout.meditation_dialog, null);
+            final TextView textViewRampUpTimeLabel = (TextView) view.findViewById(R.id.label_rampUpTime);
             final TextView textViewRampUpTime = (TextView) view.findViewById(R.id.rampUpTime);
+            final TextView textViewMeditationDurationLabel = (TextView) view.findViewById(R.id.label_meditationDuration);
             final TextView textViewMeditationDuration = (TextView) view.findViewById(R.id.meditationDuration);
+            final TextView textViewNumberOfPeriodsLabel = (TextView) view.findViewById(R.id.label_numberOfPeriods);
             final TextView textViewNumberOfPeriods = (TextView) view.findViewById(R.id.numberOfPeriods);
-            final TextView textViewExplanationNumberOfPeriods = (TextView) view.findViewById(R.id.explanationNumberOfPeriods);
+            final ImageView imageViewExplanationNumberOfPeriods = (ImageView) view.findViewById(R.id.explanationNumberOfPeriods);
+            final TextView textViewPatternOfPeriodsLabel = (TextView) view.findViewById(R.id.label_patternOfPeriods);
             final TextView textViewPatternOfPeriods = (TextView) view.findViewById(R.id.patternOfPeriods);
-            final TextView textViewExplanationPatternOfPeriods = (TextView) view.findViewById(R.id.explanationPatternOfPeriods);
+            final ImageView imageViewExplanationPatternOfPeriods = (ImageView) view.findViewById(R.id.explanationPatternOfPeriods);
             final CheckBox checkBoxKeepScreenOn = (CheckBox) view.findViewById(R.id.keepScreenOn);
             textViewRampUpTime.setText(MinutesIntervalPickerPreference.deriveSummary(prefs.getRampUpTime(), false));
-            attachIntervalPickerDialog(textViewRampUpTime, R.string.prefsRampUpTime, MIN_RAMP_UP_TIME, false, null);
+            attachIntervalPickerDialog(textViewRampUpTimeLabel, textViewRampUpTime, R.string.prefsRampUpTime, MIN_RAMP_UP_TIME,
+                    false, null);
             textViewMeditationDuration.setText(MinutesIntervalPickerPreference.deriveSummary(prefs.getMeditationDuration(), true));
-            attachIntervalPickerDialog(textViewMeditationDuration, R.string.prefsMeditationDuration, MIN_MEDITATION_DURATION, true,
+            attachIntervalPickerDialog(textViewMeditationDurationLabel, textViewMeditationDuration,
+                    R.string.prefsMeditationDuration, MIN_MEDITATION_DURATION, true,
                     new OnPickListener() {
                         @Override
                         public boolean onPick() {
@@ -171,7 +178,8 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                         }
                     });
             textViewNumberOfPeriods.setText(String.valueOf(prefs.getNumberOfPeriods()));
-            attachNumberPickerDialog(textViewNumberOfPeriods, R.string.prefsNumberOfPeriods, 1, 99, new OnPickListener() {
+            attachNumberPickerDialog(textViewNumberOfPeriodsLabel, textViewNumberOfPeriods, R.string.prefsNumberOfPeriods, 1, 99,
+                    new OnPickListener() {
                 @Override
                 public boolean onPick() {
                     int numberOfPeriods = Integer.valueOf(textViewNumberOfPeriods.getText().toString());
@@ -180,7 +188,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                             textViewPatternOfPeriods);
                 }
             });
-            textViewExplanationNumberOfPeriods.setOnClickListener(new View.OnClickListener() {
+            imageViewExplanationNumberOfPeriods.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     new AlertDialog.Builder(MindBellMain.this) //
@@ -191,7 +199,8 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                 }
             });
             textViewPatternOfPeriods.setText(prefs.getPatternOfPeriods());
-            attachEditTextDialog(textViewPatternOfPeriods, R.string.prefsPatternOfPeriods, new Normalizer() {
+            attachEditTextDialog(textViewPatternOfPeriodsLabel, textViewPatternOfPeriods, R.string.prefsPatternOfPeriods,
+                    new Normalizer() {
                 @Override
                 public String normalize(String value) {
                     return value
@@ -207,7 +216,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                             textViewPatternOfPeriods);
                 }
             });
-            textViewExplanationPatternOfPeriods.setOnClickListener(new View.OnClickListener() {
+            imageViewExplanationPatternOfPeriods.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     new AlertDialog.Builder(MindBellMain.this) //
@@ -295,9 +304,10 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
     /**
      * Sets an OnClickListener upon the text view to open a time picker dialog when it is clicked.
      */
-    private void attachIntervalPickerDialog(final TextView textView, final int residTitle, final TimeOfDay min,
+    private void attachIntervalPickerDialog(final TextView textViewLabel, final TextView textView, final int residTitle,
+                                            final TimeOfDay min,
                                             final boolean isMinutesInterval, final OnPickListener onPickListener) {
-        textView.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final TimePicker timePicker = new TimePicker(MindBellMain.this);
@@ -324,7 +334,9 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                         .setNegativeButton(android.R.string.cancel, null) //
                         .show();
             }
-        });
+        };
+        textViewLabel.setOnClickListener(onClickListener);
+        textView.setOnClickListener(onClickListener);
     }
 
     /**
@@ -368,9 +380,10 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
     /**
      * Sets an OnClickListener upon the text view to open a number picker dialog when it is clicked.
      */
-    private void attachNumberPickerDialog(final TextView textView, final int residTitle, final int min, final int max,
+    private void attachNumberPickerDialog(final TextView textViewLabel, final TextView textView, final int residTitle,
+                                          final int min, final int max,
                                           final OnPickListener onPickListener) {
-        textView.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final NumberPicker numberPicker = new NumberPicker(MindBellMain.this);
@@ -393,15 +406,18 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                         .setNegativeButton(android.R.string.cancel, null) //
                         .show();
             }
-        });
+        };
+        textViewLabel.setOnClickListener(onClickListener);
+        textView.setOnClickListener(onClickListener);
     }
 
     /**
      * Sets an OnClickListener upon the text view to open a edit text dialog when it is clicked.
      */
-    private void attachEditTextDialog(final TextView textView, final int residTitle, final Normalizer normalizer,
+    private void attachEditTextDialog(final TextView textViewLabel, final TextView textView, final int residTitle,
+                                      final Normalizer normalizer,
                                       final OnEnterListener onEnterListener) {
-        textView.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 final EditText editText = new EditText(MindBellMain.this);
@@ -431,7 +447,9 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                         }) //
                         .show();
             }
-        });
+        };
+        textViewLabel.setOnClickListener(onClickListener);
+        textView.setOnClickListener(onClickListener);
     }
 
     /**
