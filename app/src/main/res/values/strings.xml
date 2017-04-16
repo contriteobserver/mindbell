@@ -147,6 +147,7 @@
         want to meditate 15 minutes and want to get a two-minute-period at the beginning and the end, then specify: 2, x, 2</string>
     <string name="prefsMeditationDuration">Duration of meditation (hh:mm)</string>
     <string name="prefsKeepScreenOn">Keep screen on</string>
+    <string name="prefsStopMeditationAutomatically">Stop automatically</string>
     <string name="buttonStartMeditation">Start</string>
 
     <!-- Validation messages -->
@@ -256,6 +257,7 @@
     <string name="keyStatus" translatable="false">status</string>
     <string name="keyStatusIconMaterialDesign" translatable="false">statusIconMaterialDesign</string>
     <string name="keyStatusVisibilityPublic" translatable="false">statusVisiblityPublic</string>
+    <string name="keyStopMeditationAutomatically" translatable="false">stopMeditationAutomatically</string>
     <string name="keyUseStandardBell" translatable="false">useStandardBell</string>
     <string name="keyVibrate" translatable="false">vibrate</string>
     <string name="keyVolume" translatable="false">volume</string>

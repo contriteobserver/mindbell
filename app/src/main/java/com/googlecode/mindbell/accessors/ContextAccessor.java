@@ -113,6 +113,8 @@ public abstract class ContextAccessor {
 
     public abstract PendingIntent createRefreshBroadcastIntent();
 
+    public abstract void stopMeditation();
+
     public abstract void showBell();
 
     public abstract void updateStatusNotification();

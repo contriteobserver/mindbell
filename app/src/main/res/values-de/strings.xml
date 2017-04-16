@@ -148,6 +148,7 @@
         möchten, geben Sie folgendes ein: 2, x, 2</string>
     <string name="prefsMeditationDuration">Meditationsdauer (hh:mm)</string>
     <string name="prefsKeepScreenOn">Bildschirm anlassen</string>
+    <string name="prefsStopMeditationAutomatically">Automatisch stoppen</string>
     <string name="buttonStartMeditation">Starten</string>
 
     <!-- Validation messages -->

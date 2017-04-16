@@ -31,7 +31,6 @@ public abstract class PrefsAccessor {
      * One minute in milliseconds.
      */
     public static final long ONE_MINUTE_MILLIS = 60000L;
-
     /**
      * One minute in milliseconds plus an error indicator millisecond value.
      */
@@ -40,7 +39,6 @@ public abstract class PrefsAccessor {
     public static final long ONE_MINUTE_MILLIS_NEGATIVE_PERIOD = ONE_MINUTE_MILLIS + 3L;
     public static final long ONE_MINUTE_MILLIS_PERIOD_TOO_SHORT = ONE_MINUTE_MILLIS + 4L;
     public static final long ONE_MINUTE_MILLIS_PERIOD_NOT_EXISTING = ONE_MINUTE_MILLIS + 5L;
-
     /**
      * Regular expressions to verify a pattern of periods string.
      */
@@ -51,16 +49,18 @@ public abstract class PrefsAccessor {
     public static final String PERIOD_SEPARATOR_REGEX = PERIOD_SEPARATOR;
     public static final String PERIOD_SEPARATOR_WITH_BLANKS_REGEX = " *" + PERIOD_SEPARATOR_REGEX + " *";
     public static final String PERIOD_SEPARATOR_WITH_BLANK = ", ";
-
     /**
      * Minimum value for ramp up time
      */
     public static final TimeOfDay MIN_RAMP_UP_TIME = new TimeOfDay(0, 5);
-
     /**
      * Minimum value for meditation duration
      */
     public static final TimeOfDay MIN_MEDITATION_DURATION = new TimeOfDay(0, 1);
+    /**
+     * Unique string to be added to an Intent to see if MindBellMain is opened to stop meditation mode.
+     */
+    public static String EXTRA_STOP_MEDITATION = "com.googlecode.mindbell.MindBellMail.StopMeditation";
 
     /**
      * Returns a patternOfPeriods string that corresponds with the numberOfPeriods: 1 -> "x", 2 -> "x, x", ...
@@ -243,6 +243,10 @@ public abstract class PrefsAccessor {
 
     public abstract void setKeepScreenOn(boolean keepScreenOn);
 
+    public abstract boolean isStopMeditationAutomatically();
+
+    public abstract void setStopMeditationAutomatically(boolean stopMeditationAutomatically);
+
     public abstract boolean isStatusVisibilityPublic();
 
     public abstract boolean isNotificationVisibilityPublic();
@@ -300,4 +304,5 @@ public abstract class PrefsAccessor {
     public abstract ActivityPrefsAccessor forMeditationInterrupting();
 
     public abstract ActivityPrefsAccessor forMeditationEnding();
+
 }

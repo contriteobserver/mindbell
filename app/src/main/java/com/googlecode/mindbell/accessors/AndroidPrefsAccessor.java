@@ -78,6 +78,7 @@ import static com.googlecode.mindbell.R.string.keyStart;
 import static com.googlecode.mindbell.R.string.keyStatus;
 import static com.googlecode.mindbell.R.string.keyStatusIconMaterialDesign;
 import static com.googlecode.mindbell.R.string.keyStatusVisibilityPublic;
+import static com.googlecode.mindbell.R.string.keyStopMeditationAutomatically;
 import static com.googlecode.mindbell.R.string.keyUseStandardBell;
 import static com.googlecode.mindbell.R.string.keyVibrate;
 import static com.googlecode.mindbell.R.string.keyVolume;
@@ -165,6 +166,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         addPreference(keyEnd, "21:00", TIME_STRING, context);
         addPreference(keyFrequency, "00:15", TIME_STRING, context); // 15 min
         addPreference(keyKeepScreenOn, true, BOOLEAN, context);
+        addPreference(keyStopMeditationAutomatically, false, BOOLEAN, context);
         addPreference(keyMeditating, false, BOOLEAN, context);
         addPreference(keyMeditationBeginningBell, "3", STRING, context);
         addPreference(keyMeditationDuration, "00:25", TIME_STRING, context);
@@ -707,6 +709,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public void setKeepScreenOn(boolean keepScreenOn) {
         setSetting(keyKeepScreenOn, keepScreenOn);
+    }
+
+    @Override
+    public boolean isStopMeditationAutomatically() {
+        return getBooleanSetting(keyStopMeditationAutomatically);
+    }
+
+    @Override
+    public void setStopMeditationAutomatically(boolean stopMeditationAutomatically) {
+        setSetting(keyStopMeditationAutomatically, stopMeditationAutomatically);
     }
 
     @Override

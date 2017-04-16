@@ -164,6 +164,18 @@
             android:paddingRight="10dp"
             android:paddingTop="2dp"/>
 
+        <CheckBox
+            android:id="@+id/stopMeditationAutomatically"
+            style="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:hint="@string/prefsStopMeditationAutomatically"
+            android:paddingBottom="10dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="10dp"
+            android:paddingTop="2dp"/>
+
     </LinearLayout>
 
 </ScrollView>

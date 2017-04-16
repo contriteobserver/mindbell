@@ -81,7 +81,7 @@ public class Scheduler extends BroadcastReceiver {
     /**
      * Reschedules next alarm and rings differently depending on the currently started (!) meditation period.
      */
-    private void handleMeditatingBell(ContextAccessor contextAccessor, long nowTimeMillis, int meditationPeriod) {
+    private void handleMeditatingBell(final ContextAccessor contextAccessor, long nowTimeMillis, int meditationPeriod) {
         PrefsAccessor prefs = contextAccessor.getPrefs();
 
         int numberOfPeriods = prefs.getNumberOfPeriods();
@@ -105,8 +105,20 @@ public class Scheduler extends BroadcastReceiver {
 
         } else { // end of last meditation period
 
-            Log.d(TAG, "Meditation is over -- not rescheduling.");
-            contextAccessor.startPlayingSoundAndVibrate(prefs.forMeditationEnding(), null);
+            final Runnable meditationStopper;
+            if (prefs.isStopMeditationAutomatically()) {
+                meditationStopper = new Runnable() {
+                    @Override
+                    public void run() {
+                        contextAccessor.stopMeditation();
+                    }
+                };
+                Log.d(TAG, "Meditation is over -- not rescheduling -- automatically stopping meditation mode.");
+            } else {
+                meditationStopper = null;
+                Log.d(TAG, "Meditation is over -- not rescheduling -- meditation mode remains to be active.");
+            }
+            contextAccessor.startPlayingSoundAndVibrate(prefs.forMeditationEnding(), meditationStopper);
 
         }
     }

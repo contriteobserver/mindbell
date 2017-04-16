@@ -464,6 +464,20 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
     }
 
     /**
+     * Send an intent to MindBellMain to finally stop meditation (change status, stop countdown) automatically instead of
+     * pressing the stop meditation button manually.
+     */
+    @Override
+    public void stopMeditation() {
+        Log.d(TAG, "Sending stop meditation intent");
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setClass(context, MindBellMain.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // context may be service context only, not an activity context
+        intent.putExtra(PrefsAccessor.EXTRA_STOP_MEDITATION, true);
+        context.startActivity(intent);
+    }
+
+    /**
      * Shows bell by bringing activity MindBell to the front
      */
     @Override

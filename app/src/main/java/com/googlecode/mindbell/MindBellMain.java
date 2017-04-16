@@ -31,6 +31,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -57,6 +58,7 @@ import com.googlecode.mindbell.preference.MinutesIntervalPickerPreference;
 import com.googlecode.mindbell.util.TimeOfDay;
 import com.googlecode.mindbell.util.Utils;
 
+import static com.googlecode.mindbell.MindBellPreferences.TAG;
 import static com.googlecode.mindbell.accessors.PrefsAccessor.MIN_MEDITATION_DURATION;
 import static com.googlecode.mindbell.accessors.PrefsAccessor.MIN_RAMP_UP_TIME;
 import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION;
@@ -120,141 +122,123 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
         return true;
     }
 
-    private boolean onMenuItemClickHelp() {
-        View popupView = LayoutInflater.from(this).inflate(R.layout.popup_dialog, null);
-        String versionName = Utils.getApplicationVersionName(getPackageManager(), getPackageName());
-        AlertDialog.Builder builder = new AlertDialog.Builder(this) //
-                .setTitle(getText(R.string.app_name) + " " + versionName) //
-                .setIcon(R.mipmap.ic_launcher) //
-                .setView(popupView) //
-                .setPositiveButton(android.R.string.ok, null) //
-                .setNegativeButton(R.string.sendMail, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        onClickSendInfo();
-                    }
-                });
-        if (Build.VERSION.SDK_INT >= 23) {
-            builder.setNeutralButton(R.string.batterySettings, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    onMenuItemClickBatteryOptimizationSettings();
-                }
-            });
-        }
-        builder.show();
-        return true;
-    }
-
     /**
      * Handles click on menu item active.
      */
     private boolean onMenuItemClickMeditating() {
-        final PrefsAccessor prefs = contextAccessor.getPrefs();
-        if (!prefs.isMeditating()) {
-            View view = getLayoutInflater().inflate(R.layout.meditation_dialog, null);
-            final TextView textViewRampUpTimeLabel = (TextView) view.findViewById(R.id.label_rampUpTime);
-            final TextView textViewRampUpTime = (TextView) view.findViewById(R.id.rampUpTime);
-            final TextView textViewMeditationDurationLabel = (TextView) view.findViewById(R.id.label_meditationDuration);
-            final TextView textViewMeditationDuration = (TextView) view.findViewById(R.id.meditationDuration);
-            final TextView textViewNumberOfPeriodsLabel = (TextView) view.findViewById(R.id.label_numberOfPeriods);
-            final TextView textViewNumberOfPeriods = (TextView) view.findViewById(R.id.numberOfPeriods);
-            final ImageView imageViewExplanationNumberOfPeriods = (ImageView) view.findViewById(R.id.explanationNumberOfPeriods);
-            final TextView textViewPatternOfPeriodsLabel = (TextView) view.findViewById(R.id.label_patternOfPeriods);
-            final TextView textViewPatternOfPeriods = (TextView) view.findViewById(R.id.patternOfPeriods);
-            final ImageView imageViewExplanationPatternOfPeriods = (ImageView) view.findViewById(R.id.explanationPatternOfPeriods);
-            final CheckBox checkBoxKeepScreenOn = (CheckBox) view.findViewById(R.id.keepScreenOn);
-            textViewRampUpTime.setText(MinutesIntervalPickerPreference.deriveSummary(prefs.getRampUpTime(), false));
-            attachIntervalPickerDialog(textViewRampUpTimeLabel, textViewRampUpTime, R.string.prefsRampUpTime, MIN_RAMP_UP_TIME,
-                    false, null);
-            textViewMeditationDuration.setText(MinutesIntervalPickerPreference.deriveSummary(prefs.getMeditationDuration(), true));
-            attachIntervalPickerDialog(textViewMeditationDurationLabel, textViewMeditationDuration,
-                    R.string.prefsMeditationDuration, MIN_MEDITATION_DURATION, true,
-                    new OnPickListener() {
-                        @Override
-                        public boolean onPick() {
-                            return isValidMeditationSetup(textViewMeditationDuration, textViewMeditationDuration,
-                                    textViewNumberOfPeriods, textViewPatternOfPeriods);
-                        }
-                    });
-            textViewNumberOfPeriods.setText(String.valueOf(prefs.getNumberOfPeriods()));
-            attachNumberPickerDialog(textViewNumberOfPeriodsLabel, textViewNumberOfPeriods, R.string.prefsNumberOfPeriods, 1, 99,
-                    new OnPickListener() {
-                @Override
-                public boolean onPick() {
-                    int numberOfPeriods = Integer.valueOf(textViewNumberOfPeriods.getText().toString());
-                    textViewPatternOfPeriods.setText(PrefsAccessor.derivePatternOfPeriods(numberOfPeriods));
-                    return isValidMeditationSetup(textViewNumberOfPeriods, textViewMeditationDuration, textViewNumberOfPeriods,
-                            textViewPatternOfPeriods);
-                }
-            });
-            imageViewExplanationNumberOfPeriods.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    new AlertDialog.Builder(MindBellMain.this) //
-                            .setTitle(R.string.prefsNumberOfPeriods) //
-                            .setMessage(R.string.explanationNumberOfPeriods) //
-                            .setPositiveButton(android.R.string.ok, null) //
-                            .show();
-                }
-            });
-            textViewPatternOfPeriods.setText(prefs.getPatternOfPeriods());
-            attachEditTextDialog(textViewPatternOfPeriodsLabel, textViewPatternOfPeriods, R.string.prefsPatternOfPeriods,
-                    new Normalizer() {
-                @Override
-                public String normalize(String value) {
-                    return value
-                            .trim()
-                            .replaceAll(PrefsAccessor.PERIOD_SEPARATOR_WITH_BLANKS_REGEX,
-                                    PrefsAccessor.PERIOD_SEPARATOR_WITH_BLANK);
-                }
-            }, new OnEnterListener() {
-                @Override
-                public boolean onEnter(String value) {
-                    textViewNumberOfPeriods.setText(String.valueOf(PrefsAccessor.deriveNumberOfPeriods(value)));
-                    return isValidMeditationSetup(textViewPatternOfPeriods, textViewMeditationDuration, textViewNumberOfPeriods,
-                            textViewPatternOfPeriods);
-                }
-            });
-            imageViewExplanationPatternOfPeriods.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    new AlertDialog.Builder(MindBellMain.this) //
-                            .setTitle(R.string.prefsPatternOfPeriods) //
-                            .setMessage(R.string.explanationPatternOfPeriods) //
-                            .setPositiveButton(android.R.string.ok, null) //
-                            .show();
-                }
-            });
-            checkBoxKeepScreenOn.setChecked(prefs.isKeepScreenOn());
-            final AlertDialog meditationDialog = new AlertDialog.Builder(this) //
-                    .setTitle(R.string.title_meditation_dialog) //
-                    .setView(view) //
-                    .setPositiveButton(R.string.buttonStartMeditation, null) // avoid implementation that dismisses the dialog
-                    .setNegativeButton(android.R.string.cancel, null) //
-                    .show();
-            // Ensure dialog is dismissed if input has been successfully validated
-            meditationDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (isValidMeditationSetup(textViewPatternOfPeriods, textViewMeditationDuration, textViewNumberOfPeriods,
-                            textViewPatternOfPeriods)) {
-                        prefs.setRampUpTime(
-                                MinutesIntervalPickerPreference.parseTimeOfDayFromSummary(textViewRampUpTime.getText().toString()));
-                        prefs.setMeditationDuration(MinutesIntervalPickerPreference.parseTimeOfDayFromSummary(
-                                textViewMeditationDuration.getText().toString()));
-                        prefs.setPatternOfPeriods(textViewPatternOfPeriods.getText().toString());
-                        prefs.setKeepScreenOn(checkBoxKeepScreenOn.isChecked());
-                        meditationDialog.dismiss();
-                        toggleMeditating();
-                    }
-                }
-            });
-            meditationDialog.show();
+        if (!contextAccessor.getPrefs().isMeditating()) {
+            showMeditationDialog();
         } else {
             toggleMeditating();
         }
         return true;
+    }
+
+    /**
+     * Creates and shows dialog to start meditation.
+     */
+    private void showMeditationDialog() {
+        final PrefsAccessor prefs = contextAccessor.getPrefs();
+        View view = getLayoutInflater().inflate(R.layout.meditation_dialog, null);
+        final TextView textViewRampUpTimeLabel = (TextView) view.findViewById(R.id.label_rampUpTime);
+        final TextView textViewRampUpTime = (TextView) view.findViewById(R.id.rampUpTime);
+        final TextView textViewMeditationDurationLabel = (TextView) view.findViewById(R.id.label_meditationDuration);
+        final TextView textViewMeditationDuration = (TextView) view.findViewById(R.id.meditationDuration);
+        final TextView textViewNumberOfPeriodsLabel = (TextView) view.findViewById(R.id.label_numberOfPeriods);
+        final TextView textViewNumberOfPeriods = (TextView) view.findViewById(R.id.numberOfPeriods);
+        final ImageView imageViewExplanationNumberOfPeriods = (ImageView) view.findViewById(R.id.explanationNumberOfPeriods);
+        final TextView textViewPatternOfPeriodsLabel = (TextView) view.findViewById(R.id.label_patternOfPeriods);
+        final TextView textViewPatternOfPeriods = (TextView) view.findViewById(R.id.patternOfPeriods);
+        final ImageView imageViewExplanationPatternOfPeriods = (ImageView) view.findViewById(R.id.explanationPatternOfPeriods);
+        final CheckBox checkBoxKeepScreenOn = (CheckBox) view.findViewById(R.id.keepScreenOn);
+        final CheckBox checkBoxStopMeditationAutomatically = (CheckBox) view.findViewById(R.id.stopMeditationAutomatically);
+        textViewRampUpTime.setText(MinutesIntervalPickerPreference.deriveSummary(prefs.getRampUpTime(), false));
+        attachIntervalPickerDialog(textViewRampUpTimeLabel, textViewRampUpTime, R.string.prefsRampUpTime, MIN_RAMP_UP_TIME, false,
+                null);
+        textViewMeditationDuration.setText(MinutesIntervalPickerPreference.deriveSummary(prefs.getMeditationDuration(), true));
+        attachIntervalPickerDialog(textViewMeditationDurationLabel, textViewMeditationDuration, R.string.prefsMeditationDuration,
+                MIN_MEDITATION_DURATION, true, new OnPickListener() {
+                    @Override
+                    public boolean onPick() {
+                        return isValidMeditationSetup(textViewMeditationDuration, textViewMeditationDuration,
+                                textViewNumberOfPeriods, textViewPatternOfPeriods);
+                    }
+                });
+        textViewNumberOfPeriods.setText(String.valueOf(prefs.getNumberOfPeriods()));
+        attachNumberPickerDialog(textViewNumberOfPeriodsLabel, textViewNumberOfPeriods, R.string.prefsNumberOfPeriods, 1, 99,
+                new OnPickListener() {
+                    @Override
+                    public boolean onPick() {
+                        int numberOfPeriods = Integer.valueOf(textViewNumberOfPeriods.getText().toString());
+                        textViewPatternOfPeriods.setText(PrefsAccessor.derivePatternOfPeriods(numberOfPeriods));
+                        return isValidMeditationSetup(textViewNumberOfPeriods, textViewMeditationDuration, textViewNumberOfPeriods,
+                                textViewPatternOfPeriods);
+                    }
+                });
+        imageViewExplanationNumberOfPeriods.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(MindBellMain.this) //
+                        .setTitle(R.string.prefsNumberOfPeriods) //
+                        .setMessage(R.string.explanationNumberOfPeriods) //
+                        .setPositiveButton(android.R.string.ok, null) //
+                        .show();
+            }
+        });
+        textViewPatternOfPeriods.setText(prefs.getPatternOfPeriods());
+        attachEditTextDialog(textViewPatternOfPeriodsLabel, textViewPatternOfPeriods, R.string.prefsPatternOfPeriods,
+                new Normalizer() {
+                    @Override
+                    public String normalize(String value) {
+                        return value
+                                .trim()
+                                .replaceAll(PrefsAccessor.PERIOD_SEPARATOR_WITH_BLANKS_REGEX,
+                                        PrefsAccessor.PERIOD_SEPARATOR_WITH_BLANK);
+                    }
+                }, new OnEnterListener() {
+                    @Override
+                    public boolean onEnter(String value) {
+                        textViewNumberOfPeriods.setText(String.valueOf(PrefsAccessor.deriveNumberOfPeriods(value)));
+                        return isValidMeditationSetup(textViewPatternOfPeriods, textViewMeditationDuration, textViewNumberOfPeriods,
+                                textViewPatternOfPeriods);
+                    }
+                });
+        imageViewExplanationPatternOfPeriods.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(MindBellMain.this) //
+                        .setTitle(R.string.prefsPatternOfPeriods) //
+                        .setMessage(R.string.explanationPatternOfPeriods) //
+                        .setPositiveButton(android.R.string.ok, null) //
+                        .show();
+            }
+        });
+        checkBoxKeepScreenOn.setChecked(prefs.isKeepScreenOn());
+        checkBoxStopMeditationAutomatically.setChecked(prefs.isStopMeditationAutomatically());
+        final AlertDialog meditationDialog = new AlertDialog.Builder(this) //
+                .setTitle(R.string.title_meditation_dialog) //
+                .setView(view) //
+                .setPositiveButton(R.string.buttonStartMeditation, null) // avoid implementation that dismisses the dialog
+                .setNegativeButton(android.R.string.cancel, null) //
+                .show();
+        // Ensure dialog is dismissed if input has been successfully validated
+        meditationDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isValidMeditationSetup(textViewPatternOfPeriods, textViewMeditationDuration, textViewNumberOfPeriods,
+                        textViewPatternOfPeriods)) {
+                    prefs.setRampUpTime(
+                            MinutesIntervalPickerPreference.parseTimeOfDayFromSummary(textViewRampUpTime.getText().toString()));
+                    prefs.setMeditationDuration(MinutesIntervalPickerPreference.parseTimeOfDayFromSummary(
+                            textViewMeditationDuration.getText().toString()));
+                    prefs.setPatternOfPeriods(textViewPatternOfPeriods.getText().toString());
+                    prefs.setKeepScreenOn(checkBoxKeepScreenOn.isChecked());
+                    prefs.setStopMeditationAutomatically(checkBoxStopMeditationAutomatically.isChecked());
+                    meditationDialog.dismiss();
+                    toggleMeditating();
+                }
+            }
+        });
     }
 
     /**
@@ -267,38 +251,6 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
         CharSequence feedback = getText((prefsAccessor.isActive()) ? R.string.summaryActive : R.string.summaryNotActive);
         Toast.makeText(this, feedback, Toast.LENGTH_SHORT).show();
         return true;
-    }
-
-    /**
-     * Handles click on send info button.
-     */
-    private void onClickSendInfo() {
-        new AlertDialog.Builder(this) //
-                .setTitle(R.string.sendMail) //
-                .setMessage(R.string.mailInfo1) //
-                .setIcon(R.mipmap.ic_launcher) //
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        onClickReallySendInfo();
-                    }
-                }) //
-                .setNegativeButton(android.R.string.cancel, null) //
-                .show();
-    }
-
-    /**
-     * Handles click on menu item battery optimization settings.
-     *
-     * Warning: Caller must ensure SDK >= 23.
-     */
-    private void onMenuItemClickBatteryOptimizationSettings() {
-        if (Utils.isAppWhitelisted(this)) {
-            Toast.makeText(this, getText(R.string.alreadyWhitelisted), Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this, getText(R.string.shouldGetWhitelisted), Toast.LENGTH_LONG).show();
-        }
-        startActivity(new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS));
     }
 
     /**
@@ -452,6 +404,41 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
         textView.setOnClickListener(onClickListener);
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem meditatingItem = menu.findItem(R.id.meditating);
+        meditatingItem.setIcon((contextAccessor.getPrefs().isMeditating()) ?
+                R.drawable.ic_action_meditating_off :
+                R.drawable.ic_action_meditating_on);
+        meditatingItem.setTitle(
+                (contextAccessor.getPrefs().isMeditating()) ? R.string.prefsMeditatingOff : R.string.prefsMeditatingOn);
+        return true;
+    }
+
+    @Override
+    protected void onResume() {
+        if (getIntent().getBooleanExtra(PrefsAccessor.EXTRA_STOP_MEDITATION, false)) {
+            Log.d(TAG, "MindBellMain received stop meditation intent");
+            // If the activity has once been opened from the Scheduler by automatically stopping meditation further screen
+            // rotations will stop meditation, too, because getIntent() always returns the intent that initially opened the
+            // activity. Hence the extra information must be removed to avoid stopping medtiation in these other cases.
+            getIntent().removeExtra(PrefsAccessor.EXTRA_STOP_MEDITATION);
+            // Scheduler detected meditation to be over and sent intent to leave meditation mode. To be sure user has not stopped
+            // meditation in the meantime (between sending and receiving intent) we check that meditation is still running.
+            if (contextAccessor.getPrefs().isMeditating()) {
+                toggleMeditating(); // as meditation is still running this means to stop the meditation mode
+            }
+        } else {
+            flipToAppropriateView();
+            if (contextAccessor.getPrefs().isMeditating()) {
+                CountdownView countdownView = (CountdownView) findViewById(R.id.countdown);
+                countdownView.startDisplayUpdateTimer(contextAccessor);
+            }
+            invalidateOptionsMenu(); // Maybe active setting has been changed via MindBellPreferences
+        }
+        super.onResume();
+    }
+
     /**
      * Toggle meditating state, update view if requested and show information to user.
      */
@@ -489,71 +476,11 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
     }
 
     /**
-     * Handles click on confirmation to send info.
-     */
-    private void onClickReallySendInfo() {
-        AndroidContextAccessor.getInstanceAndLogPreferences(this); // write settings to log
-        MindBell.logDebug("Excluded from battery optimization (always false for SDK < 23)? -> " + Utils.isAppWhitelisted(this));
-        Intent i = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getText(R.string.emailAddress).toString(), null));
-        i.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.emailSubject));
-        i.putExtra(Intent.EXTRA_TEXT, getInfoMailText());
-        try {
-            startActivity(Intent.createChooser(i, getText(R.string.emailChooseApp)));
-        } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(this, getText(R.string.noEmailClients), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /**
      * Flip to meditation view if isMeditating is true, to bell view otherwise.
      */
     private void flipToAppropriateView() {
         ViewFlipper viewFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
         viewFlipper.setDisplayedChild(contextAccessor.getPrefs().isMeditating() ? 1 : 2);
-    }
-
-    /**
-     * Return information to be sent by mail.
-     */
-    private String getInfoMailText() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\n");
-        sb.append(getText(R.string.mailInfo1));
-        sb.append("\n\n");
-        sb.append(getText(R.string.mailInfo2));
-        sb.append("\n\n");
-        sb.append(Utils.getApplicationInformation(getPackageManager(), getPackageName()));
-        sb.append("\n");
-        sb.append(Utils.getSystemInformation());
-        sb.append("\n");
-        sb.append(Utils.getLimitedLogEntriesAsString());
-        sb.append("\n");
-        sb.append(getText(R.string.mailInfo2));
-        sb.append("\n\n");
-        sb.append(getText(R.string.mailInfo1));
-        return sb.toString();
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem meditatingItem = menu.findItem(R.id.meditating);
-        meditatingItem.setIcon((contextAccessor.getPrefs().isMeditating()) ?
-                R.drawable.ic_action_meditating_off :
-                R.drawable.ic_action_meditating_on);
-        meditatingItem.setTitle(
-                (contextAccessor.getPrefs().isMeditating()) ? R.string.prefsMeditatingOff : R.string.prefsMeditatingOn);
-        return true;
-    }
-
-    @Override
-    protected void onResume() {
-        flipToAppropriateView();
-        if (contextAccessor.getPrefs().isMeditating()) {
-            CountdownView countdownView = (CountdownView) findViewById(R.id.countdown);
-            countdownView.startDisplayUpdateTimer(contextAccessor);
-        }
-        invalidateOptionsMenu(); // Maybe active setting has been changed via MindBellPreferences
-        super.onResume();
     }
 
     @Override
@@ -640,6 +567,102 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                     .create() //
                     .show();
         }
+    }
+
+    private boolean onMenuItemClickHelp() {
+        View popupView = LayoutInflater.from(this).inflate(R.layout.popup_dialog, null);
+        String versionName = Utils.getApplicationVersionName(getPackageManager(), getPackageName());
+        AlertDialog.Builder builder = new AlertDialog.Builder(this) //
+                .setTitle(getText(R.string.app_name) + " " + versionName) //
+                .setIcon(R.mipmap.ic_launcher) //
+                .setView(popupView) //
+                .setPositiveButton(android.R.string.ok, null) //
+                .setNegativeButton(R.string.sendMail, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        onClickSendInfo();
+                    }
+                });
+        if (Build.VERSION.SDK_INT >= 23) {
+            builder.setNeutralButton(R.string.batterySettings, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    onMenuItemClickBatteryOptimizationSettings();
+                }
+            });
+        }
+        builder.show();
+        return true;
+    }
+
+    /**
+     * Handles click on send info button.
+     */
+    private void onClickSendInfo() {
+        new AlertDialog.Builder(this) //
+                .setTitle(R.string.sendMail) //
+                .setMessage(R.string.mailInfo1) //
+                .setIcon(R.mipmap.ic_launcher) //
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        onClickReallySendInfo();
+                    }
+                }) //
+                .setNegativeButton(android.R.string.cancel, null) //
+                .show();
+    }
+
+    /**
+     * Handles click on menu item battery optimization settings.
+     *
+     * Warning: Caller must ensure SDK >= 23.
+     */
+    private void onMenuItemClickBatteryOptimizationSettings() {
+        if (Utils.isAppWhitelisted(this)) {
+            Toast.makeText(this, getText(R.string.alreadyWhitelisted), Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, getText(R.string.shouldGetWhitelisted), Toast.LENGTH_LONG).show();
+        }
+        startActivity(new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS));
+    }
+
+    /**
+     * Handles click on confirmation to send info.
+     */
+    private void onClickReallySendInfo() {
+        AndroidContextAccessor.getInstanceAndLogPreferences(this); // write settings to log
+        MindBell.logDebug("Excluded from battery optimization (always false for SDK < 23)? -> " + Utils.isAppWhitelisted(this));
+        Intent i = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getText(R.string.emailAddress).toString(), null));
+        i.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.emailSubject));
+        i.putExtra(Intent.EXTRA_TEXT, getInfoMailText());
+        try {
+            startActivity(Intent.createChooser(i, getText(R.string.emailChooseApp)));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this, getText(R.string.noEmailClients), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Return information to be sent by mail.
+     */
+    private String getInfoMailText() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n");
+        sb.append(getText(R.string.mailInfo1));
+        sb.append("\n\n");
+        sb.append(getText(R.string.mailInfo2));
+        sb.append("\n\n");
+        sb.append(Utils.getApplicationInformation(getPackageManager(), getPackageName()));
+        sb.append("\n");
+        sb.append(Utils.getSystemInformation());
+        sb.append("\n");
+        sb.append(Utils.getLimitedLogEntriesAsString());
+        sb.append("\n");
+        sb.append(getText(R.string.mailInfo2));
+        sb.append("\n\n");
+        sb.append(getText(R.string.mailInfo1));
+        return sb.toString();
     }
 
     @Override

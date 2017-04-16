@@ -259,6 +259,16 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
+    public boolean isStopMeditationAutomatically() {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public void setStopMeditationAutomatically(boolean stopMeditationAutomatically) {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
     public boolean isStatusVisibilityPublic() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
