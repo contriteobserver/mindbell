@@ -249,8 +249,7 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
                 .setAutoCancel(true) // cancel notification on touch
                 .setColor(context.getResources().getColor(R.color.backgroundColor)) //
                 .setContentTitle(prefs.getNotificationTitle()) //
-                .setContentText(prefs.getNotificationText())
-                .setSmallIcon(R.drawable.ic_stat_bell_ring) //
+                .setContentText(prefs.getNotificationText()).setSmallIcon(R.drawable.ic_stat_bell_ring) //
                 .setVisibility(visibility);
         if (activityPrefs.isVibrate()) {
             notificationBuilder.setVibrate(prefs.getVibrationPattern());
@@ -469,26 +468,24 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
      */
     @Override
     public void stopMeditation() {
-        Log.d(TAG, "Sending stop meditation intent");
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClass(context, MindBellMain.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // context may be service context only, not an activity context
+        Log.d(TAG, "Starting activity MindBellMain to stop meditation");
+        Intent intent = new Intent(context, MindBellMain.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK // context may be service context only, not an activity context
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK); // MindBellMain becomes the new root to let back button return to other apps
         intent.putExtra(PrefsAccessor.EXTRA_STOP_MEDITATION, true);
         context.startActivity(intent);
     }
 
     /**
-     * Shows bell by bringing activity MindBell to the front
+     * Shows bell by starting activity MindBell
      */
     @Override
     public void showBell() {
-        Intent ringBell = new Intent(context, MindBell.class);
-        PendingIntent bellIntent = PendingIntent.getActivity(context, -1, ringBell, PendingIntent.FLAG_UPDATE_CURRENT);
-        try {
-            bellIntent.send(); // show MindBell activity and call startPlayingSoundAndVibrate()
-        } catch (PendingIntent.CanceledException e) {
-            Log.d(TAG, "Cannot show bell, play sound and vibrate: " + e.getMessage(), e);
-        }
+        Log.d(TAG, "Starting activity MindBell to show bell");
+        Intent intent = new Intent(context, MindBell.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK // context may be service context only, not an activity context
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK); // MindBell becomes the new root to let back button return to other apps
+        context.startActivity(intent);
     }
 
     /**
@@ -549,9 +546,8 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
                 PendingIntent.getActivity(context, 0, new Intent(context, targetClass), PendingIntent.FLAG_UPDATE_CURRENT);
         PendingIntent muteIntent =
                 PendingIntent.getActivity(context, 2, new Intent(context, MuteActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
-        int visibility = (prefs.isStatusVisibilityPublic()) ?
-                NotificationCompat.VISIBILITY_PUBLIC :
-                NotificationCompat.VISIBILITY_PRIVATE;
+        int visibility =
+                (prefs.isStatusVisibilityPublic()) ? NotificationCompat.VISIBILITY_PUBLIC : NotificationCompat.VISIBILITY_PRIVATE;
         Notification notification = new NotificationCompat.Builder(context.getApplicationContext()) //
                 .setCategory(NotificationCompat.CATEGORY_STATUS) //
                 .setColor(context.getResources().getColor(R.color.backgroundColor)) //
