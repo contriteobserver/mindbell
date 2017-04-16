@@ -46,15 +46,13 @@
     <!-- MindBellPreferences -->
     <string name="preferencesTitle">MindBell Einstellungen</string>
 
-    <string name="prefsCategoryActivity">Aktivität</string>
+    <string name="prefsCategoryActiveTimes">Aktive Zeiten und Rhythmus</string>
     <string name="prefsActive">MindBell an/aus</string>
     <string name="summaryActive">MindBell ist aktiv</string>
     <string name="summaryNotActive">MindBell ist deaktiviert</string>
     <string name="prefsStart">Starte Glocke täglich um &#8230;</string>
     <string name="prefsEnd">Beende Glocke täglich um &#8230;</string>
     <string name="prefsActiveOnDaysOfWeek">Tage an denen die Glocke aktiv ist &#8230;</string>
-
-    <string name="prefsCategoryRhythm">Rhythmus</string>
     <string name="prefsFrequency">Glocke läutet (etwa) alle hh:mm &#8230;</string>
     <string name="prefsRandomize">Nutze Intervallabweichungen</string>
     <string name="prefsNormalize">Läute auf die Minute &#8230;</string>
@@ -85,16 +83,18 @@
     <string name="summaryNoVibrate">Beim Läuten nicht vibrieren</string>
     <string name="prefsPattern">Vibrationsmuster</string>
 
-    <string name="prefsCategoryNotifications">Benachrichtigungen</string>
-    <string name="prefsStatus">Status-Icon anzeigen</string>
+    <string name="prefsCategoryStatusNotification">Status-Benachrichtigung</string>
+    <string name="prefsStatus">Status-Benachrichtigung anzeigen</string>
     <string name="prefsStatusIconMaterialDesign">Status-Icon im Material Design</string>
-    <string name="summaryStatusIconMaterialDesign">Stilisierte weiße Glocke</string>
-    <string name="summaryStatusIconPreMaterialDesign">Goldene Glocke (bei manchen Geräten nur ein weißer Fleck)</string>
-    <string name="summaryStatus">Zeige Status-Icon bei aktiver Glocke</string>
-    <string name="summaryNoStatus">Kein Status-Icon</string>
-    <string name="prefsStatusVisibilityPublic">Zeige Statustext auf Sperrbildschirm</string>
-    <string name="summaryStatusVisibilityPublic">Statustext auf Sperrbildschirm anzeigen</string>
-    <string name="summaryStatusVisibilityPrivate">Statustext auf Sperrbildschirm ausblenden</string>
+    <string name="summaryStatusIconMaterialDesign">Stilisierte weiße Klangschale</string>
+    <string name="summaryStatusIconPreMaterialDesign">Goldene Klangschale (bei manchen Geräten nur ein weißer Fleck)</string>
+    <string name="summaryStatus">Zeige Status-Benachrichtigung bei aktiver Glocke</string>
+    <string name="summaryNoStatus">Keine Status-Benachrichtigung</string>
+    <string name="prefsStatusVisibilityPublic">Zeige Status-Text auf Sperrbildschirm</string>
+    <string name="summaryStatusVisibilityPublic">Status-Text auf Sperrbildschirm anzeigen</string>
+    <string name="summaryStatusVisibilityPrivate">Status-Text auf Sperrbildschirm ausblenden</string>
+
+    <string name="prefsCategoryRingNotification">Benachrichtigung beim Läuten</string>
     <string name="prefsNotification">Benachrichtigung beim Läuten</string>
     <string name="summaryNotification">Zeige Benachrichtigung beim Läuten (auch auf Wearables)</string>
     <string name="summaryNoNotification">Keine Benachrichtigung beim Läuten (Wearables bekommen nichts mit)</string>

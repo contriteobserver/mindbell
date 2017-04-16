@@ -24,7 +24,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:mindful="http://dknapps.de/ns">
 
-    <PreferenceScreen android:title="@string/prefsCategoryActivity">
+    <PreferenceScreen android:title="@string/prefsCategoryActiveTimes">
 
         <!-- keyActive can only be toggled by the meditation button -->
 
@@ -43,6 +43,24 @@
             android:key="@string/keyActiveOnDaysOfWeek"
             android:summary="%s"
             android:title="@string/prefsActiveOnDaysOfWeek"/>
+        <com.googlecode.mindbell.preference.MinutesIntervalPickerPreference
+            android:dialogTitle="@string/prefsFrequency"
+            android:key="@string/keyFrequency"
+            android:title="@string/prefsFrequency"/>
+        <CheckBoxPreference
+            android:disableDependentsState="true"
+            android:key="@string/keyRandomize"
+            android:summaryOff="@string/summaryDontRandomize"
+            android:summaryOn="@string/summaryRandomize"
+            android:title="@string/prefsRandomize"/>
+        <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
+            android:dependency="@string/keyRandomize"
+            android:dialogTitle="@string/prefsNormalize"
+            android:entries="@array/normalizeEntries"
+            android:entryValues="@array/normalizeEntryValues"
+            android:key="@string/keyNormalize"
+            android:summary="%s"
+            android:title="@string/prefsNormalize"/>
 
     </PreferenceScreen>
 
@@ -104,29 +122,6 @@
                 android:title="@string/prefsPattern"/>
 
         </PreferenceCategory>
-
-    </PreferenceScreen>
-
-    <PreferenceScreen android:title="@string/prefsCategoryRhythm">
-
-        <com.googlecode.mindbell.preference.MinutesIntervalPickerPreference
-            android:dialogTitle="@string/prefsFrequency"
-            android:key="@string/keyFrequency"
-            android:title="@string/prefsFrequency"/>
-        <CheckBoxPreference
-            android:disableDependentsState="true"
-            android:key="@string/keyRandomize"
-            android:summaryOff="@string/summaryDontRandomize"
-            android:summaryOn="@string/summaryRandomize"
-            android:title="@string/prefsRandomize"/>
-        <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
-            android:dependency="@string/keyRandomize"
-            android:dialogTitle="@string/prefsNormalize"
-            android:entries="@array/normalizeEntries"
-            android:entryValues="@array/normalizeEntryValues"
-            android:key="@string/keyNormalize"
-            android:summary="%s"
-            android:title="@string/prefsNormalize"/>
 
     </PreferenceScreen>
 

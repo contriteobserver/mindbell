@@ -46,15 +46,13 @@
     <!-- MindBellPreferences -->
     <string name="preferencesTitle">MindBell Preferences</string>
 
-    <string name="prefsCategoryActivity">Activity</string>
+    <string name="prefsCategoryActiveTimes">Active times and rhythm</string>
     <string name="prefsActive">MindBell on/off</string>
     <string name="summaryActive">MindBell is active</string>
     <string name="summaryNotActive">MindBell is deactivated</string>
     <string name="prefsStart">Start bell every day at &#8230;</string>
     <string name="prefsEnd">Stop bell every day at &#8230;</string>
     <string name="prefsActiveOnDaysOfWeek">Days of week to be active &#8230;</string>
-
-    <string name="prefsCategoryRhythm">Rhythm</string>
     <string name="prefsFrequency">Ring bell (about) every hh:mm &#8230;</string>
     <string name="prefsRandomize">Use interval deviation</string>
     <string name="prefsNormalize">Ring to the minute &#8230;</string>
@@ -85,16 +83,18 @@
     <string name="summaryNoVibrate">Don\'t vibrate when ringing</string>
     <string name="prefsPattern">Vibration pattern</string>
 
-    <string name="prefsCategoryNotifications">Notifications</string>
-    <string name="prefsStatus">Show status icon</string>
-    <string name="summaryStatus">Show status icon when bell is active</string>
-    <string name="summaryNoStatus">No status icon, set and forget</string>
+    <string name="prefsCategoryStatusNotification">Status notification</string>
+    <string name="prefsStatus">Show status notification</string>
+    <string name="summaryStatus">Show status notification when bell is active</string>
+    <string name="summaryNoStatus">No status notification, set and forget</string>
     <string name="prefsStatusIconMaterialDesign">Status icon in Material Design</string>
-    <string name="summaryStatusIconMaterialDesign">Stylized white bell</string>
-    <string name="summaryStatusIconPreMaterialDesign">Golden bell (just a white splotch on some devices)</string>
+    <string name="summaryStatusIconMaterialDesign">Stylized white singing bowl</string>
+    <string name="summaryStatusIconPreMaterialDesign">Golden singing bowl (just a white splotch on some devices)</string>
     <string name="prefsStatusVisibilityPublic">Show status text on lock screen</string>
     <string name="summaryStatusVisibilityPublic">Show status text on lock screen</string>
     <string name="summaryStatusVisibilityPrivate">Hide status text on lock screen</string>
+
+    <string name="prefsCategoryRingNotification">Notification when ringing</string>
     <string name="prefsNotification">Notification when ringing</string>
     <string name="summaryNotification">Notification when bell is ringing (also on wearables)</string>
     <string name="summaryNoNotification">No ring notification (wearables remain to be unaware)</string>

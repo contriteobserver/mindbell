@@ -22,7 +22,7 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceScreen android:title="@string/prefsCategoryNotifications">
+    <PreferenceScreen android:title="@string/prefsCategoryStatusNotification">
 
         <CheckBoxPreference
             android:key="@string/keyStatus"
@@ -41,6 +41,11 @@
             android:summaryOff="@string/summaryStatusVisibilityPrivate"
             android:summaryOn="@string/summaryStatusVisibilityPublic"
             android:title="@string/prefsStatusVisibilityPublic"/>
+
+    </PreferenceScreen>
+
+    <PreferenceScreen android:title="@string/prefsCategoryRingNotification">
+
         <CheckBoxPreference
             android:key="@string/keyNotification"
             android:summaryOff="@string/summaryNoNotification"
