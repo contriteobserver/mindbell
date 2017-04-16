@@ -33,6 +33,9 @@ import com.googlecode.mindbell.util.TimeOfDay;
 import java.util.Calendar;
 
 import static com.googlecode.mindbell.MindBellPreferences.TAG;
+import static com.googlecode.mindbell.accessors.PrefsAccessor.EXTRA_IS_RESCHEDULING;
+import static com.googlecode.mindbell.accessors.PrefsAccessor.EXTRA_MEDITATION_PERIOD;
+import static com.googlecode.mindbell.accessors.PrefsAccessor.EXTRA_NOW_TIME_MILLIS;
 
 /**
  * Ring the bell and reschedule.
@@ -42,15 +45,10 @@ public class Scheduler extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        // Fetch intent argument ids
-        final String extraIsRescheduling = context.getText(R.string.extraIsRescheduling).toString();
-        final String extraNowTimeMillis = context.getText(R.string.extraNowTimeMillis).toString();
-        final String extraMeditationPeriod = context.getText(R.string.extraMeditationPeriod).toString();
-
         // Fetch intent arguments
-        final boolean isRescheduling = intent.getBooleanExtra(extraIsRescheduling, false);
-        final long nowTimeMillis = intent.getLongExtra(extraNowTimeMillis, Calendar.getInstance().getTimeInMillis());
-        final int meditationPeriod = intent.getIntExtra(extraMeditationPeriod, -1);
+        final boolean isRescheduling = intent.getBooleanExtra(EXTRA_IS_RESCHEDULING, false);
+        final long nowTimeMillis = intent.getLongExtra(EXTRA_NOW_TIME_MILLIS, Calendar.getInstance().getTimeInMillis());
+        final int meditationPeriod = intent.getIntExtra(EXTRA_MEDITATION_PERIOD, -1);
 
         MindBell.logDebug("Scheduler received intent: isRescheduling=" + isRescheduling + ", nowTimeMillis=" + nowTimeMillis +
                 ", meditationPeriod=" + meditationPeriod);

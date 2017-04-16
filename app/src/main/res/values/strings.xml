@@ -263,15 +263,6 @@
     <string name="keyVolume" translatable="false">volume</string>
     <string name="keyMeditationVolume" translatable="false">meditationVolume</string>
 
-    <!-- Unique string to be added to a Scheduling Intent to see which meditation period the bell is in (don't localize) -->
-    <string name="extraMeditationPeriod" translatable="false">com.googlecode.mindbell.Scheduler.MeditationPeriod</string>
-
-    <!-- Unique string to be added to a Scheduling Intent to see who sent it (don't localize) -->
-    <string name="extraIsRescheduling" translatable="false">com.googlecode.mindbell.Scheduler.IsRescheduling</string>
-
-    <!-- Unique string to be added to a Scheduling Intent to see for which time the bell was scheduled (don't localize) -->
-    <string name="extraNowTimeMillis" translatable="false">com.googlecode.mindbell.Scheduler.NowTimeMillis</string>
-
     <!-- Mail address for send log by e-mail (don't localize) -->
     <string name="emailAddress" translatable="false">mindbell@dknapps.de</string>
 

@@ -57,6 +57,22 @@ public abstract class PrefsAccessor {
      * Minimum value for meditation duration
      */
     public static final TimeOfDay MIN_MEDITATION_DURATION = new TimeOfDay(0, 1);
+
+    /**
+     * Unique string to be added to a Scheduling Intent to see which meditation period the bell is in.
+     */
+    public static String EXTRA_MEDITATION_PERIOD = "com.googlecode.mindbell.Scheduler.MeditationPeriod";
+
+    /**
+     * Unique string to be added to a Scheduling Intent to see who sent it.
+     */
+    public static String EXTRA_IS_RESCHEDULING = "com.googlecode.mindbell.Scheduler.IsRescheduling";
+
+    /**
+     * Unique string to be added to a Scheduling Intent to see for which time the bell was scheduled.
+     */
+    public static String EXTRA_NOW_TIME_MILLIS = "com.googlecode.mindbell.Scheduler.NowTimeMillis";
+
     /**
      * Unique string to be added to an Intent to see if MindBellMain is opened to stop meditation mode.
      */

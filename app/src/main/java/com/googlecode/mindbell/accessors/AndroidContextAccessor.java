@@ -61,6 +61,9 @@ import static android.media.AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK;
 import static android.media.AudioManager.AUDIOFOCUS_REQUEST_FAILED;
 import static android.media.AudioManager.STREAM_ALARM;
 import static com.googlecode.mindbell.MindBellPreferences.TAG;
+import static com.googlecode.mindbell.accessors.PrefsAccessor.EXTRA_IS_RESCHEDULING;
+import static com.googlecode.mindbell.accessors.PrefsAccessor.EXTRA_MEDITATION_PERIOD;
+import static com.googlecode.mindbell.accessors.PrefsAccessor.EXTRA_NOW_TIME_MILLIS;
 
 public class AndroidContextAccessor extends ContextAccessor implements AudioManager.OnAudioFocusChangeListener {
 
@@ -413,16 +416,13 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
                 ", meditationPeriod=" + meditationPeriod);
         Intent intent = new Intent(context, Scheduler.class);
         if (isRescheduling) {
-            final String extraIsRescheduling = context.getText(R.string.extraIsRescheduling).toString();
-            intent.putExtra(extraIsRescheduling, true);
+            intent.putExtra(EXTRA_IS_RESCHEDULING, true);
         }
         if (nowTimeMillis != null) {
-            final String extraNowTimeMillis = context.getText(R.string.extraNowTimeMillis).toString();
-            intent.putExtra(extraNowTimeMillis, nowTimeMillis);
+            intent.putExtra(EXTRA_NOW_TIME_MILLIS, nowTimeMillis);
         }
         if (meditationPeriod != null) {
-            final String extraMeditationPeriod = context.getText(R.string.extraMeditationPeriod).toString();
-            intent.putExtra(extraMeditationPeriod, meditationPeriod);
+            intent.putExtra(EXTRA_MEDITATION_PERIOD, meditationPeriod);
         }
         return intent;
     }
