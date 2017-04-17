@@ -149,8 +149,8 @@
     <string name="prefsMeditationDuration">Meditationsdauer (hh:mm)</string>
     <string name="prefsKeepScreenOn">Bildschirm anlassen</string>
     <string name="prefsStopMeditationAutomatically">Automatisch stoppen</string>
-    <string name="buttonStartMeditationDirectly">Sofort starten</string>
-    <string name="buttonStartMeditation">Starten</string>
+    <string name="buttonStartMeditationDirectly">Direktstart</string>
+    <string name="buttonStartMeditation">Start</string>
 
     <!-- Validation messages -->
     <string name="atLeastOneRingingActionNeeded">Mindestens eine Aktion beim Läuten auswählen</string>
