@@ -3,7 +3,7 @@
  * for remembering what really counts
  * <p/>
  * Copyright (C) 2010-2014 Marc Schroeder
- * Copyright (C) 2014-2016 Uwe Damken
+ * Copyright (C) 2014-2017 Uwe Damken
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
