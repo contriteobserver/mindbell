@@ -75,6 +75,7 @@ import static com.googlecode.mindbell.R.string.keyRingtone;
 import static com.googlecode.mindbell.R.string.keyShow;
 import static com.googlecode.mindbell.R.string.keySound;
 import static com.googlecode.mindbell.R.string.keyStart;
+import static com.googlecode.mindbell.R.string.keyStartMeditationDirectly;
 import static com.googlecode.mindbell.R.string.keyStatus;
 import static com.googlecode.mindbell.R.string.keyStatusIconMaterialDesign;
 import static com.googlecode.mindbell.R.string.keyStatusVisibilityPublic;
@@ -166,7 +167,6 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         addPreference(keyEnd, "21:00", TIME_STRING, context);
         addPreference(keyFrequency, "00:15", TIME_STRING, context); // 15 min
         addPreference(keyKeepScreenOn, true, BOOLEAN, context);
-        addPreference(keyStopMeditationAutomatically, false, BOOLEAN, context);
         addPreference(keyMeditating, false, BOOLEAN, context);
         addPreference(keyMeditationBeginningBell, "3", STRING, context);
         addPreference(keyMeditationDuration, "00:25", TIME_STRING, context);
@@ -196,9 +196,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         addPreference(keyShow, true, BOOLEAN, context);
         addPreference(keySound, true, BOOLEAN, context);
         addPreference(keyStart, "09:00", TIME_STRING, context);
+        addPreference(keyStartMeditationDirectly, false, BOOLEAN, context);
         addPreference(keyStatus, true, BOOLEAN, context);
         addPreference(keyStatusIconMaterialDesign, true, BOOLEAN, context);
         addPreference(keyStatusVisibilityPublic, true, BOOLEAN, context);
+        addPreference(keyStopMeditationAutomatically, false, BOOLEAN, context);
         addPreference(keyUseStandardBell, true, BOOLEAN, context);
         addPreference(keyVibrate, false, BOOLEAN, context);
         addPreference(keyVolume, DEFAULT_VOLUME, FLOAT, context);
@@ -206,7 +208,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
         // Map preference keys to their allowed entryValues
         entryValuesMap.put(keyActiveOnDaysOfWeek, context.getResources().getStringArray(R.array.weekdayEntryValues));
-        entryValuesMap.put(keyMeditationBeginningBell, context.getResources().getStringArray(R.array.beginningBellEntryValues));
+        entryValuesMap.put(keyMeditationBeginningBell, context.getResources().getStringArray(R.array.bellEntryValues));
         entryValuesMap.put(keyMeditationEndingBell, context.getResources().getStringArray(R.array.bellEntryValues));
         entryValuesMap.put(keyMeditationInterruptingBell, context.getResources().getStringArray(R.array.bellEntryValues));
         entryValuesMap.put(keyNormalize, context.getResources().getStringArray(R.array.normalizeEntryValues));
@@ -712,6 +714,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
+    public boolean isStartMeditationDirectly() {
+        return getBooleanSetting(keyStartMeditationDirectly);
+    }
+
+    @Override
+    public void setStartMeditationDirectly(boolean startMeditationDirectly) {
+        setSetting(keyStartMeditationDirectly, startMeditationDirectly);
+    }
+
+    @Override
     public boolean isStopMeditationAutomatically() {
         return getBooleanSetting(keyStopMeditationAutomatically);
     }
@@ -1052,7 +1064,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
         @Override
         public Uri getSoundUri() {
-            return bellResourceUriMap.get(getMeditationBeginningBell());
+            return (isStartMeditationDirectly()) ? null : bellResourceUriMap.get(getMeditationBeginningBell());
         }
 
     }

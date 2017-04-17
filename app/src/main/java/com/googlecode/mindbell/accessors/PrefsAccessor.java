@@ -259,6 +259,10 @@ public abstract class PrefsAccessor {
 
     public abstract void setKeepScreenOn(boolean keepScreenOn);
 
+    public abstract boolean isStartMeditationDirectly();
+
+    public abstract void setStartMeditationDirectly(boolean startMeditationDirectly);
+
     public abstract boolean isStopMeditationAutomatically();
 
     public abstract void setStopMeditationAutomatically(boolean stopMeditationAutomatically);

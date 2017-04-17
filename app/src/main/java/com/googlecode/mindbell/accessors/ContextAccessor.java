@@ -121,7 +121,7 @@ public abstract class ContextAccessor {
 
     public abstract void updateBellSchedule();
 
-    public abstract void updateBellSchedule(long nowTimeMillis);
+    public abstract void updateBellSchedule(long nowTimeMillis, int meditationPeriod);
 
     public abstract void reschedule(long nextTargetTimeMillis, Integer nextMeditationPeriod);
 

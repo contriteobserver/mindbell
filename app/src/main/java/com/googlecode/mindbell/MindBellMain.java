@@ -219,26 +219,47 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                 .setTitle(R.string.title_meditation_dialog) //
                 .setView(view) //
                 .setPositiveButton(R.string.buttonStartMeditation, null) // avoid implementation that dismisses the dialog
+                .setNeutralButton(R.string.buttonStartMeditationDirectly, null) // avoid implementation that dismisses the dialog
                 .setNegativeButton(android.R.string.cancel, null) //
                 .show();
         // Ensure dialog is dismissed if input has been successfully validated
         meditationDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isValidMeditationSetup(textViewPatternOfPeriods, textViewMeditationDuration, textViewNumberOfPeriods,
-                        textViewPatternOfPeriods)) {
-                    prefs.setRampUpTime(
-                            MinutesIntervalPickerPreference.parseTimeOfDayFromSummary(textViewRampUpTime.getText().toString()));
-                    prefs.setMeditationDuration(MinutesIntervalPickerPreference.parseTimeOfDayFromSummary(
-                            textViewMeditationDuration.getText().toString()));
-                    prefs.setPatternOfPeriods(textViewPatternOfPeriods.getText().toString());
-                    prefs.setKeepScreenOn(checkBoxKeepScreenOn.isChecked());
-                    prefs.setStopMeditationAutomatically(checkBoxStopMeditationAutomatically.isChecked());
-                    meditationDialog.dismiss();
-                    toggleMeditating();
-                }
+                onClickStartMeditation(prefs, meditationDialog, textViewPatternOfPeriods, textViewMeditationDuration,
+                        textViewNumberOfPeriods, textViewRampUpTime, checkBoxKeepScreenOn, checkBoxStopMeditationAutomatically,
+                        false);
             }
         });
+        meditationDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickStartMeditation(prefs, meditationDialog, textViewPatternOfPeriods, textViewMeditationDuration,
+                        textViewNumberOfPeriods, textViewRampUpTime, checkBoxKeepScreenOn, checkBoxStopMeditationAutomatically,
+                        true);
+            }
+        });
+    }
+
+    /**
+     * Validate chosen meditation dialog values, if ok store them in preferences and start meditation.
+     */
+    private void onClickStartMeditation(PrefsAccessor prefs, AlertDialog meditationDialog, TextView textViewPatternOfPeriods,
+                                        TextView textViewMeditationDuration, TextView textViewNumberOfPeriods,
+                                        TextView textViewRampUpTime, CheckBox checkBoxKeepScreenOn,
+                                        CheckBox checkBoxStopMeditationAutomatically, boolean startDirectly) {
+        if (isValidMeditationSetup(textViewPatternOfPeriods, textViewMeditationDuration, textViewNumberOfPeriods,
+                textViewPatternOfPeriods)) {
+            prefs.setRampUpTime(MinutesIntervalPickerPreference.parseTimeOfDayFromSummary(textViewRampUpTime.getText().toString()));
+            prefs.setMeditationDuration(
+                    MinutesIntervalPickerPreference.parseTimeOfDayFromSummary(textViewMeditationDuration.getText().toString()));
+            prefs.setPatternOfPeriods(textViewPatternOfPeriods.getText().toString());
+            prefs.setKeepScreenOn(checkBoxKeepScreenOn.isChecked());
+            prefs.setStopMeditationAutomatically(checkBoxStopMeditationAutomatically.isChecked());
+            prefs.setStartMeditationDirectly(startDirectly);
+            meditationDialog.dismiss();
+            toggleMeditating();
+        }
     }
 
     /**
@@ -434,7 +455,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                 CountdownView countdownView = (CountdownView) findViewById(R.id.countdown);
                 countdownView.startDisplayUpdateTimer(contextAccessor);
             }
-            invalidateOptionsMenu(); // Maybe active setting has been changed via MindBellPreferences
+            invalidateOptionsMenu(); // re-call onPrepareOptionsMenu(), maybe active setting has been changed via preferences
         }
         super.onResume();
     }
@@ -448,13 +469,14 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
         CountdownView countdownView = (CountdownView) findViewById(R.id.countdown);
         if (prefs.isMeditating()) {
             long rampUpStartingTimeMillis = System.currentTimeMillis();
-            long meditationStartingTimeMillis = rampUpStartingTimeMillis + prefs.getRampUpTimeMillis();
+            long rampUpTimeMillis = (prefs.isStartMeditationDirectly()) ? 0L : prefs.getRampUpTimeMillis();
+            long meditationStartingTimeMillis = rampUpStartingTimeMillis + rampUpTimeMillis;
             long meditationEndingTimeMillis = meditationStartingTimeMillis + prefs.getMeditationDurationMillis();
             // put values into preferences to make them survive an app termination because alarm goes on anyway
             prefs.setRampUpStartingTimeMillis(rampUpStartingTimeMillis);
             prefs.setMeditationStartingTimeMillis(meditationStartingTimeMillis);
             prefs.setMeditationEndingTimeMillis(meditationEndingTimeMillis);
-            contextAccessor.updateBellSchedule(rampUpStartingTimeMillis);
+            contextAccessor.updateBellSchedule(rampUpStartingTimeMillis, (prefs.isStartMeditationDirectly()) ? 1 : 0);
             countdownView.startDisplayUpdateTimer(contextAccessor);
             if (prefs.isKeepScreenOn()) {
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

@@ -141,7 +141,7 @@ public class AndroidTestMockContextAccessor extends ContextAccessor {
     }
 
     @Override
-    public void updateBellSchedule(long nowTimeMillis) {
+    public void updateBellSchedule(long nowTimeMillis, int meditationPeriod) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 

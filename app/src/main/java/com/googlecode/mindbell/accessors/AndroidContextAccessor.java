@@ -431,11 +431,13 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
      *
      * @param nextTargetTimeMillis
      *         Millis to be given to Scheduler as now (or nextTargetTimeMillis from the perspective of the previous call)
+     * @param meditationPeriod
+     *         Zero: ramp-up, 1-(n-1): intermediate period, n: last period, n+1: beyond end
      */
     @Override
-    public void updateBellSchedule(long nextTargetTimeMillis) {
+    public void updateBellSchedule(long nextTargetTimeMillis, int meditationPeriod) {
         Log.d(TAG, "Update bell schedule requested, nextTargetTimeMillis=" + nextTargetTimeMillis);
-        Intent intent = createSchedulerIntent(false, nextTargetTimeMillis, 0);
+        Intent intent = createSchedulerIntent(false, nextTargetTimeMillis, meditationPeriod);
         PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         try {
             sender.send();
