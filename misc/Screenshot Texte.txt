@@ -10,6 +10,7 @@ Weitere Menüpunkte
 
 (3)
 Vorgaben anpassen
+Ohne Vorbereitungszeit und Eingangsglocken starten
 Meditation starten
 Erläuterung der Vorgaben für die Abschnitte
 
@@ -22,7 +23,7 @@ Sekunden der Vorbereitungszeit werden runtergezählt
 Minuten der Meditationsdauer werden runtergezählt
 
 (6)
-Minuten nach Ende der Meditation werden raufgezählt
+Minuten nach Ende der Meditation werden raufgezählt (ggf. nur bis zum Ende der Abschlussglocken)
 
 
 (1)
@@ -37,6 +38,7 @@ More menu entries
 
 (3)
 Specify parameters
+Start without ramp-up time and beginning bells
 Start meditation
 Explanation of period parameters
 
@@ -49,4 +51,4 @@ Count down of ramp-up time seconds
 Count down of meditation duration minutes
 
 (6)
-Count of minutes after end of meditation
+Count of minutes after end of meditation (when chosen only till the ending bells stop)
