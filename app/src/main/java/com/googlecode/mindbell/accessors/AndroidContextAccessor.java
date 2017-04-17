@@ -550,7 +550,7 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
                 PendingIntent.getActivity(context, 2, new Intent(context, MuteActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
         int visibility =
                 (prefs.isStatusVisibilityPublic()) ? NotificationCompat.VISIBILITY_PUBLIC : NotificationCompat.VISIBILITY_PRIVATE;
-        Notification notification = new NotificationCompat.Builder(context.getApplicationContext()) //
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context.getApplicationContext()) //
                 .setCategory(NotificationCompat.CATEGORY_STATUS) //
                 .setColor(context.getResources().getColor(R.color.backgroundColor)) //
                 .setContentTitle(contentTitle) //
@@ -558,11 +558,15 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
                 .setContentIntent(openAppIntent) //
                 .setOngoing(true) // ongoing is *not* shown on wearable
                 .setSmallIcon(statusDrawable) //
-                .setVisibility(visibility) //
-                .addAction(R.drawable.ic_action_refresh_status, context.getText(R.string.statusActionRefreshStatus),
-                        createRefreshBroadcastIntent()) //
-                .addAction(R.drawable.ic_stat_bell_active_but_muted, context.getText(R.string.statusActionMuteFor), muteIntent) //
-                .build();
+                .setVisibility(visibility);
+        if (!prefs.isMeditating()) {
+            // Do not allow other actions than stopping meditation while meditating
+            notificationBuilder //
+                    .addAction(R.drawable.ic_action_refresh_status, context.getText(R.string.statusActionRefreshStatus),
+                            createRefreshBroadcastIntent()) //
+                    .addAction(R.drawable.ic_stat_bell_active_but_muted, context.getText(R.string.statusActionMuteFor), muteIntent);
+        }
+        Notification notification = notificationBuilder.build();
         NotificationManagerCompat.from(context).notify(STATUS_NOTIFICATION_ID, notification);
     }
 

@@ -278,8 +278,8 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
      * Sets an OnClickListener upon the text view to open a time picker dialog when it is clicked.
      */
     private void attachIntervalPickerDialog(final TextView textViewLabel, final TextView textView, final int residTitle,
-                                            final TimeOfDay min,
-                                            final boolean isMinutesInterval, final OnPickListener onPickListener) {
+                                            final TimeOfDay min, final boolean isMinutesInterval,
+                                            final OnPickListener onPickListener) {
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -354,8 +354,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
      * Sets an OnClickListener upon the text view to open a number picker dialog when it is clicked.
      */
     private void attachNumberPickerDialog(final TextView textViewLabel, final TextView textView, final int residTitle,
-                                          final int min, final int max,
-                                          final OnPickListener onPickListener) {
+                                          final int min, final int max, final OnPickListener onPickListener) {
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -388,8 +387,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
      * Sets an OnClickListener upon the text view to open a edit text dialog when it is clicked.
      */
     private void attachEditTextDialog(final TextView textViewLabel, final TextView textView, final int residTitle,
-                                      final Normalizer normalizer,
-                                      final OnEnterListener onEnterListener) {
+                                      final Normalizer normalizer, final OnEnterListener onEnterListener) {
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -427,12 +425,16 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        boolean isMeditating = contextAccessor.getPrefs().isMeditating();
         MenuItem meditatingItem = menu.findItem(R.id.meditating);
-        meditatingItem.setIcon((contextAccessor.getPrefs().isMeditating()) ?
-                R.drawable.ic_action_meditating_off :
-                R.drawable.ic_action_meditating_on);
-        meditatingItem.setTitle(
-                (contextAccessor.getPrefs().isMeditating()) ? R.string.prefsMeditatingOff : R.string.prefsMeditatingOn);
+        meditatingItem.setIcon(isMeditating ? R.drawable.ic_action_meditating_off : R.drawable.ic_action_meditating_on);
+        meditatingItem.setTitle(isMeditating ? R.string.prefsMeditatingOff : R.string.prefsMeditatingOn);
+        // Do not allow other actions than stopping meditation while meditating
+        menu.findItem(R.id.active).setVisible(!isMeditating);
+        menu.findItem(R.id.settings).setVisible(!isMeditating);
+        menu.findItem(R.id.muteFor).setVisible(!isMeditating);
+        menu.findItem(R.id.about).setVisible(!isMeditating);
+        menu.findItem(R.id.help).setVisible(!isMeditating);
         return true;
     }
 
