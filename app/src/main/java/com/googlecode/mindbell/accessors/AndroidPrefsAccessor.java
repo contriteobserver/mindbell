@@ -96,7 +96,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     /**
      * Time to wait for displayed bell to be send back
      */
-    public static final long WAITING_TIME = 15000L;
+    public static final long WAITING_TIME = 10000L;
 
     public static final String NORMALIZE_NONE = "-1";
 
