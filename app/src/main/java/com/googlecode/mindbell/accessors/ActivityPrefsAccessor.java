@@ -40,4 +40,8 @@ public interface ActivityPrefsAccessor {
 
     boolean isDismissNotification();
 
+    boolean isNoSoundOnMusic();
+
+    boolean isPauseAudioOnSound();
+
 }

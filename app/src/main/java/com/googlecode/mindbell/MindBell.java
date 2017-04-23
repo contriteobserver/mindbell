@@ -48,6 +48,7 @@ public class MindBell extends Activity {
         AndroidContextAccessor contextAccessor = AndroidContextAccessor.getInstance(this);
         contextAccessor.startPlayingSoundAndVibrate(contextAccessor.getPrefs().forRegularOperation(), new Runnable() {
             public void run() {
+                Log.d(TAG, "Hiding bell");
                 MindBell.this.moveTaskToBack(true);
                 MindBell.this.finish();
             }

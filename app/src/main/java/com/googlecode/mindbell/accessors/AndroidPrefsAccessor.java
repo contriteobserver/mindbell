@@ -982,6 +982,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             return AndroidPrefsAccessor.this.isDismissNotification();
         }
 
+        @Override
+        public boolean isNoSoundOnMusic() {
+            return AndroidPrefsAccessor.this.isNoSoundOnMusic();
+        }
+
+        @Override
+        public boolean isPauseAudioOnSound() {
+            return AndroidPrefsAccessor.this.isPauseAudioOnSound();
+        }
+
     }
 
     private class ActivityPrefsAccessorForTapping implements ActivityPrefsAccessor {
@@ -1021,6 +1031,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             return false;
         }
 
+        @Override
+        public boolean isNoSoundOnMusic() {
+            return false;
+        }
+
+        @Override
+        public boolean isPauseAudioOnSound() {
+            return false;
+        }
+
     }
 
     private abstract class ActivityPrefsAccessorForMeditation implements ActivityPrefsAccessor {
@@ -1055,6 +1075,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
         @Override
         public boolean isDismissNotification() {
+            return false;
+        }
+
+        @Override
+        public boolean isNoSoundOnMusic() {
+            return false;
+        }
+
+        @Override
+        public boolean isPauseAudioOnSound() {
             return false;
         }
 

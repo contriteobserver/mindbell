@@ -167,10 +167,11 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
             updateRingNotification(activityPrefs);
         }
 
-        // Raise alarm volume to the max but keep the original volume for reset by finishBellSound()
-        // Start playing sound if requested by preferences
+        // Raise alarm volume to the max but keep the original volume for reset by finishBellSound() and start playing sound if
+        // requested by preferences
+        boolean playingSoundStarted = false;
         if (activityPrefs.isSound()) {
-            startPlayingSound(activityPrefs, runWhenDone);
+            playingSoundStarted = startPlayingSound(activityPrefs, runWhenDone);
         }
 
         // Explicitly start vibration if not already done by ring notification
@@ -189,14 +190,16 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
             });
         }
 
-        // If displaying the bell is requested by the preferences but playing a sound is not, then
-        // we are currently in MindBell.onStart(), so the bell has not been displayed yet. So this
-        // method must end to bring the bell to front. But after a while someone has to send the
-        // bell to the back again. So a new thread is created that waits and calls the runWhenDone
-        // which sends the bell to background. As it's a new thread this method ends after starting
-        // the thread which leads to the end of MindBell.onStart() which shows the bell.
-        if (activityPrefs.isShow() && !activityPrefs.isSound() && runWhenDone != null) {
-            startWaiting(runWhenDone);
+        // A non-null runWhenDone means there is something to do at the end (hiding the bell after displaying or stopping the
+        // meditation automatically). This is typically done when finishing playing the sound. But if playing a sound has not
+        // been started because of preferences or because sound has been suppressed then we after to do it now - or after a
+        // little while if the bell will be displayed by MindBell.onStart() after leaving this method.
+        if (!playingSoundStarted && runWhenDone != null) {
+            if (activityPrefs.isShow()) {
+                startWaiting(runWhenDone);
+            } else {
+                runWhenDone.run();
+            }
         }
 
     }
@@ -259,22 +262,23 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
     }
 
     /**
-     * Start playing bell sound and call runWhenDone when playing finishes but only if bell is not muted.
+     * Start playing bell sound and call runWhenDone when playing finishes but only if bell is not muted - returns true when
+     * sound has been started, false otherwise.
      */
-    private void startPlayingSound(ActivityPrefsAccessor activityPrefs, final Runnable runWhenDone) {
+    private boolean startPlayingSound(ActivityPrefsAccessor activityPrefs, final Runnable runWhenDone) {
         Uri bellUri = activityPrefs.getSoundUri();
         audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         if (prefs.isNoSoundOnMusic() && audioManager.isMusicActive()) {
             MindBell.logDebug("Sound suppressed because setting is no sound on music and music is playing");
-            return;
+            return false;
         } else if (bellUri == null) {
             MindBell.logDebug("Sound suppressed because no sound has been set");
-            return;
+            return false;
         } else if (prefs.isPauseAudioOnSound()) {
             int requestResult = audioManager.requestAudioFocus(this, STREAM_ALARM, retrieveDurationHint());
             if (requestResult == AUDIOFOCUS_REQUEST_FAILED) {
                 MindBell.logDebug("Sound suppressed because setting is pause audio on sound and request of audio focus failed");
-                return;
+                return false;
             }
             MindBell.logDebug("Audio focus successfully requested");
         }
@@ -309,11 +313,11 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
                 }
             });
             mediaPlayer.start();
+            return true;
         } catch (IOException e) {
             Log.e(TAG, "Could not start playing sound: " + e.getMessage(), e);
-            if (runWhenDone != null) {
-                runWhenDone.run();
-            }
+            finishBellSound();
+            return false;
         }
     }
 
