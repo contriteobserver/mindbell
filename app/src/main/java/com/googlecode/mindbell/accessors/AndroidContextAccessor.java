@@ -268,13 +268,13 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
     private boolean startPlayingSound(ActivityPrefsAccessor activityPrefs, final Runnable runWhenDone) {
         Uri bellUri = activityPrefs.getSoundUri();
         audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        if (prefs.isNoSoundOnMusic() && audioManager.isMusicActive()) {
+        if (activityPrefs.isNoSoundOnMusic() && audioManager.isMusicActive()) {
             MindBell.logDebug("Sound suppressed because setting is no sound on music and music is playing");
             return false;
         } else if (bellUri == null) {
             MindBell.logDebug("Sound suppressed because no sound has been set");
             return false;
-        } else if (prefs.isPauseAudioOnSound()) {
+        } else if (activityPrefs.isPauseAudioOnSound()) {
             int requestResult = audioManager.requestAudioFocus(this, STREAM_ALARM, retrieveDurationHint());
             if (requestResult == AUDIOFOCUS_REQUEST_FAILED) {
                 MindBell.logDebug("Sound suppressed because setting is pause audio on sound and request of audio focus failed");
