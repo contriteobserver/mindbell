@@ -29,7 +29,7 @@ import com.googlecode.mindbell.util.TimeOfDay;
  */
 public class MinutesIntervalPickerPreference extends TimePickerPreference {
 
-    private static final TimeOfDay MIN_INTERVAL = new TimeOfDay(0, 1);
+    public static final TimeOfDay MIN_INTERVAL = new TimeOfDay(0, 1);  // public for MindBellPreferences#isFrequencyDividesAnHour()
 
     public MinutesIntervalPickerPreference(Context ctxt, AttributeSet attrs) {
         super(ctxt, attrs);

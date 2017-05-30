@@ -44,8 +44,8 @@ import com.googlecode.mindbell.accessors.AndroidPrefsAccessor;
 import com.googlecode.mindbell.accessors.PrefsAccessor;
 import com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix;
 import com.googlecode.mindbell.preference.MediaVolumePreference;
+import com.googlecode.mindbell.preference.MinutesIntervalPickerPreference;
 import com.googlecode.mindbell.preference.MultiSelectListPreferenceWithSummary;
-import com.googlecode.mindbell.preference.TimePickerPreference;
 import com.googlecode.mindbell.util.TimeOfDay;
 import com.googlecode.mindbell.util.Utils;
 
@@ -93,8 +93,8 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                 (ListPreferenceWithSummaryFix) getPreferenceScreen().findPreference(getText(R.string.keyPattern));
         final CheckBoxPreference preferenceMuteOffHook =
                 (CheckBoxPreference) getPreferenceScreen().findPreference(getText(R.string.keyMuteOffHook));
-        final TimePickerPreference preferenceFrequency =
-                (TimePickerPreference) getPreferenceScreen().findPreference(getText(R.string.keyFrequency));
+        final MinutesIntervalPickerPreference preferenceFrequency =
+                (MinutesIntervalPickerPreference) getPreferenceScreen().findPreference(getText(R.string.keyFrequency));
         final CheckBoxPreference preferenceRandomize =
                 (CheckBoxPreference) getPreferenceScreen().findPreference(getText(R.string.keyRandomize));
         final ListPreferenceWithSummaryFix preferenceNormalize =
@@ -358,10 +358,16 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
     }
 
     /**
-     * Returns true, if frequency divides an hour in whole numbers, e.g. true for 20 minutes.
+     * Returns true, if frequency divides an hour in whole numbers, e.g. true for 20 minutes, or if frequency is a multiple of an
+     * hour (a frequency of 0 should never occur but there seem to situations in which frequency is zero).
      */
     private boolean isFrequencyDividesAnHour(TimeOfDay frequencyValue) {
-        return 60 % frequencyValue.getInterval() == 0;
+        int interval = frequencyValue.getInterval();
+        if (interval < MinutesIntervalPickerPreference.MIN_INTERVAL.getInterval()) {
+            interval = MinutesIntervalPickerPreference.MIN_INTERVAL.getInterval();
+            MindBell.logDebug("==================================> frequency was 0 <=================================");
+        }
+        return interval % 60 == 0 || 60 % interval == 0;
     }
 
     /**

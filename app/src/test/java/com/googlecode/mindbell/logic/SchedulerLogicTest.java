@@ -133,6 +133,33 @@ public class SchedulerLogicTest {
     }
 
     @Test
+    public void testRescheduleNotRandomizedNormalizedToFivePastFullHourInterval120() {
+        PrefsAccessor prefs = getDayPrefs();
+        when(prefs.isRandomize()).thenReturn(false);
+        when(prefs.getNormalize()).thenReturn(5);
+        when(prefs.getInterval()).thenReturn(120 * ONE_MINUTE_MILLIS);
+        // Current time setting in the middle of the night (05:00)
+        long targetTimeMillis = getTimeMillis(5, 0, Calendar.FRIDAY);
+        Assert.assertEquals(getTimeMillis(5, 0, Calendar.FRIDAY), targetTimeMillis);
+        // First reschedule from nighttime (05:00, before 09:00) to beginning of daytime (09:00)
+        targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(targetTimeMillis, prefs);
+        System.out.println("targetTimeMillis=" + (new TimeOfDay(targetTimeMillis)).toString());
+        Assert.assertEquals(getTimeMillis(9, 5, Calendar.FRIDAY), targetTimeMillis);
+        // Second reschedule
+        targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(targetTimeMillis, prefs);
+        System.out.println("targetTimeMillis=" + (new TimeOfDay(targetTimeMillis)).toString());
+        Assert.assertEquals(getTimeMillis(11, 5, Calendar.FRIDAY), targetTimeMillis);
+        // Third reschedule
+        targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(targetTimeMillis, prefs);
+        System.out.println("targetTimeMillis=" + (new TimeOfDay(targetTimeMillis)).toString());
+        Assert.assertEquals(getTimeMillis(13, 5, Calendar.FRIDAY), targetTimeMillis);
+        // Fourth reschedule
+        targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(targetTimeMillis, prefs);
+        System.out.println("targetTimeMillis=" + (new TimeOfDay(targetTimeMillis)).toString());
+        Assert.assertEquals(getTimeMillis(15, 5, Calendar.FRIDAY), targetTimeMillis);
+    }
+
+    @Test
     public void testRescheduleNotRandomizedNormalizedToHalfPastFullHourInterval20() {
         PrefsAccessor prefs = getDayPrefs();
         when(prefs.isRandomize()).thenReturn(false);
@@ -161,6 +188,33 @@ public class SchedulerLogicTest {
         targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(targetTimeMillis, prefs);
         System.out.println("targetTimeMillis=" + (new TimeOfDay(targetTimeMillis)).toString());
         Assert.assertEquals(getTimeMillis(10, 50, Calendar.FRIDAY), targetTimeMillis);
+    }
+
+    @Test
+    public void testRescheduleNotRandomizedNormalizedToHalfPastFullHourInterval180() {
+        PrefsAccessor prefs = getDayPrefs();
+        when(prefs.isRandomize()).thenReturn(false);
+        when(prefs.getNormalize()).thenReturn(30);
+        when(prefs.getInterval()).thenReturn(180 * ONE_MINUTE_MILLIS);
+        // Current time setting in the middle of the night (05:00)
+        long targetTimeMillis = getTimeMillis(5, 0, Calendar.FRIDAY);
+        Assert.assertEquals(getTimeMillis(5, 0, Calendar.FRIDAY), targetTimeMillis);
+        // First reschedule from nighttime (05:00, before 09:00) to beginning of daytime (09:00)
+        targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(targetTimeMillis, prefs);
+        System.out.println("targetTimeMillis=" + (new TimeOfDay(targetTimeMillis)).toString());
+        Assert.assertEquals(getTimeMillis(9, 30, Calendar.FRIDAY), targetTimeMillis);
+        // Second reschedule
+        targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(targetTimeMillis, prefs);
+        System.out.println("targetTimeMillis=" + (new TimeOfDay(targetTimeMillis)).toString());
+        Assert.assertEquals(getTimeMillis(12, 30, Calendar.FRIDAY), targetTimeMillis);
+        // Third reschedule
+        targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(targetTimeMillis, prefs);
+        System.out.println("targetTimeMillis=" + (new TimeOfDay(targetTimeMillis)).toString());
+        Assert.assertEquals(getTimeMillis(15, 30, Calendar.FRIDAY), targetTimeMillis);
+        // Fourth reschedule
+        targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(targetTimeMillis, prefs);
+        System.out.println("targetTimeMillis=" + (new TimeOfDay(targetTimeMillis)).toString());
+        Assert.assertEquals(getTimeMillis(18, 30, Calendar.FRIDAY), targetTimeMillis);
     }
 
     @Test
