@@ -29,7 +29,7 @@ import com.googlecode.mindbell.util.TimeOfDay;
  */
 public class MinutesIntervalPickerPreference extends TimePickerPreference {
 
-    public static final TimeOfDay MIN_INTERVAL = new TimeOfDay(0, 1);  // public for MindBellPreferences#isFrequencyDividesAnHour()
+    private static final TimeOfDay MIN_INTERVAL = new TimeOfDay(0, 1);
 
     public MinutesIntervalPickerPreference(Context ctxt, AttributeSet attrs) {
         super(ctxt, attrs);
@@ -56,7 +56,6 @@ public class MinutesIntervalPickerPreference extends TimePickerPreference {
 
     @Override
     protected void onDialogClosed(boolean positiveResult) {
-        super.onDialogClosed(positiveResult);
         if (positiveResult) {
             TimeOfDay newTime = new TimeOfDay(picker.getCurrentHour(), picker.getCurrentMinute());
             if (newTime.getInterval() < MIN_INTERVAL.getInterval()) {

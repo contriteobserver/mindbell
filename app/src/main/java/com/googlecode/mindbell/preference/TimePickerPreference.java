@@ -65,7 +65,6 @@ public class TimePickerPreference extends DialogPreference {
 
     @Override
     protected void onDialogClosed(boolean positiveResult) {
-        super.onDialogClosed(positiveResult);
         if (positiveResult) {
             TimeOfDay newTime = new TimeOfDay(picker.getCurrentHour(), picker.getCurrentMinute());
             String newTimeString = newTime.getPersistString();

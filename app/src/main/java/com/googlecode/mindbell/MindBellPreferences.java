@@ -359,14 +359,10 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
 
     /**
      * Returns true, if frequency divides an hour in whole numbers, e.g. true for 20 minutes, or if frequency is a multiple of an
-     * hour (a frequency of 0 should never occur but there seem to situations in which frequency is zero).
+     * hour (a frequency of 0 is prohibited by MinutesIntervalPickerPreference).
      */
     private boolean isFrequencyDividesAnHour(TimeOfDay frequencyValue) {
         int interval = frequencyValue.getInterval();
-        if (interval < MinutesIntervalPickerPreference.MIN_INTERVAL.getInterval()) {
-            interval = MinutesIntervalPickerPreference.MIN_INTERVAL.getInterval();
-            MindBell.logDebug("==================================> frequency was 0 <=================================");
-        }
         return interval % 60 == 0 || 60 % interval == 0;
     }
 
