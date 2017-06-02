@@ -37,7 +37,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.CheckBox;
@@ -79,6 +78,32 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
         // Use the following line to show popup dialog on every start
         // setPopupShown(false);
         setContentView(R.layout.main);
+        final ImageView imageViewShowInto = (ImageView) findViewById(R.id.showIntro);
+        final ImageView imageViewHideInto = (ImageView) findViewById(R.id.hideIntro);
+        imageViewShowInto.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                flipToAppropriateView(true);
+            }
+
+        });
+        imageViewHideInto.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                flipToAppropriateView(false);
+            }
+
+        });
+    }
+
+    /**
+     * Flip to meditation view if isMeditating is true, to bell view otherwise.
+     */
+    private void flipToAppropriateView(boolean showIntro) {
+        ViewFlipper viewFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
+        viewFlipper.setDisplayedChild(contextAccessor.getPrefs().isMeditating() ? 1 : showIntro ? 3 : 2);
     }
 
     @Override
@@ -108,6 +133,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
             public boolean onMenuItemClick(MenuItem item) {
                 return onMenuItemClickMeditating();
             }
+
         });
         MenuItem activeItem = menu.findItem(R.id.active);
         Switch activeSwitch = (Switch) activeItem.getActionView();
@@ -452,7 +478,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                 toggleMeditating(); // as meditation is still running this means to stop the meditation mode
             }
         } else {
-            flipToAppropriateView();
+            flipToAppropriateView(false);
             if (contextAccessor.getPrefs().isMeditating()) {
                 CountdownView countdownView = (CountdownView) findViewById(R.id.countdown);
                 countdownView.startDisplayUpdateTimer(contextAccessor);
@@ -493,18 +519,10 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                 MindBell.logDebug("Keep screen on deactivated");
             }
         }
-        flipToAppropriateView();
+        flipToAppropriateView(false);
         invalidateOptionsMenu(); // re-call onPrepareOptionsMenu()
         CharSequence feedback = getText((prefs.isMeditating()) ? R.string.summaryMeditating : R.string.summaryNotMeditating);
         Toast.makeText(this, feedback, Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Flip to meditation view if isMeditating is true, to bell view otherwise.
-     */
-    private void flipToAppropriateView() {
-        ViewFlipper viewFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
-        viewFlipper.setDisplayedChild(contextAccessor.getPrefs().isMeditating() ? 1 : 2);
     }
 
     @Override
@@ -515,26 +533,6 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
             countdownView.stopDisplayUpdateTimer();
         }
         super.onPause();
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent e) {
-        if (e.getAction() == MotionEvent.ACTION_DOWN) {
-            MindBell.logDebug("Bell tapped");
-            notifyIfNotActive();
-            contextAccessor.updateStatusNotification();
-            contextAccessor.startPlayingSoundAndVibrate(contextAccessor.getPrefs().forTapping(), null);
-        }
-        return true;
-    }
-
-    /**
-     * Show hint how to activate the bell.
-     */
-    private void notifyIfNotActive() {
-        if (!contextAccessor.getPrefs().isActive()) {
-            Toast.makeText(this, R.string.howToSet, Toast.LENGTH_LONG).show();
-        }
     }
 
     @Override

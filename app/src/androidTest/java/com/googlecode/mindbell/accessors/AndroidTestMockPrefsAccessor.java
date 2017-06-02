@@ -423,11 +423,6 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public ActivityPrefsAccessor forTapping() {
-        throw new UnsupportedOperationException("Test terminated ... method not implemented");
-    }
-
-    @Override
     public ActivityPrefsAccessor forMeditationBeginning() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }

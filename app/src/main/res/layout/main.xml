@@ -30,41 +30,96 @@
         android:layout_height="fill_parent"
         android:gravity="center">
 
+        <!-- ViewFlipper Child 3: Non-Meditating view with expanded introduction -->
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="right">
 
-            <TextView
-                android:id="@+id/tvExplanation"
-                android:layout_width="wrap_content"
+            <ImageView
+                android:id="@+id/hideIntro"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:background="@color/backgroundColorDark"
-                android:padding="20px"
-                android:text="@string/explanation"
+                android:src="@drawable/ic_expand_less_white_24px"/>
+
+            <TextView
+                android:id="@+id/howToMeditate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/hideIntro"
+                android:background="@color/backgroundColorDark"
+                android:padding="10dp"
+                android:text="@string/howToMeditate"
                 android:textColor="@color/textColor"/>
 
             <TextView
-                android:id="@+id/tvHowToRing"
-                style="@android:style/TextAppearance.DeviceDefault.Large"
+                android:id="@+id/howToMute"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@id/tvExplanation"
-                android:layout_centerHorizontal="true"
-                android:padding="20px"
-                android:text="@string/howToRing"/>
+                android:layout_above="@id/howToMeditate"
+                android:background="@color/backgroundColorDark"
+                android:padding="10dp"
+                android:text="@string/howToMute"
+                android:textColor="@color/textColor"/>
+
+            <TextView
+                android:id="@+id/howToActivateExpanded"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/howToMute"
+                android:background="@color/backgroundColorDark"
+                android:padding="10dp"
+                android:text="@string/howToActivate"
+                android:textColor="@color/textColor"/>
 
             <ImageView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_above="@id/tvHowToRing"
+                android:layout_above="@id/howToActivateExpanded"
+                android:paddingBottom="5dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/bell"/>
 
         </RelativeLayout>
 
+        <!-- ViewFlipper Child 2: Meditating view -->
         <include layout="@layout/countdown"/>
+
+        <!-- ViewFlipper Child 1: Non-Meditating view with collapsed introduction -->
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right">
+
+            <ImageView
+                android:id="@+id/showIntro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@color/backgroundColorDark"
+                android:src="@drawable/ic_expand_more_white_24px"/>
+
+            <TextView
+                android:id="@+id/howToActivateCollapsed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/showIntro"
+                android:background="@color/backgroundColorDark"
+                android:padding="10dp"
+                android:text="@string/howToActivate"
+                android:textColor="@color/textColor"/>
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/howToActivateCollapsed"
+                android:paddingBottom="5dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/bell"/>
+
+        </RelativeLayout>
 
     </ViewFlipper>
 

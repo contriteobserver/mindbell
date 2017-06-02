@@ -23,13 +23,13 @@
     <string name="app_name">MindBell</string>
 
     <!-- MindBellMain -->
-    <string name="explanation">MindBell rings periodically during the day as a mindfulness
-    	bell, to give you the opportunity to hold on for a moment and consider what you are 
-		currently doing, and in what state of mind you are while you are doing it. 
-		According to the Buddhist teacher Thich Nhat Hanh, this is an effective 
-		means of developing mindfulness.</string>
-    <string name="howToRing">Tap to ring</string>
-    <string name="howToSet">Use switch to activate MindBell</string>
+    <string name="howToActivate">When the switch at the top is on MindBell will sound throughout the day, encouraging us to
+        pause and become mindful of what we are doing and in what state of mind we are in.</string>
+    <string name="howToMute">MindBell is muted while the phone itself is muted and while taking phone calls. It can also be muted
+        manually for one hour or more. For information on how to regulate MindBell please refer to the settings or the
+        Help.</string>
+    <string name="howToMeditate">Next to the switch is a button to enable meditation mode during which the bell only rings to
+        signal the start and end of meditation (or meditation periods).</string>
 
     <!-- Menu of MindBellMain -->
     <string name="menuSettings">Settings</string>

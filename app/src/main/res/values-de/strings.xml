@@ -23,13 +23,14 @@
     <string name="app_name">MindBell</string>
 
     <!-- MindBellMain -->
-    <string name="explanation">MindBell erklingt regelmäßig als Achtsamkeitsglocke im
-	    Laufe des Tages. Dadurch können wir kurz innehalten und uns bewusst werden, was wir
-	    gerade tun, und in welchem Geisteszustand wir das angehen, was wir gerade tun. Gemäß
-	    dem buddhistischen Lehrer Thich Nhat Hanh ist dies ein wirksames Mittel, um Achtsamkeit
-	    zu entwickeln.</string>
-    <string name="howToRing">Tippen zum Läuten</string>
-    <string name="howToSet">MindBell mit dem Schalter aktivieren</string>
+    <string name="howToActivate">Wenn der Schalter oben an ist, erklingt MindBell regelmäßig als Achtsamkeitsglocke im Laufe des
+        Tages. Dann können wir kurz innehalten und uns bewusst werden, was wir gerade tun, und in welchem Geisteszustand wir das
+        angehen, was wir gerade tun.</string>
+    <string name="howToMute">MindBell erklingt nicht, wenn telefoniert wird oder das Telefon stillgestellt ist. MindBell kann
+        auch für eine oder mehrere Stunden stillgestellt werden. Weitere Einstellungmöglichkeiten sind in den Einstellungen oder der
+        Hilfe zu finden.</string>
+    <string name="howToMeditate">Neben dem Schalter ist ein Knopf zum Starten des Meditationsmodus. Darin erklingt die Glocke nur
+        zu Beginn und Ende der Meditation (oder der Meditationsabschnitte).</string>
 
     <!-- Menu of MindBellMain -->
     <string name="menuSettings">Einstellungen</string>
