@@ -317,6 +317,8 @@ public abstract class PrefsAccessor {
 
     public abstract ActivityPrefsAccessor forRegularOperation();
 
+    public abstract ActivityPrefsAccessor forRingingOnce();
+
     public abstract ActivityPrefsAccessor forMeditationBeginning();
 
     public abstract ActivityPrefsAccessor forMeditationInterrupting();

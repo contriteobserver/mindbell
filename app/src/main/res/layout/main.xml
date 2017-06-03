@@ -112,10 +112,18 @@
                 android:textColor="@color/textColor"/>
 
             <ImageView
-                android:layout_width="fill_parent"
+                android:id="@+id/ringOnce"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@id/howToActivateCollapsed"
+                android:layout_centerHorizontal="true"
                 android:paddingBottom="5dp"
+                android:src="@drawable/ic_play_arrow_white_24px"/>
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/ringOnce"
                 android:scaleType="centerInside"
                 android:src="@drawable/bell"/>
 

@@ -78,9 +78,10 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
         // Use the following line to show popup dialog on every start
         // setPopupShown(false);
         setContentView(R.layout.main);
-        final ImageView imageViewShowInto = (ImageView) findViewById(R.id.showIntro);
-        final ImageView imageViewHideInto = (ImageView) findViewById(R.id.hideIntro);
-        imageViewShowInto.setOnClickListener(new View.OnClickListener() {
+        final ImageView imageViewShowIntro = (ImageView) findViewById(R.id.showIntro);
+        final ImageView imageViewHideIntro = (ImageView) findViewById(R.id.hideIntro);
+        final ImageView imageViewRingOnce = (ImageView) findViewById(R.id.ringOnce);
+        imageViewShowIntro.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -88,11 +89,21 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
             }
 
         });
-        imageViewHideInto.setOnClickListener(new View.OnClickListener() {
+        imageViewHideIntro.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 flipToAppropriateView(false);
+            }
+
+        });
+        imageViewRingOnce.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                MindBell.logDebug("Ring once");
+                contextAccessor.updateStatusNotification();
+                contextAccessor.startPlayingSoundAndVibrate(contextAccessor.getPrefs().forRingingOnce(), null);
             }
 
         });
