@@ -26,13 +26,13 @@
 
     <ViewFlipper
         android:id="@+id/viewFlipper"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:gravity="center">
 
         <!-- ViewFlipper Child 3: Non-Meditating view with expanded introduction -->
         <RelativeLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right">
 
@@ -81,7 +81,8 @@
                 android:textColor="@color/textColor"/>
 
             <ImageView
-                android:layout_width="fill_parent"
+                android:id="@+id/ringOnceBellExpanded"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_above="@id/howToActivateExpanded"
                 android:paddingBottom="5dp"
@@ -95,7 +96,7 @@
 
         <!-- ViewFlipper Child 1: Non-Meditating view with collapsed introduction -->
         <RelativeLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right">
 
@@ -121,7 +122,7 @@
                 android:textColor="@color/textColor"/>
 
             <ImageView
-                android:id="@+id/ringOnce"
+                android:id="@+id/ringOncePlayCollapsed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@id/howToActivateCollapsed"
@@ -130,9 +131,10 @@
                 android:src="@drawable/ic_play_arrow_white_24px"/>
 
             <ImageView
-                android:layout_width="fill_parent"
+                android:id="@+id/ringOnceBellCollapsed"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_above="@id/ringOnce"
+                android:layout_above="@id/ringOncePlayCollapsed"
                 android:scaleType="centerInside"
                 android:src="@drawable/bell"/>
 

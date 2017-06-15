@@ -80,7 +80,10 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
         setContentView(R.layout.main);
         final ImageView imageViewShowIntro = (ImageView) findViewById(R.id.showIntro);
         final ImageView imageViewHideIntro = (ImageView) findViewById(R.id.hideIntro);
-        final ImageView imageViewRingOnce = (ImageView) findViewById(R.id.ringOnce);
+        final ImageView imageViewRingOncePlayCollapsed = (ImageView) findViewById(R.id.ringOncePlayCollapsed);
+        final ImageView imageViewRingOnceBellCollapsed = (ImageView) findViewById(R.id.ringOnceBellCollapsed);
+        final ImageView imageViewRingOnceBellExpanded = (ImageView) findViewById(R.id.ringOnceBellExpanded);
+        final CountdownView countdownView = (CountdownView) findViewById(R.id.countdown);
         imageViewShowIntro.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -97,7 +100,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
             }
 
         });
-        imageViewRingOnce.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener ringOnceOnClickListener = new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -106,7 +109,11 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                 contextAccessor.startPlayingSoundAndVibrate(contextAccessor.getPrefs().forRingingOnce(), null);
             }
 
-        });
+        };
+        imageViewRingOncePlayCollapsed.setOnClickListener(ringOnceOnClickListener);
+        imageViewRingOnceBellCollapsed.setOnClickListener(ringOnceOnClickListener);
+        imageViewRingOnceBellExpanded.setOnClickListener(ringOnceOnClickListener);
+        countdownView.setOnClickListener(ringOnceOnClickListener);
     }
 
     /**
