@@ -87,7 +87,7 @@ public class ContextAccessor implements AudioManager.OnAudioFocusChangeListener 
      */
     private ContextAccessor(Context context, boolean logSettings) {
         this.context = context.getApplicationContext();
-        this.prefs = new AndroidPrefsAccessor(context, logSettings);
+        this.prefs = new PrefsAccessor(context, logSettings);
     }
 
     /**
@@ -369,7 +369,7 @@ public class ContextAccessor implements AudioManager.OnAudioFocusChangeListener 
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    Thread.sleep(AndroidPrefsAccessor.WAITING_TIME);
+                    Thread.sleep(PrefsAccessor.WAITING_TIME);
                 } catch (InterruptedException e) {
                     // doesn't care if sleep was interrupted, just move on
                 }

@@ -39,7 +39,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.googlecode.mindbell.accessors.AndroidPrefsAccessor;
 import com.googlecode.mindbell.accessors.ContextAccessor;
 import com.googlecode.mindbell.accessors.PrefsAccessor;
 import com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix;
@@ -194,7 +193,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                     // too. Otherwise the following scenario could happen: set interval 1 h, de-select randomize, set normalize to
                     // hh:00, select randomize, set interval 2 h, de-select randomize again ... hh:00 would be left in normalize
                     // erroneously.
-                    preferenceNormalize.setValue(AndroidPrefsAccessor.NORMALIZE_NONE);
+                    preferenceNormalize.setValue(PrefsAccessor.NORMALIZE_NONE);
                 }
                 return true;
             }
@@ -304,7 +303,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
     private void setPreferenceVolumeSoundUri(MediaVolumePreference preferenceVolume, boolean useStandardBell,
                                              String ringtoneUriString) {
         Uri soundUri;
-        // This implementation is almost the same as AndroidPrefsAccessor#getSoundUri()
+        // This implementation is almost the same as PrefsAccessor#getSoundUri()
         if (useStandardBell || ringtoneUriString.isEmpty()) {
             soundUri = Utils.getResourceUri(this, R.raw.bell10s);
         } else {
@@ -331,7 +330,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                 return false;
             }
             String durationString = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-            if (durationString == null || Long.parseLong(durationString) > (AndroidPrefsAccessor.WAITING_TIME - 1000L)) {
+            if (durationString == null || Long.parseLong(durationString) > (PrefsAccessor.WAITING_TIME - 1000L)) {
                 Toast.makeText(this, R.string.ringtoneDurationTooLongOrInvalid, Toast.LENGTH_SHORT).show();
                 return false;
             }
@@ -370,7 +369,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
      * Returns true, if normalize - ringing on the minute - is requested
      */
     private boolean isNormalize(String normalizeValue) {
-        return !AndroidPrefsAccessor.NORMALIZE_NONE.equals(normalizeValue);
+        return !PrefsAccessor.NORMALIZE_NONE.equals(normalizeValue);
     }
 
     @Override

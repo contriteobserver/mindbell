@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
 public class ContextAccessorMockTest {
 
     @Mock
-    AndroidPrefsAccessor prefs;
+    PrefsAccessor prefs;
 
     @Mock
     Context context;
@@ -119,8 +119,8 @@ public class ContextAccessorMockTest {
 
     @Test
     public void testReasonableDefault() {
-        Assert.assertTrue(0 <= AndroidPrefsAccessor.DEFAULT_VOLUME);
-        Assert.assertTrue(AndroidPrefsAccessor.DEFAULT_VOLUME <= 1);
+        Assert.assertTrue(0 <= PrefsAccessor.DEFAULT_VOLUME);
+        Assert.assertTrue(PrefsAccessor.DEFAULT_VOLUME <= 1);
     }
 
 }
