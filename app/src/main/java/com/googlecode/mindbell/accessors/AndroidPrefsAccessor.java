@@ -132,7 +132,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private ActivityPrefsAccessor activityPrefsForMeditationEnding = new ActivityPrefsAccessorForMeditationEnding();
 
     /**
-     * Constructs an accessor for preferences in the given context, please use {@link AndroidContextAccessor#getPrefs()} instead of
+     * Constructs an accessor for preferences in the given context, please use {@link ContextAccessor#getPrefs()} instead of
      * calling this directly.
      */
     protected AndroidPrefsAccessor(Context context, boolean logSettings) {

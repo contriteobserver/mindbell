@@ -39,8 +39,8 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.googlecode.mindbell.accessors.AndroidContextAccessor;
 import com.googlecode.mindbell.accessors.AndroidPrefsAccessor;
+import com.googlecode.mindbell.accessors.ContextAccessor;
 import com.googlecode.mindbell.accessors.PrefsAccessor;
 import com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix;
 import com.googlecode.mindbell.preference.MediaVolumePreference;
@@ -68,7 +68,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         super.onCreate(savedInstanceState);
 
         // check settings, delete any settings that are not valid
-        final PrefsAccessor prefs = AndroidContextAccessor.getInstance(this).getPrefs();
+        final PrefsAccessor prefs = ContextAccessor.getInstance(this).getPrefs();
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences_1);
@@ -376,7 +376,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
     @Override
     public void onPause() {
         super.onPause();
-        AndroidContextAccessor.getInstanceAndLogPreferences(this).updateBellSchedule();
+        ContextAccessor.getInstanceAndLogPreferences(this).updateBellSchedule();
     }
 
     @SuppressWarnings("deprecation") // deprecation is because MindBell is not fragment-based

@@ -50,7 +50,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import com.googlecode.mindbell.accessors.AndroidContextAccessor;
 import com.googlecode.mindbell.accessors.ContextAccessor;
 import com.googlecode.mindbell.accessors.PrefsAccessor;
 import com.googlecode.mindbell.preference.MinutesIntervalPickerPreference;
@@ -74,7 +73,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MindBell.logDebug("Main activity is being created");
-        contextAccessor = AndroidContextAccessor.getInstance(this);
+        contextAccessor = ContextAccessor.getInstance(this);
         // Use the following line to show popup dialog on every start
         // setPopupShown(false);
         setContentView(R.layout.main);
@@ -671,7 +670,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
      * Handles click on confirmation to send info.
      */
     private void onClickReallySendInfo() {
-        AndroidContextAccessor.getInstanceAndLogPreferences(this); // write settings to log
+        ContextAccessor.getInstanceAndLogPreferences(this); // write settings to log
         MindBell.logDebug("Excluded from battery optimization (always false for SDK < 23)? -> " + Utils.isAppWhitelisted(this));
         Intent i = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getText(R.string.emailAddress).toString(), null));
         i.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.emailSubject));

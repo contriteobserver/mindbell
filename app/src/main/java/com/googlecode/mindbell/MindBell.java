@@ -23,7 +23,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.googlecode.mindbell.accessors.AndroidContextAccessor;
+import com.googlecode.mindbell.accessors.ContextAccessor;
 
 import static com.googlecode.mindbell.MindBellPreferences.TAG;
 
@@ -45,7 +45,7 @@ public class MindBell extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        AndroidContextAccessor contextAccessor = AndroidContextAccessor.getInstance(this);
+        ContextAccessor contextAccessor = ContextAccessor.getInstance(this);
         contextAccessor.startPlayingSoundAndVibrate(contextAccessor.getPrefs().forRegularOperation(), new Runnable() {
             public void run() {
                 Log.d(TAG, "Hiding bell");

@@ -24,7 +24,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.googlecode.mindbell.accessors.AndroidContextAccessor;
 import com.googlecode.mindbell.accessors.ContextAccessor;
 import com.googlecode.mindbell.accessors.PrefsAccessor;
 import com.googlecode.mindbell.logic.SchedulerLogic;
@@ -54,7 +53,7 @@ public class Scheduler extends BroadcastReceiver {
                 ", meditationPeriod=" + meditationPeriod);
 
         // Create working environment
-        ContextAccessor contextAccessor = AndroidContextAccessor.getInstance(context);
+        ContextAccessor contextAccessor = ContextAccessor.getInstance(context);
         PrefsAccessor prefs = contextAccessor.getPrefs();
 
         // Update notification just in case state has changed or MindBell missed a muting
