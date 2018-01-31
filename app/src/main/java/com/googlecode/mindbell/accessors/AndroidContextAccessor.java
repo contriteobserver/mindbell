@@ -59,7 +59,6 @@ import static android.media.AudioManager.AUDIOFOCUS_LOSS;
 import static android.media.AudioManager.AUDIOFOCUS_LOSS_TRANSIENT;
 import static android.media.AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK;
 import static android.media.AudioManager.AUDIOFOCUS_REQUEST_FAILED;
-import static android.media.AudioManager.STREAM_ALARM;
 import static com.googlecode.mindbell.MindBellPreferences.TAG;
 import static com.googlecode.mindbell.accessors.PrefsAccessor.EXTRA_IS_RESCHEDULING;
 import static com.googlecode.mindbell.accessors.PrefsAccessor.EXTRA_MEDITATION_PERIOD;
@@ -275,28 +274,34 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
             MindBell.logDebug("Sound suppressed because no sound has been set");
             return false;
         } else if (prefs.isPauseAudioOnSound()) {
-            int requestResult = audioManager.requestAudioFocus(this, STREAM_ALARM, retrieveDurationHint());
+            int requestResult = audioManager.requestAudioFocus(this, prefs.getAudioStreamType(), retrieveDurationHint());
             if (requestResult == AUDIOFOCUS_REQUEST_FAILED) {
                 MindBell.logDebug("Sound suppressed because setting is pause audio on sound and request of audio focus failed");
                 return false;
             }
             MindBell.logDebug("Audio focus successfully requested");
         }
-        int originalVolume = getAlarmVolume();
-        int alarmMaxVolume = getAlarmMaxVolume();
-        if (originalVolume == alarmMaxVolume) { // "someone" else set it to max, so we don't touch it
-            MindBell.logDebug(
-                    "Start playing sound found originalVolume " + originalVolume + " to be max, alarm volume left untouched");
+        if (prefs.isUseAudioStreamVolumeSetting()) { // we don't care about setting the volume
+            MindBell.logDebug("Start playing sound found without touching audio stream volume");
         } else {
-            MindBell.logDebug(
-                    "Start playing sound found and stored originalVolume " + originalVolume + ", setting alarm volume to max");
-            setAlarmVolume(alarmMaxVolume);
-            prefs.setOriginalVolume(originalVolume);
+            int originalVolume = getAlarmVolume();
+            int alarmMaxVolume = getAlarmMaxVolume();
+            if (originalVolume == alarmMaxVolume) { // "someone" else set it to max, so we don't touch it
+                MindBell.logDebug(
+                        "Start playing sound found originalVolume " + originalVolume + " to be max, alarm volume left untouched");
+            } else {
+                MindBell.logDebug(
+                        "Start playing sound found and stored originalVolume " + originalVolume + ", setting alarm volume to max");
+                setAlarmVolume(alarmMaxVolume);
+                prefs.setOriginalVolume(originalVolume);
+            }
         }
-        float bellVolume = activityPrefs.getVolume();
         mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioStreamType(STREAM_ALARM);
-        mediaPlayer.setVolume(bellVolume, bellVolume);
+        mediaPlayer.setAudioStreamType(prefs.getAudioStreamType());
+        if (!prefs.isUseAudioStreamVolumeSetting()) { // care about setting the volume
+            float bellVolume = activityPrefs.getVolume();
+            mediaPlayer.setVolume(bellVolume, bellVolume);
+        }
         try {
             try {
                 mediaPlayer.setDataSource(context, bellUri);
