@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "25.0.2"
 
     // Avoid misc.xml to change every now and then ... http://stackoverflow.com/a/41174866/2532583
     compileOptions {
@@ -14,8 +13,8 @@ android {
         applicationId "com.googlecode.mindbell"
         minSdkVersion 16 // API level 16 (4.1.1, JELLY_BEAN) is the lowest to get an Genymotion image for
         targetSdkVersion 23
-        versionCode 52
-        versionName "3.2.4"
+        versionCode 53
+        versionName "3.2.5"
     }
     buildTypes {
         release {
