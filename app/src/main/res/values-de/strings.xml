@@ -47,6 +47,9 @@
     <!-- MindBellPreferences -->
     <string name="preferencesTitle">MindBell Einstellungen</string>
 
+    <string name="prefsCategorySoundOutput">Klangausgabe</string>
+    <string name="prefsAudioStream">Audio-Ausgabeweg</string>
+
     <string name="prefsCategoryActiveTimes">Aktive Zeiten und Rhythmus</string>
     <string name="prefsActive">MindBell an/aus</string>
     <string name="summaryActive">MindBell ist aktiv</string>

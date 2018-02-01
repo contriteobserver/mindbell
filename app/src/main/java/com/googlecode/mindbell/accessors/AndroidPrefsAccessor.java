@@ -21,6 +21,7 @@ package com.googlecode.mindbell.accessors;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.util.Log;
 
@@ -41,6 +42,7 @@ import java.util.TreeMap;
 import static com.googlecode.mindbell.MindBellPreferences.TAG;
 import static com.googlecode.mindbell.R.string.keyActive;
 import static com.googlecode.mindbell.R.string.keyActiveOnDaysOfWeek;
+import static com.googlecode.mindbell.R.string.keyAudioStream;
 import static com.googlecode.mindbell.R.string.keyDismissNotification;
 import static com.googlecode.mindbell.R.string.keyEnd;
 import static com.googlecode.mindbell.R.string.keyFrequency;
@@ -163,6 +165,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         addPreference(keyActive, false, BOOLEAN, context);
         addPreference(keyActiveOnDaysOfWeek, new HashSet<>(Arrays.asList(new String[]{"1", "2", "3", "4", "5", "6", "7"})),
                 STRING_SET, context);
+        addPreference(keyAudioStream, "0", STRING, context);
         addPreference(keyDismissNotification, false, BOOLEAN, context);
         addPreference(keyEnd, "21:00", TIME_STRING, context);
         addPreference(keyFrequency, "00:15", TIME_STRING, context); // 15 min
@@ -208,6 +211,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
         // Map preference keys to their allowed entryValues
         entryValuesMap.put(keyActiveOnDaysOfWeek, context.getResources().getStringArray(R.array.weekdayEntryValues));
+        entryValuesMap.put(keyAudioStream, context.getResources().getStringArray(R.array.audioStreamPersistedEntryValues));
         entryValuesMap.put(keyMeditationBeginningBell, context.getResources().getStringArray(R.array.bellEntryValues));
         entryValuesMap.put(keyMeditationEndingBell, context.getResources().getStringArray(R.array.bellEntryValues));
         entryValuesMap.put(keyMeditationInterruptingBell, context.getResources().getStringArray(R.array.bellEntryValues));
@@ -279,8 +283,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             setPatternOfPeriods(patternOfPeriods);
             settings.edit().remove(keyNumberOfPeriods).apply();
             Log.w(TAG, "Converted old setting for '" + keyNumberOfPeriods + "' (" + oldNumberOfPeriods + ") to '" +
-                    context.getText(keyPatternOfPeriods) +
-                    "' (" + patternOfPeriods + ")");
+                    context.getText(keyPatternOfPeriods) + "' (" + patternOfPeriods + ")");
         }
         // Version 3.2.0 replaces frequency milliseconds string by time string
         String keyFrequency = context.getString(R.string.keyFrequency);
@@ -290,8 +293,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
                 long milliseconds = Long.parseLong(oldFrequency);
                 String frequency = TimeOfDay.fromMillisecondsInterval(milliseconds).getPersistString();
                 setSetting(R.string.keyFrequency, frequency);
-                Log.w(TAG, "Converted old value for '" + keyFrequency + "' from '" + oldFrequency +
-                        "' to '" + frequency + "'");
+                Log.w(TAG, "Converted old value for '" + keyFrequency + "' from '" + oldFrequency + "' to '" + frequency + "'");
             } catch (NumberFormatException e) {
                 // invalid preference will be removed by removeInvalidSetting()
             }
@@ -303,8 +305,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             if (oldRampUpTime >= 0) {
                 String rampUpTime = TimeOfDay.fromSecondsInterval(oldRampUpTime).getPersistString();
                 setSetting(R.string.keyRampUpTime, rampUpTime);
-                Log.w(TAG, "Converted old value for '" + keyRampUpTime + "' from '" + oldRampUpTime +
-                        "' to '" + rampUpTime + "'");
+                Log.w(TAG, "Converted old value for '" + keyRampUpTime + "' from '" + oldRampUpTime + "' to '" + rampUpTime + "'");
             }
         } catch (ClassCastException e) {
             // preference has already been converted
@@ -316,8 +317,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             if (oldMeditationDuration >= 0) {
                 String meditationDuration = TimeOfDay.fromSecondsInterval(oldMeditationDuration).getPersistString();
                 setSetting(R.string.keyMeditationDuration, meditationDuration);
-                Log.w(TAG, "Converted old value for '" + keyMeditationDuration + "' from '" + oldMeditationDuration +
-                        "' to '" + meditationDuration + "'");
+                Log.w(TAG, "Converted old value for '" + keyMeditationDuration + "' from '" + oldMeditationDuration + "' to '" +
+                        meditationDuration + "'");
             }
         } catch (ClassCastException e) {
             // preference has already been converted
@@ -370,8 +371,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
                     if (timeStringValue != null) {
                         if (!timeStringValue.matches(TIME_STRING_REGEX)) {
                             settings.edit().remove(preference.key).apply();
-                            Log.w(TAG, "Removed setting '" + preference + "' since it is not a time string '" +
-                                    timeStringValue + "'");
+                            Log.w(TAG,
+                                    "Removed setting '" + preference + "' since it is not a time string '" + timeStringValue + "'");
                             return true;
                         }
                     }
@@ -558,6 +559,30 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
+    public int getAudioStream() {
+        switch (getStringSetting(keyAudioStream)) {
+            case "1":
+                return AudioManager.STREAM_NOTIFICATION;
+            case "2":
+                return AudioManager.STREAM_MUSIC;
+            case "0":
+                // fall-thru to use "0" as default
+            default:
+                return AudioManager.STREAM_ALARM;
+        }
+    }
+
+    /**
+     * Returns the current string setting of the preference with the given resid.
+     *
+     * @param resid
+     * @return
+     */
+    private String getStringSetting(int resid) {
+        return (String) getSetting(resid);
+    }
+
+    @Override
     public float getMeditationVolume() {
         return getFloatSetting(keyMeditationVolume);
     }
@@ -596,16 +621,6 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public TimeOfDay getDaytimeEnd() {
         return new TimeOfDay(getStringSetting(keyEnd));
-    }
-
-    /**
-     * Returns the current string setting of the preference with the given resid.
-     *
-     * @param resid
-     * @return
-     */
-    private String getStringSetting(int resid) {
-        return (String) getSetting(resid);
     }
 
     @Override

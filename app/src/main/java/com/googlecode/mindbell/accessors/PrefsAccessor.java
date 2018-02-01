@@ -19,7 +19,6 @@
  */
 package com.googlecode.mindbell.accessors;
 
-import android.media.AudioManager;
 import android.net.Uri;
 
 import com.googlecode.mindbell.util.TimeOfDay;
@@ -113,17 +112,11 @@ public abstract class PrefsAccessor {
 
     public abstract String getActiveOnDaysOfWeekString();
 
-    public int getAudioStreamType() {
-        return AudioManager.STREAM_NOTIFICATION;
-    }
-
-    ;
+    public abstract int getAudioStream();
 
     public boolean isUseAudioStreamVolumeSetting() {
         return true;
     }
-
-    ;
 
     public abstract float getMeditationVolume();
 

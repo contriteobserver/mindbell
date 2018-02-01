@@ -46,6 +46,9 @@
     <!-- MindBellPreferences -->
     <string name="preferencesTitle">MindBell Preferences</string>
 
+    <string name="prefsCategorySoundOutput">Sound output</string>
+    <string name="prefsAudioStream">Audio stream</string>
+
     <string name="prefsCategoryActiveTimes">Active times and rhythm</string>
     <string name="prefsActive">MindBell on/off</string>
     <string name="summaryActive">MindBell is active</string>
@@ -222,6 +225,7 @@
     <!-- Preference keys (don't localize) -->
     <string name="keyActiveOnDaysOfWeek" translatable="false">activeOnDaysOfWeek</string>
     <string name="keyActive" translatable="false">active</string>
+    <string name="keyAudioStream" translatable="false">audioStream</string>
     <string name="keyDismissNotification" translatable="false">dismissNotification</string>
     <string name="keyEnd" translatable="false">end</string>
     <string name="keyFrequency" translatable="false">frequency</string>
@@ -269,6 +273,6 @@
     <string name="emailAddress" translatable="false">mindbell@dknapps.de</string>
 
     <!-- About page url (don't localize) -->
-    <string name="about_html_text_url" translatable="false">file:///android_asset/about.html</string>
+    <string name="about_html_text_url" translatable="false">iconFilename:///android_asset/about.html</string>
 
 </resources>

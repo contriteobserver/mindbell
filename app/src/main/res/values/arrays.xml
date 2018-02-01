@@ -86,6 +86,13 @@
         <item>Sat</item>
     </string-array>
 
+    <!-- Texts to be shown next to the icons for audio stream selection -->
+    <string-array name="audioStreamEntries">
+        <item>Play as alarm</item>
+        <item>Play as notification</item>
+        <item>Play as music</item>
+    </string-array>
+
     <!-- ==================== don't localize ==================== -->
 
     <!-- Number of rings for interrupting/ending the meditation -->
@@ -157,6 +164,20 @@
         <item>1</item>
         <item>2</item>
         <item>3</item>
+    </string-array>
+
+    <!-- Filenames of icons for audio stream selection -->
+    <string-array name="audioStreamEntryValues" translatable="false">
+        <item>ic_alarm_white_24dp</item>
+        <item>ic_notifications_white_24dp</item>
+        <item>ic_audiotrack_white_24dp</item>
+    </string-array>
+
+    <!-- Indexes of filenames of icons for audio stream selection (number of entry values must match audioStreamEntryValues -->
+    <string-array name="audioStreamPersistedEntryValues" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
     </string-array>
 
 </resources>

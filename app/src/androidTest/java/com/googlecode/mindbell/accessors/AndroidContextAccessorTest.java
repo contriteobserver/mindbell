@@ -36,14 +36,16 @@ public class AndroidContextAccessorTest extends AndroidTestCase {
 
     @Test
     public void testBellVolume() {
-        // setup
-        ContextAccessor ca = createContextAccessor();
-        ca.getPrefs().resetOriginalVolume();
-        // exercise
-        ca.startPlayingSoundAndVibrate(ca.getPrefs().forRegularOperation(), null);
-        // verify ... be sure to have sound checked as an activity on your emulated device
-        // verify ... be sure to have pause audio unchecked on your emulated device
-        assertEquals(ca.getAlarmMaxVolume(), ca.getAlarmVolume());
+        if (!createContextAccessor().getPrefs().isUseAudioStreamVolumeSetting()) {
+            // setup
+            ContextAccessor ca = createContextAccessor();
+            ca.getPrefs().resetOriginalVolume();
+            // exercise
+            ca.startPlayingSoundAndVibrate(ca.getPrefs().forRegularOperation(), null);
+            // verify ... be sure to have sound checked as an activity on your emulated device
+            // verify ... be sure to have pause audio unchecked on your emulated device
+            assertEquals(ca.getAlarmMaxVolume(), ca.getAlarmVolume());
+        }
     }
 
     private ContextAccessor createContextAccessor() {

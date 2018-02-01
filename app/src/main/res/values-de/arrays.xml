@@ -86,4 +86,11 @@
         <item>SA</item>
     </string-array>
 
+    <!-- Texts to be shown next to the icons for audio stream selection -->
+    <string-array name="audioStreamEntries">
+        <item>Als Weckruf abspielen</item>
+        <item>Als Benachrichtigung abspielen</item>
+        <item>Als Musik abspielen</item>
+    </string-array>
+
 </resources>

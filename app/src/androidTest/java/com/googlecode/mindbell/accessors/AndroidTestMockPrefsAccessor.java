@@ -19,6 +19,7 @@
  */
 package com.googlecode.mindbell.accessors;
 
+import android.media.AudioManager;
 import android.net.Uri;
 
 import com.googlecode.mindbell.util.TimeOfDay;
@@ -101,6 +102,11 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
 
     public void setActiveOnDaysOfWeekString(String activeOnDaysOfWeekString) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public int getAudioStream() {
+        return AudioManager.STREAM_ALARM;
     }
 
     @Override

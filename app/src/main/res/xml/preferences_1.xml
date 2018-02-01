@@ -24,6 +24,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:mindful="http://dknapps.de/ns">
 
+    <PreferenceScreen android:title="@string/prefsCategorySoundOutput">
+
+        <com.googlecode.mindbell.preference.IconPickerPreference
+            android:defaultValue="0"
+            android:entries="@array/audioStreamEntries"
+            android:entryValues="@array/audioStreamEntryValues"
+            android:key="@string/keyAudioStream"
+            android:layout="@layout/icon_picker_preference"
+            android:summary=""
+            android:title="@string/prefsAudioStream"/>
+
+    </PreferenceScreen>
+
     <PreferenceScreen android:title="@string/prefsCategoryActiveTimes">
 
         <!-- keyActive can only be toggled by the meditation button -->

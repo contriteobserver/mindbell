@@ -274,7 +274,7 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
             MindBell.logDebug("Sound suppressed because no sound has been set");
             return false;
         } else if (prefs.isPauseAudioOnSound()) {
-            int requestResult = audioManager.requestAudioFocus(this, prefs.getAudioStreamType(), retrieveDurationHint());
+            int requestResult = audioManager.requestAudioFocus(this, prefs.getAudioStream(), retrieveDurationHint());
             if (requestResult == AUDIOFOCUS_REQUEST_FAILED) {
                 MindBell.logDebug("Sound suppressed because setting is pause audio on sound and request of audio focus failed");
                 return false;
@@ -297,7 +297,7 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
             }
         }
         mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioStreamType(prefs.getAudioStreamType());
+        mediaPlayer.setAudioStreamType(prefs.getAudioStream());
         if (!prefs.isUseAudioStreamVolumeSetting()) { // care about setting the volume
             float bellVolume = activityPrefs.getVolume();
             mediaPlayer.setVolume(bellVolume, bellVolume);
