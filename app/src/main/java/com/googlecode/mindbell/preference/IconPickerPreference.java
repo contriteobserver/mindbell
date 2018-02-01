@@ -51,8 +51,9 @@ public class IconPickerPreference extends ListPreferenceWithSummaryFix {
     private int currentIndex = 0; // default value if android:defaultValue is not set
 
     private ImageView selectedIconImageView;
-
     private TextView summaryTextView;
+    // The underlying listener gets overridden by some group adapter
+    private OnPreferenceChangeListener additionalOnPreferenceChangeListener;
 
     public IconPickerPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -82,6 +83,11 @@ public class IconPickerPreference extends ListPreferenceWithSummaryFix {
     }
 
     @Override
+    public String getValue() {
+        return String.valueOf(currentIndex);
+    }
+
+    @Override
     protected void onBindView(View view) {
         super.onBindView(view);
 
@@ -108,10 +114,13 @@ public class IconPickerPreference extends ListPreferenceWithSummaryFix {
             for (int i = 0; i < iconItemList.size(); i++) {
                 IconItem item = iconItemList.get(i);
                 if (item.isChecked) {
-                    persistString(String.valueOf(i));
-                    currentIndex = i;
-                    updateIcon();
-                    break;
+                    if (additionalOnPreferenceChangeListener == null ||
+                            additionalOnPreferenceChangeListener.onPreferenceChange(this, String.valueOf(i))) {
+                        persistString(String.valueOf(i));
+                        currentIndex = i;
+                        updateIcon();
+                        break;
+                    }
                 }
             }
         }
@@ -140,6 +149,10 @@ public class IconPickerPreference extends ListPreferenceWithSummaryFix {
         CustomListPreferenceAdapter customListPreferenceAdapter =
                 new CustomListPreferenceAdapter(getContext(), R.layout.icon_picker_preference_item, iconItemList);
         builder.setAdapter(customListPreferenceAdapter, null);
+    }
+
+    public void setAdditionalOnPreferenceChangeListener(OnPreferenceChangeListener additionalOnPreferenceChangeListener) {
+        this.additionalOnPreferenceChangeListener = additionalOnPreferenceChangeListener;
     }
 
     private class CustomListPreferenceAdapter extends ArrayAdapter<IconItem> {

@@ -49,6 +49,9 @@
 
     <string name="prefsCategorySoundOutput">Klangausgabe</string>
     <string name="prefsAudioStream">Audio-Ausgabeweg</string>
+    <string name="prefsUseAudioStreamVolumeSetting">Lautstärke des Ausgabewegs verwenden</string>
+    <string name="summaryUseAudioStreamVolumeSetting">Übliche Lautstärkeeinstellung des gewählten Audio-Ausgabewegs nutzen</string>
+    <string name="summaryDontUseAudioStreamVolumeSetting">Eigene Lautstärkeeinstellungen von MindBell nutzen</string>
 
     <string name="prefsCategoryActiveTimes">Aktive Zeiten und Rhythmus</string>
     <string name="prefsActive">MindBell an/aus</string>

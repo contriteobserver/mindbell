@@ -110,6 +110,11 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
+    public boolean isUseAudioStreamVolumeSetting() {
+        return false;
+    }
+
+    @Override
     public float getMeditationVolume() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }

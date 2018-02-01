@@ -48,6 +48,9 @@
 
     <string name="prefsCategorySoundOutput">Sound output</string>
     <string name="prefsAudioStream">Audio stream</string>
+    <string name="prefsUseAudioStreamVolumeSetting">Use audio stream volume setting</string>
+    <string name="summaryUseAudioStreamVolumeSetting">Usual volume setting of selected audio stream is used</string>
+    <string name="summaryDontUseAudioStreamVolumeSetting">Own volume settings of MindBell are used</string>
 
     <string name="prefsCategoryActiveTimes">Active times and rhythm</string>
     <string name="prefsActive">MindBell on/off</string>
@@ -237,6 +240,7 @@
     <string name="keyMeditationEndingTimeMillis" translatable="false">meditationEndingTimeMillis</string>
     <string name="keyMeditationInterruptingBell" translatable="false">meditationInterruptingBell</string>
     <string name="keyMeditationStartingTimeMillis" translatable="false">meditationStartingTimeMillis</string>
+    <string name="keyMeditationVolume" translatable="false">meditationVolume</string>
     <string name="keyMuteInFlightMode" translatable="false">muteOffInFlightMode</string>
     <string name="keyMutedTill" translatable="false">mutedTill</string>
     <string name="keyMuteOffHook" translatable="false">muteOffHook</string>
@@ -264,10 +268,10 @@
     <string name="keyStatusIconMaterialDesign" translatable="false">statusIconMaterialDesign</string>
     <string name="keyStatusVisibilityPublic" translatable="false">statusVisiblityPublic</string>
     <string name="keyStopMeditationAutomatically" translatable="false">stopMeditationAutomatically</string>
+    <string name="keyUseAudioStreamVolumeSetting" translatable="false">useAudioStreamVolumeSetting</string>
     <string name="keyUseStandardBell" translatable="false">useStandardBell</string>
     <string name="keyVibrate" translatable="false">vibrate</string>
     <string name="keyVolume" translatable="false">volume</string>
-    <string name="keyMeditationVolume" translatable="false">meditationVolume</string>
 
     <!-- Mail address for send log by e-mail (don't localize) -->
     <string name="emailAddress" translatable="false">mindbell@dknapps.de</string>

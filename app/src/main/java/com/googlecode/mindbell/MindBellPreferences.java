@@ -42,6 +42,7 @@ import android.widget.Toast;
 import com.googlecode.mindbell.accessors.AndroidContextAccessor;
 import com.googlecode.mindbell.accessors.AndroidPrefsAccessor;
 import com.googlecode.mindbell.accessors.PrefsAccessor;
+import com.googlecode.mindbell.preference.IconPickerPreference;
 import com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix;
 import com.googlecode.mindbell.preference.MediaVolumePreference;
 import com.googlecode.mindbell.preference.MinutesIntervalPickerPreference;
@@ -75,6 +76,10 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         addPreferencesFromResource(R.xml.preferences_2); // notifications depend on SDK
         addPreferencesFromResource(R.xml.preferences_3);
 
+        final IconPickerPreference preferenceAudioStream =
+                (IconPickerPreference) getPreferenceScreen().findPreference(getText(R.string.keyAudioStream));
+        final CheckBoxPreference preferenceUseAudioStreamVolumeSetting =
+                (CheckBoxPreference) getPreferenceScreen().findPreference(getText(R.string.keyUseAudioStreamVolumeSetting));
         final CheckBoxPreference preferenceStatus =
                 (CheckBoxPreference) getPreferenceScreen().findPreference(getText(R.string.keyStatus));
         final CheckBoxPreference preferenceShow =
@@ -102,6 +107,35 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         final MultiSelectListPreferenceWithSummary preferenceActiveOnDaysOfWeek =
                 (MultiSelectListPreferenceWithSummary) getPreferenceScreen().findPreference(
                         getText(R.string.keyActiveOnDaysOfWeek));
+        final MediaVolumePreference preferenceMeditationVolume =
+                (MediaVolumePreference) getPreferenceScreen().findPreference(getText(R.string.keyMeditationVolume));
+
+        preferenceUseAudioStreamVolumeSetting.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                boolean isChecked = (Boolean) newValue;
+                preferenceVolume.setEnabled(preferenceSound.isChecked() && !isChecked);
+                preferenceMeditationVolume.setEnabled(!isChecked);
+                return true;
+            }
+
+        });
+
+        preferenceAudioStream.setAdditionalOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                boolean mustUseAudioStreamVolumeSetting = PrefsAccessor.mustUseAudioStreamVolumeSetting((String) newValue);
+                if (mustUseAudioStreamVolumeSetting) {
+                    preferenceUseAudioStreamVolumeSetting.setChecked(true);
+                    // for whatever reason the above statement does not call the onPreferenceChangeListener above
+                    preferenceVolume.setEnabled(false);
+                    preferenceMeditationVolume.setEnabled(false);
+                }
+                preferenceUseAudioStreamVolumeSetting.setEnabled(!mustUseAudioStreamVolumeSetting);
+                return true;
+            }
+
+        });
 
         preferenceStatus.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
@@ -126,6 +160,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                     boolean isChecked = (Boolean) newValue;
                     preferenceUseStandardBell.setEnabled(isChecked);
                     preferenceRingtone.setEnabled(isChecked && !preferenceUseStandardBell.isChecked());
+                    preferenceVolume.setEnabled(!preferenceUseAudioStreamVolumeSetting.isChecked() && isChecked);
                     return true;
                 } else {
                     return false;
@@ -254,7 +289,11 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
 
         });
 
-        // As no PreferenceChangeListener is called without change, some settings have to be made explicitely
+        // As no PreferenceChangeListener is called without change, some settings have to be made explicitly
+        preferenceVolume.setEnabled(preferenceSound.isChecked() && !preferenceUseAudioStreamVolumeSetting.isChecked());
+        preferenceMeditationVolume.setEnabled(!preferenceUseAudioStreamVolumeSetting.isChecked());
+        preferenceUseAudioStreamVolumeSetting.setEnabled(
+                !PrefsAccessor.mustUseAudioStreamVolumeSetting(preferenceAudioStream.getValue()));
         preferenceUseStandardBell.setEnabled(preferenceSound.isChecked());
         preferenceRingtone.setEnabled(preferenceSound.isChecked() && !preferenceUseStandardBell.isChecked());
         preferenceRingtoneValue = prefs.getRingtone(); // cannot be retrieved from preference

@@ -19,6 +19,7 @@
  */
 package com.googlecode.mindbell.accessors;
 
+import android.media.AudioManager;
 import android.net.Uri;
 
 import com.googlecode.mindbell.util.TimeOfDay;
@@ -92,6 +93,26 @@ public abstract class PrefsAccessor {
         return sb.toString();
     }
 
+    /**
+     * MindBell's own volume settings are only allowed to be used with sound going to alarm stream.
+     */
+    public static boolean mustUseAudioStreamVolumeSetting(String audioStreamSetting) {
+        return getAudioStream(audioStreamSetting) != AudioManager.STREAM_ALARM;
+    }
+
+    public static int getAudioStream(String audioStreamSetting) {
+        switch (audioStreamSetting) {
+            case "1":
+                return AudioManager.STREAM_NOTIFICATION;
+            case "2":
+                return AudioManager.STREAM_MUSIC;
+            case "0":
+                // fall-thru to use "0" as default
+            default:
+                return AudioManager.STREAM_ALARM;
+        }
+    }
+
     public abstract boolean isShow();
 
     public abstract boolean isSound();
@@ -114,9 +135,7 @@ public abstract class PrefsAccessor {
 
     public abstract int getAudioStream();
 
-    public boolean isUseAudioStreamVolumeSetting() {
-        return true;
-    }
+    public abstract boolean isUseAudioStreamVolumeSetting();
 
     public abstract float getMeditationVolume();
 

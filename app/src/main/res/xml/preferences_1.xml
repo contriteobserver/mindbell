@@ -34,6 +34,11 @@
             android:layout="@layout/icon_picker_preference"
             android:summary=""
             android:title="@string/prefsAudioStream"/>
+        <CheckBoxPreference
+            android:key="@string/keyUseAudioStreamVolumeSetting"
+            android:summaryOff="@string/summaryDontUseAudioStreamVolumeSetting"
+            android:summaryOn="@string/summaryUseAudioStreamVolumeSetting"
+            android:title="@string/prefsUseAudioStreamVolumeSetting"/>
 
     </PreferenceScreen>
 
@@ -109,7 +114,6 @@
                 android:showSilent="false"
                 android:title="@string/prefsRingtone"/>
             <com.googlecode.mindbell.preference.MediaVolumePreference
-                android:dependency="@string/keySound"
                 android:dialogTitle="@string/prefsVolume"
                 android:key="@string/keyVolume"
                 android:title="@string/prefsVolume"

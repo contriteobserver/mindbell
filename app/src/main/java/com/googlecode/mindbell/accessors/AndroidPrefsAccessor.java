@@ -21,7 +21,6 @@ package com.googlecode.mindbell.accessors;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.media.AudioManager;
 import android.net.Uri;
 import android.util.Log;
 
@@ -82,6 +81,7 @@ import static com.googlecode.mindbell.R.string.keyStatus;
 import static com.googlecode.mindbell.R.string.keyStatusIconMaterialDesign;
 import static com.googlecode.mindbell.R.string.keyStatusVisibilityPublic;
 import static com.googlecode.mindbell.R.string.keyStopMeditationAutomatically;
+import static com.googlecode.mindbell.R.string.keyUseAudioStreamVolumeSetting;
 import static com.googlecode.mindbell.R.string.keyUseStandardBell;
 import static com.googlecode.mindbell.R.string.keyVibrate;
 import static com.googlecode.mindbell.R.string.keyVolume;
@@ -205,6 +205,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         addPreference(keyStatusVisibilityPublic, true, BOOLEAN, context);
         addPreference(keyStopMeditationAutomatically, false, BOOLEAN, context);
         addPreference(keyUseStandardBell, true, BOOLEAN, context);
+        addPreference(keyUseAudioStreamVolumeSetting, false, BOOLEAN, context);
         addPreference(keyVibrate, false, BOOLEAN, context);
         addPreference(keyVolume, DEFAULT_VOLUME, FLOAT, context);
         addPreference(keyMeditationVolume, getVolume(), FLOAT, context); // for existing users: use standard volume as default here
@@ -560,16 +561,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     @Override
     public int getAudioStream() {
-        switch (getStringSetting(keyAudioStream)) {
-            case "1":
-                return AudioManager.STREAM_NOTIFICATION;
-            case "2":
-                return AudioManager.STREAM_MUSIC;
-            case "0":
-                // fall-thru to use "0" as default
-            default:
-                return AudioManager.STREAM_ALARM;
-        }
+        return getAudioStream(getStringSetting(keyAudioStream));
     }
 
     /**
@@ -580,6 +572,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
      */
     private String getStringSetting(int resid) {
         return (String) getSetting(resid);
+    }
+
+    @Override
+    public boolean isUseAudioStreamVolumeSetting() {
+        return getBooleanSetting(keyUseAudioStreamVolumeSetting);
     }
 
     @Override
