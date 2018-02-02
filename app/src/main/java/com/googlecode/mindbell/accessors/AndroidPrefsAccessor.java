@@ -200,12 +200,12 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         addPreference(keySound, true, BOOLEAN, context);
         addPreference(keyStart, "09:00", TIME_STRING, context);
         addPreference(keyStartMeditationDirectly, false, BOOLEAN, context);
-        addPreference(keyStatus, true, BOOLEAN, context);
+        addPreference(keyStatus, false, BOOLEAN, context);
         addPreference(keyStatusIconMaterialDesign, true, BOOLEAN, context);
         addPreference(keyStatusVisibilityPublic, true, BOOLEAN, context);
         addPreference(keyStopMeditationAutomatically, false, BOOLEAN, context);
         addPreference(keyUseStandardBell, true, BOOLEAN, context);
-        addPreference(keyUseAudioStreamVolumeSetting, false, BOOLEAN, context);
+        addPreference(keyUseAudioStreamVolumeSetting, true, BOOLEAN, context);
         addPreference(keyVibrate, false, BOOLEAN, context);
         addPreference(keyVolume, DEFAULT_VOLUME, FLOAT, context);
         addPreference(keyMeditationVolume, getVolume(), FLOAT, context); // for existing users: use standard volume as default here

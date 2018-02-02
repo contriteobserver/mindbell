@@ -79,9 +79,9 @@
     <string name="summaryDontSound">Beim Läuten keinen Klang abspielen</string>
     <string name="prefsUseStandardBell">Standard-Glockenklang</string>
     <string name="summaryUseStandardBell">Beim Läuten den Standard-Glockenklang abspielen</string>
-    <string name="summaryDontUseStandardBell">Beim Läuten den gewählten Systemklang abspielen</string>
+    <string name="summaryDontUseStandardBell">Beim Läuten den gewählten Klingelton abspielen</string>
     <string name="prefsRingtone">Systemklang</string>
-    <string name="summaryRingtoneNotSet">Kein Systemklang ausgewählt, Standard-Glockenklang abspielen</string>
+    <string name="summaryRingtoneNotSet">Kein Klingelton ausgewählt, Standard-Glockenklang abspielen</string>
     <string name="prefsVolume">Lautstärke</string>
 
     <string name="prefsCategoryVibration">Vibration</string>
@@ -203,15 +203,20 @@
         \'Beim Telefonieren still\' abgeschaltet sein.</string>
 
     <!-- Permission READ_PHONE_STATE denied but user checked 'never ask again' -->
-    <string name="neverAskAgainReadPhoneStateTitle">Frage nach Berechtigung</string>
+    <string name="neverAskAgainReadPhoneStateTitle">Fehlende Berechtigung</string>
     <string name="neverAskAgainReadPhoneStateText">Die Berechtigung READ_PHONE_STATE wurde nicht erteilt.
         Daher muss entweder \'Status-Icon anzeigen\' oder \'Beim Telefonieren still\' abgeschaltet sein.</string>
 
-    <!-- Permission READ_PHONE_STATE requested after displaying popup dialog -->
-    <string name="requestReadPhoneStateTitle">Bitte um Berechtigung</string>
-    <string name="requestReadPhoneStateText">Die Berechtigung READ_PHONE_STATE wurde noch nicht erteilt.
-        Daher muss entweder \'Status-Icon anzeigen\' oder \'Beim Telefonieren still\' in den Einstellungen
-        abgeschaltet sein. Möchten Sie die Berechtigung jetzt erteilen?</string>
+    <!-- Reasons why permission READ_EXTERNAL_STORAGE should be granted -->
+    <string name="reasonReadExternalStorageTitle">Wozu diese Berechtigung?</string>
+    <string name="reasonReadExternalStorageText">\'Standard-Glockenklangl\' wurde abgewählt. Nur mit der Berechtigung
+        READ_EXTERNAL_STORAGE kann MindBell auf Klingeltöne zugreifen.\n\nWenn die Berechtigung abgelehnt wird,
+        muss daher \'Standard-Glockenklang\' angeschaltet sein.</string>
+
+    <!-- Permission READ_EXTERNAL_STORAGE denied but user checked 'never ask again' -->
+    <string name="neverAskAgainReadExternalStorageTitle">Fehlende Berechtigung</string>
+    <string name="neverAskAgainReadExternalStorageText">Die Berechtigung READ_EXTERNAL_STORAGE  wurde nicht erteilt. Daher muss
+        \'Standard-Glockenklang\' angeschaltet sein.</string>
 
     <!-- Help popup -->
     <string name="main_message1_popup">Wie funktioniert MindBell?\nhttp://dknapps.de/mindbell-intro</string>

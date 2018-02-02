@@ -203,12 +203,6 @@
     <string name="neverAskAgainReadPhoneStateText">Permission READ_PHONE_STATE is not granted. Therefore
         either \'Show status icon\' or \'Mute during phone calls\' must be switched off.</string>
 
-    <!-- Permission READ_PHONE_STATE requested after displaying popup dialog -->
-    <string name="requestReadPhoneStateTitle">Asking for permission</string>
-    <string name="requestReadPhoneStateText">Permission READ_PHONE_STATE is not granted yet. Therefore
-        either \'Show status icon\' or \'Mute during phone calls\' must be switched off in the settings.
-        Do you want to grant it now?</string>
-
     <!-- Reasons why permission READ_EXTERNAL_STORAGE should be granted -->
     <string name="reasonReadExternalStorageTitle">Why this permission?</string>
     <string name="reasonReadExternalStorageText">\'Use standard bell\' has been deselected. Only when permission

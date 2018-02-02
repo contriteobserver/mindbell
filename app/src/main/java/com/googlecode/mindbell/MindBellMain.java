@@ -3,7 +3,7 @@
  * for remembering what really counts
  * <p/>
  * Copyright (C) 2010-2014 Marc Schroeder
- * Copyright (C) 2014-2017 Uwe Damken
+ * Copyright (C) 2014-2018 Uwe Damken
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,18 +19,14 @@
  */
 package com.googlecode.mindbell;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -66,7 +62,7 @@ import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS_
 import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS_PERIOD_TOO_SHORT;
 import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS_VARIABLE_PERIOD_MISSING;
 
-public class MindBellMain extends Activity implements ActivityCompat.OnRequestPermissionsResultCallback {
+public class MindBellMain extends Activity {
 
     private ContextAccessor contextAccessor;
 
@@ -564,7 +560,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
     private void checkWhetherToShowPopup() {
         if (!hasShownPopup()) {
             setPopupShown(true);
-            requestPermissionsAndOpenHelpDialog(); // calls onMenuItemClickHelp() afterwards
+            onMenuItemClickHelp();
         }
     }
 
@@ -580,32 +576,6 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
             contextAccessor.getPrefs().setPopup(versionCode);
         } else {
             contextAccessor.getPrefs().resetPopup();
-        }
-    }
-
-    private void requestPermissionsAndOpenHelpDialog() {
-        if (!contextAccessor.getPrefs().isStatus() || !contextAccessor.getPrefs().isMuteOffHook() ||
-                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) ==
-                        PackageManager.PERMISSION_GRANTED) {
-            onMenuItemClickHelp(); // Permission not needed or already granted => go directly to the next dialog
-        } else {
-            new AlertDialog.Builder(this) //
-                    .setTitle(R.string.requestReadPhoneStateTitle) //
-                    .setMessage(R.string.requestReadPhoneStateText) //
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            ActivityCompat.requestPermissions(MindBellMain.this, new String[]{Manifest.permission.READ_PHONE_STATE},
-                                    0);
-                        }
-                    }) //
-                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            onMenuItemClickHelp();
-                        }
-                    }) //
-                    .create() //
-                    .show();
         }
     }
 
@@ -703,13 +673,6 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
         sb.append("\n\n");
         sb.append(getText(R.string.mailInfo1));
         return sb.toString();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        // Request permission without handling the result but calling the popup dialog. If permissions are not sufficient for
-        // the settings the user will get a warning notification and can grant permission via settings.
-        onMenuItemClickHelp();
     }
 
     /**
