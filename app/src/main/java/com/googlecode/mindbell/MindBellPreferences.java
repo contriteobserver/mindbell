@@ -42,7 +42,6 @@ import android.widget.Toast;
 import com.googlecode.mindbell.accessors.AndroidContextAccessor;
 import com.googlecode.mindbell.accessors.AndroidPrefsAccessor;
 import com.googlecode.mindbell.accessors.PrefsAccessor;
-import com.googlecode.mindbell.preference.IconPickerPreference;
 import com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix;
 import com.googlecode.mindbell.preference.MediaVolumePreference;
 import com.googlecode.mindbell.preference.MinutesIntervalPickerPreference;
@@ -60,6 +59,8 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
 
     private static final int REQUEST_CODE_MUTE_OFF_HOOK = 1;
 
+    private static final int REQUEST_CODE_RINGTONE = 2;
+
     // Weird, but ringtone cannot be retrieved from RingtonePreference, only from SharedPreference or in ChangeListener
     private String preferenceRingtoneValue;
 
@@ -76,8 +77,6 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         addPreferencesFromResource(R.xml.preferences_2); // notifications depend on SDK
         addPreferencesFromResource(R.xml.preferences_3);
 
-        final IconPickerPreference preferenceAudioStream =
-                (IconPickerPreference) getPreferenceScreen().findPreference(getText(R.string.keyAudioStream));
         final CheckBoxPreference preferenceUseAudioStreamVolumeSetting =
                 (CheckBoxPreference) getPreferenceScreen().findPreference(getText(R.string.keyUseAudioStreamVolumeSetting));
         final CheckBoxPreference preferenceStatus =
@@ -114,25 +113,14 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
 
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 boolean isChecked = (Boolean) newValue;
-                preferenceVolume.setEnabled(preferenceSound.isChecked() && !isChecked);
-                preferenceMeditationVolume.setEnabled(!isChecked);
-                return true;
-            }
-
-        });
-
-        preferenceAudioStream.setAdditionalOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                boolean mustUseAudioStreamVolumeSetting = PrefsAccessor.mustUseAudioStreamVolumeSetting((String) newValue);
-                if (mustUseAudioStreamVolumeSetting) {
-                    preferenceUseAudioStreamVolumeSetting.setChecked(true);
-                    // for whatever reason the above statement does not call the onPreferenceChangeListener above
-                    preferenceVolume.setEnabled(false);
-                    preferenceMeditationVolume.setEnabled(false);
+                if (!isChecked && prefs.mustUseAudioStreamVolumeSetting()) {
+                    Toast.makeText(MindBellPreferences.this, R.string.mustUseAudioStreamSetting, Toast.LENGTH_SHORT).show();
+                    return false;
+                } else {
+                    preferenceVolume.setEnabled(preferenceSound.isChecked() && !isChecked);
+                    preferenceMeditationVolume.setEnabled(!isChecked);
+                    return true;
                 }
-                preferenceUseAudioStreamVolumeSetting.setEnabled(!mustUseAudioStreamVolumeSetting);
-                return true;
             }
 
         });
@@ -172,11 +160,23 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         preferenceUseStandardBell.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
             public boolean onPreferenceChange(Preference preference, Object newValue) {
+                Log.e(TAG, "preferenceUseStandardBell newValue=" + newValue);
                 boolean isChecked = (Boolean) newValue;
-                preferenceRingtone.setEnabled(preferenceSound.isChecked() && !isChecked);
-                // Weird, but ringtone cannot be retrieved from RingtonePreference, only from SharedPreference
-                setPreferenceVolumeSoundUri(preferenceVolume, isChecked, preferenceRingtoneValue);
-                return true;
+                if (isChecked ||
+                        ContextCompat.checkSelfPermission(MindBellPreferences.this, Manifest.permission.READ_EXTERNAL_STORAGE) ==
+                                PackageManager.PERMISSION_GRANTED) {
+                    // Allow setting this option to "off" if permission is granted
+                    preferenceRingtone.setEnabled(preferenceSound.isChecked() && !isChecked);
+                    // Weird, but ringtone cannot be retrieved from RingtonePreference, only from SharedPreference
+                    setPreferenceVolumeSoundUri(preferenceVolume, isChecked, preferenceRingtoneValue);
+                    return true;
+                } else {
+                    // Ask for permission if this option shall be set to "off" but permission is missing
+                    ActivityCompat.requestPermissions(MindBellPreferences.this,
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_RINGTONE);
+                    // As the permission request is asynchronous we have to deny setting this option (to "off")
+                    return false;
+                }
             }
 
         });
@@ -289,11 +289,9 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
 
         });
 
-        // As no PreferenceChangeListener is called without change, some settings have to be made explicitly
+        // As no PreferenceChangeListener is called without change *BY USER*, some settings have to be made explicitly
         preferenceVolume.setEnabled(preferenceSound.isChecked() && !preferenceUseAudioStreamVolumeSetting.isChecked());
         preferenceMeditationVolume.setEnabled(!preferenceUseAudioStreamVolumeSetting.isChecked());
-        preferenceUseAudioStreamVolumeSetting.setEnabled(
-                !PrefsAccessor.mustUseAudioStreamVolumeSetting(preferenceAudioStream.getValue()));
         preferenceUseStandardBell.setEnabled(preferenceSound.isChecked());
         preferenceRingtone.setEnabled(preferenceSound.isChecked() && !preferenceUseStandardBell.isChecked());
         preferenceRingtoneValue = prefs.getRingtone(); // cannot be retrieved from preference
@@ -370,7 +368,8 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                 return false;
             }
             String durationString = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-            if (durationString == null || Long.parseLong(durationString) > (AndroidPrefsAccessor.WAITING_TIME - 1000L)) {
+            if (durationString == null || Long.parseLong(durationString) > (AndroidPrefsAccessor.WAITING_TIME)) {
+                Log.w(TAG, "Sound <" + uriString + "> too long: <" + durationString + "> ms");
                 Toast.makeText(this, R.string.ringtoneDurationTooLongOrInvalid, Toast.LENGTH_SHORT).show();
                 return false;
             }
@@ -432,6 +431,9 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                         (CheckBoxPreference) getPreferenceScreen().findPreference(getText(R.string.keyMuteOffHook));
                 handleMuteHookOffAndStatusPermissionRequestResult(checkBoxPreferenceMuteOffHook, grantResults);
                 break;
+            case REQUEST_CODE_RINGTONE:
+                handleRingtonePermissionRequestResult(grantResults);
+                break;
             default:
                 break;
         }
@@ -442,7 +444,9 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
             // if request is cancelled, the result arrays are empty, so leave this option "off" and don't explain it
         } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             // User granted the needed permission therefore this option is set to "on"
-            one.setChecked(true);
+            if (one.getOnPreferenceChangeListener().onPreferenceChange(one, Boolean.TRUE)) {
+                one.setChecked(true); // WARNING: This does NOT call the onPreferenceValueChangeListener
+            }
         } else if (ActivityCompat.shouldShowRequestPermissionRationale(MindBellPreferences.this,
                 Manifest.permission.READ_PHONE_STATE)) {
             // User denied the needed permission and can be given an explanation, so we show an explanation
@@ -457,6 +461,39 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
             new AlertDialog.Builder(MindBellPreferences.this) //
                     .setTitle(R.string.neverAskAgainReadPhoneStateTitle) //
                     .setMessage(R.string.neverAskAgainReadPhoneStateText) //
+                    .setPositiveButton(android.R.string.ok, null) //
+                    .create()//
+                    .show();
+        }
+    }
+
+    private void handleRingtonePermissionRequestResult(int[] grantResults) {
+        CheckBoxPreference checkBoxPreferenceUseStandardBell =
+                (CheckBoxPreference) getPreferenceScreen().findPreference(getText(R.string.keyUseStandardBell));
+        if (grantResults.length == 0) {
+            // if request is cancelled, the result arrays are empty, so leave this option "on" and don't explain it
+        } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // User granted the needed permission therefore this option is set to "off"
+            if (checkBoxPreferenceUseStandardBell
+                    .getOnPreferenceChangeListener()
+                    .onPreferenceChange(checkBoxPreferenceUseStandardBell, Boolean.FALSE)) {
+                checkBoxPreferenceUseStandardBell.setChecked(
+                        false); // WARNING: This does NOT call the onPreferenceValueChangeListener
+            }
+        } else if (ActivityCompat.shouldShowRequestPermissionRationale(MindBellPreferences.this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            // User denied the needed permission and can be given an explanation, so we show an explanation
+            new AlertDialog.Builder(MindBellPreferences.this) //
+                    .setTitle(R.string.reasonReadExternalStorageTitle) //
+                    .setMessage(R.string.reasonReadExternalStorageText) //
+                    .setPositiveButton(android.R.string.ok, null) //
+                    .create() //
+                    .show();
+        } else {
+            // User denied the needed permission and checked never ask again
+            new AlertDialog.Builder(MindBellPreferences.this) //
+                    .setTitle(R.string.neverAskAgainReadExternalStorageTitle) //
+                    .setMessage(R.string.neverAskAgainReadExternalStorageText) //
                     .setPositiveButton(android.R.string.ok, null) //
                     .create()//
                     .show();

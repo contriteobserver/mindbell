@@ -160,6 +160,7 @@
     <string name="buttonStartMeditation">Start</string>
 
     <!-- Validation messages -->
+    <string name="mustUseAudioStreamSetting">Kann nur für Weckrufe abgeschaltet werden</string>
     <string name="atLeastOneRingingActionNeeded">Mindestens eine Aktion beim Läuten auswählen</string>
     <string name="atLeastOneActiveDayNeeded">Mindestens einen Tag angeben</string>
     <string name="frequencyDoesNotFitIntoAnHour">Läuten auf die Minute beim gewählten Intervall nicht möglich</string>

@@ -26,19 +26,21 @@
 
     <PreferenceScreen android:title="@string/prefsCategorySoundOutput">
 
+        <CheckBoxPreference
+            android:disableDependentsState="false"
+            android:key="@string/keyUseAudioStreamVolumeSetting"
+            android:summaryOff="@string/summaryDontUseAudioStreamVolumeSetting"
+            android:summaryOn="@string/summaryUseAudioStreamVolumeSetting"
+            android:title="@string/prefsUseAudioStreamVolumeSetting"/>
         <com.googlecode.mindbell.preference.IconPickerPreference
             android:defaultValue="0"
+            android:dependency="@string/keyUseAudioStreamVolumeSetting"
             android:entries="@array/audioStreamEntries"
             android:entryValues="@array/audioStreamEntryValues"
             android:key="@string/keyAudioStream"
             android:layout="@layout/icon_picker_preference"
             android:summary=""
             android:title="@string/prefsAudioStream"/>
-        <CheckBoxPreference
-            android:key="@string/keyUseAudioStreamVolumeSetting"
-            android:summaryOff="@string/summaryDontUseAudioStreamVolumeSetting"
-            android:summaryOn="@string/summaryUseAudioStreamVolumeSetting"
-            android:title="@string/prefsUseAudioStreamVolumeSetting"/>
 
     </PreferenceScreen>
 

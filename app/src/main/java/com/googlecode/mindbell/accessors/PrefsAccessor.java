@@ -93,13 +93,6 @@ public abstract class PrefsAccessor {
         return sb.toString();
     }
 
-    /**
-     * MindBell's own volume settings are only allowed to be used with sound going to alarm stream.
-     */
-    public static boolean mustUseAudioStreamVolumeSetting(String audioStreamSetting) {
-        return getAudioStream(audioStreamSetting) != AudioManager.STREAM_ALARM;
-    }
-
     public static int getAudioStream(String audioStreamSetting) {
         switch (audioStreamSetting) {
             case "1":
@@ -112,6 +105,15 @@ public abstract class PrefsAccessor {
                 return AudioManager.STREAM_ALARM;
         }
     }
+
+    /**
+     * MindBell's own volume settings are only allowed to be used with sound going to alarm stream.
+     */
+    public boolean mustUseAudioStreamVolumeSetting() {
+        return getAudioStream() != AudioManager.STREAM_ALARM;
+    }
+
+    public abstract int getAudioStream();
 
     public abstract boolean isShow();
 
@@ -132,8 +134,6 @@ public abstract class PrefsAccessor {
     public abstract boolean isDismissNotification();
 
     public abstract String getActiveOnDaysOfWeekString();
-
-    public abstract int getAudioStream();
 
     public abstract boolean isUseAudioStreamVolumeSetting();
 
