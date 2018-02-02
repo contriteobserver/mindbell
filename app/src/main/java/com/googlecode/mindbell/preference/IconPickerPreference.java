@@ -44,8 +44,6 @@ import java.util.List;
 
 public class IconPickerPreference extends ListPreferenceWithSummaryFix {
 
-    private String title;
-
     private List<IconItem> iconItemList;
 
     private int currentIndex = 0; // default value if android:defaultValue is not set
@@ -56,15 +54,6 @@ public class IconPickerPreference extends ListPreferenceWithSummaryFix {
 
     public IconPickerPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
-        for (int i = 0; i < attrs.getAttributeCount(); i++) {
-            if ("title".equals(attrs.getAttributeName(i))) {
-                title = attrs.getAttributeValue(i);
-                if (title.startsWith("@")) { // resource id?
-                    title = context.getText(Integer.valueOf(title.substring(1))).toString();
-                }
-                break;
-            }
-        }
 
         CharSequence[] iconTextArray = getEntries();
         CharSequence[] iconFilenameArray = getEntryValues();
@@ -92,8 +81,6 @@ public class IconPickerPreference extends ListPreferenceWithSummaryFix {
 
         selectedIconImageView = (ImageView) view.findViewById(R.id.selectedIcon);
         summaryTextView = (TextView) view.findViewById(R.id.summary);
-        TextView titleTextView = (TextView) view.findViewById(R.id.title);
-        titleTextView.setText(title);
 
         updateIcon();
     }
