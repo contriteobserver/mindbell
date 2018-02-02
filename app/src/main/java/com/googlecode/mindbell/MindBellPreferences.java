@@ -22,6 +22,8 @@ package com.googlecode.mindbell;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaMetadataRetriever;
 import android.media.Ringtone;
@@ -108,6 +110,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                         getText(R.string.keyActiveOnDaysOfWeek));
         final MediaVolumePreference preferenceMeditationVolume =
                 (MediaVolumePreference) getPreferenceScreen().findPreference(getText(R.string.keyMeditationVolume));
+        final Preference preferenceSendMail = (Preference) getPreferenceScreen().findPreference(getText(R.string.keySendMail));
 
         preferenceUseAudioStreamVolumeSetting.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
@@ -289,6 +292,27 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
 
         });
 
+        preferenceSendMail.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                new AlertDialog.Builder(MindBellPreferences.this) //
+                        .setTitle(R.string.prefsSendMail) //
+                        .setMessage(R.string.mailInfo1) //
+                        .setIcon(R.mipmap.ic_launcher) //
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                onClickReallySendInfo();
+                            }
+                        }) //
+                        .setNegativeButton(android.R.string.cancel, null) //
+                        .show();
+                return true;
+            }
+
+        });
+
         // As no PreferenceChangeListener is called without change *BY USER*, some settings have to be made explicitly
         preferenceVolume.setEnabled(preferenceSound.isChecked() && !preferenceUseAudioStreamVolumeSetting.isChecked());
         preferenceMeditationVolume.setEnabled(!preferenceUseAudioStreamVolumeSetting.isChecked());
@@ -409,6 +433,45 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
      */
     private boolean isNormalize(String normalizeValue) {
         return !AndroidPrefsAccessor.NORMALIZE_NONE.equals(normalizeValue);
+    }
+
+    /**
+     * Handles click on confirmation to send info.
+     */
+    private void onClickReallySendInfo() {
+        AndroidContextAccessor.getInstanceAndLogPreferences(this); // write settings to log
+        MindBell.logDebug("Excluded from battery optimization (always false for SDK < 23)? -> " + Utils.isAppWhitelisted(this));
+        Intent i = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getText(R.string.emailAddress).toString(), null));
+        i.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.emailSubject));
+        i.putExtra(Intent.EXTRA_TEXT, getInfoMailText());
+        try {
+            startActivity(Intent.createChooser(i, getText(R.string.emailChooseApp)));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this, getText(R.string.noEmailClients), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Return information to be sent by mail.
+     */
+    private String getInfoMailText() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n\n------------------------------\n");
+        sb.append(getText(R.string.mailInfo1));
+        sb.append("\n\n");
+        sb.append(getText(R.string.mailInfo2));
+        sb.append("\n\n");
+        sb.append(Utils.getApplicationInformation(getPackageManager(), getPackageName()));
+        sb.append("\n");
+        sb.append(Utils.getSystemInformation());
+        sb.append("\n");
+        sb.append(Utils.getLimitedLogEntriesAsString());
+        sb.append("\n");
+        sb.append(getText(R.string.mailInfo2));
+        sb.append("\n\n");
+        sb.append(getText(R.string.mailInfo1));
+        sb.append("\n------------------------------\n\n");
+        return sb.toString();
     }
 
     @Override

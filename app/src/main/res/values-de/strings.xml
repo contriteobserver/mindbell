@@ -18,6 +18,13 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  -->
+
+<!-- Define referenced terms only once, following this idea: https://stackoverflow.com/a/39870268/2532583 -->
+<!DOCTYPE resources [
+    <!ENTITY constProblemSolving "Problembehebung">
+    <!ENTITY constSendMail "E-Mail mit Log senden">
+    ]>
+
 <resources>
 
     <string name="app_name">MindBell</string>
@@ -43,6 +50,11 @@
     <!-- Send log by e-mail -->
     <string name="emailSubject">E-Mail gesendet von MindBell</string>
     <string name="emailChooseApp">Mail senden &#8230;</string>
+    <string name="mailInfo1">Bitte ergänzen Sie im E-Mail-Text Ihre Frage oder eine Beschreibung des Problems, sonst wird
+        die E-Mail ignoriert.</string>
+    <string name="mailInfo2">Der generierte E-Mail-Text enthält Ihre MindBell- und Android-Version plus ein paar
+        Geräteinformationen und alle von MindBell erzeugten Log-Einträge, die bei der Fehlersuche helfen sollen.</string>
+    <string name="noEmailClients">Es ist keine E-Mail-App installiert.</string>
 
     <!-- MindBellPreferences -->
     <string name="preferencesTitle">MindBell Einstellungen</string>
@@ -143,6 +155,12 @@
     <string name="prefsMeditationEndingBell">Abschlussglocken</string>
     <string name="prefsMeditationVolume">Lautstärke</string>
 
+    <string name="prefsCategoryProblemSolving">&constProblemSolving;</string>
+    <string name="prefsSendMail">&constSendMail;</string>
+    <string name="summarySendMail">Für Vorschläge oder Fragen, die in den FAQ (http://dknapps.de/mindbell) nicht beantwortet
+        werden, können Sie eine E-Mail mit Log-Informationen senden. Bitte vergessen Sie nicht, Ihre Frage oder eine Beschreibung
+        des Problems zu ergänzen.</string>
+
     <!-- MeditationDialog Preferences -->
     <string name="title_meditation_dialog">Meditation starten</string>
     <string name="prefsRampUpTime">Vorbereitungszeit (mm:ss)</string>
@@ -223,15 +241,10 @@
     <string name="main_message2_popup">Was hat sich geändert?\nhttp://dknapps.de/mindbell-changelog</string>
     <string name="main_message3_popup">MindBell läutet nicht (regelmäßig)?\nhttp://dknapps.de/mindbell-notringing</string>
     <string name="main_message4_popup">Häufige Fragen (FAQ)?\nhttp://dknapps.de/mindbell</string>
-    <string name="main_message5_popup">Andere Fragen oder Probleme?\nBitte \'E-Mail senden\' unten verwenden.</string>
+    <string name="main_message5_popup">Andere Fragen oder Probleme?\nBitte \'&constSendMail;\' in den Einstellungen unter
+        \'&constProblemSolving;\'.</string>
     <string name="main_message6_popup">Privacy Policy?\nhttp://dknapps.de/mindbell-privacy</string>
-    <string name="mailInfo1">Bitte ergänzen Sie im E-Mail-Text Ihre Frage oder eine Beschreibung des Problems, sonst wird
-        die E-Mail ignoriert.</string>
-    <string name="mailInfo2">Der generierte E-Mail-Text enthält Ihre MindBell- und Android-Version plus ein paar
-        Geräteinformationen und alle von MindBell erzeugten Log-Einträge, die bei der Fehlersuche helfen sollen.</string>
-    <string name="sendMail">E-Mail senden</string>
     <string name="batterySettings">Akku</string>
-    <string name="noEmailClients">Es ist keine E-Mail-App installiert.</string>
     <string name="alreadyWhitelisted">MindBell ist bereits von Akku-Leistungsoptimierungen ausgenommen.</string>
     <string name="shouldGetWhitelisted">Wenn MindBell nicht regelmäßig läutet, dann bitte von den Akku-Leistungsoptimierungen ausnehmen.</string>
 

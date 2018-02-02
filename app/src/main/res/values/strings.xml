@@ -18,6 +18,13 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  -->
+
+<!-- Define referenced terms only once, following this idea: https://stackoverflow.com/a/39870268/2532583 -->
+<!DOCTYPE resources [
+    <!ENTITY constProblemSolving "Problem solving">
+    <!ENTITY constSendMail "Send an e-mail with log">
+    ]>
+
 <resources>
 
     <string name="app_name">MindBell</string>
@@ -42,6 +49,11 @@
     <!-- Send log by e-mail -->
     <string name="emailSubject">E-mail sent by MindBell</string>
     <string name="emailChooseApp">Send mail &#8230;</string>
+    <string name="mailInfo1">Please add your question or a description of the problem you are experiencing to the e-mail text,
+        otherwise the e-mail will be ignored.</string>
+    <string name="mailInfo2">The generated e-mail text contains your version of MindBell and Android plus some device information
+        and all log entries produced by MindBell to help finding a possible bug.</string>
+    <string name="noEmailClients">There are no email clients installed.</string>
 
     <!-- MindBellPreferences -->
     <string name="preferencesTitle">MindBell Preferences</string>
@@ -142,6 +154,11 @@
     <string name="prefsMeditationEndingBell">Ending bells</string>
     <string name="prefsMeditationVolume">Volume</string>
 
+    <string name="prefsCategoryProblemSolving">Problem solving</string>
+    <string name="prefsSendMail">&constSendMail;</string>
+    <string name="summarySendMail">For suggestions or questions not answered in the FAQ (http://dknapps.de/mindbell) you can send
+        an e-mail with log information. Please don\'t forget to add your question or a description of the problem.</string>
+
     <!-- MeditationDialog Preferences -->
     <string name="title_meditation_dialog">Start meditation</string>
     <string name="prefsRampUpTime">Ramp-up time (mm:ss)</string>
@@ -219,15 +236,10 @@
     <string name="main_message2_popup">What has been changed?\nhttp://dknapps.de/mindbell-changelog</string>
     <string name="main_message3_popup">MindBell does not ring (periodically)?\nhttp://dknapps.de/mindbell-notringing</string>
     <string name="main_message4_popup">Frequently asked questions (FAQ)?\nhttp://dknapps.de/mindbell</string>
-    <string name="main_message5_popup">Other questions or problems?\nPlease use \'Send e-mail\' below.</string>
+    <string name="main_message5_popup">Other questions or problems?\nPlease \'&constSendMail;\' in the settings under
+        \'&constProblemSolving;\'.</string>
     <string name="main_message6_popup">Privacy Policy?\nhttp://dknapps.de/mindbell-privacy</string>
-    <string name="mailInfo1">Please add your question or a description of the problem you are experiencing to the e-mail text,
-        otherwise the e-mail will be ignored.</string>
-    <string name="mailInfo2">The generated e-mail text contains your version of MindBell and Android plus some device information
-        and all log entries produced by MindBell to help finding a possible bug.</string>
-    <string name="sendMail">Send e-mail</string>
     <string name="batterySettings">Battery</string>
-    <string name="noEmailClients">There are no email clients installed.</string>
     <string name="alreadyWhitelisted">MindBell is already excluded from battery optimization.</string>
     <string name="shouldGetWhitelisted">If not ringing regularly please exclude MindBell from battery optimization.</string>
 
@@ -266,6 +278,7 @@
     <string name="keyRampUpTime" translatable="false">rampUpTime</string>
     <string name="keyRandomize" translatable="false">randomize</string>
     <string name="keyRingtone" translatable="false">ringtone</string>
+    <string name="keySendMail" translatable="false">sendMail</string> <!-- fake preference, key only used as id -->
     <string name="keyShow" translatable="false">show</string>
     <string name="keySound" translatable="false">sound</string>
     <string name="keyStart" translatable="false">start</string>

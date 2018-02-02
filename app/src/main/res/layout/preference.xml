@@ -19,32 +19,31 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp">
-
-    <ImageView
-        android:id="@+id/iconImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:paddingTop="3dp"/>
+                android:padding="15dp">
 
     <TextView
-        android:id="@+id/iconText"
+        android:id="@android:id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/dknapps_de_white"/>
+
+    <TextView
+        android:id="@android:id/summary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/iconRadio"
-        android:layout_toRightOf="@id/iconImage"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"/>
+        android:layout_alignLeft="@android:id/title"
+        android:layout_below="@android:id/title"
+        android:layout_toLeftOf="@android:id/icon"
+        android:textAppearance="?android:attr/textAppearanceSmall"/>
 
-    <RadioButton
-        android:id="@+id/iconRadio"
+    <ImageView
+        android:id="@android:id/icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:clickable="false"
-        android:focusable="false"/>
+        android:paddingTop="10dp"/>
 
 </RelativeLayout>

@@ -91,4 +91,15 @@
 
     </PreferenceScreen>
 
+    <PreferenceScreen android:title="@string/prefsCategoryProblemSolving">
+
+        <Preference
+            android:icon="@drawable/ic_mail_outline_white_24dp"
+            android:key="@string/keySendMail"
+            android:layout="@layout/preference"
+            android:summary="@string/summarySendMail"
+            android:title="@string/prefsSendMail"/>
+
+    </PreferenceScreen>
+
 </PreferenceScreen>
