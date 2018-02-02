@@ -93,6 +93,11 @@
 
     <PreferenceScreen android:title="@string/prefsCategoryProblemSolving">
 
+        <CheckBoxPreference
+            android:key="@string/keyUseWorkaroundBell"
+            android:summaryOff="@string/summaryDontUseWorkaroundBell"
+            android:summaryOn="@string/summaryUseWorkaroundBell"
+            android:title="@string/prefsUseWorkaroundBell"/>
         <Preference
             android:icon="@drawable/ic_mail_outline_white_24dp"
             android:key="@string/keySendMail"

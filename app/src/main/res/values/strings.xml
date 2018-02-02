@@ -155,6 +155,10 @@
     <string name="prefsMeditationVolume">Volume</string>
 
     <string name="prefsCategoryProblemSolving">Problem solving</string>
+    <string name="prefsUseWorkaroundBell">Use standard bellwith silence</string>
+    <string name="summaryUseWorkaroundBell">Start standard bell with 3 seconds of silence to avoid distorted sound - for phones
+        that slowly increase sound volume</string>
+    <string name="summaryDontUseWorkaroundBell">Use standard bell as it is</string>
     <string name="prefsSendMail">&constSendMail;</string>
     <string name="summarySendMail">For suggestions or questions not answered in the FAQ (http://dknapps.de/mindbell) you can send
         an e-mail with log information. Please don\'t forget to add your question or a description of the problem.</string>
@@ -289,6 +293,7 @@
     <string name="keyStopMeditationAutomatically" translatable="false">stopMeditationAutomatically</string>
     <string name="keyUseAudioStreamVolumeSetting" translatable="false">useAudioStreamVolumeSetting</string>
     <string name="keyUseStandardBell" translatable="false">useStandardBell</string>
+    <string name="keyUseWorkaroundBell" translatable="false">useWorkaroundBell</string>
     <string name="keyVibrate" translatable="false">vibrate</string>
     <string name="keyVolume" translatable="false">volume</string>
 

@@ -156,6 +156,10 @@
     <string name="prefsMeditationVolume">Lautstärke</string>
 
     <string name="prefsCategoryProblemSolving">&constProblemSolving;</string>
+    <string name="prefsUseWorkaroundBell">Nutze Standard-Glockenklang mit Stille</string>
+    <string name="summaryUseWorkaroundBell">Glockenklang beginnt mit 3 Sekunden Stille, um einen stotternden Klang zu vermeiden -
+        für Telefone mit langsam anschwellender Lautstärke für Klänge</string>
+    <string name="summaryDontUseWorkaroundBell">Verwende den normalen Standard-Glockenklang</string>
     <string name="prefsSendMail">&constSendMail;</string>
     <string name="summarySendMail">Für Vorschläge oder Fragen, die in den FAQ (http://dknapps.de/mindbell) nicht beantwortet
         werden, können Sie eine E-Mail mit Log-Informationen senden. Bitte vergessen Sie nicht, Ihre Frage oder eine Beschreibung

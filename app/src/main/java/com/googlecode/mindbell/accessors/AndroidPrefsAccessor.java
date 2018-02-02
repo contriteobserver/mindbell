@@ -83,6 +83,7 @@ import static com.googlecode.mindbell.R.string.keyStatusVisibilityPublic;
 import static com.googlecode.mindbell.R.string.keyStopMeditationAutomatically;
 import static com.googlecode.mindbell.R.string.keyUseAudioStreamVolumeSetting;
 import static com.googlecode.mindbell.R.string.keyUseStandardBell;
+import static com.googlecode.mindbell.R.string.keyUseWorkaroundBell;
 import static com.googlecode.mindbell.R.string.keyVibrate;
 import static com.googlecode.mindbell.R.string.keyVolume;
 import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.Preference.Type.BOOLEAN;
@@ -150,6 +151,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         bellResourceUriMap.put("1", Utils.getResourceUri(context, R.raw.bell10s));
         bellResourceUriMap.put("2", Utils.getResourceUri(context, R.raw.bell20s));
         bellResourceUriMap.put("3", Utils.getResourceUri(context, R.raw.bell30s));
+        bellResourceUriMap.put("4", Utils.getResourceUri(context, R.raw.bell3plus7s));
 
         // Check the settings and reset invalid ones
         checkSettings(context, logSettings);
@@ -205,6 +207,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         addPreference(keyStatusVisibilityPublic, true, BOOLEAN, context);
         addPreference(keyStopMeditationAutomatically, false, BOOLEAN, context);
         addPreference(keyUseStandardBell, true, BOOLEAN, context);
+        addPreference(keyUseWorkaroundBell, false, BOOLEAN, context);
         addPreference(keyUseAudioStreamVolumeSetting, true, BOOLEAN, context);
         addPreference(keyVibrate, false, BOOLEAN, context);
         addPreference(keyVolume, DEFAULT_VOLUME, FLOAT, context);
@@ -604,7 +607,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         // This implementation is almost the same as MindBellPreferences#setPreferenceVolumeSoundUri()
         String ringtone = getRingtone();
         if (getBooleanSetting(keyUseStandardBell) || ringtone.isEmpty()) {
-            return getStandardSoundUri();
+            return (getBooleanSetting(keyUseWorkaroundBell)) ? getWorkaroundSoundUri() : getStandardSoundUri();
         } else {
             return Uri.parse(ringtone);
         }
@@ -613,6 +616,10 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public Uri getStandardSoundUri() {
         return bellResourceUriMap.get("1");
+    }
+
+    public Uri getWorkaroundSoundUri() {
+        return bellResourceUriMap.get("4");
     }
 
     @Override
