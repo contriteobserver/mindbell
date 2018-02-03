@@ -334,6 +334,24 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         } catch (ClassCastException e) {
             // preference has already been converted
         }
+        // Version 3.2.5 renamed statusVisiblityPublic by statusVisibilityPublic
+        String keyStatusVisiblityPublic = "statusVisiblityPublic";
+        if (settings.contains(keyStatusVisiblityPublic)) {
+            boolean statusVisibilityPublic = settings.getBoolean(keyStatusVisiblityPublic,
+                    (Boolean) preferenceMap.get(keyStatusVisibilityPublic).defaultValue);
+            setSetting(keyStatusVisibilityPublic, statusVisibilityPublic);
+            settings.edit().remove(keyStatusVisiblityPublic).apply();
+            Log.w(TAG, "Converted old setting for '" + keyStatusVisiblityPublic + "' (" + statusVisibilityPublic + ") to '" +
+                    context.getText(keyStatusVisibilityPublic) + "' (" + statusVisibilityPublic + ")");
+        }
+        // Version 3.2.5 introduced keyUseAudioStreamVolumeSetting (default true) but should be false for users of older versions
+        if (!settings.contains(context.getText(keyUseAudioStreamVolumeSetting).toString()) &&
+                settings.contains(context.getText(keyActive).toString())) {
+            boolean useAudioStreamVolumeSetting = false;
+            setSetting(keyUseAudioStreamVolumeSetting, useAudioStreamVolumeSetting);
+            Log.w(TAG, "Created setting for '" + context.getText(keyUseAudioStreamVolumeSetting) + "' with non-default (" +
+                    useAudioStreamVolumeSetting + ") because an older version was already installed");
+        }
     }
 
     /**

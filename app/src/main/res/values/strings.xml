@@ -296,7 +296,7 @@
     <string name="keyStartMeditationDirectly" translatable="false">startMeditationDirectly</string>
     <string name="keyStatus" translatable="false">status</string>
     <string name="keyStatusIconMaterialDesign" translatable="false">statusIconMaterialDesign</string>
-    <string name="keyStatusVisibilityPublic" translatable="false">statusVisiblityPublic</string>
+    <string name="keyStatusVisibilityPublic" translatable="false">statusVisibilityPublic</string>
     <string name="keyStopMeditationAutomatically" translatable="false">stopMeditationAutomatically</string>
     <string name="keyUseAudioStreamVolumeSetting" translatable="false">useAudioStreamVolumeSetting</string>
     <string name="keyUseStandardBell" translatable="false">useStandardBell</string>
