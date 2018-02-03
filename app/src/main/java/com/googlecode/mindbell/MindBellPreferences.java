@@ -112,6 +112,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                 (MediaVolumePreference) getPreferenceScreen().findPreference(getText(R.string.keyMeditationVolume));
         final CheckBoxPreference preferenceUseWorkaroundBell =
                 (CheckBoxPreference) getPreferenceScreen().findPreference(getText(R.string.keyUseWorkaroundBell));
+        final Preference preferenceFAQ = (Preference) getPreferenceScreen().findPreference(getText(R.string.keyFAQ));
         final Preference preferenceSendMail = (Preference) getPreferenceScreen().findPreference(getText(R.string.keySendMail));
 
         preferenceUseAudioStreamVolumeSetting.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
@@ -295,6 +296,29 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
 
         });
 
+        preferenceFAQ.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Uri faqUri = Uri.parse(getText(R.string.faq_url).toString());
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, faqUri);
+                startActivity(browserIntent);
+                return true;
+            }
+
+        });
+
+        preferenceUseWorkaroundBell.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                boolean isChecked = (Boolean) newValue;
+                setPreferenceVolumeSoundUri(preferenceVolume, preferenceUseStandardBell.isChecked(), isChecked,
+                        preferenceRingtoneValue);
+                return true;
+            }
+
+        });
+
         preferenceSendMail.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
             @Override
@@ -311,17 +335,6 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                         }) //
                         .setNegativeButton(android.R.string.cancel, null) //
                         .show();
-                return true;
-            }
-
-        });
-
-        preferenceUseWorkaroundBell.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                boolean isChecked = (Boolean) newValue;
-                setPreferenceVolumeSoundUri(preferenceVolume, preferenceUseStandardBell.isChecked(), isChecked,
-                        preferenceRingtoneValue);
                 return true;
             }
 

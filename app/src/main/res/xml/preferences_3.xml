@@ -93,6 +93,12 @@
 
     <PreferenceScreen android:title="@string/prefsCategoryProblemSolving">
 
+        <Preference
+            android:icon="@drawable/ic_help_white_24px"
+            android:key="@string/keyFAQ"
+            android:layout="@layout/preference"
+            android:summary="@string/summaryFAQ"
+            android:title="@string/prefsFAQ"/>
         <CheckBoxPreference
             android:key="@string/keyUseWorkaroundBell"
             android:summaryOff="@string/summaryDontUseWorkaroundBell"

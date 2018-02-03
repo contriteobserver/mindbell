@@ -25,6 +25,7 @@
     <!ENTITY constStatus "Show status icon">
     <!ENTITY constPrefsMuteOffHook "Mute during phone calls">
     <!ENTITY constProblemSolving "Problem solving">
+    <!ENTITY constFAQ "FAQ">
     <!ENTITY constSendMail "Send an e-mail with log">
     ]>
 
@@ -158,13 +159,15 @@
     <string name="prefsMeditationVolume">Volume</string>
 
     <string name="prefsCategoryProblemSolving">Problem solving</string>
+    <string name="prefsFAQ">&constFAQ;</string>
+    <string name="summaryFAQ">Find answers to frequently asked questions here.</string>
     <string name="prefsUseWorkaroundBell">Use standard bell with silence</string>
     <string name="summaryUseWorkaroundBell">Start standard bell with 3 seconds of silence to avoid distorted sound - for phones
         that slowly increase sound volume</string>
     <string name="summaryDontUseWorkaroundBell">Use standard bell as it is</string>
     <string name="prefsSendMail">&constSendMail;</string>
-    <string name="summarySendMail">For suggestions or questions not answered in the FAQ (http://dknapps.de/mindbell) you can send
-        an e-mail with log information. Please don\'t forget to add your question or a description of the problem.</string>
+    <string name="summarySendMail">For suggestions or questions not answered in the \'&constFAQ;\' you can send an e-mail with
+        log information. Please don\'t forget to add your question or a description of the problem.</string>
 
     <!-- MeditationDialog Preferences -->
     <string name="title_meditation_dialog">Start meditation</string>
@@ -256,6 +259,7 @@
     <string name="keyAudioStream" translatable="false">audioStream</string>
     <string name="keyDismissNotification" translatable="false">dismissNotification</string>
     <string name="keyEnd" translatable="false">end</string>
+    <string name="keyFAQ" translatable="false">FAQ</string> <!-- fake preference, key only used as id -->
     <string name="keyFrequency" translatable="false">frequency</string>
     <string name="keyKeepScreenOn" translatable="false">keepScreenOn</string>
     <string name="keyMeditating" translatable="false">meditating</string>
@@ -305,5 +309,8 @@
 
     <!-- About page url (don't localize) -->
     <string name="about_html_text_url" translatable="false">file:///android_asset/about.html</string>
+
+    <!-- FAQ page url (don't localize) -->
+    <string name="faq_url" translatable="false">http://dknapps.de/mindbell</string>
 
 </resources>
