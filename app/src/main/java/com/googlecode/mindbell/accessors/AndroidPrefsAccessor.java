@@ -97,9 +97,14 @@ import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.Preference.
 public class AndroidPrefsAccessor extends PrefsAccessor {
 
     /**
-     * Time to wait for displayed bell to be send back
+     * Time to wait for displayed bell to be send back (without silence in the beginning)
      */
     public static final long WAITING_TIME = 10000L;
+
+    /**
+     * Additional time to wait for displayed bell to be send back (for silence in the beginning)
+     */
+    public static final long WAITING_TIME_SILENCE = 3000L;
 
     public static final String NORMALIZE_NONE = "-1";
 
@@ -151,7 +156,9 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         bellResourceUriMap.put("1", Utils.getResourceUri(context, R.raw.bell10s));
         bellResourceUriMap.put("2", Utils.getResourceUri(context, R.raw.bell20s));
         bellResourceUriMap.put("3", Utils.getResourceUri(context, R.raw.bell30s));
-        bellResourceUriMap.put("4", Utils.getResourceUri(context, R.raw.bell3plus7s));
+        bellResourceUriMap.put("4", Utils.getResourceUri(context, R.raw.bell3plus10s));
+        bellResourceUriMap.put("5", Utils.getResourceUri(context, R.raw.bell3plus20s));
+        bellResourceUriMap.put("6", Utils.getResourceUri(context, R.raw.bell3plus30s));
 
         // Check the settings and reset invalid ones
         checkSettings(context, logSettings);
@@ -606,20 +613,31 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     public Uri getSoundUri() {
         // This implementation is almost the same as MindBellPreferences#setPreferenceVolumeSoundUri()
         String ringtone = getRingtone();
-        if (getBooleanSetting(keyUseStandardBell) || ringtone.isEmpty()) {
-            return (getBooleanSetting(keyUseWorkaroundBell)) ? getWorkaroundSoundUri() : getStandardSoundUri();
+        if (isUseStandardBell() || ringtone.isEmpty()) {
+            return getStandardSoundUri();
         } else {
             return Uri.parse(ringtone);
         }
     }
 
-    @Override
-    public Uri getStandardSoundUri() {
-        return bellResourceUriMap.get("1");
+    private boolean isUseStandardBell() {
+        return getBooleanSetting(keyUseStandardBell);
     }
 
-    public Uri getWorkaroundSoundUri() {
-        return bellResourceUriMap.get("4");
+    @Override
+    public Uri getStandardSoundUri() {
+        return getSoundUri("1");
+    }
+
+    public Uri getSoundUri(String key) {
+        if (isUseWorkaroundBell()) {
+            key = String.valueOf(Integer.valueOf(key) + 3); // shift key (string index) by 3 to get sounds that start with silence
+        }
+        return bellResourceUriMap.get(key);
+    }
+
+    private boolean isUseWorkaroundBell() {
+        return getBooleanSetting(keyUseWorkaroundBell);
     }
 
     @Override
@@ -883,6 +901,11 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
+    public long getEffectiveWaitingTime() {
+        return (isUseStandardBell() && isUseWorkaroundBell()) ? WAITING_TIME + WAITING_TIME_SILENCE : WAITING_TIME;
+    }
+
+    @Override
     public void resetOriginalVolume() {
         resetSetting(keyOriginalVolume);
     }
@@ -1083,7 +1106,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
         @Override
         public Uri getSoundUri() {
-            return (isStartMeditationDirectly()) ? null : bellResourceUriMap.get(getMeditationBeginningBell());
+            return (isStartMeditationDirectly()) ? null : AndroidPrefsAccessor.this.getSoundUri(getMeditationBeginningBell());
         }
 
     }
@@ -1092,7 +1115,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
         @Override
         public Uri getSoundUri() {
-            return bellResourceUriMap.get(getMeditationInterruptingBell());
+            return AndroidPrefsAccessor.this.getSoundUri(getMeditationInterruptingBell());
         }
 
     }
@@ -1101,7 +1124,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
         @Override
         public Uri getSoundUri() {
-            return bellResourceUriMap.get(getMeditationEndingBell());
+            return AndroidPrefsAccessor.this.getSoundUri(getMeditationEndingBell());
         }
 
     }

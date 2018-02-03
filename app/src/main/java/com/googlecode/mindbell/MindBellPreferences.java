@@ -110,6 +110,8 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                         getText(R.string.keyActiveOnDaysOfWeek));
         final MediaVolumePreference preferenceMeditationVolume =
                 (MediaVolumePreference) getPreferenceScreen().findPreference(getText(R.string.keyMeditationVolume));
+        final CheckBoxPreference preferenceUseWorkaroundBell =
+                (CheckBoxPreference) getPreferenceScreen().findPreference(getText(R.string.keyUseWorkaroundBell));
         final Preference preferenceSendMail = (Preference) getPreferenceScreen().findPreference(getText(R.string.keySendMail));
 
         preferenceUseAudioStreamVolumeSetting.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
@@ -163,7 +165,6 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         preferenceUseStandardBell.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                Log.e(TAG, "preferenceUseStandardBell newValue=" + newValue);
                 boolean isChecked = (Boolean) newValue;
                 if (isChecked ||
                         ContextCompat.checkSelfPermission(MindBellPreferences.this, Manifest.permission.READ_EXTERNAL_STORAGE) ==
@@ -171,7 +172,8 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                     // Allow setting this option to "off" if permission is granted
                     preferenceRingtone.setEnabled(preferenceSound.isChecked() && !isChecked);
                     // Weird, but ringtone cannot be retrieved from RingtonePreference, only from SharedPreference
-                    setPreferenceVolumeSoundUri(preferenceVolume, isChecked, preferenceRingtoneValue);
+                    setPreferenceVolumeSoundUri(preferenceVolume, isChecked, preferenceUseWorkaroundBell.isChecked(),
+                            preferenceRingtoneValue);
                     return true;
                 } else {
                     // Ask for permission if this option shall be set to "off" but permission is missing
@@ -192,7 +194,8 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                     return false;
                 }
                 setPreferenceRingtoneSummary(preferenceRingtone, preferenceRingtoneValue);
-                setPreferenceVolumeSoundUri(preferenceVolume, preferenceUseStandardBell.isChecked(), preferenceRingtoneValue);
+                setPreferenceVolumeSoundUri(preferenceVolume, preferenceUseStandardBell.isChecked(),
+                        preferenceUseWorkaroundBell.isChecked(), preferenceRingtoneValue);
                 return true;
             }
 
@@ -313,6 +316,17 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
 
         });
 
+        preferenceUseWorkaroundBell.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                boolean isChecked = (Boolean) newValue;
+                setPreferenceVolumeSoundUri(preferenceVolume, preferenceUseStandardBell.isChecked(), isChecked,
+                        preferenceRingtoneValue);
+                return true;
+            }
+
+        });
+
         // As no PreferenceChangeListener is called without change *BY USER*, some settings have to be made explicitly
         preferenceVolume.setEnabled(preferenceSound.isChecked() && !preferenceUseAudioStreamVolumeSetting.isChecked());
         preferenceMeditationVolume.setEnabled(!preferenceUseAudioStreamVolumeSetting.isChecked());
@@ -320,7 +334,8 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         preferenceRingtone.setEnabled(preferenceSound.isChecked() && !preferenceUseStandardBell.isChecked());
         preferenceRingtoneValue = prefs.getRingtone(); // cannot be retrieved from preference
         setPreferenceRingtoneSummary(preferenceRingtone, preferenceRingtoneValue);
-        setPreferenceVolumeSoundUri(preferenceVolume, preferenceUseStandardBell.isChecked(), preferenceRingtoneValue);
+        setPreferenceVolumeSoundUri(preferenceVolume, preferenceUseStandardBell.isChecked(),
+                preferenceUseWorkaroundBell.isChecked(), preferenceRingtoneValue);
 
     }
 
@@ -357,17 +372,17 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
     /**
      * Set sound uri in preferenceVolume depending on preferenceUseStandardBell and preferenceRingtone, so real sound is used for
      * volume setting.
-     *
-     * @param preferenceVolume
+     *  @param preferenceVolume
      * @param useStandardBell
+     * @param useWorkaroundBell
      * @param ringtoneUriString
      */
     private void setPreferenceVolumeSoundUri(MediaVolumePreference preferenceVolume, boolean useStandardBell,
-                                             String ringtoneUriString) {
+                                             boolean useWorkaroundBell, String ringtoneUriString) {
         Uri soundUri;
         // This implementation is almost the same as AndroidPrefsAccessor#getSoundUri()
         if (useStandardBell || ringtoneUriString.isEmpty()) {
-            soundUri = Utils.getResourceUri(this, R.raw.bell10s);
+            soundUri = Utils.getResourceUri(this, (useWorkaroundBell) ? R.raw.bell3plus10s : R.raw.bell10s);
         } else {
             soundUri = Uri.parse(ringtoneUriString);
         }

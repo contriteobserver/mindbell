@@ -155,7 +155,7 @@
     <string name="prefsMeditationVolume">Volume</string>
 
     <string name="prefsCategoryProblemSolving">Problem solving</string>
-    <string name="prefsUseWorkaroundBell">Use standard bellwith silence</string>
+    <string name="prefsUseWorkaroundBell">Use standard bell with silence</string>
     <string name="summaryUseWorkaroundBell">Start standard bell with 3 seconds of silence to avoid distorted sound - for phones
         that slowly increase sound volume</string>
     <string name="summaryDontUseWorkaroundBell">Use standard bell as it is</string>

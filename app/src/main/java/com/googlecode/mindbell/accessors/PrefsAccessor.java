@@ -350,4 +350,6 @@ public abstract class PrefsAccessor {
 
     public abstract ActivityPrefsAccessor forMeditationEnding();
 
+    public abstract long getEffectiveWaitingTime();
+
 }
