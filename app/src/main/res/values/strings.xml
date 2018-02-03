@@ -21,6 +21,9 @@
 
 <!-- Define referenced terms only once, following this idea: https://stackoverflow.com/a/39870268/2532583 -->
 <!DOCTYPE resources [
+    <!ENTITY constUseStandardBell "Use standard bell">
+    <!ENTITY constStatus "Show status icon">
+    <!ENTITY constPrefsMuteOffHook "Mute during phone calls">
     <!ENTITY constProblemSolving "Problem solving">
     <!ENTITY constSendMail "Send an e-mail with log">
     ]>
@@ -88,7 +91,7 @@
     <string name="prefsSound">Play sound</string>
     <string name="summarySound">Play sound when ringing</string>
     <string name="summaryDontSound">Don\'t play sound when ringing</string>
-    <string name="prefsUseStandardBell">Use standard bell</string>
+    <string name="prefsUseStandardBell">&constUseStandardBell;</string>
     <string name="summaryUseStandardBell">Play standard bell sound when ringing</string>
     <string name="summaryDontUseStandardBell">Play chosen ringtone sound when ringing</string>
     <string name="prefsRingtone">Ringtone</string>
@@ -102,7 +105,7 @@
     <string name="prefsPattern">Vibration pattern</string>
 
     <string name="prefsCategoryStatusNotification">Status notification</string>
-    <string name="prefsStatus">Show status notification</string>
+    <string name="prefsStatus">&constStatus;</string>
     <string name="summaryStatus">Show status notification when bell is active</string>
     <string name="summaryNoStatus">No status notification, set and forget</string>
     <string name="prefsStatusIconMaterialDesign">Status icon in Material Design</string>
@@ -131,7 +134,7 @@
     <string name="prefsMuteWithPhone">Mute with phone</string>
     <string name="summaryMuteWithPhone">Bell will not ring when phone is muted</string>
     <string name="summaryNoMuteWithPhone">Ring bell even when phone is muted</string>
-    <string name="prefsMuteOffHook">Mute during phone calls</string>
+    <string name="prefsMuteOffHook">&constPrefsMuteOffHook;</string>
     <string name="summaryMuted">Bell will not ring during phone calls</string>
     <string name="summaryNotMuted">Bell will also ring during phone calls</string>
     <string name="prefsMuteInFlightMode">Mute in flight mode</string>
@@ -197,7 +200,7 @@
 
     <!-- Status bar notifications -->
     <string name="statusTitleNotificationsDisabled">Please check notification settings</string>
-    <string name="statusTextNotificationsDisabled">MindBell turned off \'Show status icon\'</string>
+    <string name="statusTextNotificationsDisabled">MindBell turned off \'&constStatus;\'</string>
     <string name="statusTitleBellActive">MindBell is active</string>
     <string name="statusTextBellActive">{0} to {1} on {2}</string>
     <string name="statusTitleBellMeditating">MindBell is meditating</string>
@@ -213,27 +216,27 @@
 
     <!-- Reasons why permission READ_PHONE_STATE should be granted -->
     <string name="reasonReadPhoneStateTitle">Why this permission?</string>
-    <string name="reasonReadPhoneStateText">\'Show status icon\' and \'Mute during phone calls\' has been
+    <string name="reasonReadPhoneStateText">\'&constStatus;\' and \'&constPrefsMuteOffHook;\' has been
         selected. So MindBell turns the bell in the notification bar to be shown upside down when a
         phone call is incoming or outgoing.\n\nTo achieve this, MindBell has to be informed of
         calls. Only when permission READ_PHONE_STATE is granted MindBell can be kept informed.\n\nIf the
-        permission is denied either \'Show status icon\' or \'Mute during phone calls\' must be switched off.</string>
+        permission is denied either \'&constStatus;\' or \'&constPrefsMuteOffHook;\' must be switched off.</string>
 
     <!-- Permission READ_PHONE_STATE denied but user checked 'never ask again' -->
     <string name="neverAskAgainReadPhoneStateTitle">Missing permission</string>
     <string name="neverAskAgainReadPhoneStateText">Permission READ_PHONE_STATE is not granted. Therefore
-        either \'Show status icon\' or \'Mute during phone calls\' must be switched off.</string>
+        either \'&constStatus;\' or \'&constPrefsMuteOffHook;\' must be switched off.</string>
 
     <!-- Reasons why permission READ_EXTERNAL_STORAGE should be granted -->
     <string name="reasonReadExternalStorageTitle">Why this permission?</string>
-    <string name="reasonReadExternalStorageText">\'Use standard bell\' has been deselected. Only when permission
+    <string name="reasonReadExternalStorageText">\'&constUseStandardBell;\' has been deselected. Only when permission
         READ_EXTERNAL_STORAGE is granted MindBell can access your notification ringtones.\n\nIf the permission is denied
-        \'Use standard bell\' must be switched on.</string>
+        \'&constUseStandardBell;\' must be switched on.</string>
 
     <!-- Permission READ_EXTERNAL_STORAGE denied but user checked 'never ask again' -->
     <string name="neverAskAgainReadExternalStorageTitle">Missing permission</string>
     <string name="neverAskAgainReadExternalStorageText">Permission READ_EXTERNAL_STORAGE is not granted. Therefore
-        \'Use standard bell\' must be switched on.</string>
+        \'&constUseStandardBell;\' must be switched on.</string>
 
     <!-- Help popup -->
     <string name="main_message1_popup">How to use MindBell?\nhttp://dknapps.de/mindbell-intro</string>

@@ -21,6 +21,9 @@
 
 <!-- Define referenced terms only once, following this idea: https://stackoverflow.com/a/39870268/2532583 -->
 <!DOCTYPE resources [
+    <!ENTITY constUseStandardBell "Standard-Glockenklang">
+    <!ENTITY constStatus "Status-Benachrichtigung anzeigen">
+    <!ENTITY constPrefsMuteOffHook "Beim Telefonieren still">
     <!ENTITY constProblemSolving "Problembehebung">
     <!ENTITY constSendMail "E-Mail mit Log senden">
     ]>
@@ -89,7 +92,7 @@
     <string name="prefsSound">Klang abspielen</string>
     <string name="summarySound">Klang abspielen beim Läuten</string>
     <string name="summaryDontSound">Beim Läuten keinen Klang abspielen</string>
-    <string name="prefsUseStandardBell">Standard-Glockenklang</string>
+    <string name="prefsUseStandardBell">&constUseStandardBell;</string>
     <string name="summaryUseStandardBell">Beim Läuten den Standard-Glockenklang abspielen</string>
     <string name="summaryDontUseStandardBell">Beim Läuten den gewählten Klingelton abspielen</string>
     <string name="prefsRingtone">Systemklang</string>
@@ -103,7 +106,7 @@
     <string name="prefsPattern">Vibrationsmuster</string>
 
     <string name="prefsCategoryStatusNotification">Status-Benachrichtigung</string>
-    <string name="prefsStatus">Status-Benachrichtigung anzeigen</string>
+    <string name="prefsStatus">&constStatus;</string>
     <string name="prefsStatusIconMaterialDesign">Status-Icon im Material Design</string>
     <string name="summaryStatusIconMaterialDesign">Stilisierte weiße Klangschale</string>
     <string name="summaryStatusIconPreMaterialDesign">Goldene Klangschale (bei manchen Geräten nur ein weißer Fleck)</string>
@@ -132,7 +135,7 @@
     <string name="prefsMuteWithPhone">Mit Telefon stummschalten</string>
     <string name="summaryMuteWithPhone">Glocke läutet nicht im Lautlosmodus</string>
     <string name="summaryNoMuteWithPhone">Glocke läutet auch im Lautlosmodus</string>
-    <string name="prefsMuteOffHook">Beim Telefonieren still</string>
+    <string name="prefsMuteOffHook">&constPrefsMuteOffHook;</string>
     <string name="summaryMuted">Glocke läutet nicht während Telefongesprächen</string>
     <string name="summaryNotMuted">Glocke läutet auch während Telefongesprächen</string>
     <string name="prefsMuteInFlightMode">Im Flugmodus still</string>
@@ -201,7 +204,7 @@
 
     <!-- Status bar notification -->
     <string name="statusTitleNotificationsDisabled">Bitte Benachrichtigungseinstellungen prüfen</string>
-    <string name="statusTextNotificationsDisabled">MindBell hat \'Status-Icon anzeigen\' ausgeschaltet</string>
+    <string name="statusTextNotificationsDisabled">MindBell hat \'&constStatus;\' ausgeschaltet</string>
     <string name="statusTitleBellActive">MindBell ist aktiv</string>
     <string name="statusTextBellActive">{0} bis {1} am {2}</string>
     <string name="statusTitleBellMeditating">MindBell meditiert</string>
@@ -217,28 +220,28 @@
 
     <!-- Reasons why permission READ_PHONE_STATE should be granted -->
     <string name="reasonReadPhoneStateTitle">Wozu diese Berechtigung?</string>
-    <string name="reasonReadPhoneStateText">\'Status-Icon anzeigen\' und \'Beim Telefonieren still\' wurden
+    <string name="reasonReadPhoneStateText">\'&constStatus;\' und \'&constPrefsMuteOffHook;\' wurden
         ausgewählt. Das bedeutet, dass MindBell die Glocke in der Benachrichtigungsleiste umdreht, wenn
         ein Anruf ein- oder ausgeht.\n\nUm das zu erreichen, muss MindBell über Anrufe informiert werden.
         Nur mit der Berechtigung READ_PHONE_STATE kann MindBell darüber auf dem Laufenden gehalten
-        werden.\n\nWenn die Berechtigung abgelehnt wird, muss daher entweder \'Status-Icon anzeigen\' oder
-        \'Beim Telefonieren still\' abgeschaltet sein.</string>
+        werden.\n\nWenn die Berechtigung abgelehnt wird, muss daher entweder \'&constStatus;\' oder
+        \'&constPrefsMuteOffHook;\' abgeschaltet sein.</string>
 
     <!-- Permission READ_PHONE_STATE denied but user checked 'never ask again' -->
     <string name="neverAskAgainReadPhoneStateTitle">Fehlende Berechtigung</string>
     <string name="neverAskAgainReadPhoneStateText">Die Berechtigung READ_PHONE_STATE wurde nicht erteilt.
-        Daher muss entweder \'Status-Icon anzeigen\' oder \'Beim Telefonieren still\' abgeschaltet sein.</string>
+        Daher muss entweder \'&constStatus;\' oder \'&constPrefsMuteOffHook;\' abgeschaltet sein.</string>
 
     <!-- Reasons why permission READ_EXTERNAL_STORAGE should be granted -->
     <string name="reasonReadExternalStorageTitle">Wozu diese Berechtigung?</string>
-    <string name="reasonReadExternalStorageText">\'Standard-Glockenklangl\' wurde abgewählt. Nur mit der Berechtigung
+    <string name="reasonReadExternalStorageText">\'&constUseStandardBell;l\' wurde abgewählt. Nur mit der Berechtigung
         READ_EXTERNAL_STORAGE kann MindBell auf Klingeltöne zugreifen.\n\nWenn die Berechtigung abgelehnt wird,
-        muss daher \'Standard-Glockenklang\' angeschaltet sein.</string>
+        muss daher \'&constUseStandardBell;\' angeschaltet sein.</string>
 
     <!-- Permission READ_EXTERNAL_STORAGE denied but user checked 'never ask again' -->
     <string name="neverAskAgainReadExternalStorageTitle">Fehlende Berechtigung</string>
     <string name="neverAskAgainReadExternalStorageText">Die Berechtigung READ_EXTERNAL_STORAGE  wurde nicht erteilt. Daher muss
-        \'Standard-Glockenklang\' angeschaltet sein.</string>
+        \'&constUseStandardBell;\' angeschaltet sein.</string>
 
     <!-- Help popup -->
     <string name="main_message1_popup">Wie funktioniert MindBell?\nhttp://dknapps.de/mindbell-intro</string>
