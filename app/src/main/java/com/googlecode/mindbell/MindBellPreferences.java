@@ -29,6 +29,7 @@ import android.media.MediaMetadataRetriever;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.CheckBoxPreference;
@@ -36,6 +37,7 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.preference.RingtonePreference;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -113,6 +115,8 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         final CheckBoxPreference preferenceUseWorkaroundBell =
                 (CheckBoxPreference) getPreferenceScreen().findPreference(getText(R.string.keyUseWorkaroundBell));
         final Preference preferenceFAQ = (Preference) getPreferenceScreen().findPreference(getText(R.string.keyFAQ));
+        final Preference preferenceBatterySettings =
+                (Preference) getPreferenceScreen().findPreference(getText(R.string.keyBatterySettings));
         final Preference preferenceSendMail = (Preference) getPreferenceScreen().findPreference(getText(R.string.keySendMail));
 
         preferenceUseAudioStreamVolumeSetting.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
@@ -308,6 +312,17 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
 
         });
 
+        preferenceBatterySettings.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                onPreferenceClickBatterySettings();
+                return true;
+            }
+
+
+        });
+
         preferenceUseWorkaroundBell.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
             public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -385,7 +400,8 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
     /**
      * Set sound uri in preferenceVolume depending on preferenceUseStandardBell and preferenceRingtone, so real sound is used for
      * volume setting.
-     *  @param preferenceVolume
+     *
+     * @param preferenceVolume
      * @param useStandardBell
      * @param useWorkaroundBell
      * @param ringtoneUriString
@@ -461,6 +477,56 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
      */
     private boolean isNormalize(String normalizeValue) {
         return !AndroidPrefsAccessor.NORMALIZE_NONE.equals(normalizeValue);
+    }
+
+    private void onPreferenceClickBatterySettings() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (Utils.isAppWhitelisted(this)) {
+                new AlertDialog.Builder(this) //
+                        .setTitle(R.string.prefsBatterySettings) //
+                        .setMessage(R.string.summaryBatterySettingsWhitelisted) //
+                        .setNegativeButton(android.R.string.cancel, null) //
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Take user to the battery settings so he can check the settings
+                                startActivity(new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS));
+                            }
+                        }) //
+                        .show();
+            } else {
+                new AlertDialog.Builder(this) //
+                        .setTitle(R.string.prefsBatterySettings) //
+                        .setMessage(R.string.summaryBatterySettingsNotWhitelisted) //
+                        .setNegativeButton(android.R.string.cancel, null) //
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Take user to the battery settings instead of adding a new permission that might result in
+                                // suspending MindBell from Google Play Store. See the comments for this answer:
+                                // https://stackoverflow.com/a/33114136/2532583
+                                startActivity(new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS));
+                                Context context = MindBellPreferences.this;
+                                Toast
+                                        .makeText(context, context.getText(R.string.battery_settings_guidance1), Toast.LENGTH_LONG)
+                                        .show();
+                                Toast
+                                        .makeText(context, context.getText(R.string.battery_settings_guidance2), Toast.LENGTH_LONG)
+                                        .show();
+                                Toast
+                                        .makeText(context, context.getText(R.string.battery_settings_guidance3), Toast.LENGTH_LONG)
+                                        .show();
+                            }
+                        }) //
+                        .show();
+            }
+        } else {
+            new AlertDialog.Builder(this) //
+                    .setTitle(R.string.prefsBatterySettings) //
+                    .setMessage(R.string.summaryBatterySettingsUnknown) //
+                    .setPositiveButton(android.R.string.ok, null) //
+                    .show();
+        }
     }
 
     /**

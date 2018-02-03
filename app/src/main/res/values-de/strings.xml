@@ -162,6 +162,15 @@
     <string name="prefsCategoryProblemSolving">&constProblemSolving;</string>
     <string name="prefsFAQ">&constFAQ;</string>
     <string name="summaryFAQ">Hier finden Sie Antworten zu häufig gestellten Fragen.</string>
+    <string name="prefsBatterySettings">Akku-Einstellungen</string>
+    <string name="summaryBatterySettings">Wenn MindBell nicht regelmäßig läutet, prüfen Sie bitte hier, ob MindBell von der
+        Akku-Leistungsoptimierung ausgenommen ist.</string>
+    <string name="summaryBatterySettingsWhitelisted">MindBell ist bereits von der Akku-Leistungsoptimierung ausgenommen.</string>
+    <string name="summaryBatterySettingsNotWhitelisted">MindBell ist *nicht* von der Akku-Leistungsoptimierung ausgenommen. Wenn
+        MindBell nicht regelmäßig läutet, nehmen Sie es bitte von den Akku-Leistungsoptimierungen aus.</string>
+    <string name="summaryBatterySettingsUnknown">Es kann nicht festgestellt werden, ob MindBell von der Akku-Leistungsoptimierung
+        ausgenommen ist. Wenn MindBell nicht regelmäßig läutet, nehmen Sie es bitte von allen Akku-Leistungsoptimierungen auf
+        Ihrem Gerät aus. Bitte konsultieren Sie dazu Ihre Apps, Gerätedokumentation oder das Internet.</string>
     <string name="prefsUseWorkaroundBell">Nutze Standard-Glockenklang mit Stille</string>
     <string name="summaryUseWorkaroundBell">Beginne Standard-Glockenklang mit 3 Sekunden Stille, um einen stotternden Klang zu
         vermeiden - für Telefone mit langsam anschwellender Lautstärke für Klänge</string>
@@ -254,9 +263,10 @@
     <string name="main_message5_popup">Andere Fragen oder Probleme?\nBitte \'&constSendMail;\' in den Einstellungen unter
         \'&constProblemSolving;\'.</string>
     <string name="main_message6_popup">Privacy Policy?\nhttp://dknapps.de/mindbell-privacy</string>
-    <string name="batterySettings">Akku</string>
-    <string name="alreadyWhitelisted">MindBell ist bereits von Akku-Leistungsoptimierungen ausgenommen.</string>
-    <string name="shouldGetWhitelisted">Wenn MindBell nicht regelmäßig läutet, dann bitte von den Akku-Leistungsoptimierungen
-        ausnehmen.</string>
+
+    <!-- Help for excluding MindBell from battery settings -->
+    <string name="battery_settings_guidance1">Wählen Sie \'Alle apps\'.</string>
+    <string name="battery_settings_guidance2">Klicken Sie auf \'MindBell\'.</string>
+    <string name="battery_settings_guidance3">Wählen Sie \'Nicht optimieren\'.</string>
 
 </resources>

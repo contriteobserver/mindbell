@@ -99,6 +99,12 @@
             android:layout="@layout/preference"
             android:summary="@string/summaryFAQ"
             android:title="@string/prefsFAQ"/>
+        <Preference
+            android:icon="@drawable/ic_info_white_24dp"
+            android:key="@string/keyBatterySettings"
+            android:layout="@layout/preference"
+            android:summary="@string/summaryBatterySettings"
+            android:title="@string/prefsBatterySettings"/>
         <CheckBoxPreference
             android:key="@string/keyUseWorkaroundBell"
             android:summaryOff="@string/summaryDontUseWorkaroundBell"

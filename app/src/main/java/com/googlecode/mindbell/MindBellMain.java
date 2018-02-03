@@ -23,9 +23,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -586,30 +584,8 @@ public class MindBellMain extends Activity {
                 .setIcon(R.mipmap.ic_launcher) //
                 .setView(popupView) //
                 .setPositiveButton(android.R.string.ok, null);
-        if (Build.VERSION.SDK_INT >= 23) {
-            builder.setNeutralButton(R.string.batterySettings, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    onMenuItemClickBatteryOptimizationSettings();
-                }
-            });
-        }
         builder.show();
         return true;
-    }
-
-    /**
-     * Handles click on menu item battery optimization settings.
-     *
-     * Warning: Caller must ensure SDK >= 23.
-     */
-    private void onMenuItemClickBatteryOptimizationSettings() {
-        if (Utils.isAppWhitelisted(this)) {
-            Toast.makeText(this, getText(R.string.alreadyWhitelisted), Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this, getText(R.string.shouldGetWhitelisted), Toast.LENGTH_LONG).show();
-        }
-        startActivity(new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS));
     }
 
     /**

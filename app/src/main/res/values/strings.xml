@@ -161,6 +161,15 @@
     <string name="prefsCategoryProblemSolving">Problem solving</string>
     <string name="prefsFAQ">&constFAQ;</string>
     <string name="summaryFAQ">Find answers to frequently asked questions here.</string>
+    <string name="prefsBatterySettings">Battery settings</string>
+    <string name="summaryBatterySettings">If MindBell is not ringing regularly please check here whether MindBell is excluded
+        from battery optimization.</string>
+    <string name="summaryBatterySettingsWhitelisted">MindBell is already excluded from battery optimization.</string>
+    <string name="summaryBatterySettingsNotWhitelisted">MindBell is *not* excluded from battery optimization. If MindBell is not
+        ringing regularly please exclude MindBell from battery optimization.</string>
+    <string name="summaryBatterySettingsUnknown">It cannot be determined whether MindBell is already excluded from battery
+        optimization. If MindBell is not ringing regularly please exclude MindBell from any battery optimization that might be
+        active on your phone. Please check your apps or your phones documentation or the internet how to achieve this.</string>
     <string name="prefsUseWorkaroundBell">Use standard bell with silence</string>
     <string name="summaryUseWorkaroundBell">Start standard bell with 3 seconds of silence to avoid distorted sound - for phones
         that slowly increase sound volume</string>
@@ -249,14 +258,17 @@
     <string name="main_message5_popup">Other questions or problems?\nPlease \'&constSendMail;\' in the settings under
         \'&constProblemSolving;\'.</string>
     <string name="main_message6_popup">Privacy Policy?\nhttp://dknapps.de/mindbell-privacy</string>
-    <string name="batterySettings">Battery</string>
-    <string name="alreadyWhitelisted">MindBell is already excluded from battery optimization.</string>
-    <string name="shouldGetWhitelisted">If not ringing regularly please exclude MindBell from battery optimization.</string>
+
+    <!-- Help for excluding MindBell from battery settings -->
+    <string name="battery_settings_guidance1">Choose \'All apps\'.</string>
+    <string name="battery_settings_guidance2">Click on \'MindBell\'.</string>
+    <string name="battery_settings_guidance3">Choose \'Don\'t optimize\'.</string>
 
     <!-- Preference keys (don't localize) -->
     <string name="keyActiveOnDaysOfWeek" translatable="false">activeOnDaysOfWeek</string>
     <string name="keyActive" translatable="false">active</string>
     <string name="keyAudioStream" translatable="false">audioStream</string>
+    <string name="keyBatterySettings" translatable="false">batterySettings</string> <!-- fake preference, key only used as id -->
     <string name="keyDismissNotification" translatable="false">dismissNotification</string>
     <string name="keyEnd" translatable="false">end</string>
     <string name="keyFAQ" translatable="false">FAQ</string> <!-- fake preference, key only used as id -->
