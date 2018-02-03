@@ -527,7 +527,7 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
         Class<?> targetClass = MindBellMain.class;
         // Override icon and notification text if bell is muted or permissions are insufficient
         if (!canSettingsBeSatisfied(prefs)) { // Insufficient permissions => override icon/text, switch notifications off
-            statusDrawable = R.drawable.ic_stat_warning_white_24px;
+            statusDrawable = R.drawable.ic_warning_white_24dp;
             contentTitle = context.getText(R.string.statusTitleNotificationsDisabled);
             contentText = context.getText(R.string.statusTextNotificationsDisabled).toString();
             targetClass = MindBellPreferences.class;

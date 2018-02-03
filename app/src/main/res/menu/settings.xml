@@ -36,7 +36,7 @@
         android:title="@string/menuSettings"/>
     <item
         android:id="@+id/help"
-        android:icon="@drawable/ic_help_white_24px"
+        android:icon="@drawable/ic_help_white_24dp"
         android:showAsAction="ifRoom"
         android:title="@string/menuHelp"/>
     <item

@@ -21,30 +21,32 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="10dp">
-
-    <ImageView
-        android:id="@+id/iconImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:paddingTop="3dp"/>
-
-    <TextView
-        android:id="@+id/iconText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/iconRadio"
-        android:layout_toRightOf="@id/iconImage"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"/>
+                android:padding="15dp">
 
     <RadioButton
         android:id="@+id/iconRadio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:clickable="false"
-        android:focusable="false"/>
+        android:focusable="false"
+        android:paddingLeft="10dp"/>
+
+    <TextView
+        android:id="@+id/iconText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/iconImage"
+        android:layout_toRightOf="@id/iconRadio"
+        android:paddingLeft="5dp"
+        android:paddingTop="3dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+    <ImageView
+        android:id="@+id/iconImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:paddingRight="10dp"
+        android:paddingTop="3dp"/>
 
 </RelativeLayout>
