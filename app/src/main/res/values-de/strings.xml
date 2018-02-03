@@ -260,9 +260,7 @@
     <string name="main_message2_popup">Was hat sich geändert?\nhttp://dknapps.de/mindbell-changelog</string>
     <string name="main_message3_popup">MindBell läutet nicht (regelmäßig)?\nhttp://dknapps.de/mindbell-notringing</string>
     <string name="main_message4_popup">Häufige Fragen (FAQ)?\nhttp://dknapps.de/mindbell</string>
-    <string name="main_message5_popup">Andere Fragen oder Probleme?\nBitte \'&constSendMail;\' in den Einstellungen unter
-        \'&constProblemSolving;\'.</string>
-    <string name="main_message6_popup">Privacy Policy?\nhttp://dknapps.de/mindbell-privacy</string>
+    <string name="main_message5_popup">Privacy Policy?\nhttp://dknapps.de/mindbell-privacy</string>
 
     <!-- Help for excluding MindBell from battery settings -->
     <string name="battery_settings_guidance1">Wählen Sie \'Alle apps\'.</string>
