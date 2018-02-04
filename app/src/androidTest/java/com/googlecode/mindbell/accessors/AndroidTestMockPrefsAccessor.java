@@ -344,11 +344,6 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public long getEffectiveWaitingTime() {
-        throw new UnsupportedOperationException("Test terminated ... method not implemented");
-    }
-
-    @Override
     public long getRampUpStartingTimeMillis() {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }

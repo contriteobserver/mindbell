@@ -102,9 +102,9 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     public static final long WAITING_TIME = 10000L;
 
     /**
-     * Additional time to wait for displayed bell to be send back (for silence in the beginning)
+     * Silence added in the beginning of the standard bell as workaround for phones starting sounds with increasing volume.
      */
-    public static final long WAITING_TIME_SILENCE = 3000L;
+    public static final long WORKAROUND_SILENCE_TIME = 3000L;
 
     public static final String NORMALIZE_NONE = "-1";
 
@@ -916,11 +916,6 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     @Override
     public void setOriginalVolume(int originalVolume) {
         setSetting(keyOriginalVolume, originalVolume);
-    }
-
-    @Override
-    public long getEffectiveWaitingTime() {
-        return (isUseStandardBell() && isUseWorkaroundBell()) ? WAITING_TIME + WAITING_TIME_SILENCE : WAITING_TIME;
     }
 
     @Override

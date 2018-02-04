@@ -419,7 +419,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
     }
 
     /**
-     * Returns true if the ringtone specified by uriString is unset, empty or accessible.
+     * Returns true if the ringtone specified by uriString is unset, empty or accessible with valid length.
      *
      * @param uriString
      * @return
@@ -436,9 +436,12 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                 return false;
             }
             String durationString = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-            if (durationString == null || Long.parseLong(durationString) > (AndroidPrefsAccessor.WAITING_TIME)) {
-                Log.w(TAG, "Sound <" + uriString + "> too long: <" + durationString + "> ms");
-                Toast.makeText(this, R.string.ringtoneDurationTooLongOrInvalid, Toast.LENGTH_SHORT).show();
+            long maxWaitingTime = AndroidPrefsAccessor.WAITING_TIME + AndroidPrefsAccessor.WORKAROUND_SILENCE_TIME;
+            maxWaitingTime += maxWaitingTime / 100L; // add 1% tolerance
+            if (durationString == null || Long.parseLong(durationString) > maxWaitingTime) {
+                String msg = String.format(" (%s ms > %d ms)", durationString, maxWaitingTime);
+                Log.w(TAG, "Sound <" + uriString + "> too long" + msg);
+                Toast.makeText(this, getText(R.string.ringtoneDurationTooLongOrInvalid) + msg, Toast.LENGTH_SHORT).show();
                 return false;
             }
         }

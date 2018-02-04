@@ -341,7 +341,7 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    Thread.sleep(prefs.getEffectiveWaitingTime());
+                    Thread.sleep(AndroidPrefsAccessor.WAITING_TIME);
                 } catch (InterruptedException e) {
                     // doesn't care if sleep was interrupted, just move on
                 }
