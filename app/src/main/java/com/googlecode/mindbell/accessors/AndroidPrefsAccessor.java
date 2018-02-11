@@ -3,7 +3,7 @@
  *            for remembering what really counts
  *
  *     Copyright (C) 2010-2014 Marc Schroeder
- *     Copyright (C) 2014-2017 Uwe Damken
+ *     Copyright (C) 2014-2018 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,6 +72,7 @@ import static com.googlecode.mindbell.R.string.keyPopup;
 import static com.googlecode.mindbell.R.string.keyRampUpStartingTimeMillis;
 import static com.googlecode.mindbell.R.string.keyRampUpTime;
 import static com.googlecode.mindbell.R.string.keyRandomize;
+import static com.googlecode.mindbell.R.string.keyReminderBell;
 import static com.googlecode.mindbell.R.string.keyRingtone;
 import static com.googlecode.mindbell.R.string.keyShow;
 import static com.googlecode.mindbell.R.string.keySound;
@@ -82,7 +83,6 @@ import static com.googlecode.mindbell.R.string.keyStatusIconMaterialDesign;
 import static com.googlecode.mindbell.R.string.keyStatusVisibilityPublic;
 import static com.googlecode.mindbell.R.string.keyStopMeditationAutomatically;
 import static com.googlecode.mindbell.R.string.keyUseAudioStreamVolumeSetting;
-import static com.googlecode.mindbell.R.string.keyUseStandardBell;
 import static com.googlecode.mindbell.R.string.keyUseWorkaroundBell;
 import static com.googlecode.mindbell.R.string.keyVibrate;
 import static com.googlecode.mindbell.R.string.keyVolume;
@@ -115,6 +115,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
      */
     private static final String TIME_STRING_REGEX = "\\d?\\d(:\\d\\d)?";
 
+    /**
+     * Index of entry in bellEntryValues that represents the 'use system notification ringtone' setting.
+     */
+    private static final int BELL_ENTRY_VALUE_INDEX_NO_SOUND = 0;
+
+    /**
+     * Default reminder bell sound, also used in case the set sound uri is not accessible.
+     */
+    private static final String DEFAULT_REMINDER_BELL = "1";
+
     // *The* SharedPreferences
     private final SharedPreferences settings;
 
@@ -126,8 +136,6 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
 
     private final String[] weekdayEntryValues;
     private final String[] weekdayAbbreviationEntries;
-
-    private final Map<String, Uri> bellResourceUriMap;
 
     private ActivityPrefsAccessor activityPrefsForRegularOperation = new ActivityPrefsAccessorForRegularOperation();
 
@@ -150,18 +158,27 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         weekdayEntryValues = context.getResources().getStringArray(R.array.weekdayEntryValues);
         weekdayAbbreviationEntries = context.getResources().getStringArray(R.array.weekdayAbbreviationEntries);
 
-        // Define bell resource uri values ... doing it here because this needs a context
-        bellResourceUriMap = new HashMap<>();
-        // no entry for "0", let getSoundUri() return null to play no sound at all
-        bellResourceUriMap.put("1", Utils.getResourceUri(context, R.raw.bell10s));
-        bellResourceUriMap.put("2", Utils.getResourceUri(context, R.raw.bell20s));
-        bellResourceUriMap.put("3", Utils.getResourceUri(context, R.raw.bell30s));
-        bellResourceUriMap.put("4", Utils.getResourceUri(context, R.raw.bell3plus10s));
-        bellResourceUriMap.put("5", Utils.getResourceUri(context, R.raw.bell3plus20s));
-        bellResourceUriMap.put("6", Utils.getResourceUri(context, R.raw.bell3plus30s));
-
         // Check the settings and reset invalid ones
         checkSettings(context, logSettings);
+    }
+
+    public static boolean isUseStandardBell(String reminderBell) {
+        return Integer.valueOf(reminderBell) != BELL_ENTRY_VALUE_INDEX_NO_SOUND;
+    }
+
+    public static Uri getDefaultReminderBellSoundUri(Context context, boolean isUseWorkaroundBell) {
+        return getBellSoundUri(context, DEFAULT_REMINDER_BELL, isUseWorkaroundBell);
+    }
+
+    public static Uri getBellSoundUri(Context context, String key, boolean isUseWorkaroundBell) {
+        int arrayIdentifier = (isUseWorkaroundBell) ? R.array.bellWorkaroundFilenameEntries : R.array.bellFilenameEntries;
+        String[] bellFilenameArray = context.getResources().getStringArray(arrayIdentifier);
+        int index = Integer.valueOf(key);
+        if (index == BELL_ENTRY_VALUE_INDEX_NO_SOUND) {
+            return null;
+        }
+        int identifier = context.getResources().getIdentifier(bellFilenameArray[index], "raw", context.getPackageName());
+        return Utils.getResourceUri(context, identifier);
     }
 
     /**
@@ -204,6 +221,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         addPreference(keyRampUpStartingTimeMillis, -1L, LONG, context);
         addPreference(keyRampUpTime, "00:30", TIME_STRING, context);
         addPreference(keyRandomize, true, BOOLEAN, context);
+        addPreference(keyReminderBell, DEFAULT_REMINDER_BELL, STRING, context);
         addPreference(keyRingtone, "", STRING, context); // no useful default, code relies on <defaultValue>.isEmpty()
         addPreference(keyShow, true, BOOLEAN, context);
         addPreference(keySound, true, BOOLEAN, context);
@@ -213,7 +231,6 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         addPreference(keyStatusIconMaterialDesign, true, BOOLEAN, context);
         addPreference(keyStatusVisibilityPublic, true, BOOLEAN, context);
         addPreference(keyStopMeditationAutomatically, false, BOOLEAN, context);
-        addPreference(keyUseStandardBell, true, BOOLEAN, context);
         addPreference(keyUseWorkaroundBell, false, BOOLEAN, context);
         addPreference(keyUseAudioStreamVolumeSetting, true, BOOLEAN, context);
         addPreference(keyVibrate, false, BOOLEAN, context);
@@ -231,6 +248,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         entryValuesMap.put(keyNotificationTitle, new String[]{}); // we cannot verify the entered notification title
         entryValuesMap.put(keyPattern, context.getResources().getStringArray(R.array.patternEntryValues));
         entryValuesMap.put(keyPatternOfPeriods, new String[]{}); // we cannot verify the entered notification text
+        entryValuesMap.put(keyReminderBell, context.getResources().getStringArray(R.array.bellEntryValues));
         entryValuesMap.put(keyRingtone, new String[]{}); // we don't need to know the possible ringtone values
 
         // Convert old settings from previous versions
@@ -334,7 +352,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         } catch (ClassCastException e) {
             // preference has already been converted
         }
-        // Version 3.2.5 renamed statusVisiblityPublic by statusVisibilityPublic
+        // Version 3.2.5 renamed statusVisiblityPublic to statusVisibilityPublic
         String keyStatusVisiblityPublic = "statusVisiblityPublic";
         if (settings.contains(keyStatusVisiblityPublic)) {
             boolean statusVisibilityPublic = settings.getBoolean(keyStatusVisiblityPublic,
@@ -351,6 +369,16 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
             setSetting(keyUseAudioStreamVolumeSetting, useAudioStreamVolumeSetting);
             Log.w(TAG, "Created setting for '" + context.getText(keyUseAudioStreamVolumeSetting) + "' with non-default (" +
                     useAudioStreamVolumeSetting + ") because an older version was already installed");
+        }
+        // Version 3.2.6 replaced useStandardBell by reminderBell
+        String keyUseStandardBell = "useStandardBell";
+        if (settings.contains(keyUseStandardBell)) {
+            boolean useStandardBell = settings.getBoolean(keyUseStandardBell, Boolean.TRUE);
+            String reminderBell = (useStandardBell) ? DEFAULT_REMINDER_BELL : String.valueOf(BELL_ENTRY_VALUE_INDEX_NO_SOUND);
+            setSetting(keyReminderBell, reminderBell);
+            settings.edit().remove(keyUseStandardBell).apply();
+            Log.w(TAG, "Converted old setting for '" + keyUseStandardBell + "' (" + useStandardBell + ") to '" +
+                    context.getText(keyReminderBell) + "' (" + reminderBell + ")");
         }
     }
 
@@ -628,30 +656,32 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public Uri getSoundUri() {
+    public Uri getSoundUri(Context context) {
         // This implementation is almost the same as MindBellPreferences#setPreferenceVolumeSoundUri()
-        String ringtone = getRingtone();
-        if (isUseStandardBell() || ringtone.isEmpty()) {
-            return getStandardSoundUri();
-        } else {
-            return Uri.parse(ringtone);
+        Uri soundUri = getReminderBellSoundUri(context);
+        if (soundUri == null) { // use system notification ringtone if reminder bell sound is not set
+            String ringtone = getRingtone();
+            if (ringtone.isEmpty()) {
+                soundUri = getDefaultReminderBellSoundUri(context);
+            } else {
+                return Uri.parse(ringtone);
+            }
         }
-    }
-
-    private boolean isUseStandardBell() {
-        return getBooleanSetting(keyUseStandardBell);
+        return soundUri;
     }
 
     @Override
-    public Uri getStandardSoundUri() {
-        return getSoundUri("1");
+    public Uri getReminderBellSoundUri(Context context) {
+        return getBellSoundUri(context, getStringSetting(keyReminderBell));
     }
 
-    public Uri getSoundUri(String key) {
-        if (isUseWorkaroundBell()) {
-            key = String.valueOf(Integer.valueOf(key) + 3); // shift key (string index) by 3 to get sounds that start with silence
-        }
-        return bellResourceUriMap.get(key);
+    @Override
+    public Uri getDefaultReminderBellSoundUri(Context context) {
+        return getBellSoundUri(context, DEFAULT_REMINDER_BELL);
+    }
+
+    public Uri getBellSoundUri(Context context, String key) {
+        return getBellSoundUri(context, key, isUseWorkaroundBell());
     }
 
     private boolean isUseWorkaroundBell() {
@@ -1018,8 +1048,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         }
 
         @Override
-        public Uri getSoundUri() {
-            return AndroidPrefsAccessor.this.getSoundUri();
+        public Uri getSoundUri(Context context) {
+            return AndroidPrefsAccessor.this.getReminderBellSoundUri(context);
         }
 
         @Override
@@ -1057,8 +1087,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         }
 
         @Override
-        public Uri getSoundUri() {
-            return AndroidPrefsAccessor.this.getSoundUri();
+        public Uri getSoundUri(Context context) {
+            return AndroidPrefsAccessor.this.getReminderBellSoundUri(context);
         }
 
         @Override
@@ -1096,7 +1126,7 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
         }
 
         @Override
-        public abstract Uri getSoundUri();
+        public abstract Uri getSoundUri(Context context);
 
         @Override
         public float getVolume() {
@@ -1118,8 +1148,10 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private class ActivityPrefsAccessorForMeditationBeginning extends ActivityPrefsAccessorForMeditation {
 
         @Override
-        public Uri getSoundUri() {
-            return (isStartMeditationDirectly()) ? null : AndroidPrefsAccessor.this.getSoundUri(getMeditationBeginningBell());
+        public Uri getSoundUri(Context context) {
+            return (isStartMeditationDirectly()) ?
+                    null :
+                    AndroidPrefsAccessor.this.getBellSoundUri(context, getMeditationBeginningBell());
         }
 
     }
@@ -1127,8 +1159,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private class ActivityPrefsAccessorForMeditationInterrupting extends ActivityPrefsAccessorForMeditation {
 
         @Override
-        public Uri getSoundUri() {
-            return AndroidPrefsAccessor.this.getSoundUri(getMeditationInterruptingBell());
+        public Uri getSoundUri(Context context) {
+            return AndroidPrefsAccessor.this.getBellSoundUri(context, getMeditationInterruptingBell());
         }
 
     }
@@ -1136,8 +1168,8 @@ public class AndroidPrefsAccessor extends PrefsAccessor {
     private class ActivityPrefsAccessorForMeditationEnding extends ActivityPrefsAccessorForMeditation {
 
         @Override
-        public Uri getSoundUri() {
-            return AndroidPrefsAccessor.this.getSoundUri(getMeditationEndingBell());
+        public Uri getSoundUri(Context context) {
+            return AndroidPrefsAccessor.this.getBellSoundUri(context, getMeditationEndingBell());
         }
 
     }

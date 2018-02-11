@@ -93,4 +93,17 @@
         <item>Als Musik abspielen</item>
     </string-array>
 
+    <!-- Types of bells for reminder or beginning/interrupting/ending the meditation -->
+    <string-array name="bellEntries">
+        <item>Benachrichtigungston verwenden</item>
+        <item>Einzelne Glocke</item>
+        <item>Doppelte Glocke</item>
+        <item>Dreifach Glocke</item>
+        <item>Stabglocke</item>
+        <item>Glocke, 15 s Stille, Stabglocke</item>
+        <item>Glocke, 30 s Stille, Stabglocke</item>
+        <item>Glocke, 60 s Stille, Stabglocke</item>
+        <item>Glocke, 120 s Stille, Stabglocke</item>
+    </string-array>
+
 </resources>

@@ -223,19 +223,23 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
             }
         }
         // Reset volume to originalVolume if it has been set before (does not equal -1)
-        int originalVolume = prefs.getOriginalVolume();
-        if (originalVolume < 0) {
-            MindBell.logDebug("Finish bell sound found originalVolume " + originalVolume + ", alarm volume left untouched");
+        if (prefs.isUseAudioStreamVolumeSetting()) { // we don't care about setting the volume
+            MindBell.logDebug("Finish bell sound found without touching audio stream volume");
         } else {
-            int alarmMaxVolume = getAlarmMaxVolume();
-            if (originalVolume == alarmMaxVolume) { // "someone" else set it to max, so we don't touch it
-                MindBell.logDebug(
-                        "Finish bell sound found originalVolume " + originalVolume + " to be max, alarm volume left untouched");
+            int originalVolume = prefs.getOriginalVolume();
+            if (originalVolume < 0) {
+                MindBell.logDebug("Finish bell sound found originalVolume " + originalVolume + ", alarm volume left untouched");
             } else {
-                MindBell.logDebug("Finish bell sound found originalVolume " + originalVolume + ", setting alarm volume to it");
-                setAlarmVolume(originalVolume);
+                int alarmMaxVolume = getAlarmMaxVolume();
+                if (originalVolume == alarmMaxVolume) { // "someone" else set it to max, so we don't touch it
+                    MindBell.logDebug(
+                            "Finish bell sound found originalVolume " + originalVolume + " to be max, alarm volume left untouched");
+                } else {
+                    MindBell.logDebug("Finish bell sound found originalVolume " + originalVolume + ", setting alarm volume to it");
+                    setAlarmVolume(originalVolume);
+                }
+                prefs.resetOriginalVolume(); // no longer needed therefore invalidate it
             }
-            prefs.resetOriginalVolume(); // no longer needed therefore invalidate it
         }
     }
 
@@ -265,7 +269,7 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
      * sound has been started, false otherwise.
      */
     private boolean startPlayingSound(ActivityPrefsAccessor activityPrefs, final Runnable runWhenDone) {
-        Uri bellUri = activityPrefs.getSoundUri();
+        Uri bellUri = activityPrefs.getSoundUri(context);
         audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         if (prefs.isNoSoundOnMusic() && audioManager.isMusicActive()) {
             MindBell.logDebug("Sound suppressed because setting is no sound on music and music is playing");
@@ -282,7 +286,7 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
             MindBell.logDebug("Audio focus successfully requested");
         }
         if (prefs.isUseAudioStreamVolumeSetting()) { // we don't care about setting the volume
-            MindBell.logDebug("Start playing sound found without touching audio stream volume");
+            MindBell.logDebug("Start playing sound without touching audio stream volume");
         } else {
             int originalVolume = getAlarmVolume();
             int alarmMaxVolume = getAlarmMaxVolume();
@@ -306,7 +310,7 @@ public class AndroidContextAccessor extends ContextAccessor implements AudioMana
             try {
                 mediaPlayer.setDataSource(context, bellUri);
             } catch (IOException e) { // probably because of withdrawn permissions, hence use default bell
-                mediaPlayer.setDataSource(context, prefs.getStandardSoundUri());
+                mediaPlayer.setDataSource(context, prefs.getDefaultReminderBellSoundUri(context));
             }
             mediaPlayer.prepare();
             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {

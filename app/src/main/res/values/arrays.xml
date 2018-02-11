@@ -93,14 +93,20 @@
         <item>Play as music</item>
     </string-array>
 
-    <!-- ==================== don't localize ==================== -->
-
-    <!-- Number of rings for interrupting/ending the meditation -->
-    <string-array name="bellEntries" translatable="false">
-        <item>1 x</item>
-        <item>2 x</item>
-        <item>3 x</item>
+    <!-- Types of bells for reminder or beginning/interrupting/ending the meditation -->
+    <string-array name="bellEntries">
+        <item>Use notification ringtone</item>
+        <item>Single bell</item>
+        <item>Double bell</item>
+        <item>Triple bell</item>
+        <item>Bar-bell</item>
+        <item>Bell, 15 s silence, bar-bell</item>
+        <item>Bell, 30 s silence, bar-bell</item>
+        <item>Bell, 60 s silence, bar-bell</item>
+        <item>Bell, 120 s silence, bar-bell</item>
     </string-array>
+
+    <!-- ==================== don't localize ==================== -->
 
     <!-- Vibration patterns -->
     <string-array name="patternEntries" translatable="false">
@@ -159,11 +165,43 @@
         <item>100:200:100:200:100:200</item> <!-- -brr-brr-brr -->
     </string-array>
 
-    <!-- Number of rings for interrupting/ending the meditation -->
+    <!-- Filenames of bell sounds for bell selection (number of entry values must match bellEntries) -->
+    <string-array name="bellFilenameEntries" translatable="false">
+        <item></item>
+        <item>mindbell_b</item>
+        <item>mindbell_bb</item>
+        <item>mindbell_bbb</item>
+        <item>mindbell_s</item>
+        <item>mindbell_b15s</item>
+        <item>mindbell_b30s</item>
+        <item>mindbell_b60s</item>
+        <item>mindbell_b120s</item>
+    </string-array>
+
+    <!-- Filenames of workaround bell sounds for bell selection (number of entry values must match bellEntries) -->
+    <string-array name="bellWorkaroundFilenameEntries" translatable="false">
+        <item></item>
+        <item>mindbell_3b</item>
+        <item>mindbell_3bb</item>
+        <item>mindbell_3bbb</item>
+        <item>mindbell_3s</item>
+        <item>mindbell_3b15s</item>
+        <item>mindbell_3b30s</item>
+        <item>mindbell_3b60s</item>
+        <item>mindbell_3b120s</item>
+    </string-array>
+
+    <!-- Indexes of filenames of bell sounds for bell selection (number of entry values must match bellEntries) -->
     <string-array name="bellEntryValues" translatable="false">
+        <item>0</item>
         <item>1</item>
         <item>2</item>
         <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
     </string-array>
 
     <!-- Filenames of icons for audio stream selection -->

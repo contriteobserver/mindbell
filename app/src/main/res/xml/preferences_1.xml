@@ -103,12 +103,14 @@
                 android:summaryOff="@string/summaryDontSound"
                 android:summaryOn="@string/summarySound"
                 android:title="@string/prefsSound"/>
-            <CheckBoxPreference
+            <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
+                android:defaultValue="1"
                 android:dependency="@string/keySound"
-                android:key="@string/keyUseStandardBell"
-                android:summaryOff="@string/summaryDontUseStandardBell"
-                android:summaryOn="@string/summaryUseStandardBell"
-                android:title="@string/prefsUseStandardBell"/>
+                android:entries="@array/bellEntries"
+                android:entryValues="@array/bellEntryValues"
+                android:key="@string/keyReminderBell"
+                android:summary="%s"
+                android:title="@string/prefsReminderBell"/>
             <RingtonePreference
                 android:key="@string/keyRingtone"
                 android:ringtoneType="notification"
@@ -119,7 +121,7 @@
                 android:dialogTitle="@string/prefsVolume"
                 android:key="@string/keyVolume"
                 android:title="@string/prefsVolume"
-                mindful:ringtone="@raw/bell10s"
+                mindful:ringtone="@raw/mindbell_b"
                 mindful:streamType="4"/>
 
         </PreferenceCategory>

@@ -4,7 +4,7 @@
                for remembering what really counts
    
         Copyright (C) 2010-2014 Marc Schroeder
-        Copyright (C) 2014-2017 Uwe Damken
+        Copyright (C) 2014-2018 Uwe Damken
    
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -58,35 +58,38 @@
 
         <!-- keyMeditating can only be toggled by the meditation button -->
 
-        <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
-            android:dialogTitle="@string/prefsMeditationBeginningBell"
+        <com.googlecode.mindbell.preference.SoundPickerPreference
+            android:defaultValue="3"
             android:entries="@array/bellEntries"
-            android:entryValues="@array/bellEntryValues"
+            android:entryValues="@array/bellFilenameEntries"
             android:key="@string/keyMeditationBeginningBell"
-            android:summary="%s"
+            android:layout="@layout/sound_picker_preference"
+            android:summary=""
             android:title="@string/prefsMeditationBeginningBell"/>
 
-        <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
-            android:dialogTitle="@string/prefsMeditationInterruptingBell"
+        <com.googlecode.mindbell.preference.SoundPickerPreference
+            android:defaultValue="1"
             android:entries="@array/bellEntries"
-            android:entryValues="@array/bellEntryValues"
+            android:entryValues="@array/bellFilenameEntries"
             android:key="@string/keyMeditationInterruptingBell"
-            android:summary="%s"
+            android:layout="@layout/sound_picker_preference"
+            android:summary=""
             android:title="@string/prefsMeditationInterruptingBell"/>
 
-        <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
-            android:dialogTitle="@string/prefsMeditationEndingBell"
+        <com.googlecode.mindbell.preference.SoundPickerPreference
+            android:defaultValue="2"
             android:entries="@array/bellEntries"
-            android:entryValues="@array/bellEntryValues"
+            android:entryValues="@array/bellFilenameEntries"
             android:key="@string/keyMeditationEndingBell"
-            android:summary="%s"
+            android:layout="@layout/sound_picker_preference"
+            android:summary=""
             android:title="@string/prefsMeditationEndingBell"/>
 
         <com.googlecode.mindbell.preference.MediaVolumePreference
             android:dialogTitle="@string/prefsMeditationVolume"
             android:key="@string/keyMeditationVolume"
             android:title="@string/prefsMeditationVolume"
-            mindful:ringtone="@raw/bell10s"
+            mindful:ringtone="@raw/mindbell_b"
             mindful:streamType="4"/>
 
     </PreferenceScreen>

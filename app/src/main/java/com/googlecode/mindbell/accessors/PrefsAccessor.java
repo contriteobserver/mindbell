@@ -19,6 +19,7 @@
  */
 package com.googlecode.mindbell.accessors;
 
+import android.content.Context;
 import android.media.AudioManager;
 import android.net.Uri;
 
@@ -127,7 +128,7 @@ public abstract class PrefsAccessor {
 
     public abstract String getRingtone();
 
-    public abstract Uri getSoundUri();
+    public abstract Uri getSoundUri(Context context);
 
     public abstract Set<Integer> getActiveOnDaysOfWeek();
 
@@ -141,7 +142,9 @@ public abstract class PrefsAccessor {
 
     public abstract float getVolume();
 
-    public abstract Uri getStandardSoundUri();
+    public abstract Uri getReminderBellSoundUri(Context context);
+
+    public abstract Uri getDefaultReminderBellSoundUri(Context context);
 
     public abstract TimeOfDay getDaytimeEnd();
 

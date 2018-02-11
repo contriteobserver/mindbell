@@ -19,6 +19,7 @@
  */
 package com.googlecode.mindbell.accessors;
 
+import android.content.Context;
 import android.media.AudioManager;
 import android.net.Uri;
 
@@ -62,12 +63,17 @@ public class AndroidTestMockPrefsAccessor extends PrefsAccessor {
     }
 
     @Override
-    public Uri getSoundUri() {
+    public Uri getSoundUri(Context context) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 
     @Override
-    public Uri getStandardSoundUri() {
+    public Uri getReminderBellSoundUri(Context context) {
+        throw new UnsupportedOperationException("Test terminated ... method not implemented");
+    }
+
+    @Override
+    public Uri getDefaultReminderBellSoundUri(Context context) {
         throw new UnsupportedOperationException("Test terminated ... method not implemented");
     }
 

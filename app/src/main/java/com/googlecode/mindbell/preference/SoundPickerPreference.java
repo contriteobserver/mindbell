@@ -2,7 +2,7 @@
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
- *     Copyright (C) 2018-2018 Uwe Damken
+ *     Copyright (C) 2014-2018 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -36,23 +35,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Idea taken from https://stackoverflow.com/a/32226553
+ * RingtonePreference only works for ringtone sounds under control of the operating system not for app specifics sounds.
  *
- * IconPickerPreference requires an entries array (texts to be displayed next to the icon) and an entryValues
- * array (filenames of the icons) which are both the same length.
+ * SoundPickerPreference requires an entries array (texts to be displayed) and an entryValues array (filenames of the sounds) which
+ * are both the same length. The first entry (NO_SOUND_INDEX) is expected to present no sound file.
  */
 
-public class IconPickerPreference extends ListPreferenceWithSummaryFix {
+public class SoundPickerPreference extends ListPreferenceWithSummaryFix {
 
-    private List<IconItem> iconItemList;
+    private static int NO_SOUND_INDEX = 0;
+
+    private List<SoundItem> soundItemList;
 
     private int currentIndex = 0; // default value if android:defaultValue is not set
 
-    private ImageView selectedIconImageView;
-
     private TextView summaryTextView;
 
-    public IconPickerPreference(Context context, AttributeSet attrs) {
+    public SoundPickerPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         CharSequence[] iconTextArray = getEntries();
@@ -63,53 +62,56 @@ public class IconPickerPreference extends ListPreferenceWithSummaryFix {
                     "IconPickerPreference requires an entries array and an entryValues array which are both the same length");
         }
 
-        iconItemList = new ArrayList<IconItem>();
+        soundItemList = new ArrayList<SoundItem>();
         for (int i = 0; i < iconTextArray.length; i++) {
-            IconItem item = new IconItem(iconTextArray[i], iconFilenameArray[i], false);
-            iconItemList.add(item);
+            SoundItem item = new SoundItem(iconTextArray[i], iconFilenameArray[i], false);
+            soundItemList.add(item);
         }
     }
 
-    @Override
-    public String getValue() {
-        return String.valueOf(currentIndex);
+    public boolean isBellPicked() {
+        return currentIndex != NO_SOUND_INDEX;
     }
 
     @Override
     protected void onBindView(View view) {
         super.onBindView(view);
-
-        selectedIconImageView = (ImageView) view.findViewById(R.id.selectedIcon);
         summaryTextView = (TextView) view.findViewById(R.id.summary);
-
         updateSummary();
     }
 
     /**
-     * Update summary shown in the preference page. This includes a summary text and the chosen icon.
+     * Update summary shown in the preference page. This includes a summary text (only).
      */
     private void updateSummary() {
-        IconItem selectedIconItem = iconItemList.get(currentIndex);
-        int identifier =
-                getContext().getResources().getIdentifier(selectedIconItem.iconFilename, "drawable", getContext().getPackageName());
-        selectedIconImageView.setImageResource(identifier);
-        summaryTextView.setText(selectedIconItem.iconText);
+        if (summaryTextView != null) { // set summary only if view is already bound
+            SoundItem selectedSoundItem = soundItemList.get(currentIndex);
+            summaryTextView.setText(selectedSoundItem.iconText);
+        }
     }
 
     @Override
     protected void onDialogClosed(boolean positiveResult) {
-        super.onDialogClosed(positiveResult);
-        if (iconItemList != null) {
-            for (int i = 0; i < iconItemList.size(); i++) {
-                IconItem item = iconItemList.get(i);
+        if (soundItemList != null) {
+            for (int i = 0; i < soundItemList.size(); i++) {
+                SoundItem item = soundItemList.get(i);
                 if (item.isChecked) {
-                        persistString(String.valueOf(i));
-                        currentIndex = i;
-                    updateSummary();
-                        break;
+                    setValue(String.valueOf(i));
+                    break;
                 }
             }
         }
+        super.onDialogClosed(positiveResult);
+    }
+
+    @Override
+    public void setValue(final String value) {
+        super.setValue(value);
+        currentIndex = Integer.parseInt(value);
+        for (int i = 0; i < soundItemList.size(); i++) {
+            soundItemList.get(i).isChecked = (i == currentIndex);
+        }
+        updateSummary();
     }
 
     @Override
@@ -124,24 +126,23 @@ public class IconPickerPreference extends ListPreferenceWithSummaryFix {
         } else {
             newValue = defaultValue.toString();
         }
-        currentIndex = Integer.parseInt(newValue);
-        iconItemList.get(currentIndex).isChecked = true;
+        setValue(newValue);
     }
 
     @Override
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
         builder.setNegativeButton(android.R.string.cancel, null);
-        builder.setPositiveButton(null, null);
+        builder.setPositiveButton(android.R.string.ok, null);
         CustomListPreferenceAdapter customListPreferenceAdapter =
-                new CustomListPreferenceAdapter(getContext(), R.layout.icon_picker_preference_item, iconItemList);
+                new CustomListPreferenceAdapter(getContext(), R.layout.sound_picker_preference_item, soundItemList);
         builder.setAdapter(customListPreferenceAdapter, null);
     }
 
-    private class CustomListPreferenceAdapter extends ArrayAdapter<IconItem> {
+    private class CustomListPreferenceAdapter extends ArrayAdapter<SoundItem> {
 
         private int resource;
 
-        public CustomListPreferenceAdapter(Context context, int resource, List<IconItem> objects) {
+        public CustomListPreferenceAdapter(Context context, int resource, List<SoundItem> objects) {
             super(context, resource, objects);
             this.resource = resource; // there is no way to get this back from super class
         }
@@ -152,16 +153,12 @@ public class IconPickerPreference extends ListPreferenceWithSummaryFix {
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(resource, parent, false);
             }
-            TextView iconText = (TextView) convertView.findViewById(R.id.iconText);
-            ImageView iconImage = (ImageView) convertView.findViewById(R.id.iconImage);
-            RadioButton iconRadio = (RadioButton) convertView.findViewById(R.id.iconRadio);
+            TextView soundText = (TextView) convertView.findViewById(R.id.soundText);
+            RadioButton soundRadio = (RadioButton) convertView.findViewById(R.id.soundRadio);
 
-            IconItem iconItem = getItem(position);
-            iconText.setText(iconItem.iconText);
-            int identifier =
-                    getContext().getResources().getIdentifier(iconItem.iconFilename, "drawable", getContext().getPackageName());
-            iconImage.setImageResource(identifier);
-            iconRadio.setChecked(iconItem.isChecked);
+            SoundItem soundItem = getItem(position);
+            soundText.setText(soundItem.iconText);
+            soundRadio.setChecked(soundItem.isChecked);
 
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -177,17 +174,17 @@ public class IconPickerPreference extends ListPreferenceWithSummaryFix {
         }
     }
 
-    private class IconItem {
+    private class SoundItem {
 
         private String iconText;
 
-        private String iconFilename;
+        private String soundFilename;
 
         private boolean isChecked;
 
-        public IconItem(CharSequence iconText, CharSequence iconFilename, boolean isChecked) {
+        public SoundItem(CharSequence iconText, CharSequence soundFilename, boolean isChecked) {
             this.iconText = iconText.toString();
-            this.iconFilename = iconFilename.toString();
+            this.soundFilename = soundFilename.toString();
             this.isChecked = isChecked;
         }
 

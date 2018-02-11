@@ -18,6 +18,7 @@
  */
 package com.googlecode.mindbell.accessors;
 
+import android.content.Context;
 import android.net.Uri;
 
 /**
@@ -32,7 +33,7 @@ public interface ActivityPrefsAccessor {
 
     boolean isVibrate();
 
-    Uri getSoundUri();
+    Uri getSoundUri(Context context);
 
     float getVolume();
 

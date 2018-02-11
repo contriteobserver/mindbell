@@ -92,11 +92,9 @@
     <string name="prefsSound">Play sound</string>
     <string name="summarySound">Play sound when ringing</string>
     <string name="summaryDontSound">Don\'t play sound when ringing</string>
-    <string name="prefsUseStandardBell">&constUseStandardBell;</string>
-    <string name="summaryUseStandardBell">Play standard bell sound when ringing</string>
-    <string name="summaryDontUseStandardBell">Play chosen ringtone sound when ringing</string>
-    <string name="prefsRingtone">Ringtone</string>
-    <string name="summaryRingtoneNotSet">No ringtone selected, play standard bell sound</string>
+    <string name="prefsReminderBell">&constUseStandardBell;</string>
+    <string name="prefsRingtone">Notification ringtone</string>
+    <string name="summaryRingtoneNotSet">No notification ringtone selected, play single bell sound</string>
     <string name="prefsVolume">Volume</string>
 
     <string name="prefsCategoryVibration">Vibration</string>
@@ -297,6 +295,7 @@
     <string name="keyPopup" translatable="false">popup</string>
     <string name="keyRampUpStartingTimeMillis" translatable="false">rampUpStartingTimeMillis</string>
     <string name="keyRampUpTime" translatable="false">rampUpTime</string>
+    <string name="keyReminderBell" translatable="false">reminderBell</string>
     <string name="keyRandomize" translatable="false">randomize</string>
     <string name="keyRingtone" translatable="false">ringtone</string>
     <string name="keySendMail" translatable="false">sendMail</string> <!-- fake preference, key only used as id -->
@@ -309,7 +308,6 @@
     <string name="keyStatusVisibilityPublic" translatable="false">statusVisibilityPublic</string>
     <string name="keyStopMeditationAutomatically" translatable="false">stopMeditationAutomatically</string>
     <string name="keyUseAudioStreamVolumeSetting" translatable="false">useAudioStreamVolumeSetting</string>
-    <string name="keyUseStandardBell" translatable="false">useStandardBell</string>
     <string name="keyUseWorkaroundBell" translatable="false">useWorkaroundBell</string>
     <string name="keyVibrate" translatable="false">vibrate</string>
     <string name="keyVolume" translatable="false">volume</string>

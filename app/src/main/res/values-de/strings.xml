@@ -93,11 +93,9 @@
     <string name="prefsSound">Klang abspielen</string>
     <string name="summarySound">Klang abspielen beim Läuten</string>
     <string name="summaryDontSound">Beim Läuten keinen Klang abspielen</string>
-    <string name="prefsUseStandardBell">&constUseStandardBell;</string>
-    <string name="summaryUseStandardBell">Beim Läuten den Standard-Glockenklang abspielen</string>
-    <string name="summaryDontUseStandardBell">Beim Läuten den gewählten Klingelton abspielen</string>
-    <string name="prefsRingtone">Systemklang</string>
-    <string name="summaryRingtoneNotSet">Kein Klingelton ausgewählt, Standard-Glockenklang abspielen</string>
+    <string name="prefsReminderBell">&constUseStandardBell;</string>
+    <string name="prefsRingtone">Benachrichtigungston</string>
+    <string name="summaryRingtoneNotSet">Kein Benachrichtigungston ausgewählt, einzelnen Glockenklang abspielen</string>
     <string name="prefsVolume">Lautstärke</string>
 
     <string name="prefsCategoryVibration">Vibration</string>
