@@ -28,7 +28,6 @@ import android.test.RenamingDelegatingContext;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.googlecode.mindbell.accessors.AndroidContextAccessor;
-import com.googlecode.mindbell.accessors.ContextAccessor;
 
 import org.junit.After;
 import org.junit.Before;
@@ -113,7 +112,7 @@ public class RingBellTest {
         // setup
         setContextMuteOffHook(false);
         // exercise
-        ContextAccessor ca = AndroidContextAccessor.getInstance(context);
+        AndroidContextAccessor ca = AndroidContextAccessor.getInstance(context);
         // verify
         assertFalse(ca.getPrefs().isMuteOffHook());
     }
@@ -127,7 +126,7 @@ public class RingBellTest {
         // setup
         setContextMuteOffHook(true);
         // exercise
-        ContextAccessor ca = AndroidContextAccessor.getInstance(context);
+        AndroidContextAccessor ca = AndroidContextAccessor.getInstance(context);
         // verify
         assertTrue(ca.getPrefs().isMuteOffHook());
     }
@@ -137,7 +136,7 @@ public class RingBellTest {
         // setup
         setContextMuteWithPhone(false);
         // exercise
-        ContextAccessor ca = AndroidContextAccessor.getInstance(context);
+        AndroidContextAccessor ca = AndroidContextAccessor.getInstance(context);
         // verify
         assertFalse(ca.getPrefs().isMuteWithPhone());
     }
@@ -151,7 +150,7 @@ public class RingBellTest {
         // setup
         setContextMuteWithPhone(true);
         // exercise
-        ContextAccessor ca = AndroidContextAccessor.getInstance(context);
+        AndroidContextAccessor ca = AndroidContextAccessor.getInstance(context);
         // verify
         assertTrue(ca.getPrefs().isMuteWithPhone());
     }

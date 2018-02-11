@@ -38,7 +38,7 @@ public class MindBellTest extends ActivityInstrumentationTestCase2<MindBell> {
     private View mView;
 
     public MindBellTest() {
-        super("com.googlecode.mindbell", MindBell.class);
+        super(MindBell.class);
     }
 
     @Before

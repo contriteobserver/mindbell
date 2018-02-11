@@ -45,7 +45,6 @@ import android.widget.Toast;
 
 import com.googlecode.mindbell.accessors.AndroidContextAccessor;
 import com.googlecode.mindbell.accessors.AndroidPrefsAccessor;
-import com.googlecode.mindbell.accessors.PrefsAccessor;
 import com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix;
 import com.googlecode.mindbell.preference.MediaVolumePreference;
 import com.googlecode.mindbell.preference.MinutesIntervalPickerPreference;
@@ -74,7 +73,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         super.onCreate(savedInstanceState);
 
         // check settings, delete any settings that are not valid
-        final PrefsAccessor prefs = AndroidContextAccessor.getInstance(this).getPrefs();
+        final AndroidPrefsAccessor prefs = AndroidContextAccessor.getInstance(this).getPrefs();
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences_1);
@@ -220,7 +219,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
 
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 Vibrator vibrator = (Vibrator) MindBellPreferences.this.getSystemService(Context.VIBRATOR_SERVICE);
-                vibrator.vibrate(PrefsAccessor.getVibrationPattern((String) newValue), -1);
+                vibrator.vibrate(AndroidPrefsAccessor.getVibrationPattern((String) newValue), -1);
                 return true;
             }
 

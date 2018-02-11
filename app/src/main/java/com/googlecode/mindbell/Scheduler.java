@@ -25,17 +25,16 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.googlecode.mindbell.accessors.AndroidContextAccessor;
-import com.googlecode.mindbell.accessors.ContextAccessor;
-import com.googlecode.mindbell.accessors.PrefsAccessor;
+import com.googlecode.mindbell.accessors.AndroidPrefsAccessor;
 import com.googlecode.mindbell.logic.SchedulerLogic;
 import com.googlecode.mindbell.util.TimeOfDay;
 
 import java.util.Calendar;
 
 import static com.googlecode.mindbell.MindBellPreferences.TAG;
-import static com.googlecode.mindbell.accessors.PrefsAccessor.EXTRA_IS_RESCHEDULING;
-import static com.googlecode.mindbell.accessors.PrefsAccessor.EXTRA_MEDITATION_PERIOD;
-import static com.googlecode.mindbell.accessors.PrefsAccessor.EXTRA_NOW_TIME_MILLIS;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.EXTRA_IS_RESCHEDULING;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.EXTRA_MEDITATION_PERIOD;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.EXTRA_NOW_TIME_MILLIS;
 
 /**
  * Ring the bell and reschedule.
@@ -54,8 +53,8 @@ public class Scheduler extends BroadcastReceiver {
                 ", meditationPeriod=" + meditationPeriod);
 
         // Create working environment
-        ContextAccessor contextAccessor = AndroidContextAccessor.getInstance(context);
-        PrefsAccessor prefs = contextAccessor.getPrefs();
+        AndroidContextAccessor contextAccessor = AndroidContextAccessor.getInstance(context);
+        AndroidPrefsAccessor prefs = contextAccessor.getPrefs();
 
         // Update notification just in case state has changed or MindBell missed a muting
         contextAccessor.updateStatusNotification();
@@ -79,8 +78,8 @@ public class Scheduler extends BroadcastReceiver {
     /**
      * Reschedules next alarm and rings differently depending on the currently started (!) meditation period.
      */
-    private void handleMeditatingBell(final ContextAccessor contextAccessor, long nowTimeMillis, int meditationPeriod) {
-        PrefsAccessor prefs = contextAccessor.getPrefs();
+    private void handleMeditatingBell(final AndroidContextAccessor contextAccessor, long nowTimeMillis, int meditationPeriod) {
+        AndroidPrefsAccessor prefs = contextAccessor.getPrefs();
 
         int numberOfPeriods = prefs.getNumberOfPeriods();
 
@@ -124,8 +123,8 @@ public class Scheduler extends BroadcastReceiver {
     /**
      * Reschedules next alarm, shows bell, plays bell sound and vibrates - whatever is requested.
      */
-    private void handleActiveBell(ContextAccessor contextAccessor, long nowTimeMillis, boolean isRescheduling) {
-        PrefsAccessor prefs = contextAccessor.getPrefs();
+    private void handleActiveBell(AndroidContextAccessor contextAccessor, long nowTimeMillis, boolean isRescheduling) {
+        AndroidPrefsAccessor prefs = contextAccessor.getPrefs();
 
         long nextTargetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         contextAccessor.reschedule(nextTargetTimeMillis, null);

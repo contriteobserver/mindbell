@@ -21,7 +21,7 @@ package com.googlecode.mindbell.util;
 
 import android.content.Context;
 
-import com.googlecode.mindbell.accessors.PrefsAccessor;
+import com.googlecode.mindbell.accessors.AndroidPrefsAccessor;
 
 import java.util.Calendar;
 import java.util.Set;
@@ -126,7 +126,7 @@ public class TimeOfDay {
      * The hh:mm-TimeOfDay, as provided by an interval given in milliseconds.
      */
     public static TimeOfDay fromMillisecondsInterval(long milliseconds) {
-        return fromSecondsInterval((int) (milliseconds / PrefsAccessor.ONE_MINUTE_MILLIS));
+        return fromSecondsInterval((int) (milliseconds / AndroidPrefsAccessor.ONE_MINUTE_MILLIS));
     }
 
     /**
@@ -219,7 +219,7 @@ public class TimeOfDay {
      *
      * @return whether bell should ring
      */
-    public boolean isDaytime(PrefsAccessor prefs) {
+    public boolean isDaytime(AndroidPrefsAccessor prefs) {
         return isDaytime(prefs.getDaytimeStart(), prefs.getDaytimeEnd(), prefs.getActiveOnDaysOfWeek());
     }
 
