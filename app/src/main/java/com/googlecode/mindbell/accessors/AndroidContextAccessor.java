@@ -61,11 +61,11 @@ import static android.media.AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK;
 import static android.media.AudioManager.AUDIOFOCUS_REQUEST_FAILED;
 import static android.media.AudioManager.STREAM_ALARM;
 import static com.googlecode.mindbell.MindBellPreferences.TAG;
-import static com.googlecode.mindbell.accessors.PrefsAccessor.EXTRA_IS_RESCHEDULING;
-import static com.googlecode.mindbell.accessors.PrefsAccessor.EXTRA_MEDITATION_PERIOD;
-import static com.googlecode.mindbell.accessors.PrefsAccessor.EXTRA_NOW_TIME_MILLIS;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.EXTRA_IS_RESCHEDULING;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.EXTRA_MEDITATION_PERIOD;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.EXTRA_NOW_TIME_MILLIS;
 
-public class ContextAccessor implements AudioManager.OnAudioFocusChangeListener {
+public class AndroidContextAccessor implements AudioManager.OnAudioFocusChangeListener {
 
     public static final float MINUS_ONE_DB = 0.891250938f;
 
@@ -80,20 +80,20 @@ public class ContextAccessor implements AudioManager.OnAudioFocusChangeListener 
     // ApplicationContext of MindBell
     private final Context context;
     // Accessor to all preferences
-    protected PrefsAccessor prefs = null;
+    protected AndroidPrefsAccessor prefs = null;
 
     /**
      * Constructor is private just in case we want to make this a singleton.
      */
-    private ContextAccessor(Context context, boolean logSettings) {
+    private AndroidContextAccessor(Context context, boolean logSettings) {
         this.context = context.getApplicationContext();
-        this.prefs = new PrefsAccessor(context, logSettings);
+        this.prefs = new AndroidPrefsAccessor(context, logSettings);
     }
 
     /**
      * Constructor is protected to allow for JUnit tests only.
      */
-    protected ContextAccessor(Context context, PrefsAccessor prefs) {
+    protected AndroidContextAccessor(Context context, AndroidPrefsAccessor prefs) {
         this.context = context;
         this.prefs = prefs;
     }
@@ -101,18 +101,18 @@ public class ContextAccessor implements AudioManager.OnAudioFocusChangeListener 
     /**
      * Returns an accessor for the given context, this call also validates the preferences.
      */
-    public static ContextAccessor getInstance(Context context) {
-        return new ContextAccessor(context, false);
+    public static AndroidContextAccessor getInstance(Context context) {
+        return new AndroidContextAccessor(context, false);
     }
 
     /**
      * Returns an accessor for the given context, this call also validates the preferences.
      */
-    public static ContextAccessor getInstanceAndLogPreferences(Context context) {
-        return new ContextAccessor(context, true);
+    public static AndroidContextAccessor getInstanceAndLogPreferences(Context context) {
+        return new AndroidContextAccessor(context, true);
     }
 
-    public PrefsAccessor getPrefs() {
+    public AndroidPrefsAccessor getPrefs() {
         return prefs;
     }
 
@@ -369,7 +369,7 @@ public class ContextAccessor implements AudioManager.OnAudioFocusChangeListener 
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    Thread.sleep(PrefsAccessor.WAITING_TIME);
+                    Thread.sleep(AndroidPrefsAccessor.WAITING_TIME);
                 } catch (InterruptedException e) {
                     // doesn't care if sleep was interrupted, just move on
                 }
@@ -503,7 +503,7 @@ public class ContextAccessor implements AudioManager.OnAudioFocusChangeListener 
         Intent intent = new Intent(context, MindBellMain.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK // context may be service context only, not an activity context
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK); // MindBellMain becomes the new root to let back button return to other apps
-        intent.putExtra(PrefsAccessor.EXTRA_STOP_MEDITATION, true);
+        intent.putExtra(AndroidPrefsAccessor.EXTRA_STOP_MEDITATION, true);
         context.startActivity(intent);
     }
 
@@ -606,7 +606,7 @@ public class ContextAccessor implements AudioManager.OnAudioFocusChangeListener 
      * outgoing calls. Notification bell could not be turned over correctly if muting with phone were requested without permission
      * granted.
      */
-    private boolean canSettingsBeSatisfied(PrefsAccessor prefs) {
+    private boolean canSettingsBeSatisfied(AndroidPrefsAccessor prefs) {
         boolean result = !prefs.isMuteOffHook() ||
                 ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) ==
                         PackageManager.PERMISSION_GRANTED;

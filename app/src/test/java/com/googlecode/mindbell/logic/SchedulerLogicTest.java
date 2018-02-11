@@ -19,7 +19,7 @@
  */
 package com.googlecode.mindbell.logic;
 
-import com.googlecode.mindbell.accessors.PrefsAccessor;
+import com.googlecode.mindbell.accessors.AndroidPrefsAccessor;
 import com.googlecode.mindbell.util.TimeOfDay;
 
 import org.junit.Assert;
@@ -31,7 +31,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
 
-import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.ONE_MINUTE_MILLIS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,7 +40,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleNotRandomized() {
-        PrefsAccessor prefs = getDayPrefs();
+        AndroidPrefsAccessor prefs = getDayPrefs();
         when(prefs.isRandomize()).thenReturn(false);
         // Current time setting in the middle of the night (05:00)
         long nowTimeMillis = getTimeMillis(5, 0, Calendar.FRIDAY);
@@ -60,8 +60,8 @@ public class SchedulerLogicTest {
         Assert.assertEquals(getTimeMillis(11, 0, Calendar.FRIDAY), targetTimeMillis);
     }
 
-    private PrefsAccessor getDayPrefs() {
-        PrefsAccessor prefs = mock(PrefsAccessor.class);
+    private AndroidPrefsAccessor getDayPrefs() {
+        AndroidPrefsAccessor prefs = mock(AndroidPrefsAccessor.class);
         when(prefs.getDaytimeStart()).thenReturn(new TimeOfDay(9, 0));
         when(prefs.getDaytimeEnd()).thenReturn(new TimeOfDay(21, 0));
         when(prefs.getActiveOnDaysOfWeek()).thenReturn(new HashSet<>(Arrays.asList(new Integer[]{2, 3, 4, 5, 6})));
@@ -83,7 +83,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleNotRandomizedNormalizedToFivePastFullHourInterval5() {
-        PrefsAccessor prefs = getDayPrefs();
+        AndroidPrefsAccessor prefs = getDayPrefs();
         when(prefs.isRandomize()).thenReturn(false);
         when(prefs.getNormalize()).thenReturn(5);
         when(prefs.getInterval()).thenReturn(5 * ONE_MINUTE_MILLIS);
@@ -108,7 +108,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleNotRandomizedNormalizedToFivePastFullHourInterval60() {
-        PrefsAccessor prefs = getDayPrefs();
+        AndroidPrefsAccessor prefs = getDayPrefs();
         when(prefs.isRandomize()).thenReturn(false);
         when(prefs.getNormalize()).thenReturn(5);
         // Current time setting in the middle of the night (05:00)
@@ -134,7 +134,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleNotRandomizedNormalizedToFivePastFullHourInterval120() {
-        PrefsAccessor prefs = getDayPrefs();
+        AndroidPrefsAccessor prefs = getDayPrefs();
         when(prefs.isRandomize()).thenReturn(false);
         when(prefs.getNormalize()).thenReturn(5);
         when(prefs.getInterval()).thenReturn(120 * ONE_MINUTE_MILLIS);
@@ -161,7 +161,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleNotRandomizedNormalizedToHalfPastFullHourInterval20() {
-        PrefsAccessor prefs = getDayPrefs();
+        AndroidPrefsAccessor prefs = getDayPrefs();
         when(prefs.isRandomize()).thenReturn(false);
         when(prefs.getNormalize()).thenReturn(30);
         when(prefs.getInterval()).thenReturn(20 * ONE_MINUTE_MILLIS);
@@ -192,7 +192,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleNotRandomizedNormalizedToHalfPastFullHourInterval180() {
-        PrefsAccessor prefs = getDayPrefs();
+        AndroidPrefsAccessor prefs = getDayPrefs();
         when(prefs.isRandomize()).thenReturn(false);
         when(prefs.getNormalize()).thenReturn(30);
         when(prefs.getInterval()).thenReturn(180 * ONE_MINUTE_MILLIS);
@@ -219,7 +219,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleNotRandomizedNormalizedToQuarterPastFullHourInterval30() {
-        PrefsAccessor prefs = getDayPrefs();
+        AndroidPrefsAccessor prefs = getDayPrefs();
         when(prefs.isRandomize()).thenReturn(false);
         when(prefs.getNormalize()).thenReturn(15);
         when(prefs.getInterval()).thenReturn(30 * ONE_MINUTE_MILLIS);
@@ -291,7 +291,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleNotRandomizedNormalizedToTenPastFullHourInterval20() {
-        PrefsAccessor prefs = getDayPrefs();
+        AndroidPrefsAccessor prefs = getDayPrefs();
         when(prefs.isRandomize()).thenReturn(false);
         when(prefs.getNormalize()).thenReturn(10);
         when(prefs.getInterval()).thenReturn(20 * ONE_MINUTE_MILLIS);
@@ -330,7 +330,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleRandomized() {
-        PrefsAccessor prefs = getDayPrefs();
+        AndroidPrefsAccessor prefs = getDayPrefs();
         when(prefs.isRandomize()).thenReturn(true);
         // First reschedule from nighttime (05:00, before 09:00) to beginning of daytime (09:00)
         long nowTimeMillis = getTimeMillis(5, 0, Calendar.FRIDAY);
@@ -361,7 +361,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleYieldsDayFriday1() {
-        PrefsAccessor prefs = getDayPrefs();
+        AndroidPrefsAccessor prefs = getDayPrefs();
         long nowTimeMillis = getTimeMillis(12, 0, Calendar.FRIDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
@@ -378,7 +378,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleYieldsDayFriday2() {
-        PrefsAccessor prefs = getDayPrefs();
+        AndroidPrefsAccessor prefs = getDayPrefs();
         long nowTimeMillis = getTimeMillis(1, 0, Calendar.FRIDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
@@ -389,7 +389,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleYieldsDayFriday3() {
-        PrefsAccessor prefs = getDayPrefs();
+        AndroidPrefsAccessor prefs = getDayPrefs();
         long nowTimeMillis = getTimeMillis(23, 0, Calendar.FRIDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
@@ -400,7 +400,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleYieldsDayFriday4() {
-        PrefsAccessor prefs = getDayPrefs();
+        AndroidPrefsAccessor prefs = getDayPrefs();
         long nowTimeMillis = getTimeMillis(20, 59, Calendar.FRIDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
@@ -411,7 +411,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleYieldsDayFriday5() {
-        PrefsAccessor prefs = getNightPrefs();
+        AndroidPrefsAccessor prefs = getNightPrefs();
         long nowTimeMillis = getTimeMillis(1, 0, Calendar.FRIDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
@@ -420,8 +420,8 @@ public class SchedulerLogicTest {
         Assert.assertTrue((new TimeOfDay(targetTimeMillis)).isDaytime(prefs));
     }
 
-    private PrefsAccessor getNightPrefs() {
-        PrefsAccessor prefs = mock(PrefsAccessor.class);
+    private AndroidPrefsAccessor getNightPrefs() {
+        AndroidPrefsAccessor prefs = mock(AndroidPrefsAccessor.class);
         when(prefs.getDaytimeStart()).thenReturn(new TimeOfDay(13, 0));
         when(prefs.getDaytimeEnd()).thenReturn(new TimeOfDay(2, 0));
         when(prefs.getActiveOnDaysOfWeek()).thenReturn(new HashSet<>(Arrays.asList(new Integer[]{2, 3, 4, 5, 6})));
@@ -433,7 +433,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleYieldsDayFriday6() {
-        PrefsAccessor prefs = getNightPrefs();
+        AndroidPrefsAccessor prefs = getNightPrefs();
         long nowTimeMillis = getTimeMillis(12, 0, Calendar.FRIDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
@@ -444,7 +444,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleYieldsDayMonday1() {
-        PrefsAccessor prefs = getDayPrefs();
+        AndroidPrefsAccessor prefs = getDayPrefs();
         long nowTimeMillis = getTimeMillis(12, 0, Calendar.MONDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
@@ -455,7 +455,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleYieldsDayMonday2() {
-        PrefsAccessor prefs = getDayPrefs();
+        AndroidPrefsAccessor prefs = getDayPrefs();
         long nowTimeMillis = getTimeMillis(1, 0, Calendar.MONDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
@@ -466,7 +466,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleYieldsDayMonday3() {
-        PrefsAccessor prefs = getDayPrefs();
+        AndroidPrefsAccessor prefs = getDayPrefs();
         long nowTimeMillis = getTimeMillis(23, 0, Calendar.MONDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
@@ -477,7 +477,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleYieldsDayMonday4() {
-        PrefsAccessor prefs = getDayPrefs();
+        AndroidPrefsAccessor prefs = getDayPrefs();
         long nowTimeMillis = getTimeMillis(20, 59, Calendar.MONDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
@@ -488,7 +488,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleYieldsDayMonday5() {
-        PrefsAccessor prefs = getNightPrefs();
+        AndroidPrefsAccessor prefs = getNightPrefs();
         long nowTimeMillis = getTimeMillis(1, 0, Calendar.MONDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
@@ -499,7 +499,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleYieldsDayMonday6() {
-        PrefsAccessor prefs = getNightPrefs();
+        AndroidPrefsAccessor prefs = getNightPrefs();
         long nowTimeMillis = getTimeMillis(12, 0, Calendar.MONDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
@@ -510,7 +510,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleYieldsDaySaturday1() {
-        PrefsAccessor prefs = getDayPrefs();
+        AndroidPrefsAccessor prefs = getDayPrefs();
         long nowTimeMillis = getTimeMillis(12, 0, Calendar.SATURDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
@@ -521,7 +521,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleYieldsDaySaturday2() {
-        PrefsAccessor prefs = getDayPrefs();
+        AndroidPrefsAccessor prefs = getDayPrefs();
         long nowTimeMillis = getTimeMillis(1, 0, Calendar.SATURDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
@@ -532,7 +532,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleYieldsDaySaturday3() {
-        PrefsAccessor prefs = getDayPrefs();
+        AndroidPrefsAccessor prefs = getDayPrefs();
         long nowTimeMillis = getTimeMillis(23, 0, Calendar.SATURDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
@@ -543,7 +543,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleYieldsDaySaturday4() {
-        PrefsAccessor prefs = getDayPrefs();
+        AndroidPrefsAccessor prefs = getDayPrefs();
         long nowTimeMillis = getTimeMillis(20, 59, Calendar.SATURDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
@@ -554,7 +554,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleYieldsDaySaturday5() {
-        PrefsAccessor prefs = getNightPrefs();
+        AndroidPrefsAccessor prefs = getNightPrefs();
         long nowTimeMillis = getTimeMillis(1, 0, Calendar.SATURDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
@@ -565,7 +565,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleYieldsDaySaturday6() {
-        PrefsAccessor prefs = getNightPrefs();
+        AndroidPrefsAccessor prefs = getNightPrefs();
         long nowTimeMillis = getTimeMillis(12, 0, Calendar.SATURDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
@@ -576,7 +576,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleYieldsDaySunday1() {
-        PrefsAccessor prefs = getDayPrefs();
+        AndroidPrefsAccessor prefs = getDayPrefs();
         long nowTimeMillis = getTimeMillis(12, 0, Calendar.SUNDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
@@ -587,7 +587,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleYieldsDaySunday2() {
-        PrefsAccessor prefs = getDayPrefs();
+        AndroidPrefsAccessor prefs = getDayPrefs();
         long nowTimeMillis = getTimeMillis(1, 0, Calendar.SUNDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
@@ -598,7 +598,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleYieldsDaySunday3() {
-        PrefsAccessor prefs = getDayPrefs();
+        AndroidPrefsAccessor prefs = getDayPrefs();
         long nowTimeMillis = getTimeMillis(23, 0, Calendar.SUNDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
@@ -609,7 +609,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleYieldsDaySunday4() {
-        PrefsAccessor prefs = getDayPrefs();
+        AndroidPrefsAccessor prefs = getDayPrefs();
         long nowTimeMillis = getTimeMillis(20, 59, Calendar.SUNDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
@@ -620,7 +620,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleYieldsDaySunday5() {
-        PrefsAccessor prefs = getNightPrefs();
+        AndroidPrefsAccessor prefs = getNightPrefs();
         long nowTimeMillis = getTimeMillis(1, 0, Calendar.SUNDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
@@ -631,7 +631,7 @@ public class SchedulerLogicTest {
 
     @Test
     public void testRescheduleYieldsDaySunday6() {
-        PrefsAccessor prefs = getNightPrefs();
+        AndroidPrefsAccessor prefs = getNightPrefs();
         long nowTimeMillis = getTimeMillis(12, 0, Calendar.SUNDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());

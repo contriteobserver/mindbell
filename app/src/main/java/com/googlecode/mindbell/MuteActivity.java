@@ -29,7 +29,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.NumberPicker;
 
-import com.googlecode.mindbell.accessors.ContextAccessor;
+import com.googlecode.mindbell.accessors.AndroidContextAccessor;
 import com.googlecode.mindbell.util.AlarmManagerCompat;
 import com.googlecode.mindbell.util.TimeOfDay;
 
@@ -43,7 +43,7 @@ public class MuteActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final ContextAccessor contextAccessor = ContextAccessor.getInstance(this);
+        final AndroidContextAccessor contextAccessor = AndroidContextAccessor.getInstance(this);
         final NumberPicker numberPicker = new NumberPicker(this);
         final int hours = 24;
         numberPicker.setMinValue(0);

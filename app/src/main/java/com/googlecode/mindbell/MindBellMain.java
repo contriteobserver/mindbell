@@ -50,30 +50,30 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import com.googlecode.mindbell.accessors.ContextAccessor;
-import com.googlecode.mindbell.accessors.PrefsAccessor;
+import com.googlecode.mindbell.accessors.AndroidContextAccessor;
+import com.googlecode.mindbell.accessors.AndroidPrefsAccessor;
 import com.googlecode.mindbell.preference.MinutesIntervalPickerPreference;
 import com.googlecode.mindbell.util.TimeOfDay;
 import com.googlecode.mindbell.util.Utils;
 
 import static com.googlecode.mindbell.MindBellPreferences.TAG;
-import static com.googlecode.mindbell.accessors.PrefsAccessor.MIN_MEDITATION_DURATION;
-import static com.googlecode.mindbell.accessors.PrefsAccessor.MIN_RAMP_UP_TIME;
-import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION;
-import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS_NEGATIVE_PERIOD;
-import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS_PERIOD_NOT_EXISTING;
-import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS_PERIOD_TOO_SHORT;
-import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS_VARIABLE_PERIOD_MISSING;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.MIN_MEDITATION_DURATION;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.MIN_RAMP_UP_TIME;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.ONE_MINUTE_MILLIS_NEGATIVE_PERIOD;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.ONE_MINUTE_MILLIS_PERIOD_NOT_EXISTING;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.ONE_MINUTE_MILLIS_PERIOD_TOO_SHORT;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.ONE_MINUTE_MILLIS_VARIABLE_PERIOD_MISSING;
 
 public class MindBellMain extends Activity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
-    private ContextAccessor contextAccessor;
+    private AndroidContextAccessor contextAccessor;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MindBell.logDebug("Main activity is being created");
-        contextAccessor = ContextAccessor.getInstance(this);
+        contextAccessor = AndroidContextAccessor.getInstance(this);
         // Use the following line to show popup dialog on every start
         // setPopupShown(false);
         setContentView(R.layout.main);
@@ -181,7 +181,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
      * Creates and shows dialog to start meditation.
      */
     private void showMeditationDialog() {
-        final PrefsAccessor prefs = contextAccessor.getPrefs();
+        final AndroidPrefsAccessor prefs = contextAccessor.getPrefs();
         View view = getLayoutInflater().inflate(R.layout.meditation_dialog, null);
         final TextView textViewRampUpTimeLabel = (TextView) view.findViewById(R.id.label_rampUpTime);
         final TextView textViewRampUpTime = (TextView) view.findViewById(R.id.rampUpTime);
@@ -213,7 +213,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                     @Override
                     public boolean onPick() {
                         int numberOfPeriods = Integer.valueOf(textViewNumberOfPeriods.getText().toString());
-                        textViewPatternOfPeriods.setText(PrefsAccessor.derivePatternOfPeriods(numberOfPeriods));
+                        textViewPatternOfPeriods.setText(AndroidPrefsAccessor.derivePatternOfPeriods(numberOfPeriods));
                         return isValidMeditationSetup(textViewNumberOfPeriods, textViewMeditationDuration, textViewNumberOfPeriods,
                                 textViewPatternOfPeriods);
                     }
@@ -235,13 +235,13 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
                     public String normalize(String value) {
                         return value
                                 .trim()
-                                .replaceAll(PrefsAccessor.PERIOD_SEPARATOR_WITH_BLANKS_REGEX,
-                                        PrefsAccessor.PERIOD_SEPARATOR_WITH_BLANK);
+                                .replaceAll(AndroidPrefsAccessor.PERIOD_SEPARATOR_WITH_BLANKS_REGEX,
+                                        AndroidPrefsAccessor.PERIOD_SEPARATOR_WITH_BLANK);
                     }
                 }, new OnEnterListener() {
                     @Override
                     public boolean onEnter(String value) {
-                        textViewNumberOfPeriods.setText(String.valueOf(PrefsAccessor.deriveNumberOfPeriods(value)));
+                        textViewNumberOfPeriods.setText(String.valueOf(AndroidPrefsAccessor.deriveNumberOfPeriods(value)));
                         return isValidMeditationSetup(textViewPatternOfPeriods, textViewMeditationDuration, textViewNumberOfPeriods,
                                 textViewPatternOfPeriods);
                     }
@@ -287,7 +287,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
     /**
      * Validate chosen meditation dialog values, if ok store them in preferences and start meditation.
      */
-    private void onClickStartMeditation(PrefsAccessor prefs, AlertDialog meditationDialog, TextView textViewPatternOfPeriods,
+    private void onClickStartMeditation(AndroidPrefsAccessor prefs, AlertDialog meditationDialog, TextView textViewPatternOfPeriods,
                                         TextView textViewMeditationDuration, TextView textViewNumberOfPeriods,
                                         TextView textViewRampUpTime, CheckBox checkBoxKeepScreenOn,
                                         CheckBox checkBoxStopMeditationAutomatically, boolean startDirectly) {
@@ -309,7 +309,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
      * Handles change in checked state of active switch.
      */
     private boolean onCheckedChangedActive(boolean isChecked) {
-        PrefsAccessor prefsAccessor = contextAccessor.getPrefs();
+        AndroidPrefsAccessor prefsAccessor = contextAccessor.getPrefs();
         prefsAccessor.setActive(isChecked); // toggle active/inactive
         contextAccessor.updateBellSchedule();
         CharSequence feedback = getText((prefsAccessor.isActive()) ? R.string.summaryActive : R.string.summaryNotActive);
@@ -372,7 +372,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
         String patternOfPeriods = textViewPatternOfPeriods.getText().toString();
         // validate by validating every period, this is not very efficient but all is reduced to a single implementation
         for (int i = 1; i <= numberOfPeriods; i++) {
-            long periodMillis = PrefsAccessor.derivePeriodMillis(patternOfPeriods, meditationDuration, i);
+            long periodMillis = AndroidPrefsAccessor.derivePeriodMillis(patternOfPeriods, meditationDuration, i);
             Integer message = null;
             if (periodMillis == ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION ||
                     periodMillis == ONE_MINUTE_MILLIS_PERIOD_NOT_EXISTING) {
@@ -483,12 +483,12 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
 
     @Override
     protected void onResume() {
-        if (getIntent().getBooleanExtra(PrefsAccessor.EXTRA_STOP_MEDITATION, false)) {
+        if (getIntent().getBooleanExtra(AndroidPrefsAccessor.EXTRA_STOP_MEDITATION, false)) {
             Log.d(TAG, "MindBellMain received stop meditation intent");
             // If the activity has once been opened from the Scheduler by automatically stopping meditation further screen
             // rotations will stop meditation, too, because getIntent() always returns the intent that initially opened the
             // activity. Hence the extra information must be removed to avoid stopping medtiation in these other cases.
-            getIntent().removeExtra(PrefsAccessor.EXTRA_STOP_MEDITATION);
+            getIntent().removeExtra(AndroidPrefsAccessor.EXTRA_STOP_MEDITATION);
             // Scheduler detected meditation to be over and sent intent to leave meditation mode. To be sure user has not stopped
             // meditation in the meantime (between sending and receiving intent) we check that meditation is still running.
             if (contextAccessor.getPrefs().isMeditating()) {
@@ -509,7 +509,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
      * Toggle meditating state, update view if requested and show information to user.
      */
     private void toggleMeditating() {
-        PrefsAccessor prefs = contextAccessor.getPrefs();
+        AndroidPrefsAccessor prefs = contextAccessor.getPrefs();
         prefs.setMeditating(!prefs.isMeditating()); // toggle active/inactive
         CountdownView countdownView = (CountdownView) findViewById(R.id.countdown);
         if (prefs.isMeditating()) {
@@ -670,7 +670,7 @@ public class MindBellMain extends Activity implements ActivityCompat.OnRequestPe
      * Handles click on confirmation to send info.
      */
     private void onClickReallySendInfo() {
-        ContextAccessor.getInstanceAndLogPreferences(this); // write settings to log
+        AndroidContextAccessor.getInstanceAndLogPreferences(this); // write settings to log
         MindBell.logDebug("Excluded from battery optimization (always false for SDK < 23)? -> " + Utils.isAppWhitelisted(this));
         Intent i = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getText(R.string.emailAddress).toString(), null));
         i.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.emailSubject));

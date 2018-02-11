@@ -20,12 +20,12 @@ package com.googlecode.mindbell.accessors;
 
 import org.junit.Test;
 
-import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS;
-import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION;
-import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS_NEGATIVE_PERIOD;
-import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS_PERIOD_NOT_EXISTING;
-import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS_PERIOD_TOO_SHORT;
-import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS_VARIABLE_PERIOD_MISSING;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.ONE_MINUTE_MILLIS;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.ONE_MINUTE_MILLIS_NEGATIVE_PERIOD;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.ONE_MINUTE_MILLIS_PERIOD_NOT_EXISTING;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.ONE_MINUTE_MILLIS_PERIOD_TOO_SHORT;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.ONE_MINUTE_MILLIS_VARIABLE_PERIOD_MISSING;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -33,7 +33,7 @@ public class PrefsAccessorTest {
 
     @Test
     public void testGetVibrationPattern() {
-        long[] ms = PrefsAccessor.getVibrationPattern("100:200:100:600");
+        long[] ms = AndroidPrefsAccessor.getVibrationPattern("100:200:100:600");
         assertNotNull(ms);
         int i = 0;
         assertEquals(100, ms[i++]);
@@ -44,74 +44,74 @@ public class PrefsAccessorTest {
 
     @Test
     public void testDeriveNumberOfPeriods() {
-        assertEquals(1, PrefsAccessor.deriveNumberOfPeriods("x"));
-        assertEquals(1, PrefsAccessor.deriveNumberOfPeriods("1"));
-        assertEquals(1, PrefsAccessor.deriveNumberOfPeriods("15"));
-        assertEquals(1, PrefsAccessor.deriveNumberOfPeriods("399"));
-        assertEquals(2, PrefsAccessor.deriveNumberOfPeriods("1,x"));
-        assertEquals(2, PrefsAccessor.deriveNumberOfPeriods("1,x"));
-        assertEquals(2, PrefsAccessor.deriveNumberOfPeriods("17, x"));
-        assertEquals(2, PrefsAccessor.deriveNumberOfPeriods("22, 12"));
-        assertEquals(2, PrefsAccessor.deriveNumberOfPeriods("x, x"));
-        assertEquals(3, PrefsAccessor.deriveNumberOfPeriods("x, x ,x"));
-        assertEquals(3, PrefsAccessor.deriveNumberOfPeriods("x,x,x"));
+        assertEquals(1, AndroidPrefsAccessor.deriveNumberOfPeriods("x"));
+        assertEquals(1, AndroidPrefsAccessor.deriveNumberOfPeriods("1"));
+        assertEquals(1, AndroidPrefsAccessor.deriveNumberOfPeriods("15"));
+        assertEquals(1, AndroidPrefsAccessor.deriveNumberOfPeriods("399"));
+        assertEquals(2, AndroidPrefsAccessor.deriveNumberOfPeriods("1,x"));
+        assertEquals(2, AndroidPrefsAccessor.deriveNumberOfPeriods("1,x"));
+        assertEquals(2, AndroidPrefsAccessor.deriveNumberOfPeriods("17, x"));
+        assertEquals(2, AndroidPrefsAccessor.deriveNumberOfPeriods("22, 12"));
+        assertEquals(2, AndroidPrefsAccessor.deriveNumberOfPeriods("x, x"));
+        assertEquals(3, AndroidPrefsAccessor.deriveNumberOfPeriods("x, x ,x"));
+        assertEquals(3, AndroidPrefsAccessor.deriveNumberOfPeriods("x,x,x"));
     }
 
     @Test
     public void testDerivePatternOfPeriods() {
-        assertEquals("x", PrefsAccessor.derivePatternOfPeriods(1));
-        assertEquals("x, x", PrefsAccessor.derivePatternOfPeriods(2));
-        assertEquals("x, x, x", PrefsAccessor.derivePatternOfPeriods(3));
+        assertEquals("x", AndroidPrefsAccessor.derivePatternOfPeriods(1));
+        assertEquals("x, x", AndroidPrefsAccessor.derivePatternOfPeriods(2));
+        assertEquals("x, x, x", AndroidPrefsAccessor.derivePatternOfPeriods(3));
     }
 
     @Test
     public void testDerivePeriodMillis() {
         // error minute defaults
-        assertEquals(ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION, PrefsAccessor.derivePeriodMillis("1000, x", 25, 1));
-        assertEquals(ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION, PrefsAccessor.derivePeriodMillis("1000, x", 25, 2));
-        assertEquals(ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION, PrefsAccessor.derivePeriodMillis("0, x", 25, 1));
-        assertEquals(ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION, PrefsAccessor.derivePeriodMillis("0, x", 25, 2));
-        assertEquals(ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION, PrefsAccessor.derivePeriodMillis("-1, x", 25, 1));
-        assertEquals(ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION, PrefsAccessor.derivePeriodMillis("-1, x", 25, 2));
-        assertEquals(ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION, PrefsAccessor.derivePeriodMillis("y, x", 25, 1));
-        assertEquals(ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION, PrefsAccessor.derivePeriodMillis("y, x", 25, 2));
-        assertEquals(ONE_MINUTE_MILLIS_VARIABLE_PERIOD_MISSING, PrefsAccessor.derivePeriodMillis("1, 2", 25, 2));
-        assertEquals(ONE_MINUTE_MILLIS_NEGATIVE_PERIOD, PrefsAccessor.derivePeriodMillis("1, 2, x", 2, 3));
-        assertEquals(ONE_MINUTE_MILLIS_PERIOD_TOO_SHORT, PrefsAccessor.derivePeriodMillis("1, 2, x", 3, 3));
-        assertEquals(ONE_MINUTE_MILLIS_PERIOD_TOO_SHORT, PrefsAccessor.derivePeriodMillis("x, x", 1, 1));
-        assertEquals(ONE_MINUTE_MILLIS_PERIOD_NOT_EXISTING, PrefsAccessor.derivePeriodMillis("x, x", 25, 3));
+        assertEquals(ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION, AndroidPrefsAccessor.derivePeriodMillis("1000, x", 25, 1));
+        assertEquals(ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION, AndroidPrefsAccessor.derivePeriodMillis("1000, x", 25, 2));
+        assertEquals(ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION, AndroidPrefsAccessor.derivePeriodMillis("0, x", 25, 1));
+        assertEquals(ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION, AndroidPrefsAccessor.derivePeriodMillis("0, x", 25, 2));
+        assertEquals(ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION, AndroidPrefsAccessor.derivePeriodMillis("-1, x", 25, 1));
+        assertEquals(ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION, AndroidPrefsAccessor.derivePeriodMillis("-1, x", 25, 2));
+        assertEquals(ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION, AndroidPrefsAccessor.derivePeriodMillis("y, x", 25, 1));
+        assertEquals(ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION, AndroidPrefsAccessor.derivePeriodMillis("y, x", 25, 2));
+        assertEquals(ONE_MINUTE_MILLIS_VARIABLE_PERIOD_MISSING, AndroidPrefsAccessor.derivePeriodMillis("1, 2", 25, 2));
+        assertEquals(ONE_MINUTE_MILLIS_NEGATIVE_PERIOD, AndroidPrefsAccessor.derivePeriodMillis("1, 2, x", 2, 3));
+        assertEquals(ONE_MINUTE_MILLIS_PERIOD_TOO_SHORT, AndroidPrefsAccessor.derivePeriodMillis("1, 2, x", 3, 3));
+        assertEquals(ONE_MINUTE_MILLIS_PERIOD_TOO_SHORT, AndroidPrefsAccessor.derivePeriodMillis("x, x", 1, 1));
+        assertEquals(ONE_MINUTE_MILLIS_PERIOD_NOT_EXISTING, AndroidPrefsAccessor.derivePeriodMillis("x, x", 25, 3));
         // valid results
-        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("x, x", 2, 1));
-        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("x, x", 2, 2));
-        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis(" x, x", 2, 1));
-        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis(" x, x", 2, 2));
-        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis(" 1, x", 2, 1));
-        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis(" 1, x", 2, 2));
-        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("1 , x", 2, 1));
-        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("1 , x", 2, 2));
-        assertEquals(999 * ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("999 , x", 1000, 1));
-        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("999 , x", 1000, 2));
-        assertEquals(4 * ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("4, x, 11, x, x", 18, 1));
-        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("4, x, 11, x, x", 18, 2));
-        assertEquals(11 * ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("4, x, 11, x, x", 18, 3));
-        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("4, x, 11, x, x", 18, 4));
-        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("4, x, 11, x, x", 18, 5));
-        assertEquals(4 * ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("4, x, 10, x, x", 17, 1));
-        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("4, x, 10, x, x", 17, 2));
-        assertEquals(10 * ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("4, x, 10, x, x", 17, 3));
-        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("4, x, 10, x, x", 17, 4));
-        assertEquals(ONE_MINUTE_MILLIS, PrefsAccessor.derivePeriodMillis("4, x, 10, x, x", 17, 5));
+        assertEquals(ONE_MINUTE_MILLIS, AndroidPrefsAccessor.derivePeriodMillis("x, x", 2, 1));
+        assertEquals(ONE_MINUTE_MILLIS, AndroidPrefsAccessor.derivePeriodMillis("x, x", 2, 2));
+        assertEquals(ONE_MINUTE_MILLIS, AndroidPrefsAccessor.derivePeriodMillis(" x, x", 2, 1));
+        assertEquals(ONE_MINUTE_MILLIS, AndroidPrefsAccessor.derivePeriodMillis(" x, x", 2, 2));
+        assertEquals(ONE_MINUTE_MILLIS, AndroidPrefsAccessor.derivePeriodMillis(" 1, x", 2, 1));
+        assertEquals(ONE_MINUTE_MILLIS, AndroidPrefsAccessor.derivePeriodMillis(" 1, x", 2, 2));
+        assertEquals(ONE_MINUTE_MILLIS, AndroidPrefsAccessor.derivePeriodMillis("1 , x", 2, 1));
+        assertEquals(ONE_MINUTE_MILLIS, AndroidPrefsAccessor.derivePeriodMillis("1 , x", 2, 2));
+        assertEquals(999 * ONE_MINUTE_MILLIS, AndroidPrefsAccessor.derivePeriodMillis("999 , x", 1000, 1));
+        assertEquals(ONE_MINUTE_MILLIS, AndroidPrefsAccessor.derivePeriodMillis("999 , x", 1000, 2));
+        assertEquals(4 * ONE_MINUTE_MILLIS, AndroidPrefsAccessor.derivePeriodMillis("4, x, 11, x, x", 18, 1));
+        assertEquals(ONE_MINUTE_MILLIS, AndroidPrefsAccessor.derivePeriodMillis("4, x, 11, x, x", 18, 2));
+        assertEquals(11 * ONE_MINUTE_MILLIS, AndroidPrefsAccessor.derivePeriodMillis("4, x, 11, x, x", 18, 3));
+        assertEquals(ONE_MINUTE_MILLIS, AndroidPrefsAccessor.derivePeriodMillis("4, x, 11, x, x", 18, 4));
+        assertEquals(ONE_MINUTE_MILLIS, AndroidPrefsAccessor.derivePeriodMillis("4, x, 11, x, x", 18, 5));
+        assertEquals(4 * ONE_MINUTE_MILLIS, AndroidPrefsAccessor.derivePeriodMillis("4, x, 10, x, x", 17, 1));
+        assertEquals(ONE_MINUTE_MILLIS, AndroidPrefsAccessor.derivePeriodMillis("4, x, 10, x, x", 17, 2));
+        assertEquals(10 * ONE_MINUTE_MILLIS, AndroidPrefsAccessor.derivePeriodMillis("4, x, 10, x, x", 17, 3));
+        assertEquals(ONE_MINUTE_MILLIS, AndroidPrefsAccessor.derivePeriodMillis("4, x, 10, x, x", 17, 4));
+        assertEquals(ONE_MINUTE_MILLIS, AndroidPrefsAccessor.derivePeriodMillis("4, x, 10, x, x", 17, 5));
         // can we get an error minute value with a valid request? yes, if we meditate 60001 minutes in 60000 periods => unlikely
         {
-            String patternOfPeriods = PrefsAccessor.derivePatternOfPeriods((int) ONE_MINUTE_MILLIS);
-            long periodMillis =
-                    PrefsAccessor.derivePeriodMillis(patternOfPeriods, (int) (ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION), 2);
+            String patternOfPeriods = AndroidPrefsAccessor.derivePatternOfPeriods((int) ONE_MINUTE_MILLIS);
+            long periodMillis = AndroidPrefsAccessor.derivePeriodMillis(patternOfPeriods,
+                    (int) (ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION), 2);
             assertEquals(ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION, periodMillis);
         }
         {
-            String patternOfPeriods = PrefsAccessor.derivePatternOfPeriods((int) (2 * ONE_MINUTE_MILLIS));
-            long periodMillis =
-                    PrefsAccessor.derivePeriodMillis(patternOfPeriods, (int) (2 * ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION),
+            String patternOfPeriods = AndroidPrefsAccessor.derivePatternOfPeriods((int) (2 * ONE_MINUTE_MILLIS));
+            long periodMillis = AndroidPrefsAccessor.derivePeriodMillis(patternOfPeriods,
+                    (int) (2 * ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION),
                             2);
             assertEquals(ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION, periodMillis);
         }

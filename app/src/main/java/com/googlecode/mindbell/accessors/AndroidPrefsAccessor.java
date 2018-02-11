@@ -83,15 +83,15 @@ import static com.googlecode.mindbell.R.string.keyStopMeditationAutomatically;
 import static com.googlecode.mindbell.R.string.keyUseStandardBell;
 import static com.googlecode.mindbell.R.string.keyVibrate;
 import static com.googlecode.mindbell.R.string.keyVolume;
-import static com.googlecode.mindbell.accessors.PrefsAccessor.Preference.Type.BOOLEAN;
-import static com.googlecode.mindbell.accessors.PrefsAccessor.Preference.Type.FLOAT;
-import static com.googlecode.mindbell.accessors.PrefsAccessor.Preference.Type.INTEGER;
-import static com.googlecode.mindbell.accessors.PrefsAccessor.Preference.Type.LONG;
-import static com.googlecode.mindbell.accessors.PrefsAccessor.Preference.Type.STRING;
-import static com.googlecode.mindbell.accessors.PrefsAccessor.Preference.Type.STRING_SET;
-import static com.googlecode.mindbell.accessors.PrefsAccessor.Preference.Type.TIME_STRING;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.Preference.Type.BOOLEAN;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.Preference.Type.FLOAT;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.Preference.Type.INTEGER;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.Preference.Type.LONG;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.Preference.Type.STRING;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.Preference.Type.STRING_SET;
+import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.Preference.Type.TIME_STRING;
 
-public class PrefsAccessor {
+public class AndroidPrefsAccessor {
 
     /**
      * One minute in milliseconds.
@@ -174,10 +174,10 @@ public class PrefsAccessor {
     private ActivityPrefsAccessor activityPrefsForMeditationEnding = new ActivityPrefsAccessorForMeditationEnding();
 
     /**
-     * Constructs an accessor for preferences in the given context, please use {@link ContextAccessor#getPrefs()} instead of
+     * Constructs an accessor for preferences in the given context, please use {@link AndroidContextAccessor#getPrefs()} instead of
      * calling this directly.
      */
-    protected PrefsAccessor(Context context, boolean logSettings) {
+    protected AndroidPrefsAccessor(Context context, boolean logSettings) {
         settings = context.getSharedPreferences(context.getPackageName() + "_preferences", Context.MODE_PRIVATE);
 
         // Define entries and entry values
@@ -1020,37 +1020,37 @@ public class PrefsAccessor {
 
         @Override
         public boolean isShow() {
-            return PrefsAccessor.this.isShow();
+            return AndroidPrefsAccessor.this.isShow();
         }
 
         @Override
         public boolean isSound() {
-            return PrefsAccessor.this.isSound();
+            return AndroidPrefsAccessor.this.isSound();
         }
 
         @Override
         public boolean isVibrate() {
-            return PrefsAccessor.this.isVibrate();
+            return AndroidPrefsAccessor.this.isVibrate();
         }
 
         @Override
         public Uri getSoundUri() {
-            return PrefsAccessor.this.getSoundUri();
+            return AndroidPrefsAccessor.this.getSoundUri();
         }
 
         @Override
         public float getVolume() {
-            return PrefsAccessor.this.getVolume();
+            return AndroidPrefsAccessor.this.getVolume();
         }
 
         @Override
         public boolean isNotification() {
-            return PrefsAccessor.this.isNotification();
+            return AndroidPrefsAccessor.this.isNotification();
         }
 
         @Override
         public boolean isDismissNotification() {
-            return PrefsAccessor.this.isDismissNotification();
+            return AndroidPrefsAccessor.this.isDismissNotification();
         }
 
     }
@@ -1074,12 +1074,12 @@ public class PrefsAccessor {
 
         @Override
         public Uri getSoundUri() {
-            return PrefsAccessor.this.getSoundUri();
+            return AndroidPrefsAccessor.this.getSoundUri();
         }
 
         @Override
         public float getVolume() {
-            return PrefsAccessor.this.getVolume();
+            return AndroidPrefsAccessor.this.getVolume();
         }
 
         @Override
@@ -1116,7 +1116,7 @@ public class PrefsAccessor {
 
         @Override
         public float getVolume() {
-            return PrefsAccessor.this.getMeditationVolume();
+            return AndroidPrefsAccessor.this.getMeditationVolume();
         }
 
         @Override
