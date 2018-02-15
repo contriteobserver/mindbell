@@ -60,11 +60,11 @@ import static android.media.AudioManager.AUDIOFOCUS_LOSS_TRANSIENT;
 import static android.media.AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK;
 import static android.media.AudioManager.AUDIOFOCUS_REQUEST_FAILED;
 import static com.googlecode.mindbell.MindBellPreferences.TAG;
-import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.EXTRA_IS_RESCHEDULING;
-import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.EXTRA_MEDITATION_PERIOD;
-import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.EXTRA_NOW_TIME_MILLIS;
+import static com.googlecode.mindbell.accessors.PrefsAccessor.EXTRA_IS_RESCHEDULING;
+import static com.googlecode.mindbell.accessors.PrefsAccessor.EXTRA_MEDITATION_PERIOD;
+import static com.googlecode.mindbell.accessors.PrefsAccessor.EXTRA_NOW_TIME_MILLIS;
 
-public class AndroidContextAccessor implements AudioManager.OnAudioFocusChangeListener {
+public class ContextAccessor implements AudioManager.OnAudioFocusChangeListener {
 
     public static final float MINUS_ONE_DB = 0.891250938f;
 
@@ -79,20 +79,20 @@ public class AndroidContextAccessor implements AudioManager.OnAudioFocusChangeLi
     // ApplicationContext of MindBell
     private final Context context;
     // Accessor to all preferences
-    protected AndroidPrefsAccessor prefs = null;
+    protected PrefsAccessor prefs = null;
 
     /**
      * Constructor is private just in case we want to make this a singleton.
      */
-    private AndroidContextAccessor(Context context, boolean logSettings) {
+    private ContextAccessor(Context context, boolean logSettings) {
         this.context = context.getApplicationContext();
-        this.prefs = new AndroidPrefsAccessor(context, logSettings);
+        this.prefs = new PrefsAccessor(context, logSettings);
     }
 
     /**
      * Constructor is protected to allow for JUnit tests only.
      */
-    protected AndroidContextAccessor(Context context, AndroidPrefsAccessor prefs) {
+    protected ContextAccessor(Context context, PrefsAccessor prefs) {
         this.context = context;
         this.prefs = prefs;
     }
@@ -100,18 +100,18 @@ public class AndroidContextAccessor implements AudioManager.OnAudioFocusChangeLi
     /**
      * Returns an accessor for the given context, this call also validates the preferences.
      */
-    public static AndroidContextAccessor getInstance(Context context) {
-        return new AndroidContextAccessor(context, false);
+    public static ContextAccessor getInstance(Context context) {
+        return new ContextAccessor(context, false);
     }
 
     /**
      * Returns an accessor for the given context, this call also validates the preferences.
      */
-    public static AndroidContextAccessor getInstanceAndLogPreferences(Context context) {
-        return new AndroidContextAccessor(context, true);
+    public static ContextAccessor getInstanceAndLogPreferences(Context context) {
+        return new ContextAccessor(context, true);
     }
 
-    public AndroidPrefsAccessor getPrefs() {
+    public PrefsAccessor getPrefs() {
         return prefs;
     }
 
@@ -149,7 +149,7 @@ public class AndroidContextAccessor implements AudioManager.OnAudioFocusChangeLi
 
     public boolean isPhoneMuted() {
         final AudioManager audioMan = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        return audioMan.getStreamVolume(AudioManager.STREAM_RING) == 0;
+        return audioMan.getStreamVolume(prefs.getAudioStream()) == 0;
     }
 
     protected String getReasonMutedWithPhone() {
@@ -378,7 +378,7 @@ public class AndroidContextAccessor implements AudioManager.OnAudioFocusChangeLi
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    Thread.sleep(AndroidPrefsAccessor.WAITING_TIME);
+                    Thread.sleep(PrefsAccessor.WAITING_TIME);
                 } catch (InterruptedException e) {
                     // doesn't care if sleep was interrupted, just move on
                 }
@@ -512,7 +512,7 @@ public class AndroidContextAccessor implements AudioManager.OnAudioFocusChangeLi
         Intent intent = new Intent(context, MindBellMain.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK // context may be service context only, not an activity context
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK); // MindBellMain becomes the new root to let back button return to other apps
-        intent.putExtra(AndroidPrefsAccessor.EXTRA_STOP_MEDITATION, true);
+        intent.putExtra(PrefsAccessor.EXTRA_STOP_MEDITATION, true);
         context.startActivity(intent);
     }
 
@@ -615,7 +615,7 @@ public class AndroidContextAccessor implements AudioManager.OnAudioFocusChangeLi
      * outgoing calls. Notification bell could not be turned over correctly if muting with phone were requested without permission
      * granted.
      */
-    private boolean canSettingsBeSatisfied(AndroidPrefsAccessor prefs) {
+    private boolean canSettingsBeSatisfied(PrefsAccessor prefs) {
         boolean result = !prefs.isMuteOffHook() ||
                 ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) ==
                         PackageManager.PERMISSION_GRANTED;
