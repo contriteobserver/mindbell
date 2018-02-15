@@ -19,7 +19,7 @@
  */
 package com.googlecode.mindbell.util;
 
-import com.googlecode.mindbell.accessors.AndroidPrefsAccessor;
+import com.googlecode.mindbell.accessors.PrefsAccessor;
 
 import org.junit.Test;
 
@@ -531,7 +531,7 @@ public class TimeOfDayTest {
     @Test
     public void testFromMillisecondsInterval() {
         for (int min = 0; min < 1440; min++) {
-            TimeOfDay time = TimeOfDay.fromMillisecondsInterval(min * AndroidPrefsAccessor.ONE_MINUTE_MILLIS);
+            TimeOfDay time = TimeOfDay.fromMillisecondsInterval(min * PrefsAccessor.ONE_MINUTE_MILLIS);
             assertEquals(min, time.getInterval());
         }
     }

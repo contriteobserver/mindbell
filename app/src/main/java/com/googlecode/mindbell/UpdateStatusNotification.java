@@ -24,7 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.googlecode.mindbell.accessors.AndroidContextAccessor;
+import com.googlecode.mindbell.accessors.ContextAccessor;
 
 import static com.googlecode.mindbell.MindBellPreferences.TAG;
 
@@ -36,7 +36,7 @@ public class UpdateStatusNotification extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "Update status notification received intent " + intent.getAction());
-        AndroidContextAccessor.getInstance(context).updateStatusNotification();
+        ContextAccessor.getInstance(context).updateStatusNotification();
     }
 
 }

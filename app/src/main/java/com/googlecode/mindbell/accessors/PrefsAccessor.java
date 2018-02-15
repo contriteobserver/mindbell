@@ -21,6 +21,7 @@ package com.googlecode.mindbell.accessors;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.util.Log;
 
@@ -782,8 +783,28 @@ public class PrefsAccessor {
         return (Set<String>) getSetting(resid);
     }
 
+    /**
+     * MindBell's own volume settings are only allowed to be used with sound going to alarm stream.
+     */
+    public boolean mustUseAudioStreamVolumeSetting() {
+        return getAudioStream() != AudioManager.STREAM_ALARM;
+    }
+
     public int getAudioStream() {
         return getAudioStream(getStringSetting(keyAudioStream));
+    }
+
+    public static int getAudioStream(String audioStreamSetting) {
+        switch (audioStreamSetting) {
+            case "1":
+                return AudioManager.STREAM_NOTIFICATION;
+            case "2":
+                return AudioManager.STREAM_MUSIC;
+            case "0":
+                // fall-thru to use "0" as default
+            default:
+                return AudioManager.STREAM_ALARM;
+        }
     }
 
     public boolean isUseAudioStreamVolumeSetting() {
@@ -1226,9 +1247,7 @@ public class PrefsAccessor {
 
         @Override
         public Uri getSoundUri(Context context) {
-            return (isStartMeditationDirectly()) ?
-                    null :
-                    PrefsAccessor.this.getBellSoundUri(context, getMeditationBeginningBell());
+            return (isStartMeditationDirectly()) ? null : PrefsAccessor.this.getBellSoundUri(context, getMeditationBeginningBell());
         }
 
     }

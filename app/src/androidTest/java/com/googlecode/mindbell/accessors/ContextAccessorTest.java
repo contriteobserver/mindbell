@@ -36,7 +36,7 @@ public class ContextAccessorTest extends AndroidTestCase {
     @Test
     public void testBellVolume() {
         // setup
-        AndroidContextAccessor ca = createContextAccessor();
+        ContextAccessor ca = createContextAccessor();
         ca.getPrefs().resetOriginalVolume();
         // exercise
         ca.startPlayingSoundAndVibrate(ca.getPrefs().forRegularOperation(), null);
@@ -45,15 +45,15 @@ public class ContextAccessorTest extends AndroidTestCase {
         assertEquals(ca.getAlarmMaxVolume(), ca.getAlarmVolume());
     }
 
-    private AndroidContextAccessor createContextAccessor() {
+    private ContextAccessor createContextAccessor() {
         Context context = new RenamingDelegatingContext(InstrumentationRegistry.getTargetContext(), "test_");
-        return AndroidContextAccessor.getInstance(context);
+        return ContextAccessor.getInstance(context);
     }
 
     @Test
     public void testFinish() {
         // setup
-        AndroidContextAccessor ca = createContextAccessor();
+        ContextAccessor ca = createContextAccessor();
         ca.getPrefs().resetOriginalVolume();
         ca.setAlarmVolume(ca.getAlarmMaxVolume() / 2);
         int alarmVolume = ca.getAlarmVolume();
@@ -68,7 +68,7 @@ public class ContextAccessorTest extends AndroidTestCase {
     @Test
     public void testOriginalVolume() {
         // setup
-        AndroidContextAccessor ca = createContextAccessor();
+        ContextAccessor ca = createContextAccessor();
         ca.getPrefs().resetOriginalVolume();
         int originalVolume = ca.getAlarmVolume();
         // exercise
@@ -81,7 +81,7 @@ public class ContextAccessorTest extends AndroidTestCase {
     @Test
     public void testPlay() {
         // setup
-        AndroidContextAccessor ca = createContextAccessor();
+        ContextAccessor ca = createContextAccessor();
         // exercise
         ca.startPlayingSoundAndVibrate(ca.getPrefs().forRegularOperation(), null);
         // verify ... be sure to have sound checked as an activity on your emulated device

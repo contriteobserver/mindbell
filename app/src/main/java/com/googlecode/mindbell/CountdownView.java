@@ -29,8 +29,8 @@ import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.googlecode.mindbell.accessors.AndroidContextAccessor;
-import com.googlecode.mindbell.accessors.AndroidPrefsAccessor;
+import com.googlecode.mindbell.accessors.ContextAccessor;
+import com.googlecode.mindbell.accessors.PrefsAccessor;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -134,10 +134,10 @@ public class CountdownView extends View {
     /**
      * Starts displaying state of meditation by resetting and starting timers.
      */
-    public void startDisplayUpdateTimer(AndroidContextAccessor contextAccessor) {
+    public void startDisplayUpdateTimer(ContextAccessor contextAccessor) {
 
         // Retrieve and store meditation times
-        AndroidPrefsAccessor prefs = contextAccessor.getPrefs();
+        PrefsAccessor prefs = contextAccessor.getPrefs();
         this.rampUpStartingTimeMillis = prefs.getRampUpStartingTimeMillis();
         this.meditationStartingTimeMillis = prefs.getMeditationStartingTimeMillis();
         this.meditationEndingTimeMillis = prefs.getMeditationEndingTimeMillis();

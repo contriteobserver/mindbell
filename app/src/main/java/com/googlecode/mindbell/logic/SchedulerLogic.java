@@ -19,14 +19,14 @@
  */
 package com.googlecode.mindbell.logic;
 
-import com.googlecode.mindbell.accessors.AndroidPrefsAccessor;
+import com.googlecode.mindbell.accessors.PrefsAccessor;
 import com.googlecode.mindbell.util.TimeOfDay;
 
 import java.util.Calendar;
 import java.util.Random;
 import java.util.Set;
 
-import static com.googlecode.mindbell.accessors.AndroidPrefsAccessor.ONE_MINUTE_MILLIS;
+import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS;
 
 public class SchedulerLogic {
 
@@ -42,7 +42,7 @@ public class SchedulerLogic {
      * @param prefs
      * @return
      */
-    public static long getNextTargetTimeMillis(long nowTimeMillis, AndroidPrefsAccessor prefs) {
+    public static long getNextTargetTimeMillis(long nowTimeMillis, PrefsAccessor prefs) {
         final long meanInterval = prefs.getInterval();
         final boolean randomize = prefs.isRandomize();
         final int normalizeValue = prefs.getNormalize();

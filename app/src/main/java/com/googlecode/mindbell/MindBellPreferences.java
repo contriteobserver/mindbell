@@ -43,8 +43,8 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.googlecode.mindbell.accessors.AndroidContextAccessor;
-import com.googlecode.mindbell.accessors.AndroidPrefsAccessor;
+import com.googlecode.mindbell.accessors.ContextAccessor;
+import com.googlecode.mindbell.accessors.PrefsAccessor;
 import com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix;
 import com.googlecode.mindbell.preference.MediaVolumePreference;
 import com.googlecode.mindbell.preference.MinutesIntervalPickerPreference;
@@ -73,7 +73,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         super.onCreate(savedInstanceState);
 
         // check settings, delete any settings that are not valid
-        final AndroidPrefsAccessor prefs = AndroidContextAccessor.getInstance(this).getPrefs();
+        final PrefsAccessor prefs = ContextAccessor.getInstance(this).getPrefs();
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences_1);
@@ -156,8 +156,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                 if (mediateShowAndSoundAndVibrate(preferenceShow, preferenceVibrate, newValue)) {
                     boolean isChecked = (Boolean) newValue;
                     preferenceReminderBell.setEnabled(isChecked);
-                    preferenceRingtone.setEnabled(
-                            isChecked && !AndroidPrefsAccessor.isUseStandardBell(preferenceReminderBell.getValue()));
+                    preferenceRingtone.setEnabled(isChecked && !PrefsAccessor.isUseStandardBell(preferenceReminderBell.getValue()));
                     preferenceVolume.setEnabled(!preferenceUseAudioStreamVolumeSetting.isChecked() && isChecked);
                     return true;
                 } else {
@@ -171,8 +170,8 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
 
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 String reminderBell = (String) newValue;
-                boolean isChecked = AndroidPrefsAccessor.isUseStandardBell(reminderBell);
-                if (AndroidPrefsAccessor.isUseStandardBell(reminderBell) ||
+                boolean isChecked = PrefsAccessor.isUseStandardBell(reminderBell);
+                if (PrefsAccessor.isUseStandardBell(reminderBell) ||
                         ContextCompat.checkSelfPermission(MindBellPreferences.this, Manifest.permission.READ_EXTERNAL_STORAGE) ==
                                 PackageManager.PERMISSION_GRANTED) {
                     // Allow setting this option to "off" if permission is granted
@@ -219,7 +218,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
 
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 Vibrator vibrator = (Vibrator) MindBellPreferences.this.getSystemService(Context.VIBRATOR_SERVICE);
-                vibrator.vibrate(AndroidPrefsAccessor.getVibrationPattern((String) newValue), -1);
+                vibrator.vibrate(PrefsAccessor.getVibrationPattern((String) newValue), -1);
                 return true;
             }
 
@@ -241,7 +240,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                     // too. Otherwise the following scenario could happen: set interval 1 h, de-select randomize, set normalize to
                     // hh:00, select randomize, set interval 2 h, de-select randomize again ... hh:00 would be left in normalize
                     // erroneously.
-                    preferenceNormalize.setValue(AndroidPrefsAccessor.NORMALIZE_NONE);
+                    preferenceNormalize.setValue(PrefsAccessor.NORMALIZE_NONE);
                 }
                 return true;
             }
@@ -361,7 +360,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         preferenceMeditationVolume.setEnabled(!preferenceUseAudioStreamVolumeSetting.isChecked());
         preferenceReminderBell.setEnabled(preferenceSound.isChecked());
         preferenceRingtone.setEnabled(
-                preferenceSound.isChecked() && !AndroidPrefsAccessor.isUseStandardBell(preferenceReminderBell.getValue()));
+                preferenceSound.isChecked() && !PrefsAccessor.isUseStandardBell(preferenceReminderBell.getValue()));
         preferenceRingtoneValue = prefs.getRingtone(); // cannot be retrieved from preference
         setPreferenceRingtoneSummary(preferenceRingtone, preferenceRingtoneValue);
         setPreferenceVolumeSoundUri(preferenceVolume, preferenceReminderBell.getValue(), preferenceUseWorkaroundBell.isChecked(),
@@ -410,10 +409,10 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
      */
     private void setPreferenceVolumeSoundUri(MediaVolumePreference preferenceVolume, String reminderBell,
                                              boolean isUseWorkaroundBell, String ringtone) {
-        Uri soundUri = AndroidPrefsAccessor.getBellSoundUri(this, reminderBell, isUseWorkaroundBell);
+        Uri soundUri = PrefsAccessor.getBellSoundUri(this, reminderBell, isUseWorkaroundBell);
         if (soundUri == null) { // use system notification ringtone if reminder bell sound is not set
             if (ringtone.isEmpty()) {
-                soundUri = AndroidPrefsAccessor.getDefaultReminderBellSoundUri(this, isUseWorkaroundBell);
+                soundUri = PrefsAccessor.getDefaultReminderBellSoundUri(this, isUseWorkaroundBell);
             } else {
                 soundUri = Uri.parse(ringtone);
             }
@@ -439,7 +438,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                 return false;
             }
             String durationString = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-            long maxWaitingTime = AndroidPrefsAccessor.WAITING_TIME + AndroidPrefsAccessor.WORKAROUND_SILENCE_TIME;
+            long maxWaitingTime = PrefsAccessor.WAITING_TIME + PrefsAccessor.WORKAROUND_SILENCE_TIME;
             maxWaitingTime += maxWaitingTime / 100L; // add 1% tolerance
             if (durationString == null || Long.parseLong(durationString) > maxWaitingTime) {
                 String msg = String.format(" (%s ms > %d ms)", durationString, maxWaitingTime);
@@ -482,7 +481,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
      * Returns true, if normalize - ringing on the minute - is requested
      */
     private boolean isNormalize(String normalizeValue) {
-        return !AndroidPrefsAccessor.NORMALIZE_NONE.equals(normalizeValue);
+        return !PrefsAccessor.NORMALIZE_NONE.equals(normalizeValue);
     }
 
     private void onPreferenceClickBatterySettings() {
@@ -539,7 +538,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
      * Handles click on confirmation to send info.
      */
     private void onClickReallySendInfo() {
-        AndroidContextAccessor.getInstanceAndLogPreferences(this); // write settings to log
+        ContextAccessor.getInstanceAndLogPreferences(this); // write settings to log
         MindBell.logDebug("Excluded from battery optimization (always false for SDK < 23)? -> " + Utils.isAppWhitelisted(this));
         Intent i = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getText(R.string.emailAddress).toString(), null));
         i.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.emailSubject));
@@ -577,7 +576,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
     @Override
     public void onPause() {
         super.onPause();
-        AndroidContextAccessor.getInstanceAndLogPreferences(this).updateBellSchedule();
+        ContextAccessor.getInstanceAndLogPreferences(this).updateBellSchedule();
     }
 
     @SuppressWarnings("deprecation") // deprecation is because MindBell is not fragment-based
