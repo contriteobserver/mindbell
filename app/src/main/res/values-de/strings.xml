@@ -21,9 +21,8 @@
 
 <!-- Define referenced terms only once, following this idea: https://stackoverflow.com/a/39870268/2532583 -->
 <!DOCTYPE resources [
-    <!ENTITY constUseStandardBell "Standard-Glockenklang">
     <!ENTITY constStatus "Status-Benachrichtigung anzeigen">
-    <!ENTITY constPrefsMuteOffHook "Beim Telefonieren still">
+    <!ENTITY constPrefsMuteOffHook "Kein Erinnern beim Telefonieren">
     <!ENTITY constProblemSolving "Problembehebung">
     <!ENTITY constFAQ "FAQ">
     <!ENTITY constSendMail "E-Mail mit Log senden">
@@ -34,12 +33,12 @@
     <string name="app_name">MindBell</string>
 
     <!-- MindBellMain -->
-    <string name="howToActivate">Wenn der Schalter oben an ist, erklingt MindBell regelmäßig als Achtsamkeitsglocke im Laufe des
-        Tages. Dann können wir kurz innehalten und uns bewusst werden, was wir gerade tun, und in welchem Geisteszustand wir das
-        angehen, was wir gerade tun.</string>
-    <string name="howToMute">MindBell erklingt nicht, wenn telefoniert wird oder das Telefon stillgestellt ist. MindBell kann
-        auch für eine oder mehrere Stunden stillgestellt werden. Weitere Einstellungmöglichkeiten sind in den Einstellungen oder der
-        Hilfe zu finden.</string>
+    <string name="howToActivate">Wenn der Schalter oben an ist, erinnert MindBell regelmäßig im Laufe des Tages mit Anzeige, 
+        Klang oder Vibration an unsere Achtsamkeitspraxis. Dann können wir kurz innehalten und uns bewusst werden, was wir gerade 
+        tun, und in welchem Geisteszustand wir das angehen, was wir gerade tun.</string>
+    <string name="howToMute">MindBell erinnert nicht, wenn telefoniert wird oder der Audiokanal stillgestellt ist. Die Erinnerung 
+        kann auch vorübergehend abgestellt werden. Weitere Einstellungmöglichkeiten sind in den Einstellungen oder der Hilfe zu
+        finden.</string>
     <string name="howToMeditate">Neben dem Schalter ist ein Knopf zum Starten des Meditationsmodus. Darin erklingt die Glocke nur
         zu Beginn und Ende der Meditation (oder der Meditationsabschnitte).</string>
 
@@ -64,44 +63,45 @@
     <string name="preferencesTitle">MindBell Einstellungen</string>
 
     <string name="prefsCategorySoundOutput">Klangausgabe</string>
-    <string name="prefsAudioStream">Audio-Ausgabeweg</string>
-    <string name="prefsUseAudioStreamVolumeSetting">Lautstärke des Ausgabewegs verwenden</string>
-    <string name="summaryUseAudioStreamVolumeSetting">Übliche Lautstärkeeinstellung des gewählten Audio-Ausgabewegs nutzen</string>
-    <string name="summaryDontUseAudioStreamVolumeSetting">Eigene Lautstärkeeinstellungen von MindBell nutzen</string>
+    <string name="prefsAudioStream">Audiokanal</string>
+    <string name="prefsUseAudioStreamVolumeSetting">Lautstärke des Auskanals verwenden</string>
+    <string name="summaryUseAudioStreamVolumeSetting">Übliche Lautstärkeeinstellung des gewählten Audiokanals nutzen</string>
+    <string name="summaryDontUseAudioStreamVolumeSetting">Eigene Lautstärkeeinstellungen von MindBell nutzen (nur beim Abspielen
+        als Weckruf)</string>
 
     <string name="prefsCategoryActiveTimes">Aktive Zeiten und Rhythmus</string>
-    <string name="prefsActive">MindBell an/aus</string>
-    <string name="summaryActive">MindBell ist aktiv</string>
-    <string name="summaryNotActive">MindBell ist deaktiviert</string>
-    <string name="prefsStart">Starte Glocke täglich um &#8230;</string>
-    <string name="prefsEnd">Beende Glocke täglich um &#8230;</string>
-    <string name="prefsActiveOnDaysOfWeek">Tage an denen die Glocke aktiv ist &#8230;</string>
-    <string name="prefsFrequency">Glocke läutet (etwa) alle hh:mm &#8230;</string>
+    <string name="prefsActive">Erinnern an/aus</string>
+    <string name="summaryActive">Erinnern ist aktiv</string>
+    <string name="summaryNotActive">Erinnern ist deaktiviert</string>
+    <string name="prefsStart">Erinnere täglich ab &#8230;</string>
+    <string name="prefsEnd">Erinnere täglich bis &#8230;</string>
+    <string name="prefsActiveOnDaysOfWeek">Tage an denen Erinnern aktiv ist &#8230;</string>
+    <string name="prefsFrequency">Erinnern (etwa) alle hh:mm &#8230;</string>
     <string name="prefsRandomize">Nutze Intervallabweichungen</string>
-    <string name="prefsNormalize">Läute auf die Minute &#8230;</string>
-    <string name="summaryRandomize">Glockeninterall variiert</string>
-    <string name="summaryDontRandomize">Glockenintervall ist konstant</string>
+    <string name="prefsNormalize">Erinnere auf die Minute &#8230;</string>
+    <string name="summaryRandomize">Erinnerungsinterall variiert</string>
+    <string name="summaryDontRandomize">Erinnerungsintervall ist konstant</string>
 
-    <string name="prefsCategoryRingingActions">Aktionen beim Läuten</string>
+    <string name="prefsCategoryRingingActions">Erinnerungsaktionen</string>
 
     <string name="prefsCategoryDisplay">Anzeige</string>
     <string name="prefsShow">Glocke anzeigen</string>
-    <string name="summaryShow">Glocke anzeigen beim Läuten</string>
-    <string name="summaryDontShow">Beim Läuten Glocke nicht anzeigen</string>
+    <string name="summaryShow">Glocke anzeigen beim Erinnern</string>
+    <string name="summaryDontShow">Beim Erinnern Glocke nicht anzeigen</string>
 
     <string name="prefsCategorySound">Klang</string>
     <string name="prefsSound">Klang abspielen</string>
-    <string name="summarySound">Klang abspielen beim Läuten</string>
-    <string name="summaryDontSound">Beim Läuten keinen Klang abspielen</string>
-    <string name="prefsReminderBell">&constUseStandardBell;</string>
+    <string name="summarySound">Klang abspielen beim Erinnern</string>
+    <string name="summaryDontSound">Beim Erinnern keinen Klang abspielen</string>
+    <string name="prefsReminderBell">Glockenklang</string>
     <string name="prefsRingtone">Benachrichtigungston</string>
     <string name="summaryRingtoneNotSet">Kein Benachrichtigungston ausgewählt, einzelnen Glockenklang abspielen</string>
     <string name="prefsVolume">Lautstärke</string>
 
     <string name="prefsCategoryVibration">Vibration</string>
     <string name="prefsVibrate">Vibrieren</string>
-    <string name="summaryVibrate">Vibrieren beim Läuten</string>
-    <string name="summaryNoVibrate">Beim Läuten nicht vibrieren</string>
+    <string name="summaryVibrate">Vibrieren beim Erinnern</string>
+    <string name="summaryNoVibrate">Beim Erinnern nicht vibrieren</string>
     <string name="prefsPattern">Vibrationsmuster</string>
 
     <string name="prefsCategoryStatusNotification">Status-Benachrichtigung</string>
@@ -109,16 +109,16 @@
     <string name="prefsStatusIconMaterialDesign">Status-Icon im Material Design</string>
     <string name="summaryStatusIconMaterialDesign">Stilisierte weiße Klangschale</string>
     <string name="summaryStatusIconPreMaterialDesign">Goldene Klangschale (bei manchen Geräten nur ein weißer Fleck)</string>
-    <string name="summaryStatus">Zeige Status-Benachrichtigung bei aktiver Glocke</string>
+    <string name="summaryStatus">Zeige Status-Benachrichtigung bei aktivem Erinnern</string>
     <string name="summaryNoStatus">Keine Status-Benachrichtigung</string>
     <string name="prefsStatusVisibilityPublic">Zeige Status-Text auf Sperrbildschirm</string>
     <string name="summaryStatusVisibilityPublic">Status-Text auf Sperrbildschirm anzeigen</string>
     <string name="summaryStatusVisibilityPrivate">Status-Text auf Sperrbildschirm ausblenden</string>
 
-    <string name="prefsCategoryRingNotification">Benachrichtigung beim Läuten</string>
-    <string name="prefsNotification">Benachrichtigung beim Läuten</string>
-    <string name="summaryNotification">Zeige Benachrichtigung beim Läuten (auch auf Wearables)</string>
-    <string name="summaryNoNotification">Keine Benachrichtigung beim Läuten (Wearables bekommen nichts mit)</string>
+    <string name="prefsCategoryRingNotification">Erinnerungsbenachrichtigung</string>
+    <string name="prefsNotification">Benachrichtigung anzeigen</string>
+    <string name="summaryNotification">Zeige Erinnerungsbenachrichtigung an (auch auf Wearables)</string>
+    <string name="summaryNoNotification">Keine Erinnerungsbenachrichtigung (Wearables bekommen nichts mit)</string>
     <string name="prefsNotificationTitle">Titel der Benachrichtung</string>
     <string name="prefsNotificationTitleDefault">MindBell &#8230;</string>
     <string name="prefsNotificationText">Text der Benachrichtung</string>
@@ -127,19 +127,19 @@
     <string name="summaryNotificationVisibilityPublic">Benachrichtigungstext auf Sperrbildschirm anzeigen</string>
     <string name="summaryNotificationVisibilityPrivate">Benachrichtigungstext auf Sperrbildschirm ausblenden</string>
     <string name="prefsDismissNotification">Benachrichtigung danach verwerfen</string>
-    <string name="summaryDismissNotification">Verwerfe Benachrichtigung nach dem Läuten (auch auf Wearables)</string>
-    <string name="summaryDontDismissNotification">Benachrichtigung nach dem Läuten stehen lassen (auch auf Wearables)</string>
+    <string name="summaryDismissNotification">Verwerfe Benachrichtigung nach dem Erinnern (auch auf Wearables)</string>
+    <string name="summaryDontDismissNotification">Benachrichtigung nach dem Erinnern stehen lassen (auch auf Wearables)</string>
 
     <string name="prefsCategoryMuteRules">Stillstellregeln</string>
-    <string name="prefsMuteWithPhone">Mit Telefon stummschalten</string>
-    <string name="summaryMuteWithPhone">Glocke läutet nicht im Lautlosmodus</string>
-    <string name="summaryNoMuteWithPhone">Glocke läutet auch im Lautlosmodus</string>
+    <string name="prefsMuteWithPhone">Kein Erinnern, wenn still</string>
+    <string name="summaryMuteWithPhone">Bei stillgestelltem Audiokanal nicht erinnern</string>
+    <string name="summaryNoMuteWithPhone">Auch bei stillgestelltem Audiokanal erinnern</string>
     <string name="prefsMuteOffHook">&constPrefsMuteOffHook;</string>
-    <string name="summaryMuted">Glocke läutet nicht während Telefongesprächen</string>
-    <string name="summaryNotMuted">Glocke läutet auch während Telefongesprächen</string>
-    <string name="prefsMuteInFlightMode">Im Flugmodus still</string>
-    <string name="summaryMutedInFlightMode">Glocke läutet nicht im Flugmodus</string>
-    <string name="summaryNotMutedInFlightMode">Glocke läutet auch im Flugmodus</string>
+    <string name="summaryMuted">Während Telefongesprächen nicht erinnern</string>
+    <string name="summaryNotMuted">Auch während Telefongesprächen erinnern</string>
+    <string name="prefsMuteInFlightMode">Kein Erinnern im Flugmodus</string>
+    <string name="summaryMutedInFlightMode">Im Flugmodus nicht erinnern</string>
+    <string name="summaryNotMutedInFlightMode">Auch im Flugmodus erinnern</string>
     <string name="prefsNoSoundOnMusic">Kein Klang bei Musik</string>
     <string name="summaryNoSoundOnMusic">Bei laufender Musik Klang nicht abspielen</string>
     <string name="summaryNotNoSoundOnMusic">Auch bei laufender Musik Klang abspielen</string>
@@ -161,18 +161,18 @@
     <string name="prefsFAQ">&constFAQ;</string>
     <string name="summaryFAQ">Hier finden Sie Antworten zu häufig gestellten Fragen.</string>
     <string name="prefsBatterySettings">Akku-Einstellungen</string>
-    <string name="summaryBatterySettings">Wenn MindBell nicht regelmäßig läutet, prüfen Sie bitte hier, ob MindBell von der
+    <string name="summaryBatterySettings">Wenn MindBell Sie nicht regelmäßig erinnert, prüfen Sie bitte hier, ob MindBell von der
         Akku-Leistungsoptimierung ausgenommen ist.</string>
     <string name="summaryBatterySettingsWhitelisted">MindBell ist bereits von der Akku-Leistungsoptimierung ausgenommen.</string>
     <string name="summaryBatterySettingsNotWhitelisted">MindBell ist *nicht* von der Akku-Leistungsoptimierung ausgenommen. Wenn
-        MindBell nicht regelmäßig läutet, nehmen Sie es bitte von den Akku-Leistungsoptimierungen aus.</string>
+        MindBell nicht regelmäßig erinnert, nehmen Sie es bitte von den Akku-Leistungsoptimierungen aus.</string>
     <string name="summaryBatterySettingsUnknown">Es kann nicht festgestellt werden, ob MindBell von der Akku-Leistungsoptimierung
-        ausgenommen ist. Wenn MindBell nicht regelmäßig läutet, nehmen Sie es bitte von allen Akku-Leistungsoptimierungen auf
+        ausgenommen ist. Wenn MindBell nicht regelmäßig erinnert, nehmen Sie es bitte von allen Akku-Leistungsoptimierungen auf
         Ihrem Gerät aus. Bitte konsultieren Sie dazu Ihre Apps, Gerätedokumentation oder das Internet.</string>
-    <string name="prefsUseWorkaroundBell">Nutze Standard-Glockenklang mit Stille</string>
-    <string name="summaryUseWorkaroundBell">Beginne Standard-Glockenklang mit 3 Sekunden Stille, um einen stotternden Klang zu
-        vermeiden - für Telefone mit langsam anschwellender Lautstärke für Klänge</string>
-    <string name="summaryDontUseWorkaroundBell">Verwende den normalen Standard-Glockenklang</string>
+    <string name="prefsUseWorkaroundBell">Nutze Glockenklang mit Stille</string>
+    <string name="summaryUseWorkaroundBell">Beginne Glockenklänge von MindBell mit 3 Sekunden Stille (um einen stotternden Klang
+        bei Telefonen mit langsam anschwellender Lautstärke zu vermeiden) - wirkt nicht für (eigene) Benachrichtigungstöne</string>
+    <string name="summaryDontUseWorkaroundBell">Verwende Glockenklänge ohne Stille am Anfang</string>
     <string name="prefsSendMail">&constSendMail;</string>
     <string name="summarySendMail">Für Vorschläge oder Fragen, die in den \'&constFAQ;\' nicht beantwortet werden, können Sie
         eine E-Mail mit Log-Informationen senden. Bitte vergessen Sie nicht, Ihre Frage oder eine Beschreibung des Problems zu
@@ -196,11 +196,11 @@
 
     <!-- Validation messages -->
     <string name="mustUseAudioStreamSetting">Kann nur für Weckrufe abgeschaltet werden</string>
-    <string name="atLeastOneRingingActionNeeded">Mindestens eine Aktion beim Läuten auswählen</string>
+    <string name="atLeastOneRingingActionNeeded">Mindestens eine Aktion beim Erinnern auswählen</string>
     <string name="atLeastOneActiveDayNeeded">Mindestens einen Tag angeben</string>
-    <string name="frequencyDoesNotFitIntoAnHour">Läuten auf die Minute beim gewählten Intervall nicht möglich</string>
-    <string name="ringtoneNotAccessible">MindBell kann auf den ausgewählten Systemklang nicht zugreifen (vermutlich auf externem Speicher)</string>
-    <string name="ringtoneDurationTooLong">Dauer des ausgewählten Systemklangs (%s s) ist länger als 1/4 des Intervalls (%d s)</string>
+    <string name="frequencyDoesNotFitIntoAnHour">Erinnern auf die Minute beim gewählten Intervall nicht möglich</string>
+    <string name="ringtoneNotAccessible">Ausgewählter Klang nicht zugreifbar (fehlende Rechte?)</string>
+    <string name="ringtoneDurationTooLong">Dauer des ausgewählten Klangs (%s s) ist länger als 1/4 des Intervalls (%d s)</string>
     <string name="invalidPeriodSpecification">Bitte Abschnitte als Minuten oder x angeben.</string>
     <string name="variablePeriodMissing">Bitte mindestens ein x angeben.</string>
     <string name="negativePeriod">Abschnitte müssen in die Dauer passen: Bitte Dauer erhöhen oder Abschnitte reduzieren oder
@@ -215,18 +215,18 @@
     <!-- Status bar notification -->
     <string name="statusTitleNotificationsDisabled">Bitte Benachrichtigungseinstellungen prüfen</string>
     <string name="statusTextNotificationsDisabled">MindBell hat \'&constStatus;\' ausgeschaltet</string>
-    <string name="statusTitleBellActive">MindBell ist aktiv</string>
+    <string name="statusTitleBellActive">Erinnern ist aktiv</string>
     <string name="statusTextBellActive">{0} bis {1} am {2}</string>
     <string name="statusTitleBellMeditating">MindBell meditiert</string>
     <string name="statusTextBellMeditating">{0,choice,1#1 Minute|1&lt;{0} Minuten} bis {1}</string>
     <string name="statusActionRefreshStatus">Aktualisieren</string>
-    <string name="statusActionMuteFor">Still für &#8230;</string>
+    <string name="statusActionMuteFor">Nicht Erinnern für &#8230;</string>
 
     <!-- Reasons why bell is muted -->
-    <string name="reasonMutedWithPhone">Glocke still wie das Handy</string>
-    <string name="reasonMutedOffHook">Glocke still während Telefonaten</string>
-    <string name="reasonMutedInFlightMode">Glocke still im Flugmodus</string>
-    <string name="reasonMutedTill">Glocke still bis {0}</string>
+    <string name="reasonMutedWithPhone">Kein Erinnern bei stillgestelltem Audiokanal</string>
+    <string name="reasonMutedOffHook">Kein Erinnern während Telefonaten</string>
+    <string name="reasonMutedInFlightMode">Kein Erinnern im Flugmodus</string>
+    <string name="reasonMutedTill">Kein Erinnern bis {0}</string>
 
     <!-- Reasons why permission READ_PHONE_STATE should be granted -->
     <string name="reasonReadPhoneStateTitle">Wozu diese Berechtigung?</string>
@@ -244,19 +244,19 @@
 
     <!-- Reasons why permission READ_EXTERNAL_STORAGE should be granted -->
     <string name="reasonReadExternalStorageTitle">Wozu diese Berechtigung?</string>
-    <string name="reasonReadExternalStorageText">\'&constUseStandardBell;l\' wurde abgewählt. Nur mit der Berechtigung
-        READ_EXTERNAL_STORAGE kann MindBell auf Klingeltöne zugreifen.\n\nWenn die Berechtigung abgelehnt wird,
-        muss daher \'&constUseStandardBell;\' angeschaltet sein.</string>
+    <string name="reasonReadExternalStorageText">Es wurde kein \'Glockenklang\' ausgewählt. Nur mit der Berechtigung
+        READ_EXTERNAL_STORAGE kann MindBell auf Benachrichtungstöne zugreifen.\n\nWenn die Berechtigung abgelehnt wird, muss
+        daher ein \'Glockenklang\' ausgewählt sein.</string>
 
     <!-- Permission READ_EXTERNAL_STORAGE denied but user checked 'never ask again' -->
     <string name="neverAskAgainReadExternalStorageTitle">Fehlende Berechtigung</string>
-    <string name="neverAskAgainReadExternalStorageText">Die Berechtigung READ_EXTERNAL_STORAGE  wurde nicht erteilt. Daher muss
-        \'&constUseStandardBell;\' angeschaltet sein.</string>
+    <string name="neverAskAgainReadExternalStorageText">Die Berechtigung READ_EXTERNAL_STORAGE  wurde nicht erteilt. Daher muss ein
+        \'Glockenklang\' ausgewählt werden.</string>
 
     <!-- Help popup -->
     <string name="main_message1_popup">Wie funktioniert MindBell?\nhttp://dknapps.de/mindbell-intro</string>
     <string name="main_message2_popup">Was hat sich geändert?\nhttp://dknapps.de/mindbell-changelog</string>
-    <string name="main_message3_popup">MindBell läutet nicht (regelmäßig)?\nhttp://dknapps.de/mindbell-notringing</string>
+    <string name="main_message3_popup">MindBell erinnert nicht (regelmäßig)?\nhttp://dknapps.de/mindbell-notringing</string>
     <string name="main_message4_popup">Häufige Fragen (FAQ)?\nhttp://dknapps.de/mindbell</string>
     <string name="main_message5_popup">Privacy Policy?\nhttp://dknapps.de/mindbell-privacy</string>
 

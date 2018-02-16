@@ -21,9 +21,8 @@
 
 <!-- Define referenced terms only once, following this idea: https://stackoverflow.com/a/39870268/2532583 -->
 <!DOCTYPE resources [
-    <!ENTITY constUseStandardBell "Use standard bell">
     <!ENTITY constStatus "Show status icon">
-    <!ENTITY constPrefsMuteOffHook "Mute during phone calls">
+    <!ENTITY constPrefsMuteOffHook "Don\'t remind during phone calls">
     <!ENTITY constProblemSolving "Problem solving">
     <!ENTITY constFAQ "FAQ">
     <!ENTITY constSendMail "Send an e-mail with log">
@@ -34,10 +33,11 @@
     <string name="app_name">MindBell</string>
 
     <!-- MindBellMain -->
-    <string name="howToActivate">When the switch at the top is on MindBell will sound throughout the day, encouraging us to
-        pause and become mindful of what we are doing and in what state of mind we are in.</string>
-    <string name="howToMute">MindBell is muted while the phone itself is muted and while taking phone calls. It can also be muted
-        manually for one hour or more. For information on how to regulate MindBell please refer to the settings or the
+    <string name="howToActivate">When the switch at the top is on MindBell reminds us regularly throughout the day of our
+        mindfulness practice with display, sound or vibration, encouraging us to pause and become mindful of what we are doing
+        and in what state of mind we are in.</string>
+    <string name="howToMute">MindBell does not remind while taking phone calls or when the audio stream is muted. Reminding can
+        also be switched off temporarily. For information on how to regulate MindBell please refer to the settings or the
         Help.</string>
     <string name="howToMeditate">Next to the switch is a button to enable meditation mode during which the bell only rings to
         signal the start and end of meditation (or meditation periods).</string>
@@ -69,43 +69,43 @@
     <string name="summaryDontUseAudioStreamVolumeSetting">Own volume settings of MindBell are used</string>
 
     <string name="prefsCategoryActiveTimes">Active times and rhythm</string>
-    <string name="prefsActive">MindBell on/off</string>
-    <string name="summaryActive">MindBell is active</string>
-    <string name="summaryNotActive">MindBell is deactivated</string>
-    <string name="prefsStart">Start bell every day at &#8230;</string>
-    <string name="prefsEnd">Stop bell every day at &#8230;</string>
-    <string name="prefsActiveOnDaysOfWeek">Days of week to be active &#8230;</string>
-    <string name="prefsFrequency">Ring bell (about) every hh:mm &#8230;</string>
+    <string name="prefsActive">Reminding on/off</string>
+    <string name="summaryActive">Reminding is active</string>
+    <string name="summaryNotActive">Reminding is deactivated</string>
+    <string name="prefsStart">Remind every day from &#8230;</string>
+    <string name="prefsEnd">Remind every day till &#8230;</string>
+    <string name="prefsActiveOnDaysOfWeek">Days of week to remind &#8230;</string>
+    <string name="prefsFrequency">Remind (about) every hh:mm &#8230;</string>
     <string name="prefsRandomize">Use interval deviation</string>
-    <string name="prefsNormalize">Ring to the minute &#8230;</string>
-    <string name="summaryRandomize">Bell ring interval will vary</string>
-    <string name="summaryDontRandomize">Bell ring interval is constant</string>
+    <string name="prefsNormalize">Remind to the minute &#8230;</string>
+    <string name="summaryRandomize">Reminder interval will vary</string>
+    <string name="summaryDontRandomize">Reminder interval is constant</string>
 
-    <string name="prefsCategoryRingingActions">Actions when ringing</string>
+    <string name="prefsCategoryRingingActions">Reminder actions</string>
 
     <string name="prefsCategoryDisplay">Display</string>
     <string name="prefsShow">Show bell</string>
-    <string name="summaryShow">Show bell when ringing</string>
-    <string name="summaryDontShow">Don\'t show bell when ringing</string>
+    <string name="summaryShow">Show bell as reminder</string>
+    <string name="summaryDontShow">Don\'t show bell as reminder</string>
 
     <string name="prefsCategorySound">Sound</string>
     <string name="prefsSound">Play sound</string>
-    <string name="summarySound">Play sound when ringing</string>
-    <string name="summaryDontSound">Don\'t play sound when ringing</string>
-    <string name="prefsReminderBell">&constUseStandardBell;</string>
+    <string name="summarySound">Play sound as reminder</string>
+    <string name="summaryDontSound">Don\'t play sound as reminder</string>
+    <string name="prefsReminderBell">Bell sound</string>
     <string name="prefsRingtone">Notification ringtone</string>
     <string name="summaryRingtoneNotSet">No notification ringtone selected, play single bell sound</string>
     <string name="prefsVolume">Volume</string>
 
     <string name="prefsCategoryVibration">Vibration</string>
     <string name="prefsVibrate">Vibrate</string>
-    <string name="summaryVibrate">Vibrate when ringing</string>
-    <string name="summaryNoVibrate">Don\'t vibrate when ringing</string>
+    <string name="summaryVibrate">Vibrate as reminder</string>
+    <string name="summaryNoVibrate">Don\'t vibrate as reminder</string>
     <string name="prefsPattern">Vibration pattern</string>
 
     <string name="prefsCategoryStatusNotification">Status notification</string>
     <string name="prefsStatus">&constStatus;</string>
-    <string name="summaryStatus">Show status notification when bell is active</string>
+    <string name="summaryStatus">Show status notification during reminder</string>
     <string name="summaryNoStatus">No status notification, set and forget</string>
     <string name="prefsStatusIconMaterialDesign">Status icon in Material Design</string>
     <string name="summaryStatusIconMaterialDesign">Stylized white singing bowl</string>
@@ -114,31 +114,31 @@
     <string name="summaryStatusVisibilityPublic">Show status text on lock screen</string>
     <string name="summaryStatusVisibilityPrivate">Hide status text on lock screen</string>
 
-    <string name="prefsCategoryRingNotification">Notification when ringing</string>
-    <string name="prefsNotification">Notification when ringing</string>
-    <string name="summaryNotification">Notification when bell is ringing (also on wearables)</string>
-    <string name="summaryNoNotification">No ring notification (wearables remain to be unaware)</string>
-    <string name="prefsNotificationTitle">Title of ring notification</string>
+    <string name="prefsCategoryRingNotification">Reminder notification</string>
+    <string name="prefsNotification">Show notification</string>
+    <string name="summaryNotification">Show reminder notification (also on wearables)</string>
+    <string name="summaryNoNotification">No reminder notification (wearables remain to be unaware)</string>
+    <string name="prefsNotificationTitle">Title of reminder notification</string>
     <string name="prefsNotificationTitleDefault">MindBell &#8230;</string>
-    <string name="prefsNotificationText">Text of ring notification</string>
+    <string name="prefsNotificationText">Text of reminder notification</string>
     <string name="prefsNotificationTextDefault">Breathe and smile</string>
-    <string name="prefsNotificationVisibilityPublic">Show ring notification text on lock screen</string>
-    <string name="summaryNotificationVisibilityPublic">Show ring notification text on lock screen</string>
-    <string name="summaryNotificationVisibilityPrivate">Hide ring notification text on lock screen</string>
+    <string name="prefsNotificationVisibilityPublic">Show reminder notification text on lock screen</string>
+    <string name="summaryNotificationVisibilityPublic">Show reminder notification text on lock screen</string>
+    <string name="summaryNotificationVisibilityPrivate">Hide reminder notification text on lock screen</string>
     <string name="prefsDismissNotification">Dismiss notification afterwards</string>
-    <string name="summaryDismissNotification">Dismiss notification after ringing (also on wearables)</string>
-    <string name="summaryDontDismissNotification">Keep notification after ringing (also on wearables)</string>
+    <string name="summaryDismissNotification">Dismiss notification after reminder (also on wearables)</string>
+    <string name="summaryDontDismissNotification">Keep notification after reminder (also on wearables)</string>
 
     <string name="prefsCategoryMuteRules">Mute rules</string>
-    <string name="prefsMuteWithPhone">Mute with phone</string>
-    <string name="summaryMuteWithPhone">Bell will not ring when phone is muted</string>
-    <string name="summaryNoMuteWithPhone">Ring bell even when phone is muted</string>
+    <string name="prefsMuteWithPhone">Don\'t remind if muted</string>
+    <string name="summaryMuteWithPhone">Don\'t remind when audio stream is muted</string>
+    <string name="summaryNoMuteWithPhone">Remind even when audio stream is muted</string>
     <string name="prefsMuteOffHook">&constPrefsMuteOffHook;</string>
-    <string name="summaryMuted">Bell will not ring during phone calls</string>
-    <string name="summaryNotMuted">Bell will also ring during phone calls</string>
-    <string name="prefsMuteInFlightMode">Mute in flight mode</string>
-    <string name="summaryMutedInFlightMode">Bell will not ring in flight mode</string>
-    <string name="summaryNotMutedInFlightMode">Bell will also ring in flight mode</string>
+    <string name="summaryMuted">Don\'t remind during phone calls</string>
+    <string name="summaryNotMuted">Even remind during phone calls</string>
+    <string name="prefsMuteInFlightMode">Don\'t remind in flight mode</string>
+    <string name="summaryMutedInFlightMode">Don\'t remind in flight mode</string>
+    <string name="summaryNotMutedInFlightMode">Even remind in flight mode</string>
     <string name="prefsNoSoundOnMusic">No sound during music</string>
     <string name="summaryNoSoundOnMusic">Sound will not be played when music is playing</string>
     <string name="summaryNotNoSoundOnMusic">Sound will also be played when music is playing</string>
@@ -160,18 +160,18 @@
     <string name="prefsFAQ">&constFAQ;</string>
     <string name="summaryFAQ">Find answers to frequently asked questions here.</string>
     <string name="prefsBatterySettings">Battery settings</string>
-    <string name="summaryBatterySettings">If MindBell is not ringing regularly please check here whether MindBell is excluded
+    <string name="summaryBatterySettings">If MindBell does not remind you regularly please check here whether MindBell is excluded
         from battery optimization.</string>
     <string name="summaryBatterySettingsWhitelisted">MindBell is already excluded from battery optimization.</string>
-    <string name="summaryBatterySettingsNotWhitelisted">MindBell is *not* excluded from battery optimization. If MindBell is not
-        ringing regularly please exclude MindBell from battery optimization.</string>
+    <string name="summaryBatterySettingsNotWhitelisted">MindBell is *not* excluded from battery optimization. If MindBell does not
+        remind regularly please exclude MindBell from battery optimization.</string>
     <string name="summaryBatterySettingsUnknown">It cannot be determined whether MindBell is already excluded from battery
-        optimization. If MindBell is not ringing regularly please exclude MindBell from any battery optimization that might be
+        optimization. If MindBell does not remind regularly please exclude MindBell from any battery optimization that might be
         active on your phone. Please check your apps or your phones documentation or the internet how to achieve this.</string>
-    <string name="prefsUseWorkaroundBell">Use standard bell with silence</string>
-    <string name="summaryUseWorkaroundBell">Start standard bell with 3 seconds of silence to avoid distorted sound - for phones
-        that slowly increase sound volume</string>
-    <string name="summaryDontUseWorkaroundBell">Use standard bell as it is</string>
+    <string name="prefsUseWorkaroundBell">Use bell sound with silence</string>
+    <string name="summaryUseWorkaroundBell">Start bell sounds of MindBell with 3 seconds of silence (to avoid distorted sound on
+        phones that slowly increase sound volume) - does not affect (own) notification sounds</string>
+    <string name="summaryDontUseWorkaroundBell">Use bell sound as it is</string>
     <string name="prefsSendMail">&constSendMail;</string>
     <string name="summarySendMail">For suggestions or questions not answered in the \'&constFAQ;\' you can send an e-mail with
         log information. Please don\'t forget to add your question or a description of the problem.</string>
@@ -192,11 +192,11 @@
     <string name="buttonStartMeditation">Start</string>
 
     <!-- Validation messages -->
-    <string name="mustUseAudioStreamSetting">Cannot only be switched off for alarms</string>
-    <string name="atLeastOneRingingActionNeeded">Specify at least one ringing action</string>
+    <string name="mustUseAudioStreamSetting">Can only be switched off for alarms</string>
+    <string name="atLeastOneRingingActionNeeded">Specify at least one reminder action</string>
     <string name="atLeastOneActiveDayNeeded">Specify at least one day</string>
-    <string name="frequencyDoesNotFitIntoAnHour">Ringing on the minute not possible with chosen interval</string>
-    <string name="ringtoneNotAccessible">MindBell cannot access the chosen ringtone (probably on external storage)</string>
+    <string name="frequencyDoesNotFitIntoAnHour">Reminder to the minute not possible with chosen interval</string>
+    <string name="ringtoneNotAccessible">Chosen sound cannot be accessed (missing permissions?)</string>
     <string name="ringtoneDurationTooLong">Duration of chosen ringtone (%s s) longer than 1/4 of the interval (%d s)</string>
     <string name="invalidPeriodSpecification">Please specify periods as minutes or x.</string>
     <string name="variablePeriodMissing">Please specify at least one x.</string>
@@ -210,19 +210,19 @@
 
     <!-- Status bar notifications -->
     <string name="statusTitleNotificationsDisabled">Please check notification settings</string>
-    <string name="statusTextNotificationsDisabled">MindBell turned off \'&constStatus;\'</string>
-    <string name="statusTitleBellActive">MindBell is active</string>
+    <string name="statusTextNotificationsDisabled">Reminder turned off \'&constStatus;\'</string>
+    <string name="statusTitleBellActive">Reminder is active</string>
     <string name="statusTextBellActive">{0} to {1} on {2}</string>
     <string name="statusTitleBellMeditating">MindBell is meditating</string>
     <string name="statusTextBellMeditating">{0,choice,1#1 minute|1&lt;{0} minutes} till {1}</string>
     <string name="statusActionRefreshStatus">Refresh</string>
-    <string name="statusActionMuteFor">Mute for &#8230;</string>
+    <string name="statusActionMuteFor">Don\'t remind for &#8230;</string>
 
     <!-- Reasons why bell is muted -->
-    <string name="reasonMutedWithPhone">Bell muted with phone</string>
-    <string name="reasonMutedOffHook">Bell muted during calls</string>
-    <string name="reasonMutedInFlightMode">Bell muted in flight mode</string>
-    <string name="reasonMutedTill">Bell muted till {0}</string>
+    <string name="reasonMutedWithPhone">No reminder when audio streamm is muted</string>
+    <string name="reasonMutedOffHook">No reminder during calls</string>
+    <string name="reasonMutedInFlightMode">No reminder in flight mode</string>
+    <string name="reasonMutedTill">No reminder till {0}</string>
 
     <!-- Reasons why permission READ_PHONE_STATE should be granted -->
     <string name="reasonReadPhoneStateTitle">Why this permission?</string>
@@ -239,19 +239,19 @@
 
     <!-- Reasons why permission READ_EXTERNAL_STORAGE should be granted -->
     <string name="reasonReadExternalStorageTitle">Why this permission?</string>
-    <string name="reasonReadExternalStorageText">\'&constUseStandardBell;\' has been deselected. Only when permission
-        READ_EXTERNAL_STORAGE is granted MindBell can access your notification ringtones.\n\nIf the permission is denied
-        \'&constUseStandardBell;\' must be switched on.</string>
+    <string name="reasonReadExternalStorageText">No \'Bell sound\' has been chosen. Only when permission READ_EXTERNAL_STORAGE is
+        granted MindBell can access your notification ringtones.\n\nIf the permission is denied you have to choose a
+        \'Bell sound\'.</string>
 
     <!-- Permission READ_EXTERNAL_STORAGE denied but user checked 'never ask again' -->
     <string name="neverAskAgainReadExternalStorageTitle">Missing permission</string>
-    <string name="neverAskAgainReadExternalStorageText">Permission READ_EXTERNAL_STORAGE is not granted. Therefore
-        \'&constUseStandardBell;\' must be switched on.</string>
+    <string name="neverAskAgainReadExternalStorageText">Permission READ_EXTERNAL_STORAGE is not granted. Therefore you must choose a
+        \'Bell sound\'.</string>
 
     <!-- Help popup -->
     <string name="main_message1_popup">How to use MindBell?\nhttp://dknapps.de/mindbell-intro</string>
     <string name="main_message2_popup">What has been changed?\nhttp://dknapps.de/mindbell-changelog</string>
-    <string name="main_message3_popup">MindBell does not ring (periodically)?\nhttp://dknapps.de/mindbell-notringing</string>
+    <string name="main_message3_popup">MindBell does not remind (periodically)?\nhttp://dknapps.de/mindbell-notringing</string>
     <string name="main_message4_popup">Frequently asked questions (FAQ)?\nhttp://dknapps.de/mindbell</string>
     <string name="main_message5_popup">Privacy Policy?\nhttp://dknapps.de/mindbell-privacy</string>
 
