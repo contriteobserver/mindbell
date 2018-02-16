@@ -829,6 +829,9 @@ public class PrefsAccessor {
         return getStringSetting(keyRingtone);
     }
 
+    /**
+     * Returns the chosen sound depending on settings for reminderBell, ringtone and useWorkaroundBell.
+     */
     public Uri getSoundUri(Context context) {
         // This implementation is almost the same as MindBellPreferences#setPreferenceVolumeSoundUri()
         Uri soundUri = getReminderBellSoundUri(context);

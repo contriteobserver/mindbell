@@ -26,6 +26,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.content.res.Resources.NotFoundException;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.os.PowerManager;
@@ -157,6 +158,27 @@ public class Utils {
         }
         return null;
     }
+
+    /**
+     * Returns the duration (in milliseconds) of the sound specified by the soundUri or null if the sound is not accessible,
+     * probably because permissions have been withdrawn from behind.
+     *
+     * @param context
+     * @param soundUri
+     * @return
+     */
+    public static Long getSoundDuration(Context context, Uri soundUri) {
+        try {
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            mmr.setDataSource(context, soundUri);
+            String durationString = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+            return (durationString == null) ? null : Long.parseLong(durationString);
+        } catch (Exception e) {
+            Log.w(TAG, "Sound <" + soundUri + "> not accessible", e);
+            return null;
+        }
+    }
+
 
     /**
      * Convert a resource id into a Uri.

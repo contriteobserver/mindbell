@@ -25,7 +25,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.MediaMetadataRetriever;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -153,7 +152,9 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         preferenceSound.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if (mediateShowAndSoundAndVibrate(preferenceShow, preferenceVibrate, newValue)) {
+                if (mediateShowAndSoundAndVibrate(preferenceShow, preferenceVibrate, newValue) &&
+                        mediateSoundDurationRelatedSettings(preferenceFrequency, preferenceUseWorkaroundBell,
+                                preferenceReminderBell, preferenceRingtoneValue, newValue)) {
                     boolean isChecked = (Boolean) newValue;
                     preferenceReminderBell.setEnabled(isChecked);
                     preferenceRingtone.setEnabled(isChecked && !PrefsAccessor.isUseStandardBell(preferenceReminderBell.getValue()));
@@ -174,12 +175,17 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                 if (PrefsAccessor.isUseStandardBell(reminderBell) ||
                         ContextCompat.checkSelfPermission(MindBellPreferences.this, Manifest.permission.READ_EXTERNAL_STORAGE) ==
                                 PackageManager.PERMISSION_GRANTED) {
-                    // Allow setting this option to "off" if permission is granted
-                    preferenceRingtone.setEnabled(preferenceSound.isChecked() && !isChecked);
-                    // Weird, but ringtone cannot be retrieved from RingtonePreference, only from SharedPreference
-                    setPreferenceVolumeSoundUri(preferenceVolume, reminderBell, preferenceUseWorkaroundBell.isChecked(),
-                            preferenceRingtoneValue);
-                    return true;
+                    if (mediateSoundDurationRelatedSettings(preferenceFrequency, preferenceUseWorkaroundBell, reminderBell,
+                            preferenceRingtoneValue, preferenceSound)) {
+                        // Allow setting this option to "off" if permission is granted
+                        preferenceRingtone.setEnabled(preferenceSound.isChecked() && !isChecked);
+                        // Weird, but ringtone cannot be retrieved from RingtonePreference, only from SharedPreference
+                        setPreferenceVolumeSoundUri(preferenceVolume, reminderBell, preferenceUseWorkaroundBell.isChecked(),
+                                preferenceRingtoneValue);
+                        return true;
+                    } else {
+                        return false;
+                    }
                 } else {
                     // Ask for permission if this option shall be set to "off" but permission is missing
                     ActivityCompat.requestPermissions(MindBellPreferences.this,
@@ -194,14 +200,18 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         preferenceRingtone.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                preferenceRingtoneValue = (String) newValue;
-                if (!validatePreferenceRingtone(preferenceRingtoneValue)) {
+                String newRingtoneValue = (String) newValue;
+                if (validatePreferenceRingtone(newRingtoneValue) &&
+                        mediateSoundDurationRelatedSettings(preferenceFrequency, preferenceUseWorkaroundBell,
+                                preferenceReminderBell, newRingtoneValue, preferenceSound)) {
+                    setPreferenceRingtoneSummary(preferenceRingtone, newRingtoneValue);
+                    setPreferenceVolumeSoundUri(preferenceVolume, preferenceReminderBell.getValue(),
+                            preferenceUseWorkaroundBell.isChecked(), newRingtoneValue);
+                    preferenceRingtoneValue = newRingtoneValue;
+                    return true;
+                } else {
                     return false;
                 }
-                setPreferenceRingtoneSummary(preferenceRingtone, preferenceRingtoneValue);
-                setPreferenceVolumeSoundUri(preferenceVolume, preferenceReminderBell.getValue(),
-                        preferenceUseWorkaroundBell.isChecked(), preferenceRingtoneValue);
-                return true;
             }
 
         });
@@ -250,7 +260,10 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         preferenceFrequency.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if (preferenceRandomize.isChecked()) {
+                if (!mediateSoundDurationRelatedSettings(newValue, preferenceUseWorkaroundBell, preferenceReminderBell,
+                        preferenceRingtoneValue, preferenceSound)) {
+                    return false;
+                } else if (preferenceRandomize.isChecked()) {
                     // if interval varies randomly, ringing on the minute is disabled and set to "no" anyway
                     return true;
                 } else if (isFrequencyDividesAnHour(new TimeOfDay((String) newValue))) {
@@ -326,10 +339,15 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         preferenceUseWorkaroundBell.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                boolean isChecked = (Boolean) newValue;
-                setPreferenceVolumeSoundUri(preferenceVolume, preferenceReminderBell.getValue(), isChecked,
-                        preferenceRingtoneValue);
-                return true;
+                if (mediateSoundDurationRelatedSettings(preferenceFrequency, newValue, preferenceReminderBell,
+                        preferenceRingtoneValue, preferenceSound)) {
+                    boolean isChecked = (Boolean) newValue;
+                    setPreferenceVolumeSoundUri(preferenceVolume, preferenceReminderBell.getValue(), isChecked,
+                            preferenceRingtoneValue);
+                    return true;
+                } else {
+                    return false;
+                }
             }
 
         });
@@ -399,6 +417,27 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
     }
 
     /**
+     * Ensures that the duration of the chosen sound does not exceed a quarter of the chosen interval.
+     */
+    private boolean mediateSoundDurationRelatedSettings(MinutesIntervalPickerPreference preferenceFrequency,
+                                                        CheckBoxPreference preferenceUseWorkaroundBell,
+                                                        ListPreferenceWithSummaryFix preferenceReminderBell,
+                                                        String preferenceRingtoneValue, Object newSoundValue) {
+        return mediateSoundDurationRelatedSettings(preferenceFrequency.getTime(), preferenceUseWorkaroundBell.isChecked(),
+                preferenceReminderBell.getValue(), preferenceRingtoneValue, (Boolean) newSoundValue);
+    }
+
+    /**
+     * Ensures that the duration of the chosen sound does not exceed a quarter of the chosen interval.
+     */
+    private boolean mediateSoundDurationRelatedSettings(MinutesIntervalPickerPreference preferenceFrequency,
+                                                        CheckBoxPreference preferenceUseWorkaroundBell, String newReminderBellValue,
+                                                        String preferenceRingtoneValue, CheckBoxPreference preferenceSound) {
+        return mediateSoundDurationRelatedSettings(preferenceFrequency.getTime(), preferenceUseWorkaroundBell.isChecked(),
+                newReminderBellValue, preferenceRingtoneValue, preferenceSound.isChecked());
+    }
+
+    /**
      * Set sound uri in preferenceVolume depending on preferenceUseStandardBell and preferenceRingtone, so real sound is used for
      * volume setting.
      *
@@ -407,8 +446,15 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
      * @param isUseWorkaroundBell
      * @param ringtone
      */
-    private void setPreferenceVolumeSoundUri(MediaVolumePreference preferenceVolume, String reminderBell,
-                                             boolean isUseWorkaroundBell, String ringtone) {
+    private void setPreferenceVolumeSoundUri(MediaVolumePreference preferenceVolume, String reminderBell, boolean isUseWorkaroundBell, String ringtone) {
+        preferenceVolume.setSoundUri(getSoundUri(reminderBell, isUseWorkaroundBell, ringtone));
+    }
+
+    /**
+     * Returns the chosen sound depending on settings for reminderBell, ringtone and useWorkaroundBell.
+     */
+    private Uri getSoundUri(String reminderBell, boolean isUseWorkaroundBell, String ringtone) {
+        // This implementation is almost the same as PrefsAccessor#getSoundUri()
         Uri soundUri = PrefsAccessor.getBellSoundUri(this, reminderBell, isUseWorkaroundBell);
         if (soundUri == null) { // use system notification ringtone if reminder bell sound is not set
             if (ringtone.isEmpty()) {
@@ -417,37 +463,32 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                 soundUri = Uri.parse(ringtone);
             }
         }
-        preferenceVolume.setSoundUri(soundUri);
+        return soundUri;
     }
 
     /**
-     * Returns true if the ringtone specified by uriString is unset, empty or accessible with valid length.
-     *
-     * @param uriString
-     * @return
+     * Returns true if the ringtone specified by newRingtoneValue is unset, empty or accessible with valid length.
      */
-    private boolean validatePreferenceRingtone(String uriString) {
-        if (uriString != null && !uriString.isEmpty()) {
-            Uri uri = Uri.parse(uriString);
-            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            try {
-                mmr.setDataSource(this, uri);
-            } catch (Exception e) {
-                Log.w(TAG, "Sound <" + uriString + "> not accessible", e);
+    private boolean validatePreferenceRingtone(String newRingtoneValue) {
+        if (newRingtoneValue != null && !newRingtoneValue.isEmpty()) {
+            Long ringtoneDuration = Utils.getSoundDuration(this, Uri.parse(newRingtoneValue));
+            if (ringtoneDuration == null) {
                 Toast.makeText(this, R.string.ringtoneNotAccessible, Toast.LENGTH_SHORT).show();
-                return false;
-            }
-            String durationString = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-            long maxWaitingTime = PrefsAccessor.WAITING_TIME + PrefsAccessor.WORKAROUND_SILENCE_TIME;
-            maxWaitingTime += maxWaitingTime / 100L; // add 1% tolerance
-            if (durationString == null || Long.parseLong(durationString) > maxWaitingTime) {
-                String msg = String.format(" (%s ms > %d ms)", durationString, maxWaitingTime);
-                Log.w(TAG, "Sound <" + uriString + "> too long" + msg);
-                Toast.makeText(this, getText(R.string.ringtoneDurationTooLongOrInvalid) + msg, Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
         return true;
+    }
+
+    /**
+     * Ensures that the duration of the chosen sound does not exceed a quarter of the chosen interval.
+     */
+    private boolean mediateSoundDurationRelatedSettings(MinutesIntervalPickerPreference preferenceFrequency,
+                                                        CheckBoxPreference preferenceUseWorkaroundBell,
+                                                        ListPreferenceWithSummaryFix preferenceReminderBell,
+                                                        String newRingtoneValue, CheckBoxPreference preferenceSound) {
+        return mediateSoundDurationRelatedSettings(preferenceFrequency.getTime(), preferenceUseWorkaroundBell.isChecked(),
+                preferenceReminderBell.getValue(), newRingtoneValue, preferenceSound.isChecked());
     }
 
     /**
@@ -466,6 +507,17 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
             summary = ringtone.getTitle(this);
         }
         preferenceRingtone.setSummary(summary);
+    }
+
+    /**
+     * Ensures that the duration of the chosen sound does not exceed a quarter of the chosen interval.
+     */
+    private boolean mediateSoundDurationRelatedSettings(Object newFrequencyValue, CheckBoxPreference preferenceUseWorkaroundBell,
+                                                        ListPreferenceWithSummaryFix preferenceReminderBell,
+                                                        String preferenceRingtoneValue, CheckBoxPreference preferenceSound) {
+        return mediateSoundDurationRelatedSettings(new TimeOfDay((String) newFrequencyValue),
+                preferenceUseWorkaroundBell.isChecked(), preferenceReminderBell.getValue(), preferenceRingtoneValue,
+                preferenceSound.isChecked());
     }
 
     /**
@@ -535,6 +587,17 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
     }
 
     /**
+     * Ensures that the duration of the chosen sound does not exceed a quarter of the chosen interval.
+     */
+    private boolean mediateSoundDurationRelatedSettings(MinutesIntervalPickerPreference preferenceFrequency,
+                                                        Object newUseWorkaroundBellValue,
+                                                        ListPreferenceWithSummaryFix preferenceReminderBell,
+                                                        String preferenceRingtoneValue, CheckBoxPreference preferenceSound) {
+        return mediateSoundDurationRelatedSettings(preferenceFrequency.getTime(), (Boolean) newUseWorkaroundBellValue,
+                preferenceReminderBell.getValue(), preferenceRingtoneValue, preferenceSound.isChecked());
+    }
+
+    /**
      * Handles click on confirmation to send info.
      */
     private void onClickReallySendInfo() {
@@ -548,6 +611,35 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(this, getText(R.string.noEmailClients), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * Ensures that the duration of the chosen sound does not exceed a quarter of the chosen interval. Sound might occur every
+     * interval +/- 50%. So minimum time for sound and silence if half of the interval. IMHO at least half of that time should be
+     * silence. That's where the quarter comes from. This check ignores the fact that randomizing the interval might be switched
+     * off.
+     */
+    private boolean mediateSoundDurationRelatedSettings(TimeOfDay frequency, boolean useWorkaroundBell, String reminderBell,
+                                                        String ringtoneValue, boolean soundValue) {
+        if (!soundValue) { // everything's fine if no sound has to be played at all
+            return true;
+        }
+        Uri soundUri = getSoundUri(reminderBell, useWorkaroundBell, ringtoneValue);
+        Long soundDuration = Utils.getSoundDuration(this, soundUri);
+        if (soundDuration == null) {
+            Toast.makeText(this, R.string.ringtoneNotAccessible, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        soundDuration /= 1000L; // in seconds
+        long maxDuration = frequency.getInterval() * 60L / 4L; // in seconds
+        if (soundDuration > maxDuration) {
+            String msg = String.format(getText(R.string.ringtoneDurationTooLong).toString(), soundDuration, maxDuration,
+                    frequency.getInterval() * 60L);
+            Log.w(TAG, msg + " (" + soundUri.toString() + ")");
+            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
     }
 
     /**
