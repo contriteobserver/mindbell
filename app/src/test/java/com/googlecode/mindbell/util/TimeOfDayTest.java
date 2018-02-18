@@ -23,7 +23,9 @@ import com.googlecode.mindbell.accessors.PrefsAccessor;
 
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashSet;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -435,7 +437,7 @@ public class TimeOfDayTest {
     }
 
     @Test
-    public void testNightInterval1() {
+    public void test_isInInterval_NightInterval1() {
         TimeOfDay start = new TimeOfDay(9, 0);
         TimeOfDay end = new TimeOfDay(1, 1);
         TimeOfDay t = new TimeOfDay(9, 1);
@@ -443,7 +445,7 @@ public class TimeOfDayTest {
     }
 
     @Test
-    public void testNightInterval2() {
+    public void test_isInInterval_NightInterval2() {
         TimeOfDay start = new TimeOfDay(9, 0);
         TimeOfDay end = new TimeOfDay(1, 1);
         TimeOfDay t = new TimeOfDay(0, 1);
@@ -451,7 +453,7 @@ public class TimeOfDayTest {
     }
 
     @Test
-    public void testNightInterval3() {
+    public void test_isInInterval_NightInterval3() {
         TimeOfDay start = new TimeOfDay(9, 0);
         TimeOfDay end = new TimeOfDay(1, 1);
         TimeOfDay t = new TimeOfDay(1, 1);
@@ -459,7 +461,7 @@ public class TimeOfDayTest {
     }
 
     @Test
-    public void testNightInterval4() {
+    public void test_isInInterval_NightInterval4() {
         TimeOfDay start = new TimeOfDay(23, 59);
         TimeOfDay end = new TimeOfDay(0, 0);
         TimeOfDay t = new TimeOfDay(9, 1);
@@ -467,7 +469,7 @@ public class TimeOfDayTest {
     }
 
     @Test
-    public void testNightInterval5() {
+    public void test_isInInterval_NightInterval5() {
         TimeOfDay start = new TimeOfDay(23, 59);
         TimeOfDay end = new TimeOfDay(0, 1);
         TimeOfDay t = new TimeOfDay(0, 0);
@@ -475,7 +477,7 @@ public class TimeOfDayTest {
     }
 
     @Test
-    public void testNightInterval6() {
+    public void test_isInInterval_NightInterval6() {
         TimeOfDay start = new TimeOfDay(23, 59, 4);
         TimeOfDay end = new TimeOfDay(0, 1, 2);
         TimeOfDay t = new TimeOfDay(0, 0, 1);
@@ -483,7 +485,7 @@ public class TimeOfDayTest {
     }
 
     @Test
-    public void testNightInterval7() {
+    public void test_isInInterval_NightInterval7() {
         TimeOfDay start = new TimeOfDay(9, 0, 7);
         TimeOfDay end = new TimeOfDay(1, 1, 1);
         TimeOfDay t = new TimeOfDay(1, 1, 5);
@@ -491,7 +493,7 @@ public class TimeOfDayTest {
     }
 
     @Test
-    public void testNightInterval8() {
+    public void test_isInInterval_NightInterval8() {
         TimeOfDay start = new TimeOfDay(23, 0, null);
         TimeOfDay end = new TimeOfDay(5, 0, null);
         TimeOfDay t = new TimeOfDay(5, 0, null);
@@ -499,11 +501,51 @@ public class TimeOfDayTest {
     }
 
     @Test
-    public void testNightInterval9() {
+    public void test_isInInterval_NightInterval9() {
         TimeOfDay start = new TimeOfDay(22, 59, null);
         TimeOfDay end = new TimeOfDay(5, 0, null);
         TimeOfDay t = new TimeOfDay(5, 0, null);
         assertFalse(t.isInInterval(start, end));
+    }
+
+    @Test
+    public void test_isDaytime_NightInterval1() {
+        TimeOfDay start = new TimeOfDay(22, 59, null);
+        TimeOfDay end = new TimeOfDay(5, 0, null);
+        TimeOfDay t = new TimeOfDay(22, 59, Calendar.FRIDAY);
+        assertTrue(t.isDaytime(start, end, new HashSet<>(Arrays.asList(Calendar.FRIDAY))));
+    }
+
+    @Test
+    public void test_isDaytime_NightInterval2() {
+        TimeOfDay start = new TimeOfDay(22, 59, null);
+        TimeOfDay end = new TimeOfDay(5, 0, null);
+        TimeOfDay t = new TimeOfDay(23, 59, Calendar.FRIDAY);
+        assertTrue(t.isDaytime(start, end, new HashSet<>(Arrays.asList(Calendar.FRIDAY))));
+    }
+
+    @Test
+    public void test_isDaytime_NightInterval3() {
+        TimeOfDay start = new TimeOfDay(22, 59, null);
+        TimeOfDay end = new TimeOfDay(5, 0, null);
+        TimeOfDay t = new TimeOfDay(0, 0, Calendar.SATURDAY);
+        assertTrue(t.isDaytime(start, end, new HashSet<>(Arrays.asList(Calendar.FRIDAY))));
+    }
+
+    @Test
+    public void test_isDaytime_NightInterval4() {
+        TimeOfDay start = new TimeOfDay(22, 59, null);
+        TimeOfDay end = new TimeOfDay(5, 0, null);
+        TimeOfDay t = new TimeOfDay(4, 59, Calendar.SATURDAY);
+        assertTrue(t.isDaytime(start, end, new HashSet<>(Arrays.asList(Calendar.FRIDAY))));
+    }
+
+    @Test
+    public void test_isDaytime_NightInterval5() {
+        TimeOfDay start = new TimeOfDay(22, 59, null);
+        TimeOfDay end = new TimeOfDay(5, 0, null);
+        TimeOfDay t = new TimeOfDay(5, 0, Calendar.SATURDAY);
+        assertFalse(t.isDaytime(start, end, new HashSet<>(Arrays.asList(Calendar.FRIDAY))));
     }
 
     @Test

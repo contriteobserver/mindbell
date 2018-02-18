@@ -3,7 +3,7 @@
  *            for remembering what really counts
  *
  *     Copyright (C) 2010-2014 Marc Schroeder
- *     Copyright (C) 2014-2017 Uwe Damken
+ *     Copyright (C) 2014-2018 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -116,14 +116,14 @@ public class SchedulerLogicTest {
         {
             long now = getTimeMillis(21, 0, Calendar.FRIDAY);
             TimeOfDay nextDaytimeStart = new TimeOfDay(SchedulerLogic.getNextDayNightChangeInMillis(now, prefs));
-            assertEquals(0, nextDaytimeStart.getHour());
+            assertEquals(9, nextDaytimeStart.getHour());
             assertEquals(0, nextDaytimeStart.getMinute());
             assertEquals(Calendar.SATURDAY, nextDaytimeStart.getWeekday().intValue());
         }
         {
             long now = getTimeMillis(23, 59, Calendar.FRIDAY);
             TimeOfDay nextDaytimeStart = new TimeOfDay(SchedulerLogic.getNextDayNightChangeInMillis(now, prefs));
-            assertEquals(0, nextDaytimeStart.getHour());
+            assertEquals(9, nextDaytimeStart.getHour());
             assertEquals(0, nextDaytimeStart.getMinute());
             assertEquals(Calendar.SATURDAY, nextDaytimeStart.getWeekday().intValue());
         }
@@ -163,14 +163,14 @@ public class SchedulerLogicTest {
         {
             long now = getTimeMillis(13, 0, Calendar.FRIDAY);
             TimeOfDay nextDaytimeStart = new TimeOfDay(SchedulerLogic.getNextDayNightChangeInMillis(now, prefs));
-            assertEquals(0, nextDaytimeStart.getHour());
+            assertEquals(2, nextDaytimeStart.getHour());
             assertEquals(0, nextDaytimeStart.getMinute());
             assertEquals(Calendar.SATURDAY, nextDaytimeStart.getWeekday().intValue());
         }
         {
             long now = getTimeMillis(23, 59, Calendar.FRIDAY);
             TimeOfDay nextDaytimeStart = new TimeOfDay(SchedulerLogic.getNextDayNightChangeInMillis(now, prefs));
-            assertEquals(0, nextDaytimeStart.getHour());
+            assertEquals(2, nextDaytimeStart.getHour());
             assertEquals(0, nextDaytimeStart.getMinute());
             assertEquals(Calendar.SATURDAY, nextDaytimeStart.getWeekday().intValue());
         }
@@ -650,11 +650,11 @@ public class SchedulerLogicTest {
     @Test
     public void testRescheduleYieldsDaySaturday5() {
         PrefsAccessor prefs = getNightPrefs();
-        long nowTimeMillis = getTimeMillis(1, 0, Calendar.SATURDAY);
+        long nowTimeMillis = getTimeMillis(0, 30, Calendar.SATURDAY);
         long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
         System.out.println((new TimeOfDay(nowTimeMillis)).toString() + " -> " + (new TimeOfDay(targetTimeMillis)).toString());
         Assert.assertTrue(targetTimeMillis > nowTimeMillis);
-        Assert.assertEquals(Calendar.MONDAY, getWeekday(targetTimeMillis));
+        Assert.assertEquals(Calendar.SATURDAY, getWeekday(targetTimeMillis));
         Assert.assertTrue((new TimeOfDay(targetTimeMillis)).isDaytime(prefs));
     }
 
@@ -733,6 +733,14 @@ public class SchedulerLogicTest {
         Assert.assertTrue(targetTimeMillis > nowTimeMillis);
         Assert.assertEquals(Calendar.MONDAY, getWeekday(targetTimeMillis));
         Assert.assertTrue((new TimeOfDay(targetTimeMillis)).isDaytime(prefs));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test_getNextDaytimeStartInMillis_EmptyActiveOnDaysOfWeek() {
+        PrefsAccessor prefs = getDayPrefs();
+        when(prefs.getActiveOnDaysOfWeek()).thenReturn(new HashSet<Integer>());
+        long nowTimeMillis = getTimeMillis(20, 59, Calendar.SUNDAY);
+        long targetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs);
     }
 
 }

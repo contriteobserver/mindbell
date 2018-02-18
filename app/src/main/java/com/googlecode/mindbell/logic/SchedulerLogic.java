@@ -3,7 +3,7 @@
  *            for remembering what really counts
  *
  *     Copyright (C) 2010-2014 Marc Schroeder
- *     Copyright (C) 2014-2017 Uwe Damken
+ *     Copyright (C) 2014-2018 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,10 +100,13 @@ public class SchedulerLogic {
     }
 
     /**
-     * Return time millis of next time a daytime start is getting reached after referenceTimeMillis.
+     * Return time millis of next time when an active daytime start is gets reached after referenceTimeMillis.
      */
-    public static long getNextDaytimeStartInMillis(long referenceTimeMillis, TimeOfDay tStart, Set<Integer> activeOnDaysOfWeek) {
-        Calendar morning = getNextCalendarAtTimeOfDay(referenceTimeMillis, tStart);
+    public static long getNextDaytimeStartInMillis(long referenceTimeMillis, TimeOfDay start, Set<Integer> activeOnDaysOfWeek) {
+        if (activeOnDaysOfWeek.isEmpty()) {
+            throw new IllegalArgumentException("Empty activeOnDaysOfWeek would result in an endless loop, prefs checks bypassed?");
+        }
+        Calendar morning = getNextCalendarAtTimeOfDay(referenceTimeMillis, start);
         while (!(new TimeOfDay(morning)).isActiveOnThatDay(activeOnDaysOfWeek)) { // inactive on that day?
             morning.add(Calendar.DATE, 1); // therefore go to morning of next day
         }
@@ -128,12 +131,13 @@ public class SchedulerLogic {
 
     /**
      * Return next time of a potential change from daytime to nighttime or vice versa, ignoring whether days are active or not.
+     * This can be either start or end time but not midnight because the weekday of the start time determines whether reminder is
+     * active in the range.
      */
     public static long getNextDayNightChangeInMillis(long referenceTimeMillis, PrefsAccessor prefs) {
-        long start = getNextCalendarAtTimeOfDay(referenceTimeMillis, prefs.getDaytimeStart()).getTimeInMillis();
-        long end = getNextCalendarAtTimeOfDay(referenceTimeMillis, prefs.getDaytimeEnd()).getTimeInMillis();
-        long midnight = getNextCalendarAtTimeOfDay(referenceTimeMillis, new TimeOfDay(0, 0)).getTimeInMillis();
-        return Math.min(Math.min(start, midnight), Math.min(midnight, end));
+        long nextStart = getNextCalendarAtTimeOfDay(referenceTimeMillis, prefs.getDaytimeStart()).getTimeInMillis();
+        long nextEnd = getNextCalendarAtTimeOfDay(referenceTimeMillis, prefs.getDaytimeEnd()).getTimeInMillis();
+        return Math.min(nextStart, nextEnd);
     }
 
 }

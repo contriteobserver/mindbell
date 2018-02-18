@@ -3,7 +3,7 @@
  *            for remembering what really counts
  *
  *     Copyright (C) 2010-2014 Marc Schroeder
- *     Copyright (C) 2014-2017 Uwe Damken
+ *     Copyright (C) 2014-2018 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -224,16 +224,28 @@ public class TimeOfDay {
     }
 
     /**
-     * Returns true if the bell should ring at this TimeOfDay, so it must be in the active time interval and the weekday of it must
-     * be activated. The method name carries the historical meaning.
+     * Returns true if the bell should ring at this time of day, so it must be in the active time interval and the weekday of the
+     * begin of the time interval must be activated. For a night interval it is not correct to look at the weekday of this time of
+     * day because this wouldn't keep the interval together. Supposed Friday is activated but Saturday is not and the interval
+     * ranges  from Fri 13:00 to Sat 02:00. The reminder is expected to be active the whole time interval, not only till midnight.
+     *
+     * The method name carries the historical meaning.
      *
      * @return whether bell should ring
      */
-    public boolean isDaytime(TimeOfDay tStart, TimeOfDay tEnd, Set<Integer> activeOnDaysOfWeek) {
-        if (!isInInterval(tStart, tEnd)) {
-            return false; // time is before or after active time interval
+    public boolean isDaytime(TimeOfDay start, TimeOfDay end, Set<Integer> activeOnDaysOfWeek) {
+        if (!isInInterval(start, end)) {
+            return false; // time is before or after active time range
         }
-        return isActiveOnThatDay(activeOnDaysOfWeek);
+        if (start.isBefore(end)) { // day ?
+            return isActiveOnThatDay(activeOnDaysOfWeek); // this time of day and the range start are on the same day
+        }
+        if (isBefore(end)) { // after midnight?
+            int weekdayAtStart = (weekday == 1) ? 7 : weekday - 1;
+            return isActiveOnThatDay(weekdayAtStart, activeOnDaysOfWeek);
+        } else {
+            return isActiveOnThatDay(activeOnDaysOfWeek);
+        }
     }
 
     /**
@@ -256,14 +268,34 @@ public class TimeOfDay {
     }
 
     /**
+     * Return true if this time is earlier than the other regardless of the weekday.
+     *
+     * @param other
+     * @return
+     */
+    public boolean isBefore(TimeOfDay other) {
+        return hour < other.hour || hour == other.hour && minute < other.minute;
+    }
+
+    /**
      * Returns true if this weekday is one on which the bell is active.
      *
      * @param activeOnDaysOfWeek
      * @return
      */
     public boolean isActiveOnThatDay(Set<Integer> activeOnDaysOfWeek) {
-        boolean result = activeOnDaysOfWeek.contains(Integer.valueOf(weekday));
-        return result;
+        return isActiveOnThatDay(weekday, activeOnDaysOfWeek);
+    }
+
+    /**
+     * Returns true if this weekday is one on which the bell is active.
+     *
+     * @param weekday
+     * @param activeOnDaysOfWeek
+     * @return
+     */
+    public static boolean isActiveOnThatDay(int weekday, Set<Integer> activeOnDaysOfWeek) {
+        return activeOnDaysOfWeek.contains(Integer.valueOf(weekday));
     }
 
     /**
@@ -274,16 +306,6 @@ public class TimeOfDay {
      */
     public boolean isSameTime(TimeOfDay other) {
         return hour == other.hour && minute == other.minute;
-    }
-
-    /**
-     * Return true if this time is earlier than the other regardless of the weekday.
-     *
-     * @param other
-     * @return
-     */
-    public boolean isBefore(TimeOfDay other) {
-        return hour < other.hour || hour == other.hour && minute < other.minute;
     }
 
     /*
