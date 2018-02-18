@@ -222,7 +222,8 @@
     <string name="reasonMutedWithPhone">No reminder when audio streamm is muted</string>
     <string name="reasonMutedOffHook">No reminder during calls</string>
     <string name="reasonMutedInFlightMode">No reminder in flight mode</string>
-    <string name="reasonMutedTill">No reminder till {0}</string>
+    <string name="reasonMutedTill">Don\'t remind till {0}</string>
+    <string name="reasonMutedDuringNighttime">Currently no reminder till {0} {1}</string>
 
     <!-- Reasons why permission READ_PHONE_STATE should be granted -->
     <string name="reasonReadPhoneStateTitle">Why this permission?</string>

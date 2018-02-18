@@ -35,8 +35,10 @@ public class UpdateStatusNotification extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "Update status notification received intent " + intent.getAction());
-        ContextAccessor.getInstance(context).updateStatusNotification();
+        Log.d(TAG, "Update status notification intent received " + intent.getAction());
+        ContextAccessor contextAccessor = ContextAccessor.getInstance(context);
+        contextAccessor.updateStatusNotification();
+        contextAccessor.scheduleUpdateStatusNotificationDayNight();
     }
 
 }

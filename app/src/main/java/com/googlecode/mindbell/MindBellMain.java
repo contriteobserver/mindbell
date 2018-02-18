@@ -304,7 +304,7 @@ public class MindBellMain extends Activity {
     private boolean onCheckedChangedActive(boolean isChecked) {
         PrefsAccessor prefsAccessor = contextAccessor.getPrefs();
         prefsAccessor.setActive(isChecked); // toggle active/inactive
-        contextAccessor.updateBellSchedule();
+        contextAccessor.updateBellScheduleForReminder(true);
         CharSequence feedback = getText((prefsAccessor.isActive()) ? R.string.summaryActive : R.string.summaryNotActive);
         Toast.makeText(this, feedback, Toast.LENGTH_SHORT).show();
         return true;
@@ -514,7 +514,7 @@ public class MindBellMain extends Activity {
             prefs.setRampUpStartingTimeMillis(rampUpStartingTimeMillis);
             prefs.setMeditationStartingTimeMillis(meditationStartingTimeMillis);
             prefs.setMeditationEndingTimeMillis(meditationEndingTimeMillis);
-            contextAccessor.updateBellSchedule(rampUpStartingTimeMillis, (prefs.isStartMeditationDirectly()) ? 1 : 0);
+            contextAccessor.updateBellScheduleForMeditation(rampUpStartingTimeMillis, (prefs.isStartMeditationDirectly()) ? 1 : 0);
             countdownView.startDisplayUpdateTimer(contextAccessor);
             if (prefs.isKeepScreenOn()) {
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -523,7 +523,7 @@ public class MindBellMain extends Activity {
         } else {
             countdownView.stopDisplayUpdateTimer();
             contextAccessor.finishBellSound();
-            contextAccessor.updateBellSchedule();
+            contextAccessor.updateBellScheduleForReminder(false);
             if (prefs.isKeepScreenOn()) {
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 MindBell.logDebug("Keep screen on deactivated");

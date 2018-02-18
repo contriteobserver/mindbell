@@ -21,6 +21,8 @@ package com.googlecode.mindbell.accessors;
 import android.content.Context;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.googlecode.mindbell.util.TimeOfDay;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +30,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashSet;
 
 import static org.mockito.Mockito.when;
 
@@ -50,6 +56,9 @@ public class ContextAccessorMockTest {
         when(prefs.isMuteInFlightMode()).thenReturn(false);
         when(prefs.isMuteOffHook()).thenReturn(false);
         when(prefs.isMuteWithPhone()).thenReturn(false);
+        when(prefs.getDaytimeStart()).thenReturn(new TimeOfDay(0, 0));
+        when(prefs.getDaytimeEnd()).thenReturn(new TimeOfDay(0, 0));
+        when(prefs.getActiveOnDaysOfWeek()).thenReturn(new HashSet<>(Arrays.asList(new Integer[]{1, 2, 3, 4, 5, 6})));
         Mockito.doReturn(false).when(ca).isPhoneMuted();
         Mockito.doReturn(false).when(ca).isPhoneOffHook();
         Mockito.doReturn(false).when(ca).isPhoneInFlightMode();
@@ -57,7 +66,21 @@ public class ContextAccessorMockTest {
         Mockito.doReturn("bell muted with phone").when(ca).getReasonMutedWithPhone();
         Mockito.doReturn("bell muted during calls").when(ca).getReasonMutedOffHook();
         Mockito.doReturn("bell muted in flight mode").when(ca).getReasonMutedInFlightMode();
+        Mockito.doReturn("bell muted during nighttime till dd hh:mm").when(ca).getReasonMutedDuringNighttime();
         //        Mockito.doNothing().when(ca).showMessage(anyString());
+    }
+
+    @Test
+    public void testMutedDuringNighttime_false() {
+        Assert.assertFalse(ca.isMuteRequested(false));
+    }
+
+    @Test
+    public void testMutedDuringNighttime_true() {
+        long now = Calendar.getInstance().getTimeInMillis();
+        when(prefs.getDaytimeStart()).thenReturn(new TimeOfDay(now + PrefsAccessor.ONE_MINUTE_MILLIS));
+        when(prefs.getDaytimeEnd()).thenReturn(new TimeOfDay(now - PrefsAccessor.ONE_MINUTE_MILLIS));
+        Assert.assertTrue(ca.isMuteRequested(false));
     }
 
     @Test

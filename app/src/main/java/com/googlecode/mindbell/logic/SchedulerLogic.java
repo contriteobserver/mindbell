@@ -100,22 +100,40 @@ public class SchedulerLogic {
     }
 
     /**
-     * Return next time to bell at daytime after the given "now" which is lying in the nighttime.
+     * Return time millis of next time a daytime start is getting reached after referenceTimeMillis.
      */
-    public static long getNextDaytimeStartInMillis(long nightTimeMillis, TimeOfDay tStart, Set<Integer> activeOnDaysOfWeek) {
-        Calendar morning = Calendar.getInstance();
-        morning.setTimeInMillis(nightTimeMillis);
-        morning.set(Calendar.HOUR_OF_DAY, tStart.getHour());
-        morning.set(Calendar.MINUTE, tStart.getMinute());
-        morning.set(Calendar.SECOND, 0);
-        morning.set(Calendar.MILLISECOND, 0);
-        if (morning.getTimeInMillis() <= nightTimeMillis) { // today's start time has already passed
-            morning.add(Calendar.DATE, 1); // therefore go to morning of next day
-        }
+    public static long getNextDaytimeStartInMillis(long referenceTimeMillis, TimeOfDay tStart, Set<Integer> activeOnDaysOfWeek) {
+        Calendar morning = getNextCalendarAtTimeOfDay(referenceTimeMillis, tStart);
         while (!(new TimeOfDay(morning)).isActiveOnThatDay(activeOnDaysOfWeek)) { // inactive on that day?
             morning.add(Calendar.DATE, 1); // therefore go to morning of next day
         }
         return morning.getTimeInMillis();
+    }
+
+    /**
+     * Return the next instant (as Calendar) in the future with hour and minute of the given time.
+     */
+    private static Calendar getNextCalendarAtTimeOfDay(long referenceTimeMillis, TimeOfDay time) {
+        Calendar result = Calendar.getInstance();
+        result.setTimeInMillis(referenceTimeMillis);
+        result.set(Calendar.HOUR_OF_DAY, time.getHour());
+        result.set(Calendar.MINUTE, time.getMinute());
+        result.set(Calendar.SECOND, 0);
+        result.set(Calendar.MILLISECOND, 0);
+        if (result.getTimeInMillis() <= referenceTimeMillis) { // time has already passed
+            result.add(Calendar.DATE, 1); // therefore go to next day
+        }
+        return result;
+    }
+
+    /**
+     * Return next time of a potential change from daytime to nighttime or vice versa, ignoring whether days are active or not.
+     */
+    public static long getNextDayNightChangeInMillis(long referenceTimeMillis, PrefsAccessor prefs) {
+        long start = getNextCalendarAtTimeOfDay(referenceTimeMillis, prefs.getDaytimeStart()).getTimeInMillis();
+        long end = getNextCalendarAtTimeOfDay(referenceTimeMillis, prefs.getDaytimeEnd()).getTimeInMillis();
+        long midnight = getNextCalendarAtTimeOfDay(referenceTimeMillis, new TimeOfDay(0, 0)).getTimeInMillis();
+        return Math.min(Math.min(start, midnight), Math.min(midnight, end));
     }
 
 }

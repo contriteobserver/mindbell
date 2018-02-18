@@ -20,20 +20,13 @@
 package com.googlecode.mindbell;
 
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.widget.NumberPicker;
 
 import com.googlecode.mindbell.accessors.ContextAccessor;
-import com.googlecode.mindbell.util.AlarmManagerCompat;
-import com.googlecode.mindbell.util.TimeOfDay;
-
-import static com.googlecode.mindbell.MindBellPreferences.TAG;
 
 /**
  * Activity to ask for the time period to mute the bell for.
@@ -59,11 +52,7 @@ public class MuteActivity extends Activity {
                         long nextTargetTimeMillis = System.currentTimeMillis() + newValue * 3600000L;
                         contextAccessor.getPrefs().setMutedTill(nextTargetTimeMillis);
                         contextAccessor.updateStatusNotification();
-                        PendingIntent sender = contextAccessor.createRefreshBroadcastIntent();
-                        AlarmManagerCompat alarmManager = new AlarmManagerCompat(MuteActivity.this.getApplicationContext());
-                        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextTargetTimeMillis, sender);
-                        TimeOfDay nextBellTime = new TimeOfDay(nextTargetTimeMillis);
-                        Log.d(TAG, "Update status notification scheduled for " + nextBellTime.getLogString());
+                        contextAccessor.scheduleUpdateStatusNotificationMutedTill(nextTargetTimeMillis);
                         MuteActivity.this.finish();
                     }
                 }) //

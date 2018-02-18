@@ -32,6 +32,7 @@ import java.util.Calendar;
 import java.util.HashSet;
 
 import static com.googlecode.mindbell.accessors.PrefsAccessor.ONE_MINUTE_MILLIS;
+import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -79,6 +80,111 @@ public class SchedulerLogicTest {
         cal.set(Calendar.MILLISECOND, 0);
         cal.set(Calendar.DAY_OF_WEEK, weekday);
         return cal.getTimeInMillis();
+    }
+
+    @Test
+    public void test_getNextDayNightChangeInMillis_forDayPrefs() {
+        PrefsAccessor prefs = getDayPrefs();
+        {
+            long now = getTimeMillis(0, 0, Calendar.FRIDAY);
+            TimeOfDay nextDaytimeStart = new TimeOfDay(SchedulerLogic.getNextDayNightChangeInMillis(now, prefs));
+            assertEquals(9, nextDaytimeStart.getHour());
+            assertEquals(0, nextDaytimeStart.getMinute());
+            assertEquals(Calendar.FRIDAY, nextDaytimeStart.getWeekday().intValue());
+        }
+        {
+            long now = getTimeMillis(8, 59, Calendar.FRIDAY);
+            TimeOfDay nextDaytimeStart = new TimeOfDay(SchedulerLogic.getNextDayNightChangeInMillis(now, prefs));
+            assertEquals(9, nextDaytimeStart.getHour());
+            assertEquals(0, nextDaytimeStart.getMinute());
+            assertEquals(Calendar.FRIDAY, nextDaytimeStart.getWeekday().intValue());
+        }
+        {
+            long now = getTimeMillis(9, 0, Calendar.FRIDAY);
+            TimeOfDay nextDaytimeStart = new TimeOfDay(SchedulerLogic.getNextDayNightChangeInMillis(now, prefs));
+            assertEquals(21, nextDaytimeStart.getHour());
+            assertEquals(0, nextDaytimeStart.getMinute());
+            assertEquals(Calendar.FRIDAY, nextDaytimeStart.getWeekday().intValue());
+        }
+        {
+            long now = getTimeMillis(20, 59, Calendar.FRIDAY);
+            TimeOfDay nextDaytimeStart = new TimeOfDay(SchedulerLogic.getNextDayNightChangeInMillis(now, prefs));
+            assertEquals(21, nextDaytimeStart.getHour());
+            assertEquals(0, nextDaytimeStart.getMinute());
+            assertEquals(Calendar.FRIDAY, nextDaytimeStart.getWeekday().intValue());
+        }
+        {
+            long now = getTimeMillis(21, 0, Calendar.FRIDAY);
+            TimeOfDay nextDaytimeStart = new TimeOfDay(SchedulerLogic.getNextDayNightChangeInMillis(now, prefs));
+            assertEquals(0, nextDaytimeStart.getHour());
+            assertEquals(0, nextDaytimeStart.getMinute());
+            assertEquals(Calendar.SATURDAY, nextDaytimeStart.getWeekday().intValue());
+        }
+        {
+            long now = getTimeMillis(23, 59, Calendar.FRIDAY);
+            TimeOfDay nextDaytimeStart = new TimeOfDay(SchedulerLogic.getNextDayNightChangeInMillis(now, prefs));
+            assertEquals(0, nextDaytimeStart.getHour());
+            assertEquals(0, nextDaytimeStart.getMinute());
+            assertEquals(Calendar.SATURDAY, nextDaytimeStart.getWeekday().intValue());
+        }
+    }
+
+    @Test
+    public void test_getNextDayNightChangeInMillis_forNightPrefs() {
+        PrefsAccessor prefs = getNightPrefs();
+        {
+            long now = getTimeMillis(0, 0, Calendar.FRIDAY);
+            TimeOfDay nextDaytimeStart = new TimeOfDay(SchedulerLogic.getNextDayNightChangeInMillis(now, prefs));
+            assertEquals(2, nextDaytimeStart.getHour());
+            assertEquals(0, nextDaytimeStart.getMinute());
+            assertEquals(Calendar.FRIDAY, nextDaytimeStart.getWeekday().intValue());
+        }
+        {
+            long now = getTimeMillis(1, 59, Calendar.FRIDAY);
+            TimeOfDay nextDaytimeStart = new TimeOfDay(SchedulerLogic.getNextDayNightChangeInMillis(now, prefs));
+            assertEquals(2, nextDaytimeStart.getHour());
+            assertEquals(0, nextDaytimeStart.getMinute());
+            assertEquals(Calendar.FRIDAY, nextDaytimeStart.getWeekday().intValue());
+        }
+        {
+            long now = getTimeMillis(2, 0, Calendar.FRIDAY);
+            TimeOfDay nextDaytimeStart = new TimeOfDay(SchedulerLogic.getNextDayNightChangeInMillis(now, prefs));
+            assertEquals(13, nextDaytimeStart.getHour());
+            assertEquals(0, nextDaytimeStart.getMinute());
+            assertEquals(Calendar.FRIDAY, nextDaytimeStart.getWeekday().intValue());
+        }
+        {
+            long now = getTimeMillis(12, 59, Calendar.FRIDAY);
+            TimeOfDay nextDaytimeStart = new TimeOfDay(SchedulerLogic.getNextDayNightChangeInMillis(now, prefs));
+            assertEquals(13, nextDaytimeStart.getHour());
+            assertEquals(0, nextDaytimeStart.getMinute());
+            assertEquals(Calendar.FRIDAY, nextDaytimeStart.getWeekday().intValue());
+        }
+        {
+            long now = getTimeMillis(13, 0, Calendar.FRIDAY);
+            TimeOfDay nextDaytimeStart = new TimeOfDay(SchedulerLogic.getNextDayNightChangeInMillis(now, prefs));
+            assertEquals(0, nextDaytimeStart.getHour());
+            assertEquals(0, nextDaytimeStart.getMinute());
+            assertEquals(Calendar.SATURDAY, nextDaytimeStart.getWeekday().intValue());
+        }
+        {
+            long now = getTimeMillis(23, 59, Calendar.FRIDAY);
+            TimeOfDay nextDaytimeStart = new TimeOfDay(SchedulerLogic.getNextDayNightChangeInMillis(now, prefs));
+            assertEquals(0, nextDaytimeStart.getHour());
+            assertEquals(0, nextDaytimeStart.getMinute());
+            assertEquals(Calendar.SATURDAY, nextDaytimeStart.getWeekday().intValue());
+        }
+    }
+
+    private PrefsAccessor getNightPrefs() {
+        PrefsAccessor prefs = mock(PrefsAccessor.class);
+        when(prefs.getDaytimeStart()).thenReturn(new TimeOfDay(13, 0));
+        when(prefs.getDaytimeEnd()).thenReturn(new TimeOfDay(2, 0));
+        when(prefs.getActiveOnDaysOfWeek()).thenReturn(new HashSet<>(Arrays.asList(new Integer[]{2, 3, 4, 5, 6})));
+        when(prefs.isRandomize()).thenReturn(true);
+        when(prefs.getNormalize()).thenReturn(-1);
+        when(prefs.getInterval()).thenReturn(60 * ONE_MINUTE_MILLIS);
+        return prefs;
     }
 
     @Test
@@ -418,17 +524,6 @@ public class SchedulerLogicTest {
         Assert.assertTrue(targetTimeMillis > nowTimeMillis);
         Assert.assertEquals(Calendar.FRIDAY, getWeekday(targetTimeMillis));
         Assert.assertTrue((new TimeOfDay(targetTimeMillis)).isDaytime(prefs));
-    }
-
-    private PrefsAccessor getNightPrefs() {
-        PrefsAccessor prefs = mock(PrefsAccessor.class);
-        when(prefs.getDaytimeStart()).thenReturn(new TimeOfDay(13, 0));
-        when(prefs.getDaytimeEnd()).thenReturn(new TimeOfDay(2, 0));
-        when(prefs.getActiveOnDaysOfWeek()).thenReturn(new HashSet<>(Arrays.asList(new Integer[]{2, 3, 4, 5, 6})));
-        when(prefs.isRandomize()).thenReturn(true);
-        when(prefs.getNormalize()).thenReturn(-1);
-        when(prefs.getInterval()).thenReturn(60 * ONE_MINUTE_MILLIS);
-        return prefs;
     }
 
     @Test

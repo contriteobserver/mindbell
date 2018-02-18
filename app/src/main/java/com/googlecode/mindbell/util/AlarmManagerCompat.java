@@ -52,4 +52,11 @@ public class AlarmManagerCompat {
         }
     }
 
+    /**
+     * Delegate for {@link AlarmManager#cancel(PendingIntent)}
+     */
+    public void cancel(PendingIntent operation) {
+        alarmManager.cancel(operation);
+    }
+
 }

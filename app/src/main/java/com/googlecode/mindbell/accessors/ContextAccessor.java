@@ -47,11 +47,13 @@ import com.googlecode.mindbell.MindBellPreferences;
 import com.googlecode.mindbell.MuteActivity;
 import com.googlecode.mindbell.R;
 import com.googlecode.mindbell.Scheduler;
+import com.googlecode.mindbell.logic.SchedulerLogic;
 import com.googlecode.mindbell.util.AlarmManagerCompat;
 import com.googlecode.mindbell.util.TimeOfDay;
 
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.Calendar;
 
 import static android.media.AudioManager.AUDIOFOCUS_GAIN_TRANSIENT;
 import static android.media.AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE;
@@ -73,6 +75,17 @@ public class ContextAccessor implements AudioManager.OnAudioFocusChangeListener 
     private static final int STATUS_NOTIFICATION_ID = 0x7f030001; // historically, has been R.layout.bell for a long time
 
     private static final int RING_NOTIFICATION_ID = STATUS_NOTIFICATION_ID + 1;
+
+    private static final int SCHEDULER_REQUEST_CODE = 0;
+
+    private static final int UPDATE_STATUS_NOTIFICATION_REQUEST_CODE = 1;
+
+    private static final int UPDATE_STATUS_NOTIFICATION_MUTED_TILL_REQUEST_CODE = 2;
+
+    private static final int UPDATE_STATUS_NOTIFICATION_START_REQUEST_CODE = 3;
+
+    private static final int UPDATE_STATUS_NOTIFICATION_DAY_NIGHT_REQUEST_CODE = 4;
+
     // Keep MediaPlayer to finish a started sound explicitly, reclaimed when app gets destroyed: http://stackoverflow.com/a/2476171
     private static MediaPlayer mediaPlayer = null;
     private static AudioManager audioManager = null;
@@ -135,6 +148,8 @@ public class ContextAccessor implements AudioManager.OnAudioFocusChangeListener 
             reason = getReasonMutedOffHook();
         } else if (prefs.isMuteInFlightMode() && isPhoneInFlightMode()) { // Mute bell while in flight mode?
             reason = getReasonMutedInFlightMode();
+        } else if (!new TimeOfDay().isDaytime(prefs)) { // Always mute bell during nighttime
+            reason = getReasonMutedDuringNighttime();
         }
         if (reason != null && shouldShowMessage) {
             showMessage(reason);
@@ -171,6 +186,15 @@ public class ContextAccessor implements AudioManager.OnAudioFocusChangeListener 
 
     protected String getReasonMutedInFlightMode() {
         return context.getText(R.string.reasonMutedInFlightMode).toString();
+    }
+
+    protected String getReasonMutedDuringNighttime() {
+        TimeOfDay nextStartTime = new TimeOfDay(
+                SchedulerLogic.getNextDaytimeStartInMillis(Calendar.getInstance().getTimeInMillis(), prefs.getDaytimeStart(),
+                        prefs.getActiveOnDaysOfWeek()));
+        String weekdayAbbreviation = prefs.getWeekdayAbbreviation(nextStartTime.getWeekday());
+        return MessageFormat.format(context.getText(R.string.reasonMutedDuringNighttime).toString(), weekdayAbbreviation,
+                nextStartTime.getDisplayString(context));
     }
 
     public void showMessage(String message) {
@@ -427,17 +451,28 @@ public class ContextAccessor implements AudioManager.OnAudioFocusChangeListener 
     }
 
     /**
-     * Send a newly created intent to Scheduler to update notification and setup a new bell schedule.
+     * Send a newly created intent to Scheduler to update notification and setup a new bell schedule for reminder, if
+     * requested cancel and newly setup alarms to update noticiation status depending on day-night mode.
      */
-    public void updateBellSchedule() {
-        Log.d(TAG, "Update bell schedule requested");
-        Intent intent = createSchedulerIntent(false, null, null);
-        PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    public void updateBellScheduleForReminder(boolean renewDayNightAlarm) {
+        MindBell.logDebug("Update bell schedule for reminder requested, renewDayNightAlarm=" + renewDayNightAlarm);
+        if (renewDayNightAlarm) {
+            scheduleUpdateStatusNotificationDayNight();
+        }
+        PendingIntent sender = createSchedulerBroadcastIntent(false, null, null);
         try {
             sender.send();
         } catch (PendingIntent.CanceledException e) {
-            Log.e(TAG, "Could not update bell schedule: " + e.getMessage(), e);
+            Log.e(TAG, "Could not update bell schedule for reminder: " + e.getMessage(), e);
         }
+    }
+
+    /**
+     * Schedule an update status notification for the start or the end of the active period.
+     */
+    public void scheduleUpdateStatusNotificationDayNight() {
+        long targetTimeMillis = SchedulerLogic.getNextDayNightChangeInMillis(Calendar.getInstance().getTimeInMillis(), prefs);
+        scheduleUpdateStatusNotification(targetTimeMillis, UPDATE_STATUS_NOTIFICATION_DAY_NIGHT_REQUEST_CODE, "day-night");
     }
 
     /**
@@ -451,7 +486,7 @@ public class ContextAccessor implements AudioManager.OnAudioFocusChangeListener 
      * @param meditationPeriod
      *         Zero: ramp-up, 1-(n-1): intermediate period, n: last period, n+1: beyond end
      */
-    private Intent createSchedulerIntent(boolean isRescheduling, Long nowTimeMillis, Integer meditationPeriod) {
+    private PendingIntent createSchedulerBroadcastIntent(boolean isRescheduling, Long nowTimeMillis, Integer meditationPeriod) {
         Log.d(TAG, "Creating scheduler intent: isRescheduling=" + isRescheduling + ", nowTimeMillis=" + nowTimeMillis +
                 ", meditationPeriod=" + meditationPeriod);
         Intent intent = new Intent(context, Scheduler.class);
@@ -464,7 +499,29 @@ public class ContextAccessor implements AudioManager.OnAudioFocusChangeListener 
         if (meditationPeriod != null) {
             intent.putExtra(EXTRA_MEDITATION_PERIOD, meditationPeriod);
         }
-        return intent;
+        return PendingIntent.getBroadcast(context, SCHEDULER_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    /**
+     * Schedule an update status notification for the future.
+     */
+    private void scheduleUpdateStatusNotification(long targetTimeMillis, int requestCode, String info) {
+        PendingIntent sender = createRefreshBroadcastIntent(requestCode);
+        AlarmManagerCompat alarmManager = new AlarmManagerCompat(context);
+        alarmManager.cancel(sender); // cancel old alarm, it has either gone away or became obsolete
+        if (prefs.isActive()) {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, targetTimeMillis, sender);
+            TimeOfDay scheduledTime = new TimeOfDay(targetTimeMillis);
+            Log.d(TAG, "Update status notification scheduled for " + scheduledTime.getLogString() + " (" + info + ")");
+        }
+    }
+
+    /**
+     * Create an intent to be send to UpdateStatusNotification to update notification.
+     */
+    private PendingIntent createRefreshBroadcastIntent(int requestCode) {
+        return PendingIntent.getBroadcast(context, requestCode, new Intent("com.googlecode.mindbell.UPDATE_STATUS_NOTIFICATION"),
+                PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     /**
@@ -475,14 +532,13 @@ public class ContextAccessor implements AudioManager.OnAudioFocusChangeListener 
      * @param meditationPeriod
      *         Zero: ramp-up, 1-(n-1): intermediate period, n: last period, n+1: beyond end
      */
-    public void updateBellSchedule(long nextTargetTimeMillis, int meditationPeriod) {
-        Log.d(TAG, "Update bell schedule requested, nextTargetTimeMillis=" + nextTargetTimeMillis);
-        Intent intent = createSchedulerIntent(false, nextTargetTimeMillis, meditationPeriod);
-        PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    public void updateBellScheduleForMeditation(long nextTargetTimeMillis, int meditationPeriod) {
+        MindBell.logDebug("Update bell schedule for meditation requested, nextTargetTimeMillis=" + nextTargetTimeMillis);
+        PendingIntent sender = createSchedulerBroadcastIntent(false, nextTargetTimeMillis, meditationPeriod);
         try {
             sender.send();
         } catch (PendingIntent.CanceledException e) {
-            Log.e(TAG, "Could not update bell schedule: " + e.getMessage(), e);
+            Log.e(TAG, "Could not update bell schedule for meditation: " + e.getMessage(), e);
         }
     }
 
@@ -495,8 +551,7 @@ public class ContextAccessor implements AudioManager.OnAudioFocusChangeListener 
      *         null if not meditating, otherwise 0: ramp-up, 1-(n-1): intermediate period, n: last period, n+1: beyond end
      */
     public void reschedule(long nextTargetTimeMillis, Integer nextMeditationPeriod) {
-        Intent nextIntent = createSchedulerIntent(true, nextTargetTimeMillis, nextMeditationPeriod);
-        PendingIntent sender = PendingIntent.getBroadcast(context, 0, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent sender = createSchedulerBroadcastIntent(true, nextTargetTimeMillis, nextMeditationPeriod);
         AlarmManagerCompat alarmManager = new AlarmManagerCompat(context);
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextTargetTimeMillis, sender);
         TimeOfDay nextBellTime = new TimeOfDay(nextTargetTimeMillis);
@@ -599,7 +654,7 @@ public class ContextAccessor implements AudioManager.OnAudioFocusChangeListener 
             // Do not allow other actions than stopping meditation while meditating
             notificationBuilder //
                     .addAction(R.drawable.ic_action_refresh_status, context.getText(R.string.statusActionRefreshStatus),
-                            createRefreshBroadcastIntent()) //
+                            createRefreshBroadcastIntent(UPDATE_STATUS_NOTIFICATION_REQUEST_CODE)) //
                     .addAction(R.drawable.ic_stat_bell_active_but_muted, context.getText(R.string.statusActionMuteFor), muteIntent);
         }
         Notification notification = notificationBuilder.build();
@@ -624,11 +679,10 @@ public class ContextAccessor implements AudioManager.OnAudioFocusChangeListener 
     }
 
     /**
-     * Create an intent to be send to UpdateStatusNotification to update notification.
+     * Schedule an update status notification for the end of a manual mute.
      */
-    public PendingIntent createRefreshBroadcastIntent() {
-        return PendingIntent.getBroadcast(context, 1, new Intent("com.googlecode.mindbell.UPDATE_STATUS_NOTIFICATION"),
-                PendingIntent.FLAG_UPDATE_CURRENT);
+    public void scheduleUpdateStatusNotificationMutedTill(long targetTimeMillis) {
+        scheduleUpdateStatusNotification(targetTimeMillis, UPDATE_STATUS_NOTIFICATION_MUTED_TILL_REQUEST_CODE, "muted till");
     }
 
     @Override

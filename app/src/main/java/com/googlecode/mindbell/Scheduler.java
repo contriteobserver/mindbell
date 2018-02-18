@@ -37,7 +37,7 @@ import static com.googlecode.mindbell.accessors.PrefsAccessor.EXTRA_MEDITATION_P
 import static com.googlecode.mindbell.accessors.PrefsAccessor.EXTRA_NOW_TIME_MILLIS;
 
 /**
- * Ring the bell and reschedule.
+ * Remind (show/sound/vibrate) and reschedule.
  */
 public class Scheduler extends BroadcastReceiver {
 
@@ -59,7 +59,7 @@ public class Scheduler extends BroadcastReceiver {
         // Update notification just in case state has changed or MindBell missed a muting
         contextAccessor.updateStatusNotification();
 
-        // Evaluate next time to ring and reschedule or terminate method if neither active nor meditating
+        // Evaluate next time to remind and reschedule or terminate method if neither active nor meditating
         if (prefs.isMeditating()) { // Meditating overrides Active therefore check this first
 
             handleMeditatingBell(contextAccessor, nowTimeMillis, meditationPeriod);
@@ -70,7 +70,7 @@ public class Scheduler extends BroadcastReceiver {
 
         } else {
 
-            Log.d(TAG, "Bell is neither meditating nor active -- not ringing, not rescheduling.");
+            Log.d(TAG, "Bell is neither meditating nor active -- not reminding, not rescheduling.");
 
         }
     }
@@ -131,16 +131,16 @@ public class Scheduler extends BroadcastReceiver {
 
         if (!isRescheduling) {
 
-            Log.d(TAG,
-                    "Not ringing (show/sound/vibrate), has been called by activate bell button or preferences or when boot completed or after updating");
+            Log.d(TAG, "Not reminding (show/sound/vibrate), has been called by activate bell button or preferences or when boot " +
+                    "completed or after updating");
 
         } else if (!(new TimeOfDay()).isDaytime(prefs)) {
 
-            Log.d(TAG, "Not ringing (show/sound/vibrate), it is night time");
+            Log.d(TAG, "Not reminding (show/sound/vibrate), it is night time");
 
         } else if (contextAccessor.isMuteRequested(true)) {
 
-            Log.d(TAG, "Not ringing (show/sound/vibrate), bell is muted");
+            Log.d(TAG, "Not reminding (show/sound/vibrate), bell is muted");
 
         } else if (prefs.isShow()) {
 

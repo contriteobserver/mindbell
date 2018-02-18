@@ -220,13 +220,14 @@
     <string name="statusTitleBellMeditating">MindBell meditiert</string>
     <string name="statusTextBellMeditating">{0,choice,1#1 Minute|1&lt;{0} Minuten} bis {1}</string>
     <string name="statusActionRefreshStatus">Aktualisieren</string>
-    <string name="statusActionMuteFor">Nicht Erinnern für &#8230;</string>
+    <string name="statusActionMuteFor">Nicht erinnern für &#8230;</string>
 
     <!-- Reasons why bell is muted -->
     <string name="reasonMutedWithPhone">Kein Erinnern bei stillgestelltem Audiokanal</string>
     <string name="reasonMutedOffHook">Kein Erinnern während Telefonaten</string>
     <string name="reasonMutedInFlightMode">Kein Erinnern im Flugmodus</string>
-    <string name="reasonMutedTill">Kein Erinnern bis {0}</string>
+    <string name="reasonMutedTill">Nicht erinnern bis {0}</string>
+    <string name="reasonMutedDuringNighttime">Zurzeit kein Erinnern bis {0} {1}</string>
 
     <!-- Reasons why permission READ_PHONE_STATE should be granted -->
     <string name="reasonReadPhoneStateTitle">Wozu diese Berechtigung?</string>

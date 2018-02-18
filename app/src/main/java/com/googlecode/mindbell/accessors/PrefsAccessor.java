@@ -758,7 +758,7 @@ public class PrefsAccessor {
                 if (sb.length() > 0) {
                     sb.append(", ");
                 }
-                sb.append(weekdayAbbreviationEntries[dayOfWeekValueAsInteger - 1]); // add day to the list of active days
+                sb.append(getWeekdayAbbreviation(dayOfWeekValueAsInteger)); // add day to the list of active days
             }
         }
         return sb.toString();
@@ -771,6 +771,10 @@ public class PrefsAccessor {
             integers.add(Integer.valueOf(string));
         }
         return integers;
+    }
+
+    public String getWeekdayAbbreviation(int dayOfWeek) {
+        return weekdayAbbreviationEntries[dayOfWeek - 1];
     }
 
     /**
