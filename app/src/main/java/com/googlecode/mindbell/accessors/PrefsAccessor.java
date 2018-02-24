@@ -57,6 +57,7 @@ import static com.googlecode.mindbell.R.string.keyMeditationStartingTimeMillis;
 import static com.googlecode.mindbell.R.string.keyMeditationVolume;
 import static com.googlecode.mindbell.R.string.keyMuteInFlightMode;
 import static com.googlecode.mindbell.R.string.keyMuteOffHook;
+import static com.googlecode.mindbell.R.string.keyMuteWithAudioStream;
 import static com.googlecode.mindbell.R.string.keyMuteWithPhone;
 import static com.googlecode.mindbell.R.string.keyMutedTill;
 import static com.googlecode.mindbell.R.string.keyNoSoundOnMusic;
@@ -417,9 +418,10 @@ public class PrefsAccessor {
         addPreference(keyMeditationEndingTimeMillis, -1L, LONG, context);
         addPreference(keyMeditationInterruptingBell, "1", STRING, context);
         addPreference(keyMeditationStartingTimeMillis, -1L, LONG, context);
-        addPreference(keyMutedTill, -1L, LONG, context);
         addPreference(keyMuteInFlightMode, false, BOOLEAN, context);
         addPreference(keyMuteOffHook, true, BOOLEAN, context);
+        addPreference(keyMutedTill, -1L, LONG, context);
+        addPreference(keyMuteWithAudioStream, true, BOOLEAN, context);
         addPreference(keyMuteWithPhone, true, BOOLEAN, context);
         addPreference(keyNormalize, NORMALIZE_NONE, STRING, context);
         addPreference(keyNoSoundOnMusic, false, BOOLEAN, context);
@@ -924,6 +926,10 @@ public class PrefsAccessor {
 
     public boolean isMuteWithPhone() {
         return getBooleanSetting(keyMuteWithPhone);
+    }
+
+    public boolean isMuteWithAudioStream() {
+        return getBooleanSetting(keyMuteWithAudioStream);
     }
 
     public boolean isVibrate() {

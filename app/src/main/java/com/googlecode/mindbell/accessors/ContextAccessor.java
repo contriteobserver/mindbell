@@ -144,6 +144,8 @@ public class ContextAccessor implements AudioManager.OnAudioFocusChangeListener 
             reason = getReasonMutedTill();
         } else if (prefs.isMuteWithPhone() && isPhoneMuted()) { // Mute bell with phone?
             reason = getReasonMutedWithPhone();
+        } else if (prefs.isMuteWithAudioStream() && isAudioStreamMuted()) { // Mute bell with audio stream?
+            reason = getReasonMutedWithAudioStream();
         } else if (prefs.isMuteOffHook() && isPhoneOffHook()) { // Mute bell while phone is off hook (or ringing)?
             reason = getReasonMutedOffHook();
         } else if (prefs.isMuteInFlightMode() && isPhoneInFlightMode()) { // Mute bell while in flight mode?
@@ -164,11 +166,20 @@ public class ContextAccessor implements AudioManager.OnAudioFocusChangeListener 
 
     public boolean isPhoneMuted() {
         final AudioManager audioMan = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        return audioMan.getStreamVolume(prefs.getAudioStream()) == 0;
+        return audioMan.getStreamVolume(AudioManager.STREAM_RING) == 0;
     }
 
     protected String getReasonMutedWithPhone() {
         return context.getText(R.string.reasonMutedWithPhone).toString();
+    }
+
+    public boolean isAudioStreamMuted() {
+        final AudioManager audioMan = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        return audioMan.getStreamVolume(prefs.getAudioStream()) == 0;
+    }
+
+    protected String getReasonMutedWithAudioStream() {
+        return context.getText(R.string.reasonMutedWithAudioStream).toString();
     }
 
     public boolean isPhoneOffHook() {

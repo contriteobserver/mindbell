@@ -56,14 +56,17 @@ public class ContextAccessorMockTest {
         when(prefs.isMuteInFlightMode()).thenReturn(false);
         when(prefs.isMuteOffHook()).thenReturn(false);
         when(prefs.isMuteWithPhone()).thenReturn(false);
+        when(prefs.isMuteWithAudioStream()).thenReturn(false);
         when(prefs.getDaytimeStart()).thenReturn(new TimeOfDay(0, 0));
         when(prefs.getDaytimeEnd()).thenReturn(new TimeOfDay(0, 0));
-        when(prefs.getActiveOnDaysOfWeek()).thenReturn(new HashSet<>(Arrays.asList(new Integer[]{1, 2, 3, 4, 5, 6})));
+        when(prefs.getActiveOnDaysOfWeek()).thenReturn(new HashSet<>(Arrays.asList(new Integer[]{1, 2, 3, 4, 5, 6, 7})));
         Mockito.doReturn(false).when(ca).isPhoneMuted();
+        Mockito.doReturn(false).when(ca).isAudioStreamMuted();
         Mockito.doReturn(false).when(ca).isPhoneOffHook();
         Mockito.doReturn(false).when(ca).isPhoneInFlightMode();
         Mockito.doReturn("bell manually muted till hh:mm").when(ca).getReasonMutedTill();
         Mockito.doReturn("bell muted with phone").when(ca).getReasonMutedWithPhone();
+        Mockito.doReturn("bell muted with audio stream").when(ca).getReasonMutedWithAudioStream();
         Mockito.doReturn("bell muted during calls").when(ca).getReasonMutedOffHook();
         Mockito.doReturn("bell muted in flight mode").when(ca).getReasonMutedInFlightMode();
         Mockito.doReturn("bell muted during nighttime till dd hh:mm").when(ca).getReasonMutedDuringNighttime();
@@ -103,21 +106,40 @@ public class ContextAccessorMockTest {
     }
 
     @Test
-    public void testMuted_false1() {
+    public void testPhoneMuted_false1() {
         Mockito.doReturn(true).when(ca).isPhoneMuted();
         Assert.assertFalse(ca.isMuteRequested(true));
     }
 
     @Test
-    public void testMuted_false2() {
+    public void testPhoneMuted_false2() {
         when(prefs.isMuteWithPhone()).thenReturn(true);
         Assert.assertFalse(ca.isMuteRequested(false));
     }
 
     @Test
-    public void testMuted_true() {
+    public void testPhoneMuted_true() {
         Mockito.doReturn(true).when(ca).isPhoneMuted();
         when(prefs.isMuteWithPhone()).thenReturn(true);
+        Assert.assertTrue(ca.isMuteRequested(false));
+    }
+
+    @Test
+    public void testAudioStreamMuted_false1() {
+        Mockito.doReturn(true).when(ca).isAudioStreamMuted();
+        Assert.assertFalse(ca.isMuteRequested(true));
+    }
+
+    @Test
+    public void testAudioStreamMuted_false2() {
+        when(prefs.isMuteWithAudioStream()).thenReturn(true);
+        Assert.assertFalse(ca.isMuteRequested(false));
+    }
+
+    @Test
+    public void testAudioStreamMuted_true() {
+        Mockito.doReturn(true).when(ca).isAudioStreamMuted();
+        when(prefs.isMuteWithAudioStream()).thenReturn(true);
         Assert.assertTrue(ca.isMuteRequested(false));
     }
 

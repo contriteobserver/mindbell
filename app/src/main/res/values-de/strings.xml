@@ -36,9 +36,9 @@
     <string name="howToActivate">Wenn der Schalter oben an ist, erinnert MindBell regelmäßig im Laufe des Tages mit Anzeige, 
         Klang oder Vibration an unsere Achtsamkeitspraxis. Dann können wir kurz innehalten und uns bewusst werden, was wir gerade 
         tun, und in welchem Geisteszustand wir das angehen, was wir gerade tun.</string>
-    <string name="howToMute">MindBell erinnert nicht, wenn telefoniert wird oder der Audiokanal stillgestellt ist. Die Erinnerung 
-        kann auch vorübergehend abgestellt werden. Weitere Einstellungmöglichkeiten sind in den Einstellungen oder der Hilfe zu
-        finden.</string>
+    <string name="howToMute">MindBell erinnert nicht, wenn telefoniert wird oder Klingelton oder Audiokanal stillgestellt sind. Die
+        Erinnerung kann auch vorübergehend abgestellt werden. Weitere Einstellungmöglichkeiten sind in den Einstellungen oder der
+        Hilfe zu finden.</string>
     <string name="howToMeditate">Neben dem Schalter ist ein Knopf zum Starten des Meditationsmodus. Darin erklingt die Glocke nur
         zu Beginn und Ende der Meditation (oder der Meditationsabschnitte).</string>
 
@@ -131,9 +131,12 @@
     <string name="summaryDontDismissNotification">Benachrichtigung nach dem Erinnern stehen lassen (auch auf Wearables)</string>
 
     <string name="prefsCategoryMuteRules">Stillstellregeln</string>
-    <string name="prefsMuteWithPhone">Kein Erinnern, wenn still</string>
-    <string name="summaryMuteWithPhone">Bei stillgestelltem Audiokanal nicht erinnern</string>
-    <string name="summaryNoMuteWithPhone">Auch bei stillgestelltem Audiokanal erinnern</string>
+    <string name="prefsMuteWithPhone">Kein Erinnern, wenn Klingelton still</string>
+    <string name="summaryMuteWithPhone">Bei stillgestelltem Klingelton nicht erinnern</string>
+    <string name="summaryNoMuteWithPhone">Auch bei stillgestelltem Klingelton erinnern</string>
+    <string name="prefsMuteWithAudioStream">Kein Erinnern, wenn Audiokanal still</string>
+    <string name="summaryMuteWithAudioStream">Bei stillgestelltem Audiokanal nicht erinnern</string>
+    <string name="summaryNoMuteWithAudioStream">Auch bei stillgestelltem Audiokanal erinnern</string>
     <string name="prefsMuteOffHook">&constPrefsMuteOffHook;</string>
     <string name="summaryMuted">Während Telefongesprächen nicht erinnern</string>
     <string name="summaryNotMuted">Auch während Telefongesprächen erinnern</string>
@@ -223,11 +226,12 @@
     <string name="statusActionMuteFor">Nicht erinnern für &#8230;</string>
 
     <!-- Reasons why bell is muted -->
-    <string name="reasonMutedWithPhone">Kein Erinnern bei stillgestelltem Audiokanal</string>
-    <string name="reasonMutedOffHook">Kein Erinnern während Telefonaten</string>
-    <string name="reasonMutedInFlightMode">Kein Erinnern im Flugmodus</string>
-    <string name="reasonMutedTill">Nicht erinnern bis {0}</string>
     <string name="reasonMutedDuringNighttime">Zurzeit kein Erinnern bis {0} {1}</string>
+    <string name="reasonMutedInFlightMode">Kein Erinnern im Flugmodus</string>
+    <string name="reasonMutedOffHook">Kein Erinnern während Telefonaten</string>
+    <string name="reasonMutedTill">Nicht erinnern bis {0}</string>
+    <string name="reasonMutedWithAudioStream">Kein Erinnern bei stillgestelltem Audiokanal</string>
+    <string name="reasonMutedWithPhone">Kein Erinnern bei stillgestelltem Klingelton</string>
 
     <!-- Reasons why permission READ_PHONE_STATE should be granted -->
     <string name="reasonReadPhoneStateTitle">Wozu diese Berechtigung?</string>

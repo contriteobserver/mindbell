@@ -32,6 +32,11 @@
             android:summaryOn="@string/summaryMuteWithPhone"
             android:title="@string/prefsMuteWithPhone"/>
         <CheckBoxPreference
+            android:key="@string/keyMuteWithAudioStream"
+            android:summaryOff="@string/summaryNoMuteWithAudioStream"
+            android:summaryOn="@string/summaryMuteWithAudioStream"
+            android:title="@string/prefsMuteWithAudioStream"/>
+        <CheckBoxPreference
             android:key="@string/keyMuteOffHook"
             android:summaryOff="@string/summaryNotMuted"
             android:summaryOn="@string/summaryMuted"
