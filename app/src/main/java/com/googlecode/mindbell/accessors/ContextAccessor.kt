@@ -43,6 +43,7 @@ import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.EXTRA_MEDITATIO
 import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.EXTRA_NOW_TIME_MILLIS
 import com.googlecode.mindbell.logic.SchedulerLogic
 import com.googlecode.mindbell.util.AlarmManagerCompat
+import com.googlecode.mindbell.util.NotificationManagerCompatExtension
 import com.googlecode.mindbell.util.TimeOfDay
 import java.io.IOException
 import java.text.MessageFormat
@@ -195,7 +196,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
 
         // Update ring notification and vibrate on either phone or wearable
         if (activityPrefs.isNotification) {
-            updateRingNotification(activityPrefs)
+            updateReminderNotification(activityPrefs)
         }
 
         // Raise alarm volume to the max but keep the original volume for reset by finishBellSound() and start playing sound if
@@ -270,13 +271,21 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
     }
 
     /**
-     * This is about updating the ring notification when ringing the bell.
+     * This is about updating the reminder notification when executing reminder actions.
      */
-    fun updateRingNotification(activityPrefs: ActivityPrefsAccessor) {
+    fun updateReminderNotification(activityPrefs: ActivityPrefsAccessor) {
+
+        // Create notification channel
+        NotificationManagerCompatExtension.from(context).createNotificationChannel(REMINDER_NOTIFICATION_CHANNEL_ID, context
+                .getText(R.string.prefsCategoryRingNotification).toString(), context.getText(R.string.summaryNotification).toString())
+
+        // Derive visibility
         val visibility = if (prefs!!.isNotificationVisibilityPublic)
             NotificationCompat.VISIBILITY_PUBLIC
         else
             NotificationCompat.VISIBILITY_PRIVATE
+
+        // Now do the notification update
         val notificationBuilder = NotificationCompat.Builder(context.applicationContext) //
                 .setCategory(NotificationCompat.CATEGORY_ALARM) //
                 .setAutoCancel(true) // cancel notification on touch
@@ -581,12 +590,17 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
                     prefs!!.daytimeEnd.getDisplayString(context), //
                     prefs!!.activeOnDaysOfWeekString)
         }
+
+        // Create notification channel
+        NotificationManagerCompatExtension.from(context).createNotificationChannel(STATUS_NOTIFICATION_CHANNEL_ID, context
+                .getText(R.string.prefsCategoryStatusNotification).toString(), context.getText(R.string.summaryStatus).toString())
+
         // Now do the notification update
         MindBell.logInfo("Update status notification: " + contentText)
         val openAppIntent = PendingIntent.getActivity(context, 0, Intent(context, targetClass), PendingIntent.FLAG_UPDATE_CURRENT)
         val muteIntent = PendingIntent.getActivity(context, 2, Intent(context, MuteActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT)
         val visibility = if (prefs!!.isStatusVisibilityPublic) NotificationCompat.VISIBILITY_PUBLIC else NotificationCompat.VISIBILITY_PRIVATE
-        val notificationBuilder = NotificationCompat.Builder(context.applicationContext) //
+        val notificationBuilder = NotificationCompat.Builder(context.applicationContext, STATUS_NOTIFICATION_CHANNEL_ID) //
                 .setCategory(NotificationCompat.CATEGORY_STATUS) //
                 .setColor(context.resources.getColor(R.color.backgroundColor)) //
                 .setContentTitle(contentTitle) //
@@ -641,9 +655,9 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
 
     companion object {
 
-        val MINUS_ONE_DB = 0.891250938f
+        private val REMINDER_NOTIFICATION_CHANNEL_ID = "${BuildConfig.APPLICATION_ID}.reminder"
 
-        val MINUS_THREE_DB = 0.707945784f
+        private val STATUS_NOTIFICATION_CHANNEL_ID = "${BuildConfig.APPLICATION_ID}.status"
 
         private val STATUS_NOTIFICATION_ID = 0x7f030001 // historically, has been R.layout.bell for a long time
 
@@ -654,8 +668,6 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
         private val UPDATE_STATUS_NOTIFICATION_REQUEST_CODE = 1
 
         private val UPDATE_STATUS_NOTIFICATION_MUTED_TILL_REQUEST_CODE = 2
-
-        private val UPDATE_STATUS_NOTIFICATION_START_REQUEST_CODE = 3
 
         private val UPDATE_STATUS_NOTIFICATION_DAY_NIGHT_REQUEST_CODE = 4
 
