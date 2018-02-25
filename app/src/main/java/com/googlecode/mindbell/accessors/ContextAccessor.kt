@@ -50,15 +50,17 @@ import java.text.MessageFormat
 import java.util.*
 
 class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
+
     // ApplicationContext of MindBell
     private val context: Context
+
     // Accessor to all preferences
-    var prefs: PrefsAccessor? = null
-        protected set
+    var prefs: PrefsAccessor
+        private set
 
     val reasonMutedTill: String
         get() {
-            val mutedTill = TimeOfDay(prefs!!.mutedTill)
+            val mutedTill = TimeOfDay(prefs.mutedTill)
             return MessageFormat.format(context.getText(R.string.reasonMutedTill).toString(), mutedTill.getDisplayString(context))
         }
 
@@ -74,7 +76,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
     val isAudioStreamMuted: Boolean
         get() {
             val audioMan = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            return audioMan.getStreamVolume(prefs!!.audioStream) == 0
+            return audioMan.getStreamVolume(prefs.audioStream) == 0
         }
 
     val reasonMutedWithAudioStream: String
@@ -98,9 +100,9 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
     val reasonMutedDuringNighttime: String
         get() {
             val nextStartTime = TimeOfDay(
-                    SchedulerLogic.getNextDaytimeStartInMillis(Calendar.getInstance().timeInMillis, prefs!!.daytimeStart,
-                            prefs!!.activeOnDaysOfWeek))
-            val weekdayAbbreviation = prefs!!.getWeekdayAbbreviation(nextStartTime.weekday!!)
+                    SchedulerLogic.getNextDaytimeStartInMillis(Calendar.getInstance().timeInMillis, prefs.daytimeStart,
+                            prefs.activeOnDaysOfWeek))
+            val weekdayAbbreviation = prefs.getWeekdayAbbreviation(nextStartTime.weekday!!)
             return MessageFormat.format(context.getText(R.string.reasonMutedDuringNighttime).toString(), weekdayAbbreviation,
                     nextStartTime.getDisplayString(context))
         }
@@ -145,26 +147,26 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
     /**
      * Return whether bell should be muted and show reason message if shouldShowMessage is true.
      */
-    fun isMuteRequested(shouldShowMessage: Boolean): Boolean { // FIXME dkn Always called with true
+    fun isMuteRequested(shouldShowMessage: Boolean): Boolean {
         return getMuteRequestReason(shouldShowMessage) != null
     }
 
     /**
      * Check whether bell should be muted, show reason if requested, and return reason, null otherwise.
      */
-    fun getMuteRequestReason(shouldShowMessage: Boolean): String? {
+    private fun getMuteRequestReason(shouldShowMessage: Boolean): String? {
         var reason: String? = null
-        if (System.currentTimeMillis() < prefs!!.mutedTill) { // Muted manually?
+        if (System.currentTimeMillis() < prefs.mutedTill) { // Muted manually?
             reason = reasonMutedTill
-        } else if (prefs!!.isMuteWithPhone && isPhoneMuted) { // Mute bell with phone?
+        } else if (prefs.isMuteWithPhone && isPhoneMuted) { // Mute bell with phone?
             reason = reasonMutedWithPhone
-        } else if (prefs!!.isMuteWithAudioStream && isAudioStreamMuted) { // Mute bell with audio stream?
+        } else if (prefs.isMuteWithAudioStream && isAudioStreamMuted) { // Mute bell with audio stream?
             reason = reasonMutedWithAudioStream
-        } else if (prefs!!.isMuteOffHook && isPhoneOffHook) { // Mute bell while phone is off hook (or ringing)?
+        } else if (prefs.isMuteOffHook && isPhoneOffHook) { // Mute bell while phone is off hook (or ringing)?
             reason = reasonMutedOffHook
-        } else if (prefs!!.isMuteInFlightMode && isPhoneInFlightMode) { // Mute bell while in flight mode?
+        } else if (prefs.isMuteInFlightMode && isPhoneInFlightMode) { // Mute bell while in flight mode?
             reason = reasonMutedInFlightMode
-        } else if (!TimeOfDay().isDaytime(prefs!!)) { // Always mute bell during nighttime
+        } else if (!TimeOfDay().isDaytime(prefs)) { // Always mute bell during nighttime
             reason = reasonMutedDuringNighttime
         }
         if (reason != null && shouldShowMessage) {
@@ -173,7 +175,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
         return reason
     }
 
-    fun showMessage(message: String) {
+    private fun showMessage(message: String) {
         MindBell.logDebug(message)
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
@@ -241,7 +243,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
             mediaPlayer!!.release()
             mediaPlayer = null
             MindBell.logDebug("Reference to MediaPlayer released")
-            if (prefs!!.isPauseAudioOnSound) {
+            if (prefs.isPauseAudioOnSound) {
                 if (audioManager!!.abandonAudioFocus(this) == AUDIOFOCUS_REQUEST_FAILED) {
                     MindBell.logDebug("Abandon of audio focus failed")
                 } else {
@@ -250,10 +252,10 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
             }
         }
         // Reset volume to originalVolume if it has been set before (does not equal -1)
-        if (prefs!!.isUseAudioStreamVolumeSetting) { // we don't care about setting the volume
+        if (prefs.isUseAudioStreamVolumeSetting) { // we don't care about setting the volume
             MindBell.logDebug("Finish bell sound found without touching audio stream volume")
         } else {
-            val originalVolume = prefs!!.originalVolume
+            val originalVolume = prefs.originalVolume
             if (originalVolume < 0) {
                 MindBell.logDebug("Finish bell sound found originalVolume $originalVolume, alarm volume left untouched")
             } else {
@@ -265,7 +267,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
                     MindBell.logDebug("Finish bell sound found originalVolume $originalVolume, setting alarm volume to it")
                     alarmVolume = originalVolume
                 }
-                prefs!!.resetOriginalVolume() // no longer needed therefore invalidate it
+                prefs.resetOriginalVolume() // no longer needed therefore invalidate it
             }
         }
     }
@@ -280,7 +282,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
                 .getText(R.string.prefsCategoryRingNotification).toString(), context.getText(R.string.summaryNotification).toString())
 
         // Derive visibility
-        val visibility = if (prefs!!.isNotificationVisibilityPublic)
+        val visibility = if (prefs.isNotificationVisibilityPublic)
             NotificationCompat.VISIBILITY_PUBLIC
         else
             NotificationCompat.VISIBILITY_PRIVATE
@@ -290,11 +292,11 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
                 .setCategory(NotificationCompat.CATEGORY_ALARM) //
                 .setAutoCancel(true) // cancel notification on touch
                 .setColor(context.resources.getColor(R.color.backgroundColor)) //
-                .setContentTitle(prefs!!.notificationTitle) //
-                .setContentText(prefs!!.notificationText).setSmallIcon(R.drawable.ic_stat_bell_ring) //
+                .setContentTitle(prefs.notificationTitle) //
+                .setContentText(prefs.notificationText).setSmallIcon(R.drawable.ic_stat_bell_ring) //
                 .setVisibility(visibility)
         if (activityPrefs.isVibrate) {
-            notificationBuilder.setVibrate(prefs!!.vibrationPattern)
+            notificationBuilder.setVibrate(prefs.vibrationPattern)
         }
         val notification = notificationBuilder.build()
         NotificationManagerCompat.from(context).notify(RING_NOTIFICATION_ID, notification)
@@ -307,21 +309,21 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
     private fun startPlayingSound(activityPrefs: ActivityPrefsAccessor, runWhenDone: Runnable?): Boolean {
         val bellUri = activityPrefs.getSoundUri(context)
         audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        if (prefs!!.isNoSoundOnMusic && audioManager!!.isMusicActive) {
+        if (prefs.isNoSoundOnMusic && audioManager!!.isMusicActive) {
             MindBell.logDebug("Sound suppressed because setting is no sound on music and music is playing")
             return false
         } else if (bellUri == null) {
             MindBell.logDebug("Sound suppressed because no sound has been set")
             return false
-        } else if (prefs!!.isPauseAudioOnSound) {
-            val requestResult = audioManager!!.requestAudioFocus(this, prefs!!.audioStream, retrieveDurationHint())
+        } else if (prefs.isPauseAudioOnSound) {
+            val requestResult = audioManager!!.requestAudioFocus(this, prefs.audioStream, retrieveDurationHint())
             if (requestResult == AUDIOFOCUS_REQUEST_FAILED) {
                 MindBell.logDebug("Sound suppressed because setting is pause audio on sound and request of audio focus failed")
                 return false
             }
             MindBell.logDebug("Audio focus successfully requested")
         }
-        if (prefs!!.isUseAudioStreamVolumeSetting) { // we don't care about setting the volume
+        if (prefs.isUseAudioStreamVolumeSetting) { // we don't care about setting the volume
             MindBell.logDebug("Start playing sound without touching audio stream volume")
         } else {
             val originalVolume = alarmVolume
@@ -333,12 +335,12 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
                 MindBell.logDebug(
                         "Start playing sound found and stored originalVolume $originalVolume, setting alarm volume to max")
                 alarmVolume = alarmMaxVolume
-                prefs!!.originalVolume = originalVolume
+                prefs.originalVolume = originalVolume
             }
         }
         mediaPlayer = MediaPlayer()
-        mediaPlayer!!.setAudioStreamType(prefs!!.audioStream)
-        if (!prefs!!.isUseAudioStreamVolumeSetting) { // care about setting the volume
+        mediaPlayer!!.setAudioStreamType(prefs.audioStream)
+        if (!prefs.isUseAudioStreamVolumeSetting) { // care about setting the volume
             val bellVolume = activityPrefs.volume
             mediaPlayer!!.setVolume(bellVolume, bellVolume)
         }
@@ -346,7 +348,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
             try {
                 mediaPlayer!!.setDataSource(context, bellUri)
             } catch (e: IOException) { // probably because of withdrawn permissions, hence use default bell
-                mediaPlayer!!.setDataSource(context, prefs!!.getDefaultReminderBellSoundUri(context)!!)
+                mediaPlayer!!.setDataSource(context, prefs.getDefaultReminderBellSoundUri(context)!!)
             }
 
             mediaPlayer!!.prepare()
@@ -369,7 +371,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
      */
     private fun startVibration() {
         val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        vibrator.vibrate(prefs!!.vibrationPattern, -1)
+        vibrator.vibrate(prefs.vibrationPattern, -1)
     }
 
     /**
@@ -427,7 +429,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
      * Schedule an update status notification for the start or the end of the active period.
      */
     fun scheduleUpdateStatusNotificationDayNight() {
-        val targetTimeMillis = SchedulerLogic.getNextDayNightChangeInMillis(Calendar.getInstance().timeInMillis, prefs!!)
+        val targetTimeMillis = SchedulerLogic.getNextDayNightChangeInMillis(Calendar.getInstance().timeInMillis, prefs)
         scheduleUpdateStatusNotification(targetTimeMillis, UPDATE_STATUS_NOTIFICATION_DAY_NIGHT_REQUEST_CODE, "day-night")
     }
 
@@ -465,7 +467,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
         val sender = createRefreshBroadcastIntent(requestCode)
         val alarmManager = AlarmManagerCompat(context)
         alarmManager.cancel(sender) // cancel old alarm, it has either gone away or became obsolete
-        if (prefs!!.isActive) {
+        if (prefs.isActive) {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, targetTimeMillis, sender)
             val scheduledTime = TimeOfDay(targetTimeMillis)
             MindBell.logDebug("Update status notification scheduled for " + scheduledTime.logString + " (" + info + ")")
@@ -543,7 +545,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
      * This is about updating the status notification on changes in system settings.
      */
     fun updateStatusNotification() {
-        if (!prefs!!.isActive && !prefs!!.isMeditating || !prefs!!.isStatus) {// bell inactive or no notification wanted?
+        if (!prefs.isActive && !prefs.isMeditating || !prefs.isStatus) {// bell inactive or no notification wanted?
             MindBell.logInfo("Remove status notification because of inactive and non-meditating bell or unwanted status notification")
             removeStatusNotification()
             return
@@ -551,7 +553,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
         // Choose material design or pre material design status icons
         val bellActiveDrawable: Int
         val bellActiveButMutedDrawable: Int
-        if (prefs!!.useStatusIconMaterialDesign()) {
+        if (prefs.useStatusIconMaterialDesign()) {
             bellActiveDrawable = R.drawable.ic_stat_bell_active
             bellActiveButMutedDrawable = R.drawable.ic_stat_bell_active_but_muted
         } else {
@@ -565,7 +567,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
         val muteRequestReason = getMuteRequestReason(false)
         var targetClass: Class<*> = MindBellMain::class.java
         // Override icon and notification text if bell is muted or permissions are insufficient
-        if (!canSettingsBeSatisfied(prefs!!)) { // Insufficient permissions => override icon/text, switch notifications off
+        if (!canSettingsBeSatisfied(prefs)) { // Insufficient permissions => override icon/text, switch notifications off
             statusDrawable = R.drawable.ic_warning_white_24dp
             contentTitle = context.getText(R.string.statusTitleNotificationsDisabled)
             contentText = context.getText(R.string.statusTextNotificationsDisabled).toString()
@@ -574,21 +576,21 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
             // listen to phone state changes. Therefore we switch off notification and ask user for permission when he tries
             // to enable notification again. In this very moment we cannot ask for permission to avoid an ANR in receiver
             // UpdateStatusNotification.
-            prefs!!.isStatus = false
-        } else if (prefs!!.isMeditating) {// Bell meditation => override icon and notification text
+            prefs.isStatus = false
+        } else if (prefs.isMeditating) {// Bell meditation => override icon and notification text
             statusDrawable = R.drawable.ic_stat_bell_meditating
             contentTitle = context.getText(R.string.statusTitleBellMeditating)
             contentText = MessageFormat.format(context.getText(R.string.statusTextBellMeditating).toString(), //
-                    prefs!!.meditationDuration.interval, //
-                    TimeOfDay(prefs!!.meditationEndingTimeMillis).getDisplayString(context))
+                    prefs.meditationDuration.interval, //
+                    TimeOfDay(prefs.meditationEndingTimeMillis).getDisplayString(context))
         } else if (muteRequestReason != null) { // Bell muted => override icon and notification text
             statusDrawable = bellActiveButMutedDrawable
             contentText = muteRequestReason
         } else { // enrich standard notification by times and days
             contentText = MessageFormat.format(context.getText(R.string.statusTextBellActive).toString(), //
-                    prefs!!.daytimeStart.getDisplayString(context), //
-                    prefs!!.daytimeEnd.getDisplayString(context), //
-                    prefs!!.activeOnDaysOfWeekString)
+                    prefs.daytimeStart.getDisplayString(context), //
+                    prefs.daytimeEnd.getDisplayString(context), //
+                    prefs.activeOnDaysOfWeekString)
         }
 
         // Create notification channel
@@ -599,7 +601,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
         MindBell.logInfo("Update status notification: " + contentText)
         val openAppIntent = PendingIntent.getActivity(context, 0, Intent(context, targetClass), PendingIntent.FLAG_UPDATE_CURRENT)
         val muteIntent = PendingIntent.getActivity(context, 2, Intent(context, MuteActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT)
-        val visibility = if (prefs!!.isStatusVisibilityPublic) NotificationCompat.VISIBILITY_PUBLIC else NotificationCompat.VISIBILITY_PRIVATE
+        val visibility = if (prefs.isStatusVisibilityPublic) NotificationCompat.VISIBILITY_PUBLIC else NotificationCompat.VISIBILITY_PRIVATE
         val notificationBuilder = NotificationCompat.Builder(context.applicationContext, STATUS_NOTIFICATION_CHANNEL_ID) //
                 .setCategory(NotificationCompat.CATEGORY_STATUS) //
                 .setColor(context.resources.getColor(R.color.backgroundColor)) //
@@ -609,7 +611,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
                 .setOngoing(true) // ongoing is *not* shown on wearable
                 .setSmallIcon(statusDrawable) //
                 .setVisibility(visibility)
-        if (!prefs!!.isMeditating) {
+        if (!prefs.isMeditating) {
             // Do not allow other actions than stopping meditation while meditating
             notificationBuilder //
                     .addAction(R.drawable.ic_action_refresh_status, context.getText(R.string.statusActionRefreshStatus),

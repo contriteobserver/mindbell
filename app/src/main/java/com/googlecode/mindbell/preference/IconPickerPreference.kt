@@ -26,15 +26,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.RadioButton
-import android.widget.TextView
 import com.googlecode.mindbell.R
-import java.util.*
 import kotlinx.android.synthetic.main.icon_picker_preference.view.*
-import kotlinx.android.synthetic.main.icon_picker_preference.*
 import kotlinx.android.synthetic.main.icon_picker_preference_item.view.*
-import kotlinx.android.synthetic.main.icon_picker_preference_item.*
+import java.util.*
 
 /**
  * Idea taken from https://stackoverflow.com/a/32226553
@@ -45,13 +40,12 @@ import kotlinx.android.synthetic.main.icon_picker_preference_item.*
 
 class IconPickerPreference(context: Context, attrs: AttributeSet) : ListPreferenceWithSummaryFix(context, attrs) {
 
-    private lateinit var iconItemList: MutableList<IconItem>
+    // The view bound to this preference in onBindView()
+    private lateinit var view: View
+
+    private var iconItemList: MutableList<IconItem>
 
     private var currentIndex = 0 // default value if android:defaultValue is not set
-
-    private var mageViewSelectedIcon: ImageView? = null
-
-    private var textViewSummary: TextView? = null
 
     init {
 
@@ -65,8 +59,7 @@ class IconPickerPreference(context: Context, attrs: AttributeSet) : ListPreferen
 
         iconItemList = ArrayList()
         for (i in iconTextArray.indices) {
-            val item = IconItem(iconTextArray[i], iconFilenameArray[i], false)
-            iconItemList.add(item)
+            iconItemList.add(IconItem(iconTextArray[i], iconFilenameArray[i], false))
         }
     }
 
@@ -76,7 +69,7 @@ class IconPickerPreference(context: Context, attrs: AttributeSet) : ListPreferen
 
     override fun onBindView(view: View) {
         super.onBindView(view)
-
+        this.view = view
         updateSummary()
     }
 
@@ -84,40 +77,35 @@ class IconPickerPreference(context: Context, attrs: AttributeSet) : ListPreferen
      * Update summary shown in the preference page. This includes a summary text and the chosen icon.
      */
     private fun updateSummary() {
-        val selectedIconItem = iconItemList!![currentIndex]
+        val selectedIconItem = iconItemList[currentIndex]
         val identifier = context.resources.getIdentifier(selectedIconItem.iconFilename, "drawable", context.packageName)
-        mageViewSelectedIcon!!.setImageResource(identifier)
-        textViewSummary!!.text = selectedIconItem.iconText
+        view.imageViewSelectedIcon.setImageResource(identifier)
+        view.textViewSummary.text = selectedIconItem.iconText
     }
 
     override fun onDialogClosed(positiveResult: Boolean) {
         super.onDialogClosed(positiveResult)
-        if (iconItemList != null) {
-            for (i in iconItemList.indices) {
-                val item = iconItemList[i]
-                if (item.isChecked) {
-                    persistString(i.toString())
-                    currentIndex = i
-                    updateSummary()
-                    break
-                }
+        for (i in iconItemList.indices) {
+            val item = iconItemList[i]
+            if (item.isChecked) {
+                persistString(i.toString())
+                currentIndex = i
+                updateSummary()
+                break
             }
         }
     }
 
     override fun onSetInitialValue(restoreValue: Boolean, defaultValue: Any?) {
-        var newValue: String? = null
-        if (restoreValue) {
-            if (defaultValue == null) {
-                newValue = getPersistedString("0")
-            } else {
-                newValue = getPersistedString(defaultValue.toString())
-            }
-        } else {
-            newValue = defaultValue!!.toString()
-        }
+        val effectiveDefaultValue = defaultValue?.toString() ?: "0"
+        var newValue: String =
+                if (restoreValue) {
+                    getPersistedString(effectiveDefaultValue)
+                } else {
+                    effectiveDefaultValue
+                }
         currentIndex = Integer.parseInt(newValue)
-        iconItemList!![currentIndex].isChecked = true
+        iconItemList[currentIndex].isChecked = true
     }
 
     override fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
@@ -131,34 +119,29 @@ class IconPickerPreference(context: Context, attrs: AttributeSet) : ListPreferen
         : ArrayAdapter<IconItem>(context, resource, objects) {
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            var view = convertView ?: LayoutInflater.from(context).inflate(resource, parent, false)
+            val itemView = convertView ?: LayoutInflater.from(context).inflate(resource, parent, false)
             val iconItem = getItem(position)
-            view.iconText.text = iconItem!!.iconText
+            itemView.iconText.text = iconItem!!.iconText
             val identifier = context.resources.getIdentifier(iconItem.iconFilename, "drawable", context.packageName)
-            view.iconImage.setImageResource(identifier)
-            view.iconRadio.isChecked = iconItem.isChecked
+            itemView.iconImage.setImageResource(identifier)
+            itemView.iconRadio.isChecked = iconItem.isChecked
 
-            view.setOnClickListener {
+            itemView.setOnClickListener {
                 for (i in 0 until count) {
                     getItem(i)!!.isChecked = i == position
                 }
                 dialog.dismiss()
             }
 
-            return view
+            return itemView
         }
     }
 
     private inner class IconItem(iconText: CharSequence, iconFilename: CharSequence, var isChecked: Boolean) {
 
-        val iconText: String
+        val iconText: String = iconText.toString()
 
-        val iconFilename: String
-
-        init {
-            this.iconText = iconText.toString()
-            this.iconFilename = iconFilename.toString()
-        }
+        val iconFilename: String = iconFilename.toString()
 
     }
 

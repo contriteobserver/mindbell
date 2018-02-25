@@ -19,14 +19,15 @@
  */
 package com.googlecode.mindbell.accessors
 
+import android.support.test.InstrumentationRegistry
+import android.support.test.runner.AndroidJUnit4
 import android.test.AndroidTestCase
 import android.test.RenamingDelegatingContext
-import android.test.suitebuilder.annotation.SmallTest
+import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-@SmallTest
 class ContextAccessorTest : AndroidTestCase() {
 
     @Test
@@ -34,7 +35,7 @@ class ContextAccessorTest : AndroidTestCase() {
         // setup
         val ca = createContextAccessor()
         val prefs = ca.prefs
-        prefs!!.resetOriginalVolume()
+        prefs.resetOriginalVolume()
         // exercise
         ca.startPlayingSoundAndVibrate(prefs.forRegularOperation(), null)
         // verify ... be sure to have sound checked as an activity on your emulated device
@@ -53,11 +54,11 @@ class ContextAccessorTest : AndroidTestCase() {
     fun testFinish() {
         // setup
         val ca = createContextAccessor()
-        ca.prefs!!.resetOriginalVolume()
+        ca.prefs.resetOriginalVolume()
         ca.alarmVolume = ca.alarmMaxVolume / 2
         val alarmVolume = ca.alarmVolume
         // exercise
-        ca.startPlayingSoundAndVibrate(ca.prefs!!.forRegularOperation(), null)
+        ca.startPlayingSoundAndVibrate(ca.prefs.forRegularOperation(), null)
         ca.finishBellSound()
         // verify
         Assert.assertFalse(ca.isBellSoundPlaying)
@@ -68,10 +69,10 @@ class ContextAccessorTest : AndroidTestCase() {
     fun testOriginalVolume() {
         // setup
         val ca = createContextAccessor()
-        ca.prefs!!.resetOriginalVolume()
+        ca.prefs.resetOriginalVolume()
         val originalVolume = ca.alarmVolume
         // exercise
-        ca.startPlayingSoundAndVibrate(ca.prefs!!.forRegularOperation(), null)
+        ca.startPlayingSoundAndVibrate(ca.prefs.forRegularOperation(), null)
         ca.finishBellSound()
         // verify
         Assert.assertEquals(originalVolume, ca.alarmVolume)
@@ -82,7 +83,7 @@ class ContextAccessorTest : AndroidTestCase() {
         // setup
         val ca = createContextAccessor()
         // exercise
-        ca.startPlayingSoundAndVibrate(ca.prefs!!.forRegularOperation(), null)
+        ca.startPlayingSoundAndVibrate(ca.prefs.forRegularOperation(), null)
         // verify ... be sure to have sound checked as an activity on your emulated device
         Assert.assertTrue(ca.isBellSoundPlaying)
     }

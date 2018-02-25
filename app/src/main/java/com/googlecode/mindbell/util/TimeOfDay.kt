@@ -320,8 +320,8 @@ class TimeOfDay {
         }
 
         /**
-         * The hh:mm-TimeOfDay, as provided by an interval given in minute, or the mm:ss-TimeOfDay, as provided by an interval given in
-         * seconds.
+         * The hh:mm-TimeOfDay, as provided by an interval given in minutes, or the mm:ss-TimeOfDay, as provided by an interval
+         * given in seconds.
          */
         fun fromSecondsInterval(interval: Int): TimeOfDay {
             return TimeOfDay(interval / 60, interval % 60)

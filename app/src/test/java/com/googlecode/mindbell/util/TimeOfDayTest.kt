@@ -569,7 +569,7 @@ class TimeOfDayTest {
 
     @Test
     fun testFromMillisecondsInterval() {
-        for (min in 0..1439) {
+        for (min in 0 until 24 * 60 - 1) {
             val time = TimeOfDay.fromMillisecondsInterval(min * PrefsAccessor.ONE_MINUTE_MILLIS)
             assertEquals(min, time.interval)
         }
@@ -577,7 +577,7 @@ class TimeOfDayTest {
 
     @Test
     fun testfromSecondsInterval() {
-        for (s in 0 until s * 60 * 60) {
+        for (s in 0 until 24 * 60 - 1) {
             val time = TimeOfDay.fromSecondsInterval(s)
             assertEquals(s, time.interval)
         }

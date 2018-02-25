@@ -18,6 +18,12 @@
  */
 package com.googlecode.mindbell.accessors
 
+import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.ONE_MINUTE_MILLIS
+import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION
+import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.ONE_MINUTE_MILLIS_NEGATIVE_PERIOD
+import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.ONE_MINUTE_MILLIS_PERIOD_NOT_EXISTING
+import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.ONE_MINUTE_MILLIS_PERIOD_TOO_SHORT
+import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.ONE_MINUTE_MILLIS_VARIABLE_PERIOD_MISSING
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test

@@ -25,7 +25,7 @@ import org.junit.Test
 
 class VolumeConverterTest {
 
-    internal var c: VolumeConverter
+    lateinit var c: VolumeConverter
 
     @Before
     fun setUp() {

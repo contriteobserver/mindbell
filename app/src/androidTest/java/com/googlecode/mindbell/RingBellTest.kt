@@ -21,8 +21,9 @@ package com.googlecode.mindbell
 
 import android.content.Context
 import android.preference.PreferenceManager
+import android.support.test.InstrumentationRegistry
+import android.support.test.runner.AndroidJUnit4
 import android.test.RenamingDelegatingContext
-import android.test.suitebuilder.annotation.SmallTest
 import com.googlecode.mindbell.accessors.ContextAccessor
 import org.junit.After
 import org.junit.Assert.*
@@ -32,19 +33,13 @@ import org.junit.runner.RunWith
 import java.util.*
 
 @RunWith(AndroidJUnit4::class)
-@SmallTest
 class RingBellTest {
 
     private val booleanSettings = HashMap<String, Boolean>()
-    private val dummyRunnable = Runnable { }
-    private var context: Context? = null
-
-    private fun setContextMuteInFlightMode(value: Boolean) {
-        setBooleanContext(R.string.keyMuteInFlightMode, value)
-    }
+    lateinit private var context: Context
 
     private fun setBooleanContext(keyID: Int, value: Boolean) {
-        val key = context!!.getString(keyID)
+        val key = context.getString(keyID)
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
         // Log.d(MindBellPreferences.LOGTAG, "The following settings are in the shared prefs:");
         // for (Entry<String, ?> k : sp.getAll().entrySet()) {
@@ -55,9 +50,9 @@ class RingBellTest {
                 val orig = sp.getBoolean(key, value)
                 // Log.d(MindBellPreferences.LOGTAG, "Remembering setting: " + key + " == " + orig);
                 booleanSettings.put(key, orig)
-            } else {
+//            } else {
                 // Log.d(MindBellPreferences.LOGTAG, "Remembering that setting was unset: " + key);
-                booleanSettings.put(key, null)
+//                booleanSettings.put(key, null)
             }
         }
         val spe = sp.edit()
@@ -96,7 +91,7 @@ class RingBellTest {
         // exercise
         val ca = ContextAccessor.getInstance(context)
         // verify
-        assertFalse(ca.prefs!!.isMuteOffHook)
+        assertFalse(ca.prefs.isMuteOffHook)
     }
 
     private fun setContextMuteOffHook(value: Boolean) {
@@ -110,7 +105,7 @@ class RingBellTest {
         // exercise
         val ca = ContextAccessor.getInstance(context)
         // verify
-        assertTrue(ca.prefs!!.isMuteOffHook)
+        assertTrue(ca.prefs.isMuteOffHook)
     }
 
     @Test
@@ -120,7 +115,7 @@ class RingBellTest {
         // exercise
         val ca = ContextAccessor.getInstance(context)
         // verify
-        assertFalse(ca.prefs!!.isMuteWithPhone)
+        assertFalse(ca.prefs.isMuteWithPhone)
     }
 
     private fun setContextMuteWithPhone(value: Boolean) {
@@ -134,7 +129,7 @@ class RingBellTest {
         // exercise
         val ca = ContextAccessor.getInstance(context)
         // verify
-        assertTrue(ca.prefs!!.isMuteWithPhone)
+        assertTrue(ca.prefs.isMuteWithPhone)
     }
 
     @Test
