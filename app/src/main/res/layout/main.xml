@@ -37,7 +37,7 @@
             android:gravity="right">
 
             <ImageView
-                android:id="@+id/hideIntro"
+                android:id="@+id/imageViewHideIntro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
@@ -45,10 +45,10 @@
                 android:src="@drawable/ic_expand_less_white_24dp"/>
 
             <TextView
-                android:id="@+id/howToMeditate"
+                android:id="@+id/textViewHowToMeditate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@id/hideIntro"
+                android:layout_above="@id/imageViewHideIntro"
                 android:background="@color/backgroundColorDark"
                 android:paddingBottom="0dp"
                 android:paddingLeft="5dp"
@@ -58,20 +58,20 @@
                 android:textColor="@color/textColor"/>
 
             <TextView
-                android:id="@+id/howToMute"
+                android:id="@+id/textViewHowToMute"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@id/howToMeditate"
+                android:layout_above="@id/textViewHowToMeditate"
                 android:background="@color/backgroundColorDark"
                 android:padding="5dp"
                 android:text="@string/howToMute"
                 android:textColor="@color/textColor"/>
 
             <TextView
-                android:id="@+id/howToActivateExpanded"
+                android:id="@+id/textViewHowToActivateExpanded"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@id/howToMute"
+                android:layout_above="@id/textViewHowToMute"
                 android:background="@color/backgroundColorDark"
                 android:paddingBottom="5dp"
                 android:paddingLeft="5dp"
@@ -81,10 +81,10 @@
                 android:textColor="@color/textColor"/>
 
             <ImageView
-                android:id="@+id/ringOnceBellExpanded"
+                android:id="@+id/imageViewRingOnceBellExpanded"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_above="@id/howToActivateExpanded"
+                android:layout_above="@id/textViewHowToActivateExpanded"
                 android:paddingBottom="5dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/bell"/>
@@ -101,7 +101,7 @@
             android:gravity="right">
 
             <ImageView
-                android:id="@+id/showIntro"
+                android:id="@+id/imageViewShowIntro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
@@ -109,10 +109,10 @@
                 android:src="@drawable/ic_expand_more_white_24dp"/>
 
             <TextView
-                android:id="@+id/howToActivateCollapsed"
+                android:id="@+id/textViewHowToActivateCollapsed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@id/showIntro"
+                android:layout_above="@id/imageViewShowIntro"
                 android:background="@color/backgroundColorDark"
                 android:paddingBottom="0dp"
                 android:paddingLeft="5dp"
@@ -122,19 +122,19 @@
                 android:textColor="@color/textColor"/>
 
             <ImageView
-                android:id="@+id/ringOncePlayCollapsed"
+                android:id="@+id/imageViewRingOncePlayCollapsed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@id/howToActivateCollapsed"
+                android:layout_above="@id/textViewHowToActivateCollapsed"
                 android:layout_centerHorizontal="true"
                 android:paddingBottom="5dp"
                 android:src="@drawable/ic_play_arrow_white_24dp"/>
 
             <ImageView
-                android:id="@+id/ringOnceBellCollapsed"
+                android:id="@+id/imageViewRingOnceBellCollapsed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_above="@id/ringOncePlayCollapsed"
+                android:layout_above="@id/imageViewRingOncePlayCollapsed"
                 android:scaleType="centerInside"
                 android:src="@drawable/bell"/>
 

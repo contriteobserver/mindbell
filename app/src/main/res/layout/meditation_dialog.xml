@@ -29,11 +29,11 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/label_rampUpTime"
+            android:id="@+id/textViewRampUpTimeLabel"
             style="?android:attr/textAppearanceMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:labelFor="@+id/rampUpTime"
+            android:labelFor="@+id/textViewRampUpTime"
             android:paddingBottom="2dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
@@ -42,7 +42,7 @@
             android:textIsSelectable="false"/>
 
         <TextView
-            android:id="@+id/rampUpTime"
+            android:id="@+id/textViewRampUpTime"
             style="?android:attr/textAppearanceSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -52,11 +52,11 @@
             android:paddingTop="2dp"/>
 
         <TextView
-            android:id="@+id/label_meditationDuration"
+            android:id="@+id/textViewMeditationDurationLabel"
             style="?android:attr/textAppearanceMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:labelFor="@+id/meditationDuration"
+            android:labelFor="@+id/textViewMeditationDuration"
             android:paddingBottom="2dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
@@ -65,7 +65,7 @@
             android:textIsSelectable="false"/>
 
         <TextView
-            android:id="@+id/meditationDuration"
+            android:id="@+id/textViewMeditationDuration"
             style="?android:attr/textAppearanceSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -85,25 +85,25 @@
             android:paddingTop="2dp">
 
             <TextView
-                android:id="@+id/label_numberOfPeriods"
+                android:id="@+id/textViewNumberOfPeriodsLabel"
                 style="?android:attr/textAppearanceMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:labelFor="@+id/numberOfPeriods"
+                android:labelFor="@+id/textViewNumberOfPeriods"
                 android:text="@string/prefsNumberOfPeriods"
                 android:textIsSelectable="false"/>
 
             <TextView
-                android:id="@+id/numberOfPeriods"
+                android:id="@+id/textViewNumberOfPeriods"
                 style="?android:attr/textAppearanceSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/label_numberOfPeriods"
+                android:layout_below="@+id/textViewNumberOfPeriodsLabel"
                 android:focusable="true"
                 android:focusableInTouchMode="true"/>
 
             <ImageView
-                android:id="@+id/explanationNumberOfPeriods"
+                android:id="@+id/imageViewExplanationNumberOfPeriods"
                 style="?android:attr/textAppearanceMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -123,25 +123,25 @@
             android:paddingTop="2dp">
 
             <TextView
-                android:id="@+id/label_patternOfPeriods"
+                android:id="@+id/textViewPatternOfPeriodsLabel"
                 style="?android:attr/textAppearanceMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:labelFor="@+id/patternOfPeriods"
+                android:labelFor="@+id/textViewPatternOfPeriods"
                 android:text="@string/prefsPatternOfPeriods"
                 android:textIsSelectable="false"/>
 
             <TextView
-                android:id="@+id/patternOfPeriods"
+                android:id="@+id/textViewPatternOfPeriods"
                 style="?android:attr/textAppearanceSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/label_patternOfPeriods"
+                android:layout_below="@+id/textViewPatternOfPeriodsLabel"
                 android:focusable="true"
                 android:focusableInTouchMode="true"/>
 
             <ImageView
-                android:id="@+id/explanationPatternOfPeriods"
+                android:id="@+id/imageViewExplanationPatternOfPeriods"
                 style="?android:attr/textAppearanceMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -153,7 +153,7 @@
         </RelativeLayout>
 
         <CheckBox
-            android:id="@+id/keepScreenOn"
+            android:id="@+id/checkBoxKeepScreenOn"
             style="?android:attr/textAppearanceMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -165,7 +165,7 @@
             android:paddingTop="2dp"/>
 
         <CheckBox
-            android:id="@+id/stopMeditationAutomatically"
+            android:id="@+id/checkBoxStopMeditationAutomatically"
             style="?android:attr/textAppearanceMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

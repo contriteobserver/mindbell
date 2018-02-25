@@ -63,31 +63,28 @@
 
         <!-- keyMeditating can only be toggled by the meditation button -->
 
-        <com.googlecode.mindbell.preference.SoundPickerPreference
+        <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
             android:defaultValue="3"
             android:entries="@array/bellEntries"
-            android:entryValues="@array/bellFilenameEntries"
+            android:entryValues="@array/bellEntryValues"
             android:key="@string/keyMeditationBeginningBell"
-            android:layout="@layout/sound_picker_preference"
-            android:summary=""
+            android:summary="%s"
             android:title="@string/prefsMeditationBeginningBell"/>
 
-        <com.googlecode.mindbell.preference.SoundPickerPreference
+        <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
             android:defaultValue="1"
             android:entries="@array/bellEntries"
             android:entryValues="@array/bellFilenameEntries"
             android:key="@string/keyMeditationInterruptingBell"
-            android:layout="@layout/sound_picker_preference"
-            android:summary=""
+            android:summary="%s"
             android:title="@string/prefsMeditationInterruptingBell"/>
 
-        <com.googlecode.mindbell.preference.SoundPickerPreference
+        <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
             android:defaultValue="2"
             android:entries="@array/bellEntries"
             android:entryValues="@array/bellFilenameEntries"
             android:key="@string/keyMeditationEndingBell"
-            android:layout="@layout/sound_picker_preference"
-            android:summary=""
+            android:summary="%s"
             android:title="@string/prefsMeditationEndingBell"/>
 
         <com.googlecode.mindbell.preference.MediaVolumePreference
