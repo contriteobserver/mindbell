@@ -23,7 +23,6 @@ import android.content.Context
 import android.preference.PreferenceManager
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
-import android.test.RenamingDelegatingContext
 import com.googlecode.mindbell.accessors.ContextAccessor
 import org.junit.After
 import org.junit.Assert.*
@@ -36,7 +35,7 @@ import java.util.*
 class RingBellTest {
 
     private val booleanSettings = HashMap<String, Boolean>()
-    lateinit private var context: Context
+    private lateinit var context: Context
 
     private fun setBooleanContext(keyID: Int, value: Boolean) {
         val key = context.getString(keyID)
@@ -61,9 +60,8 @@ class RingBellTest {
     }
 
     @Before
-    @Throws(Exception::class)
     fun setUp() {
-        context = RenamingDelegatingContext(InstrumentationRegistry.getTargetContext(), "test_")
+        context = InstrumentationRegistry.getTargetContext()
     }
 
     @After

@@ -21,23 +21,27 @@ package com.googlecode.mindbell.accessors
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
-import android.test.AndroidTestCase
-import android.test.RenamingDelegatingContext
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class ContextAccessorTest : AndroidTestCase() {
+class ContextAccessorTest {
+
+    private lateinit var ca: ContextAccessor
+
+    @Before
+    fun setUp() {
+        ca = ContextAccessor.getInstance(InstrumentationRegistry.getTargetContext())
+    }
 
     @Test
     fun testBellVolume() {
         // setup
-        val ca = createContextAccessor()
-        val prefs = ca.prefs
-        prefs.resetOriginalVolume()
+        ca.prefs.resetOriginalVolume()
         // exercise
-        ca.startPlayingSoundAndVibrate(prefs.forRegularOperation(), null)
+        ca.startPlayingSoundAndVibrate(ca.prefs.forRegularOperation(), null)
         // verify ... be sure to have sound checked as an activity on your emulated device
         // verify ... be sure to have pause audio unchecked on your emulated device
         // verify ... be sure to have audio stream set to alarm on your emulated device
@@ -46,14 +50,12 @@ class ContextAccessorTest : AndroidTestCase() {
     }
 
     private fun createContextAccessor(): ContextAccessor {
-        val context = RenamingDelegatingContext(InstrumentationRegistry.getTargetContext(), "test_")
-        return ContextAccessor.getInstance(context)
+        return ContextAccessor.getInstance(InstrumentationRegistry.getTargetContext())
     }
 
     @Test
     fun testFinish() {
         // setup
-        val ca = createContextAccessor()
         ca.prefs.resetOriginalVolume()
         ca.alarmVolume = ca.alarmMaxVolume / 2
         val alarmVolume = ca.alarmVolume
@@ -68,7 +70,6 @@ class ContextAccessorTest : AndroidTestCase() {
     @Test
     fun testOriginalVolume() {
         // setup
-        val ca = createContextAccessor()
         ca.prefs.resetOriginalVolume()
         val originalVolume = ca.alarmVolume
         // exercise
@@ -81,7 +82,6 @@ class ContextAccessorTest : AndroidTestCase() {
     @Test
     fun testPlay() {
         // setup
-        val ca = createContextAccessor()
         // exercise
         ca.startPlayingSoundAndVibrate(ca.prefs.forRegularOperation(), null)
         // verify ... be sure to have sound checked as an activity on your emulated device

@@ -19,36 +19,24 @@
  */
 package com.googlecode.mindbell
 
-import android.app.Activity
 import android.support.test.InstrumentationRegistry
+import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
-import android.test.ActivityInstrumentationTestCase2
-import android.test.suitebuilder.annotation.SmallTest
-import android.view.View
+import com.googlecode.mindbell.accessors.ContextAccessor
 import org.junit.Assert
-import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class MindBellTest : ActivityInstrumentationTestCase2<MindBell>(MindBell::class.java) {
+class MindBellTest {
 
-    private var mActivity: Activity? = null
-    private var mView: View? = null
-
-    @Before
-    @Throws(Exception::class)
-    public override fun setUp() {
-        super.setUp()
-        // Injecting the Instrumentation instance is required for your test to run with AndroidJUnitRunner.
-        injectInstrumentation(InstrumentationRegistry.getInstrumentation())
-        mActivity = activity
-        mView = mActivity!!.findViewById(com.googlecode.mindbell.R.id.bell)
-
-    }
+    @get:Rule
+    val activityRule: ActivityTestRule<MindBell> = ActivityTestRule(MindBell::class.java)
 
     @Test
-    fun tesxtPreconditions() {
-        Assert.assertNotNull(mView)
+    fun testPreconditions() {
+        val ca = ContextAccessor.getInstance(InstrumentationRegistry.getTargetContext())
+        Assert.assertTrue(ca.isBellSoundPlaying)
     }
 }
