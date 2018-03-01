@@ -63,11 +63,17 @@
     <string name="preferencesTitle">MindBell Einstellungen</string>
 
     <string name="prefsCategorySoundOutput">Klangausgabe</string>
+    <string name="prefsExplanationAudioStream">Audiokanal-Informationen</string>
+    <string name="summaryExplanationAudioStream">Die Auswahl des Audiokanals bestimmt, wie MindBell Klänge abspielt. Dies
+        beeinflusst, welche Lautstärkeeinstellungen zu verwenden sind, ob Klänge durch Bitte-nicht-stören- oder Stillstell-Modi
+        stillgestellt werden und ob die Klangausgabe über die eingebauten Lautsprecher, Kopfhörer oder Bluetooth-Lautsprecher
+        erfolgt. Da dies alles sehr gerätespezifisch ist: Probieren Sie die verschiedenen Optionen auf Ihrem Telefon doch einfach
+        mal aus.</string>
     <string name="prefsAudioStream">Audiokanal</string>
-    <string name="prefsUseAudioStreamVolumeSetting">Lautstärke des Auskanals verwenden</string>
+    <string name="prefsUseAudioStreamVolumeSetting">Lautstärke des Audiokanals verwenden</string>
     <string name="summaryUseAudioStreamVolumeSetting">Übliche Lautstärkeeinstellung des gewählten Audiokanals nutzen</string>
-    <string name="summaryDontUseAudioStreamVolumeSetting">Eigene Lautstärkeeinstellungen von MindBell nutzen (nur beim Abspielen
-        als Weckruf)</string>
+    <string name="summaryDontUseAudioStreamVolumeSetting">Lautstärkeeinstellungen von MindBell im Abschnitt
+        Erinnerungsaktionen oder Meditation nutzen (nur beim Abspielen als Weckruf)</string>
 
     <string name="prefsCategoryActiveTimes">Aktive Zeiten und Rhythmus</string>
     <string name="prefsActive">Erinnern an/aus</string>
@@ -94,8 +100,8 @@
     <string name="summarySound">Klang abspielen beim Erinnern</string>
     <string name="summaryDontSound">Beim Erinnern keinen Klang abspielen</string>
     <string name="prefsReminderBell">Glockenklang</string>
-    <string name="prefsRingtone">Benachrichtigungston</string>
-    <string name="summaryRingtoneNotSet">Kein Benachrichtigungston ausgewählt, einzelnen Glockenklang abspielen</string>
+    <string name="prefsRingtone">Systemklang</string>
+    <string name="summaryRingtoneNotSet">Kein Systemklang ausgewählt, einzelnen Glockenklang abspielen</string>
     <string name="prefsVolume">Lautstärke</string>
 
     <string name="prefsCategoryVibration">Vibration</string>
@@ -172,9 +178,10 @@
     <string name="summaryBatterySettingsUnknown">Es kann nicht festgestellt werden, ob MindBell von der Akku-Leistungsoptimierung
         ausgenommen ist. Wenn MindBell nicht regelmäßig erinnert, nehmen Sie es bitte von allen Akku-Leistungsoptimierungen auf
         Ihrem Gerät aus. Bitte konsultieren Sie dazu Ihre Apps, Gerätedokumentation oder das Internet.</string>
-    <string name="prefsUseWorkaroundBell">Nutze Glockenklang mit Stille</string>
-    <string name="summaryUseWorkaroundBell">Beginne Glockenklänge von MindBell mit 3 Sekunden Stille (um einen stotternden Klang
-        bei Telefonen mit langsam anschwellender Lautstärke zu vermeiden) - wirkt nicht für (eigene) Benachrichtigungstöne</string>
+    <string name="prefsUseWorkaroundBell">Sonder-Stille vor Glockenklang</string>
+    <string name="summaryUseWorkaroundBell">Drei Sekunden Stille vor Glockenklängen zur Vermeidung von stotternden Klängen bei
+        Telefonen mit langsam anschwellender Lautstärke - wirkt nur für Glockenklänge, nicht für Systemklänge. Wenn Sonder-Stille
+        auf Ihrem Telefon benötigt wird, sollte sie bereits in der Klangdatei enthalten sein.</string>
     <string name="summaryDontUseWorkaroundBell">Verwende Glockenklänge ohne Stille am Anfang</string>
     <string name="prefsSendMail">&constSendMail;</string>
     <string name="summarySendMail">Für Vorschläge oder Fragen, die in den \'&constFAQ;\' nicht beantwortet werden, können Sie
@@ -250,7 +257,7 @@
     <!-- Reasons why permission READ_EXTERNAL_STORAGE should be granted -->
     <string name="reasonReadExternalStorageTitle">Wozu diese Berechtigung?</string>
     <string name="reasonReadExternalStorageText">Es wurde kein \'Glockenklang\' ausgewählt. Nur mit der Berechtigung
-        READ_EXTERNAL_STORAGE kann MindBell auf Benachrichtungstöne zugreifen.\n\nWenn die Berechtigung abgelehnt wird, muss
+        READ_EXTERNAL_STORAGE kann MindBell auf Systemklänge zugreifen.\n\nWenn die Berechtigung abgelehnt wird, muss
         daher ein \'Glockenklang\' ausgewählt sein.</string>
 
     <!-- Permission READ_EXTERNAL_STORAGE denied but user checked 'never ask again' -->
