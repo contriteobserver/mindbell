@@ -23,7 +23,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.media.AudioManager
 import android.net.Uri
-import android.util.Log
 import com.googlecode.mindbell.MindBell
 import com.googlecode.mindbell.R
 import com.googlecode.mindbell.R.string.*
@@ -656,8 +655,8 @@ class PrefsAccessor
     /**
      * Returns the chosen sound depending on settings for reminderBell, ringtone and useWorkaroundBell.
      */
-    fun getSoundUri(context: Context): Uri? {
-        // This implementation is almost the same as MindBellPreferences#setPreferenceVolumeSoundUri()
+    fun getReminderSoundUri(context: Context): Uri? {
+        // This implementation is almost the same as MindBellPreferences#getReminderSoundUri()
         var soundUri = getReminderBellSoundUri(context)
         if (soundUri == null) { // use system notification ringtone if reminder bell sound is not set
             val ringtone = ringtone
@@ -781,7 +780,7 @@ class PrefsAccessor
             get() = this@PrefsAccessor.isDismissNotification
 
         override fun getSoundUri(context: Context): Uri? {
-            return this@PrefsAccessor.getReminderBellSoundUri(context)
+            return this@PrefsAccessor.getReminderSoundUri(context)
         }
 
     }
@@ -807,7 +806,7 @@ class PrefsAccessor
             get() = false
 
         override fun getSoundUri(context: Context): Uri? {
-            return this@PrefsAccessor.getReminderBellSoundUri(context)
+            return this@PrefsAccessor.getReminderSoundUri(context)
         }
 
     }

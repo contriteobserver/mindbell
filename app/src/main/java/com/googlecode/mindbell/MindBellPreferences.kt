@@ -348,14 +348,14 @@ class MindBellPreferences : PreferenceActivity(), ActivityCompat.OnRequestPermis
      * @param ringtone
      */
     private fun setPreferenceVolumeSoundUri(preferenceVolume: MediaVolumePreference, reminderBell: String, isUseWorkaroundBell: Boolean, ringtone: String?) {
-        preferenceVolume.setSoundUri(getSoundUri(reminderBell, isUseWorkaroundBell, ringtone)!!)
+        preferenceVolume.setSoundUri(getReminderSoundUri(reminderBell, isUseWorkaroundBell, ringtone)!!)
     }
 
     /**
      * Returns the chosen sound depending on settings for reminderBell, ringtone and useWorkaroundBell.
      */
-    private fun getSoundUri(reminderBell: String, isUseWorkaroundBell: Boolean, ringtone: String?): Uri? {
-        // This implementation is almost the same as PrefsAccessor#getSoundUri()
+    private fun getReminderSoundUri(reminderBell: String, isUseWorkaroundBell: Boolean, ringtone: String?): Uri? {
+        // This implementation is almost the same as PrefsAccessor#getReminderSoundUri()
         var soundUri = PrefsAccessor.getBellSoundUri(this, reminderBell, isUseWorkaroundBell)
         if (soundUri == null) { // use system notification ringtone if reminder bell sound is not set
             if (ringtone!!.isEmpty()) {
@@ -520,7 +520,7 @@ class MindBellPreferences : PreferenceActivity(), ActivityCompat.OnRequestPermis
         if (!soundValue) { // everything's fine if no sound has to be played at all
             return true
         }
-        val soundUri = getSoundUri(reminderBell, useWorkaroundBell, ringtoneValue)!!
+        val soundUri = getReminderSoundUri(reminderBell, useWorkaroundBell, ringtoneValue)!!
         var soundDuration = Utils.getSoundDuration(this, soundUri)
         if (soundDuration == null) {
             Toast.makeText(this, R.string.ringtoneNotAccessible, Toast.LENGTH_SHORT).show()
