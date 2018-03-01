@@ -447,14 +447,14 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
      * @param ringtone
      */
     private void setPreferenceVolumeSoundUri(MediaVolumePreference preferenceVolume, String reminderBell, boolean isUseWorkaroundBell, String ringtone) {
-        preferenceVolume.setSoundUri(getSoundUri(reminderBell, isUseWorkaroundBell, ringtone));
+        preferenceVolume.setSoundUri(getReminderSoundUri(reminderBell, isUseWorkaroundBell, ringtone));
     }
 
     /**
      * Returns the chosen sound depending on settings for reminderBell, ringtone and useWorkaroundBell.
      */
-    private Uri getSoundUri(String reminderBell, boolean isUseWorkaroundBell, String ringtone) {
-        // This implementation is almost the same as PrefsAccessor#getSoundUri()
+    private Uri getReminderSoundUri(String reminderBell, boolean isUseWorkaroundBell, String ringtone) {
+        // This implementation is almost the same as PrefsAccessor#getReminderSoundUri()
         Uri soundUri = PrefsAccessor.getBellSoundUri(this, reminderBell, isUseWorkaroundBell);
         if (soundUri == null) { // use system notification ringtone if reminder bell sound is not set
             if (ringtone.isEmpty()) {
@@ -624,7 +624,7 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
         if (!soundValue) { // everything's fine if no sound has to be played at all
             return true;
         }
-        Uri soundUri = getSoundUri(reminderBell, useWorkaroundBell, ringtoneValue);
+        Uri soundUri = getReminderSoundUri(reminderBell, useWorkaroundBell, ringtoneValue);
         Long soundDuration = Utils.getSoundDuration(this, soundUri);
         if (soundDuration == null) {
             Toast.makeText(this, R.string.ringtoneNotAccessible, Toast.LENGTH_SHORT).show();

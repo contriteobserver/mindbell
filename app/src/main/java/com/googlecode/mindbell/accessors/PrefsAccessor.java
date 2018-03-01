@@ -838,8 +838,8 @@ public class PrefsAccessor {
     /**
      * Returns the chosen sound depending on settings for reminderBell, ringtone and useWorkaroundBell.
      */
-    public Uri getSoundUri(Context context) {
-        // This implementation is almost the same as MindBellPreferences#setPreferenceVolumeSoundUri()
+    public Uri getReminderSoundUri(Context context) {
+        // This implementation is almost the same as MindBellPreferences#getReminderSoundUri()
         Uri soundUri = getReminderBellSoundUri(context);
         if (soundUri == null) { // use system notification ringtone if reminder bell sound is not set
             String ringtone = getRingtone();
@@ -1160,7 +1160,7 @@ public class PrefsAccessor {
 
         @Override
         public Uri getSoundUri(Context context) {
-            return PrefsAccessor.this.getReminderBellSoundUri(context);
+            return PrefsAccessor.this.getReminderSoundUri(context);
         }
 
         @Override
@@ -1199,7 +1199,7 @@ public class PrefsAccessor {
 
         @Override
         public Uri getSoundUri(Context context) {
-            return PrefsAccessor.this.getReminderBellSoundUri(context);
+            return PrefsAccessor.this.getReminderSoundUri(context);
         }
 
         @Override
