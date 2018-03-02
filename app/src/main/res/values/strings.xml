@@ -179,7 +179,7 @@
         active on your phone. Please check your apps or your phones documentation or the internet how to achieve this.</string>
     <string name="prefsUseWorkaroundBell">Extra silence before bell</string>
     <string name="summaryUseWorkaroundBell">Three seconds of silence before bell sounds to avoid distortion on phones that slowly
-        increase sound volume - does only affect bell sounds, not system sounds. If extra silence is needed by your phone, it
+        increase sound volume - only affects bell sounds, not system sounds. If extra silence is needed by your phone, it
         should already be in the sound file.</string>
     <string name="summaryDontUseWorkaroundBell">Use bell sound as it is</string>
     <string name="prefsSendMail">&constSendMail;</string>
