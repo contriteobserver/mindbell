@@ -95,7 +95,7 @@
 
     <!-- Types of bells for reminder or beginning/interrupting/ending the meditation -->
     <string-array name="bellEntries">
-        <item>Benachrichtigungston verwenden</item>
+        <item>Systemklang verwenden</item>
         <item>Einzelne Glocke</item>
         <item>Doppelte Glocke</item>
         <item>Dreifach Glocke</item>

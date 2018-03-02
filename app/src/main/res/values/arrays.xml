@@ -95,15 +95,15 @@
 
     <!-- Types of bells for reminder or beginning/interrupting/ending the meditation -->
     <string-array name="bellEntries">
-        <item>Use notification ringtone</item>
+        <item>Use system sound</item>
         <item>Single bell</item>
         <item>Double bell</item>
         <item>Triple bell</item>
-        <item>Bar-bell</item>
-        <item>Bell, 15 s silence, bar-bell</item>
-        <item>Bell, 30 s silence, bar-bell</item>
-        <item>Bell, 60 s silence, bar-bell</item>
-        <item>Bell, 120 s silence, bar-bell</item>
+        <item>Stick-bell</item>
+        <item>Bell, 15 s silence, stick-bell</item>
+        <item>Bell, 30 s silence, stick-bell</item>
+        <item>Bell, 60 s silence, stick-bell</item>
+        <item>Bell, 120 s silence, stick-bell</item>
     </string-array>
 
     <!-- ==================== don't localize ==================== -->
