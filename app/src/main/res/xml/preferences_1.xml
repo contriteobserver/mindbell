@@ -109,6 +109,7 @@
                 android:summaryOn="@string/summarySound"
                 android:title="@string/prefsSound"/>
             <Preference
+                android:dependency="@string/keySound"
                 android:icon="@drawable/ic_info_white_24dp"
                 android:key="@string/keyReminderSoundLength"
                 android:layout="@layout/preference"

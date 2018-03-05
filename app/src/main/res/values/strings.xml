@@ -98,7 +98,7 @@
     <string name="prefsSound">Play sound</string>
     <string name="summarySound">Play sound as reminder</string>
     <string name="summaryDontSound">Don\'t play sound as reminder</string>
-    <string name="prefsReminderSoundLength">Reminder sound information</string>
+    <string name="prefsReminderSoundLength">Sound information</string>
     <string name="summaryReminderSoundLength">Choosing a sound for reminder that exceeds ten seconds is subject to be cut off. If
         the chosen sound contains silence between separate bells you may only hear the first bell.</string>
     <string name="prefsReminderBell">Bell sound</string>
@@ -210,8 +210,8 @@
     <string name="atLeastOneActiveDayNeeded">Specify at least one day</string>
     <string name="frequencyDoesNotFitIntoAnHour">Reminder to the minute not possible with chosen interval</string>
     <string name="ringtoneNotAccessible">Chosen sound cannot be accessed (missing permissions?)</string>
-    <string name="reminderSoundLength">The duration of the chosen reminder sound is %s s. %s</string>
-    <string name="ringtoneDurationTooLong">Duration of chosen ringtone (%s s) longer than 1/4 of the interval (%d s)</string>
+    <string name="reminderSoundLength">The duration of the chosen sound is %s s. %s</string>
+    <string name="ringtoneDurationTooLong">Duration of chosen sound (%s s) longer than 1/4 of the interval (%d s)</string>
     <string name="invalidPeriodSpecification">Please specify periods as minutes or x.</string>
     <string name="variablePeriodMissing">Please specify at least one x.</string>
     <string name="negativePeriod">Periods must fit into duration: Please increase duration or reduce or shorten periods.</string>

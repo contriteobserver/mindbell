@@ -63,7 +63,7 @@
     <string name="preferencesTitle">MindBell Einstellungen</string>
 
     <string name="prefsCategorySoundOutput">Klangausgabe</string>
-    <string name="prefsExplanationAudioStream">Audiokanal-Informationen</string>
+    <string name="prefsExplanationAudioStream">Hinweis zum Audiokanal</string>
     <string name="summaryExplanationAudioStream">Die Auswahl des Audiokanals bestimmt, wie MindBell Klänge abspielt. Dies
         beeinflusst, welche Lautstärkeeinstellungen zu verwenden sind, ob Klänge durch Bitte-nicht-stören- oder Stillstell-Modi
         stillgestellt werden und ob die Klangausgabe über die eingebauten Lautsprecher, Kopfhörer oder Bluetooth-Lautsprecher
@@ -99,7 +99,7 @@
     <string name="prefsSound">Klang abspielen</string>
     <string name="summarySound">Klang abspielen beim Erinnern</string>
     <string name="summaryDontSound">Beim Erinnern keinen Klang abspielen</string>
-    <string name="prefsReminderSoundLength">Erinnerungsklang-Informationen</string>
+    <string name="prefsReminderSoundLength">Hinweis zum Klang</string>
     <string name="summaryReminderSoundLength">Wenn der ausgewählte Klang zur Erinnerung länger als zehn Sekunden ist, wird er
         eventuell abgeschnitten. Wenn der Klang Stille zwischen zwei Glocken enthält, kann es also sein, dass Sie nur die erste
         Glocke hören.</string>
@@ -214,7 +214,7 @@
     <string name="atLeastOneActiveDayNeeded">Mindestens einen Tag angeben</string>
     <string name="frequencyDoesNotFitIntoAnHour">Erinnern auf die Minute beim gewählten Intervall nicht möglich</string>
     <string name="ringtoneNotAccessible">Ausgewählter Klang nicht zugreifbar (fehlende Rechte?)</string>
-    <string name="reminderSoundLength">Die Dauer des ausgewählten Erinnerungsklangs beträgt %s s. %s</string>
+    <string name="reminderSoundLength">Die Dauer des ausgewählten Klangs beträgt %s s. %s</string>
     <string name="ringtoneDurationTooLong">Dauer des ausgewählten Klangs (%s s) ist länger als 1/4 des Intervalls (%d s)</string>
     <string name="invalidPeriodSpecification">Bitte Abschnitte als Minuten oder x angeben.</string>
     <string name="variablePeriodMissing">Bitte mindestens ein x angeben.</string>

@@ -55,4 +55,9 @@ public class MindBell extends Activity {
         });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "MindBell.onPause() called");
+    }
 }

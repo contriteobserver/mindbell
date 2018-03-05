@@ -174,7 +174,7 @@
         <item>100:200:100:200:100:200</item> <!-- -brr-brr-brr -->
     </string-array>
 
-    <!-- Filenames of bell sounds for bell selection (number of entry values must match bellEntries) -->
+    <!-- Filenames of bell sounds for bell selection (position index must match value in *bellEntryValues) -->
     <string-array name="bellFilenameEntries" translatable="false">
         <item></item>
         <item>mindbell_b</item>
@@ -187,7 +187,7 @@
         <item>mindbell_b120s</item>
     </string-array>
 
-    <!-- Filenames of workaround bell sounds for bell selection (number of entry values must match bellEntries) -->
+    <!-- Filenames of workaround bell sounds for bell selection (position index must match value in *bellEntryValues) -->
     <string-array name="bellWorkaroundFilenameEntries" translatable="false">
         <item></item>
         <item>mindbell_3b</item>
