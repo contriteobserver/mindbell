@@ -87,6 +87,8 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                 (CheckBoxPreference) getPreferenceScreen().findPreference(getText(R.string.keyShow));
         final CheckBoxPreference preferenceSound =
                 (CheckBoxPreference) getPreferenceScreen().findPreference(getText(R.string.keySound));
+        final Preference preferenceReminderSoundLength =
+                (Preference) getPreferenceScreen().findPreference(getText(R.string.keyReminderSoundLength));
         final ListPreferenceWithSummaryFix preferenceReminderBell =
                 (ListPreferenceWithSummaryFix) getPreferenceScreen().findPreference(getText(R.string.keyReminderBell));
         final MediaVolumePreference preferenceVolume =
@@ -163,6 +165,17 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
                 } else {
                     return false;
                 }
+            }
+
+        });
+
+        preferenceReminderSoundLength.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                onPreferenceReminderSoundLength(preferenceUseWorkaroundBell.isChecked(), preferenceReminderBell.getValue(),
+                        preferenceRingtoneValue);
+                return true;
             }
 
         });
@@ -446,7 +459,8 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
      * @param isUseWorkaroundBell
      * @param ringtone
      */
-    private void setPreferenceVolumeSoundUri(MediaVolumePreference preferenceVolume, String reminderBell, boolean isUseWorkaroundBell, String ringtone) {
+    private void setPreferenceVolumeSoundUri(MediaVolumePreference preferenceVolume, String reminderBell,
+                                             boolean isUseWorkaroundBell, String ringtone) {
         preferenceVolume.setSoundUri(getReminderSoundUri(reminderBell, isUseWorkaroundBell, ringtone));
     }
 
@@ -534,6 +548,24 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
      */
     private boolean isNormalize(String normalizeValue) {
         return !PrefsAccessor.NORMALIZE_NONE.equals(normalizeValue);
+    }
+
+    private void onPreferenceReminderSoundLength(boolean useWorkaroundBell, String reminderBell, String ringtoneValue) {
+        Uri soundUri = getReminderSoundUri(reminderBell, useWorkaroundBell, ringtoneValue);
+        Long soundDuration = Utils.getSoundDuration(this, soundUri);
+        String msg = null;
+        if (soundDuration == null) {
+            msg = getText(R.string.ringtoneNotAccessible).toString();
+        } else {
+            soundDuration /= 1000L; // in seconds
+            msg = String.format(getText(R.string.reminderSoundLength).toString(), soundDuration,
+                    getText(R.string.summaryReminderSoundLength));
+        }
+        new AlertDialog.Builder(this) //
+                .setTitle(R.string.prefsReminderSoundLength) //
+                .setMessage(msg) //
+                .setPositiveButton(android.R.string.ok, null) //
+                .show();
     }
 
     private void onPreferenceClickBatterySettings() {
@@ -638,6 +670,8 @@ public class MindBellPreferences extends PreferenceActivity implements ActivityC
             Log.w(TAG, msg + " (" + soundUri.toString() + ")");
             Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
             return false;
+        } else if (soundDuration > 10L) {
+            Toast.makeText(this, getText(R.string.summaryReminderSoundLength), Toast.LENGTH_LONG).show();
         }
         return true;
     }

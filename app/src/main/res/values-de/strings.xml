@@ -99,6 +99,10 @@
     <string name="prefsSound">Klang abspielen</string>
     <string name="summarySound">Klang abspielen beim Erinnern</string>
     <string name="summaryDontSound">Beim Erinnern keinen Klang abspielen</string>
+    <string name="prefsReminderSoundLength">Erinnerungsklang-Informationen</string>
+    <string name="summaryReminderSoundLength">Wenn der ausgewählte Klang zur Erinnerung länger als zehn Sekunden ist, wird er
+        eventuell abgeschnitten. Wenn der Klang Stille zwischen zwei Glocken enthält, kann es also sein, dass Sie nur die erste
+        Glocke hören.</string>
     <string name="prefsReminderBell">Glockenklang</string>
     <string name="prefsRingtone">Systemklang</string>
     <string name="summaryRingtoneNotSet">Kein Systemklang ausgewählt, einzelnen Glockenklang abspielen</string>
@@ -210,6 +214,7 @@
     <string name="atLeastOneActiveDayNeeded">Mindestens einen Tag angeben</string>
     <string name="frequencyDoesNotFitIntoAnHour">Erinnern auf die Minute beim gewählten Intervall nicht möglich</string>
     <string name="ringtoneNotAccessible">Ausgewählter Klang nicht zugreifbar (fehlende Rechte?)</string>
+    <string name="reminderSoundLength">Die Dauer des ausgewählten Erinnerungsklangs beträgt %s s. %s</string>
     <string name="ringtoneDurationTooLong">Dauer des ausgewählten Klangs (%s s) ist länger als 1/4 des Intervalls (%d s)</string>
     <string name="invalidPeriodSpecification">Bitte Abschnitte als Minuten oder x angeben.</string>
     <string name="variablePeriodMissing">Bitte mindestens ein x angeben.</string>

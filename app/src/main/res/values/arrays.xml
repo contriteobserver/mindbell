@@ -93,8 +93,8 @@
         <item>Play as music</item>
     </string-array>
 
-    <!-- Types of bells for reminder or beginning/interrupting/ending the meditation -->
-    <string-array name="bellEntries">
+    <!-- Types of bells for reminder -->
+    <string-array name="reminderBellEntries">
         <item>Use system sound</item>
         <item>Single bell</item>
         <item>Double bell</item>
@@ -104,6 +104,15 @@
         <item>Bell, 30 s silence, stick-bell</item>
         <item>Bell, 60 s silence, stick-bell</item>
         <item>Bell, 120 s silence, stick-bell</item>
+    </string-array>
+
+    <!-- Types of bells for beginning/interrupting/ending the meditation -->
+    <string-array name="meditationBellEntries">
+        <item>Single bell</item>
+        <item>Double bell</item>
+        <item>Triple bell</item>
+        <item>Stick-bell</item>
+        <item>Bell, 15 s silence, stick-bell</item>
     </string-array>
 
     <!-- ==================== don't localize ==================== -->
@@ -191,8 +200,8 @@
         <item>mindbell_3b120s</item>
     </string-array>
 
-    <!-- Indexes of filenames of bell sounds for bell selection (number of entry values must match bellEntries) -->
-    <string-array name="bellEntryValues" translatable="false">
+    <!-- Indexes of filenames of reminder bell sounds (number of entry values must match reminderBellEntries) -->
+    <string-array name="reminderBellEntryValues" translatable="false">
         <item>0</item>
         <item>1</item>
         <item>2</item>
@@ -202,6 +211,15 @@
         <item>6</item>
         <item>7</item>
         <item>8</item>
+    </string-array>
+
+    <!-- Indexes of filenames of meditation bell sounds (number of entry values must match meditationBellEntries) -->
+    <string-array name="meditationBellEntryValues" translatable="false">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
     </string-array>
 
     <!-- Filenames of icons for audio stream selection -->

@@ -456,15 +456,15 @@ public class PrefsAccessor {
         // Map preference keys to their allowed entryValues
         entryValuesMap.put(keyActiveOnDaysOfWeek, context.getResources().getStringArray(R.array.weekdayEntryValues));
         entryValuesMap.put(keyAudioStream, context.getResources().getStringArray(R.array.audioStreamPersistedEntryValues));
-        entryValuesMap.put(keyMeditationBeginningBell, context.getResources().getStringArray(R.array.bellEntryValues));
-        entryValuesMap.put(keyMeditationEndingBell, context.getResources().getStringArray(R.array.bellEntryValues));
-        entryValuesMap.put(keyMeditationInterruptingBell, context.getResources().getStringArray(R.array.bellEntryValues));
+        entryValuesMap.put(keyMeditationBeginningBell, context.getResources().getStringArray(R.array.meditationBellEntryValues));
+        entryValuesMap.put(keyMeditationEndingBell, context.getResources().getStringArray(R.array.meditationBellEntryValues));
+        entryValuesMap.put(keyMeditationInterruptingBell, context.getResources().getStringArray(R.array.meditationBellEntryValues));
         entryValuesMap.put(keyNormalize, context.getResources().getStringArray(R.array.normalizeEntryValues));
         entryValuesMap.put(keyNotificationText, new String[]{}); // we cannot verify the entered notification text
         entryValuesMap.put(keyNotificationTitle, new String[]{}); // we cannot verify the entered notification title
         entryValuesMap.put(keyPattern, context.getResources().getStringArray(R.array.patternEntryValues));
         entryValuesMap.put(keyPatternOfPeriods, new String[]{}); // we cannot verify the entered notification text
-        entryValuesMap.put(keyReminderBell, context.getResources().getStringArray(R.array.bellEntryValues));
+        entryValuesMap.put(keyReminderBell, context.getResources().getStringArray(R.array.reminderBellEntryValues));
         entryValuesMap.put(keyRingtone, new String[]{}); // we don't need to know the possible ringtone values
 
         // Convert old settings from previous versions
