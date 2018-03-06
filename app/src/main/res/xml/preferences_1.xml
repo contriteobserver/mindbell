@@ -108,11 +108,18 @@
                 android:summaryOff="@string/summaryDontSound"
                 android:summaryOn="@string/summarySound"
                 android:title="@string/prefsSound"/>
+            <Preference
+                android:dependency="@string/keySound"
+                android:icon="@drawable/ic_info_white_24dp"
+                android:key="@string/keyReminderSoundLength"
+                android:layout="@layout/preference"
+                android:summary="@string/summaryReminderSoundLength"
+                android:title="@string/prefsReminderSoundLength"/>
             <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
                 android:defaultValue="1"
                 android:dependency="@string/keySound"
-                android:entries="@array/bellEntries"
-                android:entryValues="@array/bellEntryValues"
+                android:entries="@array/reminderBellEntries"
+                android:entryValues="@array/reminderBellEntryValues"
                 android:key="@string/keyReminderBell"
                 android:summary="%s"
                 android:title="@string/prefsReminderBell"/>

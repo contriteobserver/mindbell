@@ -98,6 +98,9 @@
     <string name="prefsSound">Play sound</string>
     <string name="summarySound">Play sound as reminder</string>
     <string name="summaryDontSound">Don\'t play sound as reminder</string>
+    <string name="prefsReminderSoundLength">Sound information</string>
+    <string name="summaryReminderSoundLength">Choosing a sound for reminder that exceeds ten seconds is subject to be cut off. If
+        the chosen sound contains silence between separate bells you may only hear the first bell.</string>
     <string name="prefsReminderBell">Bell sound</string>
     <string name="prefsRingtone">System sound</string>
     <string name="summaryRingtoneNotSet">No system sound selected, play single bell sound</string>
@@ -207,7 +210,8 @@
     <string name="atLeastOneActiveDayNeeded">Specify at least one day</string>
     <string name="frequencyDoesNotFitIntoAnHour">Reminder to the minute not possible with chosen interval</string>
     <string name="ringtoneNotAccessible">Chosen sound cannot be accessed (missing permissions?)</string>
-    <string name="ringtoneDurationTooLong">Duration of chosen ringtone (%s s) longer than 1/4 of the interval (%d s)</string>
+    <string name="reminderSoundLength">The duration of the chosen sound is %s s. %s</string>
+    <string name="ringtoneDurationTooLong">Duration of chosen sound (%s s) longer than 1/4 of the interval (%d s)</string>
     <string name="invalidPeriodSpecification">Please specify periods as minutes or x.</string>
     <string name="variablePeriodMissing">Please specify at least one x.</string>
     <string name="negativePeriod">Periods must fit into duration: Please increase duration or reduce or shorten periods.</string>
@@ -275,10 +279,10 @@
     <string name="keyActiveOnDaysOfWeek" translatable="false">activeOnDaysOfWeek</string>
     <string name="keyActive" translatable="false">active</string>
     <string name="keyAudioStream" translatable="false">audioStream</string>
-    <string name="keyBatterySettings" translatable="false">batterySettings</string> <!-- fake preference, key only used as id -->
+    <string name="keyBatterySettings" translatable="false">batterySettings</string> <!-- fake, key only used as id -->
     <string name="keyDismissNotification" translatable="false">dismissNotification</string>
     <string name="keyEnd" translatable="false">end</string>
-    <string name="keyFAQ" translatable="false">FAQ</string> <!-- fake preference, key only used as id -->
+    <string name="keyFAQ" translatable="false">FAQ</string> <!-- fake, key only used as id -->
     <string name="keyFrequency" translatable="false">frequency</string>
     <string name="keyKeepScreenOn" translatable="false">keepScreenOn</string>
     <string name="keyMeditating" translatable="false">meditating</string>
@@ -308,9 +312,10 @@
     <string name="keyRampUpStartingTimeMillis" translatable="false">rampUpStartingTimeMillis</string>
     <string name="keyRampUpTime" translatable="false">rampUpTime</string>
     <string name="keyReminderBell" translatable="false">reminderBell</string>
+    <string name="keyReminderSoundLength" translatable="false">reminderSoundLength</string> <!-- fake, key only used as id -->
     <string name="keyRandomize" translatable="false">randomize</string>
     <string name="keyRingtone" translatable="false">ringtone</string>
-    <string name="keySendMail" translatable="false">sendMail</string> <!-- fake preference, key only used as id -->
+    <string name="keySendMail" translatable="false">sendMail</string> <!-- fake, key only used as id -->
     <string name="keyShow" translatable="false">show</string>
     <string name="keySound" translatable="false">sound</string>
     <string name="keyStart" translatable="false">start</string>

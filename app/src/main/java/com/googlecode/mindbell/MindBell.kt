@@ -45,6 +45,11 @@ class MindBell : Activity() {
         })
     }
 
+    override fun onPause() {
+        super.onPause()
+        MindBell.logDebug("MindBell.onPause() called")
+    }
+
     companion object {
 
         val TAG = "MindBell"

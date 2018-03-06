@@ -65,24 +65,24 @@
 
         <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
             android:defaultValue="3"
-            android:entries="@array/bellEntries"
-            android:entryValues="@array/bellEntryValues"
+            android:entries="@array/meditationBellEntries"
+            android:entryValues="@array/meditationBellEntryValues"
             android:key="@string/keyMeditationBeginningBell"
             android:summary="%s"
             android:title="@string/prefsMeditationBeginningBell"/>
 
         <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
             android:defaultValue="1"
-            android:entries="@array/bellEntries"
-            android:entryValues="@array/bellFilenameEntries"
+            android:entries="@array/meditationBellEntries"
+            android:entryValues="@array/meditationBellEntryValues"
             android:key="@string/keyMeditationInterruptingBell"
             android:summary="%s"
             android:title="@string/prefsMeditationInterruptingBell"/>
 
         <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
             android:defaultValue="2"
-            android:entries="@array/bellEntries"
-            android:entryValues="@array/bellFilenameEntries"
+            android:entries="@array/meditationBellEntries"
+            android:entryValues="@array/meditationBellEntryValues"
             android:key="@string/keyMeditationEndingBell"
             android:summary="%s"
             android:title="@string/prefsMeditationEndingBell"/>

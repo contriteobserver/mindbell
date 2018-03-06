@@ -372,15 +372,15 @@ class PrefsAccessor
         // Map preference keys to their allowed entryValues
         entryValuesMap.put(keyActiveOnDaysOfWeek, context.resources.getStringArray(R.array.weekdayEntryValues))
         entryValuesMap.put(keyAudioStream, context.resources.getStringArray(R.array.audioStreamPersistedEntryValues))
-        entryValuesMap.put(keyMeditationBeginningBell, context.resources.getStringArray(R.array.bellEntryValues))
-        entryValuesMap.put(keyMeditationEndingBell, context.resources.getStringArray(R.array.bellEntryValues))
-        entryValuesMap.put(keyMeditationInterruptingBell, context.resources.getStringArray(R.array.bellEntryValues))
+        entryValuesMap.put(keyMeditationBeginningBell, context.resources.getStringArray(R.array.meditationBellEntryValues))
+        entryValuesMap.put(keyMeditationEndingBell, context.resources.getStringArray(R.array.meditationBellEntryValues))
+        entryValuesMap.put(keyMeditationInterruptingBell, context.resources.getStringArray(R.array.meditationBellEntryValues))
         entryValuesMap.put(keyNormalize, context.resources.getStringArray(R.array.normalizeEntryValues))
         entryValuesMap.put(keyNotificationText, arrayOf()) // we cannot verify the entered notification text
         entryValuesMap.put(keyNotificationTitle, arrayOf()) // we cannot verify the entered notification title
         entryValuesMap.put(keyPattern, context.resources.getStringArray(R.array.patternEntryValues))
         entryValuesMap.put(keyPatternOfPeriods, arrayOf()) // we cannot verify the entered notification text
-        entryValuesMap.put(keyReminderBell, context.resources.getStringArray(R.array.bellEntryValues))
+        entryValuesMap.put(keyReminderBell, context.resources.getStringArray(R.array.reminderBellEntryValues))
         entryValuesMap.put(keyRingtone, arrayOf()) // we don't need to know the possible ringtone values
 
         // Convert old settings from previous versions
