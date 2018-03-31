@@ -39,6 +39,7 @@ import android.telephony.TelephonyManager
 import android.widget.Toast
 import com.googlecode.mindbell.*
 import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.EXTRA_IS_RESCHEDULING
+import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.EXTRA_KEEP
 import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.EXTRA_MEDITATION_PERIOD
 import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.EXTRA_NOW_TIME_MILLIS
 import com.googlecode.mindbell.logic.SchedulerLogic
@@ -191,10 +192,22 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
         }
     }
 
-    fun startPlayingSoundAndVibrate(activityPrefs: ActivityPrefsAccessor, runWhenDone: Runnable?) {
+    /**
+     * Start reminder actions (show/sound/vibrate) and setup handler to finish the actions after sound or timer ends.
+     */
+    fun startReminderActions(activityPrefs: ActivityPrefsAccessor, meditationStopper: Runnable?) {
 
         // Stop an already ongoing sound, this isn't wrong when phone and bell are muted, too
         finishBellSound()
+
+        // Runnable that finishes all reminder actions and stops the meditation if requested. It is either executed after the
+        // sound has been played or after a timer has expired.
+        val reminderActionsFinisher = Runnable { finishReminderActions(activityPrefs, meditationStopper) }
+
+        // Show bell if wanted
+        if (activityPrefs.isShow) {
+            showBell()
+        }
 
         // Update ring notification and vibrate on either phone or wearable
         if (activityPrefs.isNotification) {
@@ -205,7 +218,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
         // requested by preferences
         var playingSoundStarted = false
         if (activityPrefs.isSound) {
-            playingSoundStarted = startPlayingSound(activityPrefs, runWhenDone)
+            playingSoundStarted = startPlayingSound(activityPrefs, reminderActionsFinisher)
         }
 
         // Explicitly start vibration if not already done by ring notification
@@ -213,22 +226,10 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
             startVibration()
         }
 
-        // If ring notification and its dismissal is requested, then we have to wait for a while to dismiss the ring notification
-        // afterwards. So a new thread is created that waits and dismisses the ring notification afterwards.
-        if (activityPrefs.isNotification && activityPrefs.isDismissNotification) {
-            startWaiting(Runnable { cancelRingNotification(activityPrefs) })
-        }
-
-        // A non-null runWhenDone means there is something to do at the end (hiding the bell after displaying or stopping the
-        // meditation automatically). This is typically done when finishing playing the sound. But if playing a sound has not
-        // been started because of preferences or because sound has been suppressed then we after to do it now - or after a
-        // little while if the bell will be displayed by MindBell.onStart() after leaving this method.
-        if (!playingSoundStarted && runWhenDone != null) {
-            if (activityPrefs.isShow) {
-                startWaiting(runWhenDone)
-            } else {
-                runWhenDone.run()
-            }
+        // If no sound has been started (as requested or due to a failure starting it) a timer is used to finish the reminder
+        // actions when it has expired.
+        if (!playingSoundStarted) {
+            startWaiting(reminderActionsFinisher)
         }
 
     }
@@ -275,7 +276,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
     /**
      * This is about updating the reminder notification when executing reminder actions.
      */
-    fun updateReminderNotification(activityPrefs: ActivityPrefsAccessor) {
+    private fun updateReminderNotification(activityPrefs: ActivityPrefsAccessor) {
 
         // Create notification channel
         NotificationManagerCompatExtension.from(context).createNotificationChannel(REMINDER_NOTIFICATION_CHANNEL_ID, context
@@ -306,7 +307,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
      * Start playing bell sound and call runWhenDone when playing finishes but only if bell is not muted - returns true when
      * sound has been started, false otherwise.
      */
-    private fun startPlayingSound(activityPrefs: ActivityPrefsAccessor, runWhenDone: Runnable?): Boolean {
+    private fun startPlayingSound(activityPrefs: ActivityPrefsAccessor, reminderActionsFinisher: Runnable): Boolean {
         val bellUri = activityPrefs.getSoundUri(context)
         audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         if (prefs.isNoSoundOnMusic && audioManager!!.isMusicActive) {
@@ -353,17 +354,27 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
 
             mediaPlayer!!.prepare()
             mediaPlayer!!.setOnCompletionListener {
-                finishBellSound()
-                runWhenDone?.run()
+                reminderActionsFinisher.run()
             }
             mediaPlayer!!.start()
             return true
         } catch (e: IOException) {
             MindBell.logError("Could not start playing sound: " + e.message, e)
-            finishBellSound()
+            reminderActionsFinisher.run()
             return false
         }
 
+    }
+
+    /**
+     * Finishes reminder actions (show/sound/vibrate) after sound or timer has ended.
+     */
+    private fun finishReminderActions(activityPrefs: ActivityPrefsAccessor, runWhenDone: Runnable?) {
+        // nothing to do to finish vibration
+        finishBellSound()
+        cancelRingNotification(activityPrefs)
+        hideBell()
+        runWhenDone?.run()
     }
 
     /**
@@ -377,7 +388,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
     /**
      * Start waiting for a specific time period and call runWhenDone when time is over.
      */
-    private fun startWaiting(runWhenDone: Runnable) {
+    private fun startWaiting(reminderActionsFinisher: Runnable) {
         Thread(Runnable {
             try {
                 Thread.sleep(PrefsAccessor.WAITING_TIME)
@@ -385,15 +396,17 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
                 // doesn't care if sleep was interrupted, just move on
             }
 
-            runWhenDone.run()
+            reminderActionsFinisher.run()
         }).start()
     }
 
     /**
-     * Cancel the ring notification (after ringing the bell).
+     * Cancel the ring notification if ring notification and its dismissal is requested.
      */
     fun cancelRingNotification(activityPrefs: ActivityPrefsAccessor) {
-        NotificationManagerCompat.from(context).cancel(RING_NOTIFICATION_ID)
+        if (activityPrefs.isNotification && activityPrefs.isDismissNotification) {
+            NotificationManagerCompat.from(context).cancel(RING_NOTIFICATION_ID)
+        }
     }
 
     /**
@@ -533,11 +546,28 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
     /**
      * Shows bell by starting activity MindBell
      */
-    fun showBell() {
+    private fun showBell() {
         MindBell.logDebug("Starting activity MindBell to show bell")
+        showOrHideBell(true)
+    }
+
+    /**
+     * Hides bell by starting activity MindBell
+     */
+    private fun hideBell() {
+        MindBell.logDebug("Starting activity MindBell to hide bell")
+        showOrHideBell(false)
+    }
+
+    /**
+     * Show or hide bell by starting activity MindBell following this idea: https://stackoverflow.com/a/14411650
+     */
+    private fun showOrHideBell(show: Boolean) {
         val intent = Intent(context, MindBell::class.java)
-        intent.flags = (Intent.FLAG_ACTIVITY_NEW_TASK // context may be service context only, not an activity context
-                or Intent.FLAG_ACTIVITY_CLEAR_TASK) // MindBell becomes the new root to let back button return to other apps
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) // context may be service context only, not an activity context
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK) // MindBell becomes the new root to let back button return to other apps
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP) // don't launch activity a second time when hiding "on top" of showing
+        intent.putExtra(EXTRA_KEEP, show)
         context.startActivity(intent)
     }
 

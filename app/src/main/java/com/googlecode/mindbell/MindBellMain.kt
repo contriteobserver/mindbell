@@ -40,8 +40,8 @@ import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.ONE_MINUTE_MILL
 import com.googlecode.mindbell.preference.MinutesIntervalPickerPreference
 import com.googlecode.mindbell.util.TimeOfDay
 import com.googlecode.mindbell.util.Utils
-import kotlinx.android.synthetic.main.main.*
 import kotlinx.android.synthetic.main.countdown.*
+import kotlinx.android.synthetic.main.main.*
 import kotlinx.android.synthetic.main.meditation_dialog.*
 
 class MindBellMain : Activity() {
@@ -60,7 +60,7 @@ class MindBellMain : Activity() {
         val ringOnceOnClickListener = View.OnClickListener {
             MindBell.logDebug("Ring once")
             contextAccessor!!.updateStatusNotification()
-            contextAccessor!!.startPlayingSoundAndVibrate(contextAccessor!!.prefs!!.forRingingOnce(), null)
+            contextAccessor!!.startReminderActions(contextAccessor!!.prefs!!.forRingingOnce(), null)
         }
         imageViewRingOncePlayCollapsed.setOnClickListener(ringOnceOnClickListener)
         imageViewRingOnceBellCollapsed.setOnClickListener(ringOnceOnClickListener)

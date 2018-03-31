@@ -53,7 +53,7 @@ class Scheduler : BroadcastReceiver() {
         contextAccessor.updateStatusNotification()
 
         // Evaluate next time to remind and reschedule or terminate method if neither active nor meditating
-        if (prefs!!.isMeditating) { // Meditating overrides Active therefore check this first
+        if (prefs.isMeditating) { // Meditating overrides Active therefore check this first
 
             handleMeditatingBell(contextAccessor, nowTimeMillis, meditationPeriod)
 
@@ -74,7 +74,7 @@ class Scheduler : BroadcastReceiver() {
     private fun handleMeditatingBell(contextAccessor: ContextAccessor, nowTimeMillis: Long, meditationPeriod: Int) {
         val prefs = contextAccessor.prefs
 
-        val numberOfPeriods = prefs!!.numberOfPeriods
+        val numberOfPeriods = prefs.numberOfPeriods
 
         if (meditationPeriod == 0) { // beginning of ramp-up period?
 
@@ -85,13 +85,13 @@ class Scheduler : BroadcastReceiver() {
 
             val nextTargetTimeMillis = nowTimeMillis + prefs.getMeditationPeriodMillis(meditationPeriod)
             contextAccessor.reschedule(nextTargetTimeMillis, meditationPeriod + 1)
-            contextAccessor.startPlayingSoundAndVibrate(prefs.forMeditationBeginning(), null)
+            contextAccessor.startReminderActions(prefs.forMeditationBeginning(), null)
 
         } else if (meditationPeriod <= numberOfPeriods) { // beginning of meditation period 2..n
 
             val nextTargetTimeMillis = nowTimeMillis + prefs.getMeditationPeriodMillis(meditationPeriod)
             contextAccessor.reschedule(nextTargetTimeMillis, meditationPeriod + 1)
-            contextAccessor.startPlayingSoundAndVibrate(prefs.forMeditationInterrupting(), null)
+            contextAccessor.startReminderActions(prefs.forMeditationInterrupting(), null)
 
         } else { // end of last meditation period
 
@@ -103,7 +103,7 @@ class Scheduler : BroadcastReceiver() {
                 meditationStopper = null
                 MindBell.logDebug("Meditation is over -- not rescheduling -- meditation mode remains to be active.")
             }
-            contextAccessor.startPlayingSoundAndVibrate(prefs.forMeditationEnding(), meditationStopper)
+            contextAccessor.startReminderActions(prefs.forMeditationEnding(), meditationStopper)
 
         }
     }
@@ -112,7 +112,7 @@ class Scheduler : BroadcastReceiver() {
      * Reschedules next alarm, shows bell, plays bell sound and vibrates - whatever is requested.
      */
     private fun handleActiveBell(contextAccessor: ContextAccessor, nowTimeMillis: Long, isRescheduling: Boolean) {
-        val prefs = contextAccessor.prefs!!
+        val prefs = contextAccessor.prefs
 
         val nextTargetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs)
         contextAccessor.reschedule(nextTargetTimeMillis, null)
@@ -129,15 +129,10 @@ class Scheduler : BroadcastReceiver() {
 
             MindBell.logDebug("Not reminding (show/sound/vibrate), bell is muted")
 
-        } else if (prefs!!.isShow) {
-
-            MindBell.logDebug("Show bell, then play sound and vibrate if requested")
-            contextAccessor.showBell()
-
         } else {
 
-            MindBell.logDebug("Play sound and vibrate if requested but do not show bell")
-            contextAccessor.startPlayingSoundAndVibrate(prefs.forRegularOperation(), null)
+            MindBell.logDebug("Start reminder actions (show/sound/vibrate")
+            contextAccessor.startReminderActions(prefs.forRegularOperation(), null)
         }
     }
 

@@ -928,19 +928,28 @@ class PrefsAccessor
         /**
          * Unique string to be added to a Scheduling Intent to see which meditation period the bell is in.
          */
-        var EXTRA_MEDITATION_PERIOD = "com.googlecode.mindbell.Scheduler.MeditationPeriod"
+        val EXTRA_MEDITATION_PERIOD = "com.googlecode.mindbell.Scheduler.MeditationPeriod"
+
         /**
          * Unique string to be added to a Scheduling Intent to see who sent it.
          */
-        var EXTRA_IS_RESCHEDULING = "com.googlecode.mindbell.Scheduler.IsRescheduling"
+
+        val EXTRA_IS_RESCHEDULING = "com.googlecode.mindbell.Scheduler.IsRescheduling"
+
         /**
          * Unique string to be added to a Scheduling Intent to see for which time the bell was scheduled.
          */
-        var EXTRA_NOW_TIME_MILLIS = "com.googlecode.mindbell.Scheduler.NowTimeMillis"
+        val EXTRA_NOW_TIME_MILLIS = "com.googlecode.mindbell.Scheduler.NowTimeMillis"
+
+        /**
+         * Unique string to be added to a MindBell intent to see if it has to be kept open.
+         */
+        val EXTRA_KEEP = "com.googlecode.mindbell.MindBell.Keep"
+
         /**
          * Unique string to be added to an Intent to see if MindBellMain is opened to stop meditation mode.
          */
-        var EXTRA_STOP_MEDITATION = "com.googlecode.mindbell.MindBellMail.StopMeditation"
+        val EXTRA_STOP_MEDITATION = "com.googlecode.mindbell.MindBellMail.StopMeditation"
 
         fun isUseStandardBell(reminderBell: String): Boolean {
             return Integer.valueOf(reminderBell) != BELL_ENTRY_VALUE_INDEX_NO_SOUND

@@ -41,7 +41,7 @@ class ContextAccessorTest {
         // setup
         ca.prefs.resetOriginalVolume()
         // exercise
-        ca.startPlayingSoundAndVibrate(ca.prefs.forRegularOperation(), null)
+        ca.startReminderActions(ca.prefs.forRegularOperation(), null)
         // verify ... be sure to have sound checked as an activity on your emulated device
         // verify ... be sure to have pause audio unchecked on your emulated device
         // verify ... be sure to have audio stream set to alarm on your emulated device
@@ -60,7 +60,7 @@ class ContextAccessorTest {
         ca.alarmVolume = ca.alarmMaxVolume / 2
         val alarmVolume = ca.alarmVolume
         // exercise
-        ca.startPlayingSoundAndVibrate(ca.prefs.forRegularOperation(), null)
+        ca.startReminderActions(ca.prefs.forRegularOperation(), null)
         ca.finishBellSound()
         // verify
         Assert.assertFalse(ca.isBellSoundPlaying)
@@ -73,7 +73,7 @@ class ContextAccessorTest {
         ca.prefs.resetOriginalVolume()
         val originalVolume = ca.alarmVolume
         // exercise
-        ca.startPlayingSoundAndVibrate(ca.prefs.forRegularOperation(), null)
+        ca.startReminderActions(ca.prefs.forRegularOperation(), null)
         ca.finishBellSound()
         // verify
         Assert.assertEquals(originalVolume, ca.alarmVolume)
@@ -83,7 +83,7 @@ class ContextAccessorTest {
     fun testPlay() {
         // setup
         // exercise
-        ca.startPlayingSoundAndVibrate(ca.prefs.forRegularOperation(), null)
+        ca.startReminderActions(ca.prefs.forRegularOperation(), null)
         // verify ... be sure to have sound checked as an activity on your emulated device
         Assert.assertTrue(ca.isBellSoundPlaying)
     }

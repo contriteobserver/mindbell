@@ -22,14 +22,11 @@ package com.googlecode.mindbell
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
+import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.EXTRA_KEEP
 
-import com.googlecode.mindbell.accessors.ContextAccessor
 
 class MindBell : Activity() {
 
-    /**
-     * Called when the activity is first created.
-     */
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.bell)
@@ -37,17 +34,11 @@ class MindBell : Activity() {
 
     override fun onStart() {
         super.onStart()
-        val contextAccessor = ContextAccessor.getInstance(this)
-        contextAccessor.startPlayingSoundAndVibrate(contextAccessor.prefs!!.forRegularOperation(), Runnable {
-            MindBell.logDebug("Hiding bell")
-            moveTaskToBack(true)
+        val keep = intent.extras?.getBoolean(EXTRA_KEEP)
+        MindBell.logDebug("MindBell.onStart() called EXTRA_KEEP='$keep'")
+        if (keep != null && !keep) {
             finish()
-        })
-    }
-
-    override fun onPause() {
-        super.onPause()
-        MindBell.logDebug("MindBell.onPause() called")
+        }
     }
 
     companion object {
