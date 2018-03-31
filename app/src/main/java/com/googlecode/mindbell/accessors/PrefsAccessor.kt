@@ -928,18 +928,18 @@ class PrefsAccessor
         /**
          * Unique string to be added to a Scheduling Intent to see which meditation period the bell is in.
          */
-        val EXTRA_MEDITATION_PERIOD = "com.googlecode.mindbell.Scheduler.MeditationPeriod"
+        val EXTRA_MEDITATION_PERIOD = "com.googlecode.mindbell.SchedulerService.MeditationPeriod"
 
         /**
          * Unique string to be added to a Scheduling Intent to see who sent it.
          */
 
-        val EXTRA_IS_RESCHEDULING = "com.googlecode.mindbell.Scheduler.IsRescheduling"
+        val EXTRA_IS_RESCHEDULING = "com.googlecode.mindbell.SchedulerService.IsRescheduling"
 
         /**
          * Unique string to be added to a Scheduling Intent to see for which time the bell was scheduled.
          */
-        val EXTRA_NOW_TIME_MILLIS = "com.googlecode.mindbell.Scheduler.NowTimeMillis"
+        val EXTRA_NOW_TIME_MILLIS = "com.googlecode.mindbell.SchedulerService.NowTimeMillis"
 
         /**
          * Unique string to be added to a MindBell intent to see if it has to be kept open.

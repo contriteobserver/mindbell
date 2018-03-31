@@ -21,7 +21,9 @@ package com.googlecode.mindbell.accessors
 
 import android.Manifest
 import android.app.AlarmManager
+import android.app.Notification
 import android.app.PendingIntent
+import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -195,23 +197,18 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
     /**
      * Start reminder actions (show/sound/vibrate) and setup handler to finish the actions after sound or timer ends.
      */
-    fun startReminderActions(activityPrefs: ActivityPrefsAccessor, meditationStopper: Runnable?) {
+    fun startReminderActions(activityPrefs: ActivityPrefsAccessor, meditationStopper: Runnable?, callingService: Service?) {
 
         // Stop an already ongoing sound, this isn't wrong when phone and bell are muted, too
         finishBellSound()
 
         // Runnable that finishes all reminder actions and stops the meditation if requested. It is either executed after the
         // sound has been played or after a timer has expired.
-        val reminderActionsFinisher = Runnable { finishReminderActions(activityPrefs, meditationStopper) }
+        val reminderActionsFinisher = Runnable { finishReminderActions(activityPrefs, meditationStopper, callingService) }
 
         // Show bell if wanted
         if (activityPrefs.isShow) {
             showBell()
-        }
-
-        // Update ring notification and vibrate on either phone or wearable
-        if (activityPrefs.isNotification) {
-            updateReminderNotification(activityPrefs)
         }
 
         // Raise alarm volume to the max but keep the original volume for reset by finishBellSound() and start playing sound if
@@ -274,9 +271,9 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
     }
 
     /**
-     * This is about updating the reminder notification when executing reminder actions.
+     * Create the reminder notification which is to be displayed when executing reminder actions.
      */
-    private fun updateReminderNotification(activityPrefs: ActivityPrefsAccessor) {
+    fun createReminderNotification(activityPrefs: ActivityPrefsAccessor? = null): Notification {
 
         // Create notification channel
         NotificationManagerCompatExtension.from(context).createNotificationChannel(REMINDER_NOTIFICATION_CHANNEL_ID, context
@@ -288,19 +285,19 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
         else
             NotificationCompat.VISIBILITY_PRIVATE
 
-        // Now do the notification update
-        val notificationBuilder = NotificationCompat.Builder(context.applicationContext) //
+        // Now create the notification
+        val notificationBuilder = NotificationCompat.Builder(context.applicationContext, REMINDER_NOTIFICATION_CHANNEL_ID) //
                 .setCategory(NotificationCompat.CATEGORY_ALARM) //
                 .setAutoCancel(true) // cancel notification on touch
                 .setColor(context.resources.getColor(R.color.backgroundColor)) //
                 .setContentTitle(prefs.notificationTitle) //
                 .setContentText(prefs.notificationText).setSmallIcon(R.drawable.ic_stat_bell_ring) //
                 .setVisibility(visibility)
-        if (activityPrefs.isVibrate) {
+        if (activityPrefs != null && activityPrefs.isVibrate) {
             notificationBuilder.setVibrate(prefs.vibrationPattern)
         }
-        val notification = notificationBuilder.build()
-        NotificationManagerCompat.from(context).notify(RING_NOTIFICATION_ID, notification)
+
+        return notificationBuilder.build()
     }
 
     /**
@@ -369,12 +366,15 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
     /**
      * Finishes reminder actions (show/sound/vibrate) after sound or timer has ended.
      */
-    private fun finishReminderActions(activityPrefs: ActivityPrefsAccessor, runWhenDone: Runnable?) {
+    private fun finishReminderActions(activityPrefs: ActivityPrefsAccessor, runWhenDone: Runnable?, callingService: Service?) {
         // nothing to do to finish vibration
         finishBellSound()
-        cancelRingNotification(activityPrefs)
-        hideBell()
+//        cancelRingNotification(activityPrefs)
+        if (activityPrefs.isShow) {
+            hideBell()
+        }
         runWhenDone?.run()
+        callingService?.stopSelf()
     }
 
     /**
@@ -405,7 +405,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
      */
     fun cancelRingNotification(activityPrefs: ActivityPrefsAccessor) {
         if (activityPrefs.isNotification && activityPrefs.isDismissNotification) {
-            NotificationManagerCompat.from(context).cancel(RING_NOTIFICATION_ID)
+            NotificationManagerCompat.from(context).cancel(REMINDER_NOTIFICATION_ID)
         }
     }
 
@@ -421,7 +421,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
     }
 
     /**
-     * Send a newly created intent to Scheduler to update notification and setup a new bell schedule for reminder, if
+     * Send a newly created intent to SchedulerService to update notification and setup a new bell schedule for reminder, if
      * requested cancel and newly setup alarms to update noticiation status depending on day-night mode.
      */
     fun updateBellScheduleForReminder(renewDayNightAlarm: Boolean) {
@@ -429,13 +429,8 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
         if (renewDayNightAlarm) {
             scheduleUpdateStatusNotificationDayNight()
         }
-        val sender = createSchedulerBroadcastIntent(false, null, null)
-        try {
-            sender.send()
-        } catch (e: PendingIntent.CanceledException) {
-            MindBell.logError("Could not update bell schedule for reminder: " + e.message, e)
-        }
-
+        val intent = createSchedulerServiceIntent(false, null, null)
+        ContextCompat.startForegroundService(context, intent)
     }
 
     /**
@@ -447,20 +442,29 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
     }
 
     /**
-     * Create an intent to be send to Scheduler to update notification and to (re-)schedule the bell.
+     * Create a pending intent to be send to SchedulerService to update notification and to (re-)schedule the bell.
+     */
+    private fun createSchedulerServicePendingIntent(isRescheduling: Boolean, nowTimeMillis: Long?, meditationPeriod: Int?):
+            PendingIntent {
+        val intent = createSchedulerServiceIntent(isRescheduling, nowTimeMillis, meditationPeriod)
+        return PendingIntent.getService(context, SCHEDULER_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+    }
+
+    /**
+     * Create an intent to be send to SchedulerService to update notification and to (re-)schedule the bell.
      *
      * @param isRescheduling
      * True if the intents is meant for rescheduling instead of updating bell schedule.
      * @param nowTimeMillis
-     * If not null millis to be given to Scheduler as now (or nextTargetTimeMillis from the perspective of the previous
+     * If not null millis to be given to SchedulerService as now (or nextTargetTimeMillis from the perspective of the previous
      * call)
      * @param meditationPeriod
      * Zero: ramp-up, 1-(n-1): intermediate period, n: last period, n+1: beyond end
      */
-    private fun createSchedulerBroadcastIntent(isRescheduling: Boolean, nowTimeMillis: Long?, meditationPeriod: Int?): PendingIntent {
+    private fun createSchedulerServiceIntent(isRescheduling: Boolean, nowTimeMillis: Long?, meditationPeriod: Int?): Intent {
         MindBell.logDebug("Creating scheduler intent: isRescheduling=" + isRescheduling + ", nowTimeMillis=" + nowTimeMillis +
                 ", meditationPeriod=" + meditationPeriod)
-        val intent = Intent(context, Scheduler::class.java)
+        val intent = Intent(context, SchedulerService::class.java)
         if (isRescheduling) {
             intent.putExtra(EXTRA_IS_RESCHEDULING, true)
         }
@@ -470,7 +474,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
         if (meditationPeriod != null) {
             intent.putExtra(EXTRA_MEDITATION_PERIOD, meditationPeriod)
         }
-        return PendingIntent.getBroadcast(context, SCHEDULER_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        return intent
     }
 
     /**
@@ -496,36 +500,31 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
     }
 
     /**
-     * Send a newly created intent to Scheduler to update notification and setup a new bell schedule for meditation.
+     * Send a newly created intent to SchedulerService to update notification and setup a new bell schedule for meditation.
      *
      * @param nextTargetTimeMillis
-     * Millis to be given to Scheduler as now (or nextTargetTimeMillis from the perspective of the previous call)
+     * Millis to be given to SchedulerService as now (or nextTargetTimeMillis from the perspective of the previous call)
      * @param meditationPeriod
      * Zero: ramp-up, 1-(n-1): intermediate period, n: last period, n+1: beyond end
      */
-    fun updateBellScheduleForMeditation(nextTargetTimeMillis: Long, meditationPeriod: Int) {
-        MindBell.logDebug("Update bell schedule for meditation requested, nextTargetTimeMillis=" + nextTargetTimeMillis)
-        val sender = createSchedulerBroadcastIntent(false, nextTargetTimeMillis, meditationPeriod)
-        try {
-            sender.send()
-        } catch (e: PendingIntent.CanceledException) {
-            MindBell.logError("Could not update bell schedule for meditation: " + e.message, e)
-        }
-
+    fun updateBellScheduleForMeditation() {
+        MindBell.logDebug("Update bell schedule for meditation requested")
+        val intent = createSchedulerServiceIntent(false, null, null)
+        ContextCompat.startForegroundService(context, intent)
     }
 
     /**
-     * Reschedule the bell by letting AlarmManager send an intent to Scheduler.
+     * Reschedule the bell by letting AlarmManager send an intent to SchedulerService.
      *
      * @param nextTargetTimeMillis
-     * Millis to be given to Scheduler as now (or nextTargetTimeMillis from the perspective of the previous call)
+     * Millis to be given to SchedulerService as now (or nextTargetTimeMillis from the perspective of the previous call)
      * @param nextMeditationPeriod
      * null if not meditating, otherwise 0: ramp-up, 1-(n-1): intermediate period, n: last period, n+1: beyond end
      */
     fun reschedule(nextTargetTimeMillis: Long, nextMeditationPeriod: Int?) {
-        val sender = createSchedulerBroadcastIntent(true, nextTargetTimeMillis, nextMeditationPeriod)
+        val pendingIntent = createSchedulerServicePendingIntent(true, nextTargetTimeMillis, nextMeditationPeriod)
         val alarmManager = AlarmManagerCompat(context)
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextTargetTimeMillis, sender)
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextTargetTimeMillis, pendingIntent)
         val nextBellTime = TimeOfDay(nextTargetTimeMillis)
         MindBell.logDebug("Scheduled next bell alarm for " + nextBellTime.logString)
     }
@@ -693,7 +692,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
 
         private val STATUS_NOTIFICATION_ID = 0x7f030001 // historically, has been R.layout.bell for a long time
 
-        private val RING_NOTIFICATION_ID = STATUS_NOTIFICATION_ID + 1
+        val REMINDER_NOTIFICATION_ID = STATUS_NOTIFICATION_ID + 1
 
         private val SCHEDULER_REQUEST_CODE = 0
 

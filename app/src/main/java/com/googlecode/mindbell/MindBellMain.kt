@@ -43,10 +43,11 @@ import com.googlecode.mindbell.util.Utils
 import kotlinx.android.synthetic.main.countdown.*
 import kotlinx.android.synthetic.main.main.*
 import kotlinx.android.synthetic.main.meditation_dialog.*
+import kotlinx.android.synthetic.main.meditation_dialog.view.*
 
 class MindBellMain : Activity() {
 
-    private var contextAccessor: ContextAccessor? = null
+    private lateinit var contextAccessor: ContextAccessor
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,8 +60,8 @@ class MindBellMain : Activity() {
         imageViewHideIntro.setOnClickListener { flipToAppropriateView(false) }
         val ringOnceOnClickListener = View.OnClickListener {
             MindBell.logDebug("Ring once")
-            contextAccessor!!.updateStatusNotification()
-            contextAccessor!!.startReminderActions(contextAccessor!!.prefs!!.forRingingOnce(), null)
+            contextAccessor.updateStatusNotification()
+            contextAccessor.startReminderActions(contextAccessor.prefs.forRingingOnce(), null, null)
         }
         imageViewRingOncePlayCollapsed.setOnClickListener(ringOnceOnClickListener)
         imageViewRingOnceBellCollapsed.setOnClickListener(ringOnceOnClickListener)
@@ -72,7 +73,7 @@ class MindBellMain : Activity() {
      * Flip to meditation view if isMeditating is true, to bell view otherwise.
      */
     private fun flipToAppropriateView(showIntro: Boolean) {
-        viewFlipper.displayedChild = if (contextAccessor!!.prefs!!.isMeditating) 1 else if (showIntro) 3 else 2
+        viewFlipper.displayedChild = if (contextAccessor.prefs.isMeditating) 1 else if (showIntro) 3 else 2
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -93,7 +94,7 @@ class MindBellMain : Activity() {
         meditatingItem.setOnMenuItemClickListener { onMenuItemClickMeditating() }
         val activeItem = menu.findItem(R.id.active)
         val activeSwitch = activeItem.actionView as Switch
-        activeSwitch.isChecked = contextAccessor!!.prefs!!.isActive
+        activeSwitch.isChecked = contextAccessor.prefs.isActive
         activeSwitch.setOnCheckedChangeListener { buttonView, isChecked -> onCheckedChangedActive(isChecked) }
         return true
     }
@@ -102,7 +103,7 @@ class MindBellMain : Activity() {
      * Handles click on menu item active.
      */
     private fun onMenuItemClickMeditating(): Boolean {
-        if (!contextAccessor!!.prefs!!.isMeditating) {
+        if (!contextAccessor.prefs.isMeditating) {
             showMeditationDialog()
         } else {
             toggleMeditating()
@@ -114,37 +115,37 @@ class MindBellMain : Activity() {
      * Creates and shows dialog to start meditation.
      */
     private fun showMeditationDialog() {
-        val prefs = contextAccessor!!.prefs
+        val prefs = contextAccessor.prefs
         val view = layoutInflater.inflate(R.layout.meditation_dialog, null)
-        textViewRampUpTime.text = MinutesIntervalPickerPreference.deriveSummary(prefs!!.rampUpTime, false)
-        attachIntervalPickerDialog(textViewRampUpTimeLabel, textViewRampUpTime, R.string.prefsRampUpTime, MIN_RAMP_UP_TIME, false, null)
-        textViewMeditationDuration.text = MinutesIntervalPickerPreference.deriveSummary(prefs.meditationDuration, true)
-        attachIntervalPickerDialog(textViewMeditationDurationLabel, textViewMeditationDuration, R.string.prefsMeditationDuration,
+        view.textViewRampUpTime.text = MinutesIntervalPickerPreference.deriveSummary(prefs.rampUpTime, false)
+        attachIntervalPickerDialog(view.textViewRampUpTimeLabel, view.textViewRampUpTime, R.string.prefsRampUpTime, MIN_RAMP_UP_TIME, false, null)
+        view.textViewMeditationDuration.text = MinutesIntervalPickerPreference.deriveSummary(prefs.meditationDuration, true)
+        attachIntervalPickerDialog(view.textViewMeditationDurationLabel, view.textViewMeditationDuration, R.string.prefsMeditationDuration,
                 MIN_MEDITATION_DURATION, true, object : OnPickListener {
             override fun onPick(): Boolean {
-                return isValidMeditationSetup(textViewMeditationDuration, textViewMeditationDuration,
-                        textViewNumberOfPeriods, textViewPatternOfPeriods)
+                return isValidMeditationSetup(view.textViewMeditationDuration, view.textViewMeditationDuration,
+                        view.textViewNumberOfPeriods, view.textViewPatternOfPeriods)
             }
         })
-        textViewNumberOfPeriods.text = prefs.numberOfPeriods.toString()
-        attachNumberPickerDialog(textViewNumberOfPeriodsLabel, textViewNumberOfPeriods, R.string.prefsNumberOfPeriods, 1, 99,
+        view.textViewNumberOfPeriods.text = prefs.numberOfPeriods.toString()
+        attachNumberPickerDialog(view.textViewNumberOfPeriodsLabel, view.textViewNumberOfPeriods, R.string.prefsNumberOfPeriods, 1, 99,
                 object : OnPickListener {
                     override fun onPick(): Boolean {
-                        val numberOfPeriods = Integer.valueOf(textViewNumberOfPeriods.text.toString())!!
+                        val numberOfPeriods = Integer.valueOf(view.textViewNumberOfPeriods.text.toString())!!
                         textViewPatternOfPeriods.text = PrefsAccessor.derivePatternOfPeriods(numberOfPeriods)
-                        return isValidMeditationSetup(textViewNumberOfPeriods, textViewMeditationDuration, textViewNumberOfPeriods,
-                                textViewPatternOfPeriods)
+                        return isValidMeditationSetup(view.textViewNumberOfPeriods, view.textViewMeditationDuration, view.textViewNumberOfPeriods,
+                                view.textViewPatternOfPeriods)
                     }
                 })
-        imageViewExplanationNumberOfPeriods.setOnClickListener {
+        view.imageViewExplanationNumberOfPeriods.setOnClickListener {
             AlertDialog.Builder(this@MindBellMain) //
                     .setTitle(R.string.prefsNumberOfPeriods) //
                     .setMessage(R.string.explanationNumberOfPeriods) //
                     .setPositiveButton(android.R.string.ok, null) //
                     .show()
         }
-        textViewPatternOfPeriods.text = prefs.patternOfPeriods
-        attachEditTextDialog(textViewPatternOfPeriodsLabel, textViewPatternOfPeriods, R.string.prefsPatternOfPeriods,
+        view.textViewPatternOfPeriods.text = prefs.patternOfPeriods
+        attachEditTextDialog(view.textViewPatternOfPeriodsLabel, view.textViewPatternOfPeriods, R.string.prefsPatternOfPeriods,
                 object : Normalizer {
                     override fun normalize(value: String): String {
                         return value
@@ -153,20 +154,20 @@ class MindBellMain : Activity() {
                     }
                 }, object : OnEnterListener {
             override fun onEnter(value: String): Boolean {
-                textViewNumberOfPeriods.text = PrefsAccessor.deriveNumberOfPeriods(value).toString()
-                return isValidMeditationSetup(textViewPatternOfPeriods, textViewMeditationDuration, textViewNumberOfPeriods,
-                        textViewPatternOfPeriods)
+                view.textViewNumberOfPeriods.text = PrefsAccessor.deriveNumberOfPeriods(value).toString()
+                return isValidMeditationSetup(view.textViewPatternOfPeriods, view.textViewMeditationDuration, view.textViewNumberOfPeriods,
+                        view.textViewPatternOfPeriods)
             }
         })
-        imageViewExplanationPatternOfPeriods.setOnClickListener {
+        view.imageViewExplanationPatternOfPeriods.setOnClickListener {
             AlertDialog.Builder(this@MindBellMain) //
                     .setTitle(R.string.prefsPatternOfPeriods) //
                     .setMessage(R.string.explanationPatternOfPeriods) //
                     .setPositiveButton(android.R.string.ok, null) //
                     .show()
         }
-        checkBoxKeepScreenOn.isChecked = prefs.isKeepScreenOn
-        checkBoxStopMeditationAutomatically.isChecked = prefs.isStopMeditationAutomatically
+        view.checkBoxKeepScreenOn.isChecked = prefs.isKeepScreenOn
+        view.checkBoxStopMeditationAutomatically.isChecked = prefs.isStopMeditationAutomatically
         val meditationDialog = AlertDialog.Builder(this) //
                 .setTitle(R.string.title_meditation_dialog) //
                 .setView(view) //
@@ -176,13 +177,13 @@ class MindBellMain : Activity() {
                 .show()
         // Ensure dialog is dismissed if input has been successfully validated
         meditationDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-            onClickStartMeditation(prefs, meditationDialog, textViewPatternOfPeriods, textViewMeditationDuration,
-                    textViewNumberOfPeriods, textViewRampUpTime, checkBoxKeepScreenOn, checkBoxStopMeditationAutomatically,
+            onClickStartMeditation(prefs, meditationDialog, view.textViewPatternOfPeriods, view.textViewMeditationDuration,
+                    view.textViewNumberOfPeriods, view.textViewRampUpTime, view.checkBoxKeepScreenOn, view.checkBoxStopMeditationAutomatically,
                     false)
         }
         meditationDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
-            onClickStartMeditation(prefs, meditationDialog, textViewPatternOfPeriods, textViewMeditationDuration,
-                    textViewNumberOfPeriods, textViewRampUpTime, checkBoxKeepScreenOn, checkBoxStopMeditationAutomatically,
+            onClickStartMeditation(prefs, meditationDialog, view.textViewPatternOfPeriods, view.textViewMeditationDuration,
+                    view.textViewNumberOfPeriods, view.textViewRampUpTime, view.checkBoxKeepScreenOn, view.checkBoxStopMeditationAutomatically,
                     true)
         }
     }
@@ -211,9 +212,9 @@ class MindBellMain : Activity() {
      * Handles change in checked state of active switch.
      */
     private fun onCheckedChangedActive(isChecked: Boolean): Boolean {
-        val prefsAccessor = contextAccessor!!.prefs
-        prefsAccessor!!.isActive = isChecked // toggle active/inactive
-        contextAccessor!!.updateBellScheduleForReminder(true)
+        val prefsAccessor = contextAccessor.prefs
+        prefsAccessor.isActive = isChecked // toggle active/inactive
+        contextAccessor.updateBellScheduleForReminder(true)
         val feedback = getText(if (prefsAccessor.isActive) R.string.summaryActive else R.string.summaryNotActive)
         Toast.makeText(this, feedback, Toast.LENGTH_SHORT).show()
         return true
@@ -339,7 +340,7 @@ class MindBellMain : Activity() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        val isMeditating = contextAccessor!!.prefs!!.isMeditating
+        val isMeditating = contextAccessor.prefs.isMeditating
         val meditatingItem = menu.findItem(R.id.meditating)
         meditatingItem.setIcon(if (isMeditating) R.drawable.ic_action_meditating_off else R.drawable.ic_action_meditating_on)
         meditatingItem.setTitle(if (isMeditating) R.string.prefsMeditatingOff else R.string.prefsMeditatingOn)
@@ -355,19 +356,19 @@ class MindBellMain : Activity() {
     override fun onResume() {
         if (intent.getBooleanExtra(PrefsAccessor.EXTRA_STOP_MEDITATION, false)) {
             MindBell.logDebug("MindBellMain received stop meditation intent")
-            // If the activity has once been opened from the Scheduler by automatically stopping meditation further screen
+            // If the activity has once been opened from the SchedulerService by automatically stopping meditation further screen
             // rotations will stop meditation, too, because getIntent() always returns the intent that initially opened the
             // activity. Hence the extra information must be removed to avoid stopping medtiation in these other cases.
             intent.removeExtra(PrefsAccessor.EXTRA_STOP_MEDITATION)
-            // Scheduler detected meditation to be over and sent intent to leave meditation mode. To be sure user has not stopped
+            // SchedulerService detected meditation to be over and sent intent to leave meditation mode. To be sure user has not stopped
             // meditation in the meantime (between sending and receiving intent) we check that meditation is still running.
-            if (contextAccessor!!.prefs!!.isMeditating) {
+            if (contextAccessor.prefs.isMeditating) {
                 toggleMeditating() // as meditation is still running this means to stop the meditation mode
             }
         } else {
             flipToAppropriateView(false)
-            if (contextAccessor!!.prefs!!.isMeditating) {
-                countdownView.startDisplayUpdateTimer(contextAccessor!!)
+            if (contextAccessor.prefs.isMeditating) {
+                countdownView.startDisplayUpdateTimer(contextAccessor)
             }
             invalidateOptionsMenu() // re-call onPrepareOptionsMenu(), maybe active setting has been changed via preferences
         }
@@ -378,8 +379,8 @@ class MindBellMain : Activity() {
      * Toggle meditating state, update view if requested and show information to user.
      */
     private fun toggleMeditating() {
-        val prefs = contextAccessor!!.prefs
-        prefs!!.isMeditating = !prefs.isMeditating // toggle active/inactive
+        val prefs = contextAccessor.prefs
+        prefs.isMeditating = !prefs.isMeditating // toggle active/inactive
         if (prefs.isMeditating) {
             val rampUpStartingTimeMillis = System.currentTimeMillis()
             val rampUpTimeMillis = if (prefs.isStartMeditationDirectly) 0L else prefs.rampUpTimeMillis
@@ -389,16 +390,16 @@ class MindBellMain : Activity() {
             prefs.rampUpStartingTimeMillis = rampUpStartingTimeMillis
             prefs.meditationStartingTimeMillis = meditationStartingTimeMillis
             prefs.meditationEndingTimeMillis = meditationEndingTimeMillis
-            contextAccessor!!.updateBellScheduleForMeditation(rampUpStartingTimeMillis, if (prefs.isStartMeditationDirectly) 1 else 0)
-            countdownView.startDisplayUpdateTimer(contextAccessor!!)
+            contextAccessor.updateBellScheduleForMeditation()
+            countdownView.startDisplayUpdateTimer(contextAccessor)
             if (prefs.isKeepScreenOn) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 MindBell.logDebug("Keep screen on activated")
             }
         } else {
             countdownView.stopDisplayUpdateTimer()
-            contextAccessor!!.finishBellSound()
-            contextAccessor!!.updateBellScheduleForReminder(false)
+            contextAccessor.finishBellSound()
+            contextAccessor.updateBellScheduleForReminder(false)
             if (prefs.isKeepScreenOn) {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 MindBell.logDebug("Keep screen on deactivated")
@@ -412,7 +413,7 @@ class MindBellMain : Activity() {
 
     override fun onPause() {
         // Stop meditation when screen is rotated, otherwise timer states had to be saved
-        if (contextAccessor!!.prefs!!.isMeditating) {
+        if (contextAccessor.prefs.isMeditating) {
             countdownView.stopDisplayUpdateTimer()
         }
         super.onPause()
@@ -434,16 +435,16 @@ class MindBellMain : Activity() {
 
     private fun hasShownPopup(): Boolean {
         val versionCode = Utils.getApplicationVersionCode(packageManager, packageName)
-        val versionCodePopupShownFor = contextAccessor!!.prefs!!.popup
+        val versionCodePopupShownFor = contextAccessor.prefs.popup
         return versionCode == versionCodePopupShownFor
     }
 
     private fun setPopupShown(shown: Boolean) {
         if (shown) {
             val versionCode = Utils.getApplicationVersionCode(packageManager, packageName)
-            contextAccessor!!.prefs!!.popup = versionCode
+            contextAccessor.prefs.popup = versionCode
         } else {
-            contextAccessor!!.prefs!!.resetPopup()
+            contextAccessor.prefs.resetPopup()
         }
     }
 

@@ -65,7 +65,10 @@
             android:noHistory="true">
         </activity>
 
-        <receiver android:name=".Scheduler">
+        <service android:name=".SchedulerService">
+        </service>
+
+        <receiver android:name=".RestartBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>

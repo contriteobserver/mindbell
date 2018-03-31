@@ -2,8 +2,7 @@
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
- *     Copyright (C) 2010-2014 Marc Schroeder
- *     Copyright (C) 2014-2017 Uwe Damken
+ *     Copyright (C) 2014-2018 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,15 +24,16 @@ import android.content.Intent
 import com.googlecode.mindbell.accessors.ContextAccessor
 
 /**
- * Update status notification on changes in system settings to display an active icon or active but muted icon or no icon at all.
+ * Restarts reminder scheduling and (just in case) stops meditation after after the app has been restarted (due to a reboot or
+ * update).
  */
-class UpdateStatusNotification : BroadcastReceiver() { // TODO RefreshBroadcastReceiver
+class RestartBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        MindBell.logDebug("Update status notification intent received " + intent.action!!)
+        MindBell.logDebug("RestartBroadcastReceiver received intent with action ${intent.action} ")
         val contextAccessor = ContextAccessor.getInstance(context)
-        contextAccessor.updateStatusNotification()
-        contextAccessor.scheduleUpdateStatusNotificationDayNight()
+        contextAccessor.prefs.isMeditating = false // do not continue meditation after rebooting during meditation (probably rare)
+        contextAccessor.updateBellScheduleForReminder(true)
     }
 
 }
