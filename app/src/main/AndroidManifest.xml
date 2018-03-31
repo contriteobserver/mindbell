@@ -46,18 +46,12 @@
             android:name=".MindBellPreferences"
             android:label="@string/preferencesTitle"
             android:parentActivityName="MindBellMain">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
         </activity>
 
         <activity
             android:name=".MindBell"
             android:excludeFromRecents="true"
             android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
         </activity>
 
         <activity
@@ -69,9 +63,6 @@
         <activity
             android:name=".MuteActivity"
             android:noHistory="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
         </activity>
 
         <receiver android:name=".Scheduler">
