@@ -40,19 +40,18 @@ object SchedulerLogic {
      */
     fun getNextTargetTimeMillis(nowTimeMillis: Long, prefs: PrefsAccessor): Long {
         val meanInterval = prefs.interval
-        val randomize = prefs.isRandomize
-        val normalizeValue = prefs.normalize
-        val normalize = PrefsAccessor.isNormalize(normalizeValue)
-        val randomizedInterval = if (randomize) getRandomInterval(meanInterval) else meanInterval
+        val isRandomize = prefs.isRandomize
+        val isNormalize = prefs.isNormalize
+        val randomizedInterval = if (isRandomize) getRandomInterval(meanInterval) else meanInterval
         var targetTimeMillis = nowTimeMillis + randomizedInterval
-        val normalizeMillis = normalizeValue * ONE_MINUTE_MILLIS
-        targetTimeMillis = normalize(targetTimeMillis, meanInterval, normalize, normalizeMillis)
+        val normalizeMillis = prefs.normalize * ONE_MINUTE_MILLIS
+        targetTimeMillis = normalize(targetTimeMillis, meanInterval, isNormalize, normalizeMillis)
         if (!TimeOfDay(targetTimeMillis).isDaytime(prefs)) { // inactive time?
             targetTimeMillis = (getNextDaytimeStartInMillis(targetTimeMillis, prefs.daytimeStart, prefs.activeOnDaysOfWeek)
                     // start of next day time millis
-                    + (if (randomize) randomizedInterval - meanInterval / 2 else 0)
+                    + (if (isRandomize) randomizedInterval - meanInterval / 2 else 0)
                     // if requested randomize but never before start of day
-                    + if (normalize) normalizeMillis else 0) // if requested normalize to minute of first ring a day
+                    + if (isNormalize) normalizeMillis else 0) // if requested normalize to minute of first ring a day
         }
         return targetTimeMillis
     }

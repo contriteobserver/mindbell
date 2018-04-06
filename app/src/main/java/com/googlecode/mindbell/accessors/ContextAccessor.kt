@@ -52,14 +52,9 @@ import java.io.IOException
 import java.text.MessageFormat
 import java.util.*
 
-class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
+class ContextAccessor private constructor(val context: Context) : AudioManager.OnAudioFocusChangeListener {
 
-    // ApplicationContext of MindBell
-    private val context: Context
-
-    // Accessor to all preferences
-    var prefs: PrefsAccessor
-        private set
+    private var prefs: PrefsAccessor = PrefsAccessor.getInstance(context)
 
     val reasonMutedTill: String
         get() {
@@ -132,22 +127,6 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
         }
 
     /**
-     * Constructor is private just in case we want to make this a singleton.
-     */
-    private constructor(context: Context, logSettings: Boolean) {
-        this.context = context.applicationContext
-        this.prefs = PrefsAccessor(context, logSettings)
-    }
-
-    /**
-     * Constructor is protected to allow for JUnit tests only.
-     */
-    constructor(context: Context, prefs: PrefsAccessor) {
-        this.context = context
-        this.prefs = prefs
-    }
-
-    /**
      * Return whether bell should be muted and show reason message if shouldShowMessage is true.
      */
     fun isMuteRequested(shouldShowMessage: Boolean): Boolean {
@@ -190,36 +169,37 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
         return if (Build.VERSION.SDK_INT >= 17) {
             Global.AIRPLANE_MODE_ON
         } else {
+            @Suppress("DEPRECATION") // deprecated now but not for older API levels < 17
             Settings.System.AIRPLANE_MODE_ON
         }
     }
 
     /**
-     * Start reminder actions (show/sound/vibrate) and setup handler to finish the actions after sound or timer ends.
+     * Start interrupt actions (show/sound/vibrate) and setup handler to finish the actions after sound or timer ends.
      */
-    fun startReminderActions(activityPrefs: ActivityPrefsAccessor, meditationStopper: Runnable?, callingService: Service?) {
+    fun startInterruptActions(interruptSettings: InterruptSettings, meditationStopper: Runnable?, callingService: Service? = null) {
 
         // Stop an already ongoing sound, this isn't wrong when phone and bell are muted, too
         finishBellSound()
 
         // Runnable that finishes all reminder actions and stops the meditation if requested. It is either executed after the
         // sound has been played or after a timer has expired.
-        val reminderActionsFinisher = Runnable { finishReminderActions(activityPrefs, meditationStopper, callingService) }
+        val reminderActionsFinisher = Runnable { finishReminderActions(interruptSettings, meditationStopper, callingService) }
 
         // Show bell if wanted
-        if (activityPrefs.isShow) {
+        if (interruptSettings.isShow) {
             showBell()
         }
 
         // Raise alarm volume to the max but keep the original volume for reset by finishBellSound() and start playing sound if
         // requested by preferences
         var playingSoundStarted = false
-        if (activityPrefs.isSound) {
-            playingSoundStarted = startPlayingSound(activityPrefs, reminderActionsFinisher)
+        if (interruptSettings.isSound) {
+            playingSoundStarted = startPlayingSound(interruptSettings, reminderActionsFinisher)
         }
 
         // Explicitly start vibration if not already done by ring notification
-        if (activityPrefs.isVibrate && !activityPrefs.isNotification) {
+        if (interruptSettings.isVibrate && !interruptSettings.isNotification) {
             startVibration()
         }
 
@@ -273,10 +253,10 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
     /**
      * Create the reminder notification which is to be displayed when executing reminder actions.
      */
-    fun createReminderNotification(activityPrefs: ActivityPrefsAccessor? = null): Notification {
+    fun createReminderNotification(interruptSettings: InterruptSettings? = null): Notification {
 
         // Create notification channel
-        NotificationManagerCompatExtension.from(context).createNotificationChannel(REMINDER_NOTIFICATION_CHANNEL_ID, context
+        NotificationManagerCompatExtension.getInstance(context).createNotificationChannel(REMINDER_NOTIFICATION_CHANNEL_ID, context
                 .getText(R.string.prefsCategoryRingNotification).toString(), context.getText(R.string.summaryNotification).toString())
 
         // Derive visibility
@@ -286,6 +266,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
             NotificationCompat.VISIBILITY_PRIVATE
 
         // Now create the notification
+        @Suppress("DEPRECATION") // getColor() deprecated now but not for older API levels < 23
         val notificationBuilder = NotificationCompat.Builder(context.applicationContext, REMINDER_NOTIFICATION_CHANNEL_ID) //
                 .setCategory(NotificationCompat.CATEGORY_ALARM) //
                 .setAutoCancel(true) // cancel notification on touch
@@ -293,7 +274,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
                 .setContentTitle(prefs.notificationTitle) //
                 .setContentText(prefs.notificationText).setSmallIcon(R.drawable.ic_stat_bell_ring) //
                 .setVisibility(visibility)
-        if (activityPrefs != null && activityPrefs.isVibrate) {
+        if (interruptSettings != null && interruptSettings.isVibrate) {
             notificationBuilder.setVibrate(prefs.vibrationPattern)
         }
 
@@ -304,8 +285,8 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
      * Start playing bell sound and call runWhenDone when playing finishes but only if bell is not muted - returns true when
      * sound has been started, false otherwise.
      */
-    private fun startPlayingSound(activityPrefs: ActivityPrefsAccessor, reminderActionsFinisher: Runnable): Boolean {
-        val bellUri = activityPrefs.getSoundUri(context)
+    private fun startPlayingSound(interruptSettings: InterruptSettings, reminderActionsFinisher: Runnable): Boolean {
+        val bellUri = interruptSettings.getSoundUri()
         audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         if (prefs.isNoSoundOnMusic && audioManager!!.isMusicActive) {
             MindBell.logDebug("Sound suppressed because setting is no sound on music and music is playing")
@@ -339,14 +320,14 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
         mediaPlayer = MediaPlayer()
         mediaPlayer!!.setAudioStreamType(prefs.audioStream)
         if (!prefs.isUseAudioStreamVolumeSetting) { // care about setting the volume
-            val bellVolume = activityPrefs.volume
+            val bellVolume = interruptSettings.volume
             mediaPlayer!!.setVolume(bellVolume, bellVolume)
         }
         try {
             try {
                 mediaPlayer!!.setDataSource(context, bellUri)
             } catch (e: IOException) { // probably because of withdrawn permissions, hence use default bell
-                mediaPlayer!!.setDataSource(context, prefs.getDefaultReminderBellSoundUri(context)!!)
+                mediaPlayer!!.setDataSource(context, prefs.getDefaultReminderBellSoundUri()!!)
             }
 
             mediaPlayer!!.prepare()
@@ -366,11 +347,11 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
     /**
      * Finishes reminder actions (show/sound/vibrate) after sound or timer has ended.
      */
-    private fun finishReminderActions(activityPrefs: ActivityPrefsAccessor, runWhenDone: Runnable?, callingService: Service?) {
+    private fun finishReminderActions(interruptSettings: InterruptSettings, runWhenDone: Runnable?, callingService: Service?) {
         // nothing to do to finish vibration
         finishBellSound()
-//        cancelRingNotification(activityPrefs)
-        if (activityPrefs.isShow) {
+//        cancelRingNotification(interruptSettings)
+        if (interruptSettings.isShow) {
             hideBell()
         }
         runWhenDone?.run()
@@ -403,8 +384,8 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
     /**
      * Cancel the ring notification if ring notification and its dismissal is requested.
      */
-    fun cancelRingNotification(activityPrefs: ActivityPrefsAccessor) {
-        if (activityPrefs.isNotification && activityPrefs.isDismissNotification) {
+    fun cancelRingNotification(interruptSettings: InterruptSettings) {
+        if (interruptSettings.isNotification && interruptSettings.isDismissNotification) {
             NotificationManagerCompat.from(context).cancel(REMINDER_NOTIFICATION_ID)
         }
     }
@@ -482,7 +463,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
      */
     private fun scheduleUpdateStatusNotification(targetTimeMillis: Long, requestCode: Int, info: String) {
         val sender = createRefreshBroadcastIntent(requestCode)
-        val alarmManager = AlarmManagerCompat(context)
+        val alarmManager = AlarmManagerCompat.getInstance(context)
         alarmManager.cancel(sender) // cancel old alarm, it has either gone away or became obsolete
         if (prefs.isActive) {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, targetTimeMillis, sender)
@@ -501,11 +482,6 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
 
     /**
      * Send a newly created intent to SchedulerService to update notification and setup a new bell schedule for meditation.
-     *
-     * @param nextTargetTimeMillis
-     * Millis to be given to SchedulerService as now (or nextTargetTimeMillis from the perspective of the previous call)
-     * @param meditationPeriod
-     * Zero: ramp-up, 1-(n-1): intermediate period, n: last period, n+1: beyond end
      */
     fun updateBellScheduleForMeditation() {
         MindBell.logDebug("Update bell schedule for meditation requested")
@@ -523,7 +499,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
      */
     fun reschedule(nextTargetTimeMillis: Long, nextMeditationPeriod: Int?) {
         val pendingIntent = createSchedulerServicePendingIntent(true, nextTargetTimeMillis, nextMeditationPeriod)
-        val alarmManager = AlarmManagerCompat(context)
+        val alarmManager = AlarmManagerCompat.getInstance(context)
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextTargetTimeMillis, pendingIntent)
         val nextBellTime = TimeOfDay(nextTargetTimeMillis)
         MindBell.logDebug("Scheduled next bell alarm for " + nextBellTime.logString)
@@ -623,7 +599,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
         }
 
         // Create notification channel
-        NotificationManagerCompatExtension.from(context).createNotificationChannel(STATUS_NOTIFICATION_CHANNEL_ID, context
+        NotificationManagerCompatExtension.getInstance(context).createNotificationChannel(STATUS_NOTIFICATION_CHANNEL_ID, context
                 .getText(R.string.prefsCategoryStatusNotification).toString(), context.getText(R.string.summaryStatus).toString())
 
         // Now do the notification update
@@ -631,6 +607,7 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
         val openAppIntent = PendingIntent.getActivity(context, 0, Intent(context, targetClass), PendingIntent.FLAG_UPDATE_CURRENT)
         val muteIntent = PendingIntent.getActivity(context, 2, Intent(context, MuteActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT)
         val visibility = if (prefs.isStatusVisibilityPublic) NotificationCompat.VISIBILITY_PUBLIC else NotificationCompat.VISIBILITY_PRIVATE
+        @Suppress("DEPRECATION") // getColor() deprecated now but not for older API levels < 23
         val notificationBuilder = NotificationCompat.Builder(context.applicationContext, STATUS_NOTIFICATION_CHANNEL_ID) //
                 .setCategory(NotificationCompat.CATEGORY_STATUS) //
                 .setColor(context.resources.getColor(R.color.backgroundColor)) //
@@ -710,14 +687,8 @@ class ContextAccessor : AudioManager.OnAudioFocusChangeListener {
          * Returns an accessor for the given context, this call also validates the preferences.
          */
         fun getInstance(context: Context): ContextAccessor {
-            return ContextAccessor(context, false)
+            return ContextAccessor(context.applicationContext)
         }
 
-        /**
-         * Returns an accessor for the given context, this call also validates the preferences.
-         */
-        fun getInstanceAndLogPreferences(context: Context): ContextAccessor {
-            return ContextAccessor(context, true)
-        }
     }
 }

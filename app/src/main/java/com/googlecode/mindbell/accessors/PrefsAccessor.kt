@@ -31,14 +31,13 @@ import com.googlecode.mindbell.util.TimeOfDay
 import com.googlecode.mindbell.util.Utils
 import java.util.*
 
-class PrefsAccessor
-/**
- * Constructs an accessor for preferences in the given context, please use [ContextAccessor.getPrefs] instead of
- * calling this directly.
- */
-(context: Context, logSettings: Boolean) {
-    // *The* SharedPreferences
-    private val settings: SharedPreferences
+class PrefsAccessor private constructor(val context: Context) {
+
+    private val settings: SharedPreferences = context.getSharedPreferences(context.packageName + "_preferences", Context.MODE_PRIVATE)
+
+    private val weekdayEntryValues = context.resources.getStringArray(R.array.weekdayEntryValues)
+
+    private val weekdayAbbreviationEntries = context.resources.getStringArray(R.array.weekdayAbbreviationEntries)
 
     // Map of all used preferences - with type and default value - by resid
     private val preferenceMap = TreeMap<Int, Preference>()
@@ -46,27 +45,24 @@ class PrefsAccessor
     // Map of allowed internal values for a string or string set preference by resid
     private val entryValuesMap = HashMap<Int, Array<String>>()
 
-    private val weekdayEntryValues: Array<String>
-    private val weekdayAbbreviationEntries: Array<String>
+    private val interruptSettingsForRegularOperation = InterruptSettingsForRegularOperation()
 
-    private val activityPrefsForRegularOperation = ActivityPrefsAccessorForRegularOperation()
+    private val interruptSettingsForRingingOnce = InterruptSettingsForRingingOnce()
 
-    private val activityPrefsForRingingOnce = ActivityPrefsAccessorForRingingOnce()
+    private val interruptSettingsForMeditationBeginning = InterruptSettingsForMeditationBeginning()
 
-    private val activityPrefsForMeditationBeginning = ActivityPrefsAccessorForMeditationBeginning()
+    private val interruptSettingsForMeditationInterrupting = InterruptSettingsForMeditationInterrupting()
 
-    private val activityPrefsForMeditationInterrupting = ActivityPrefsAccessorForMeditationInterrupting()
-
-    private val activityPrefsForMeditationEnding = ActivityPrefsAccessorForMeditationEnding()
+    private val interruptSettingsForMeditationEnding = InterruptSettingsForMeditationEnding()
 
     val vibrationPattern: LongArray
         get() = getVibrationPattern(pattern)
 
-    val pattern: String
+    private val pattern: String
         get() = getStringSetting(keyPattern)
 
     val isNormalize: Boolean
-        get() = isNormalize(normalize)
+        get() = normalize >= 0
 
     val normalize: Int
         get() = Integer.valueOf(getStringSetting(keyNormalize))!!
@@ -100,26 +96,6 @@ class PrefsAccessor
     val isDismissNotification: Boolean
         get() = getBooleanSetting(keyDismissNotification)
 
-    // Warning: Similar code in MindBellPreferences#setMultiSelectListPreferenceSummary()
-    // internal weekday value in locale oriented order
-    // active on this day?
-    // add day to the list of active days
-    val activeOnDaysOfWeekString: String
-        get() {
-            val activeOnDaysOfWeek = activeOnDaysOfWeek
-            val sb = StringBuilder()
-            for (dayOfWeekValue in weekdayEntryValues) {
-                val dayOfWeekValueAsInteger = Integer.valueOf(dayOfWeekValue)
-                if (activeOnDaysOfWeek.contains(dayOfWeekValueAsInteger)) {
-                    if (sb.length > 0) {
-                        sb.append(", ")
-                    }
-                    sb.append(getWeekdayAbbreviation(dayOfWeekValueAsInteger!!))
-                }
-            }
-            return sb.toString()
-        }
-
     val activeOnDaysOfWeek: Set<Int>
         get() {
             val strings = getStringSetSetting(keyActiveOnDaysOfWeek)
@@ -132,6 +108,23 @@ class PrefsAccessor
 
     val audioStream: Int
         get() = getAudioStream(getStringSetting(keyAudioStream))
+
+    val activeOnDaysOfWeekString: String
+        get() {
+            // Warning: Similar code in MindBellPreferences#setMultiSelectListPreferenceSummary()
+            val activeOnDaysOfWeek = activeOnDaysOfWeek
+            val sb = StringBuilder()
+            for (dayOfWeekValue in weekdayEntryValues) {
+                val dayOfWeekValueAsInteger = Integer.valueOf(dayOfWeekValue) // internal weekday value in locale oriented order
+                if (activeOnDaysOfWeek.contains(dayOfWeekValueAsInteger)) { // active on this day?
+                    if (sb.isNotEmpty()) {
+                        sb.append(", ")
+                    }
+                    sb.append(getWeekdayAbbreviation(dayOfWeekValueAsInteger!!)) // add day to the list of active days
+                }
+            }
+            return sb.toString()
+        }
 
     val isUseAudioStreamVolumeSetting: Boolean
         get() = getBooleanSetting(keyUseAudioStreamVolumeSetting)
@@ -258,14 +251,16 @@ class PrefsAccessor
         set(popup) = setSetting(keyPopup, popup)
 
     init {
-        settings = context.getSharedPreferences(context.packageName + "_preferences", Context.MODE_PRIVATE)
 
-        // Define entries and entry values
-        weekdayEntryValues = context.resources.getStringArray(R.array.weekdayEntryValues)
-        weekdayAbbreviationEntries = context.resources.getStringArray(R.array.weekdayAbbreviationEntries)
+        // Define all preference keys and their default values
+        fillPreferenceMap()
 
-        // Check the settings and reset invalid ones
-        checkSettings(context, logSettings)
+        // Map preference keys to their allowed entryValues
+        fillEntryValuesMap()
+
+        // Check that any data in the SharedPreferences are of the expected type
+        checkSettings()
+
     }
 
     /**
@@ -295,16 +290,14 @@ class PrefsAccessor
      * @return
      */
     private fun getSetting(preference: Preference): Any {
-        when (preference.type) {
-            BOOLEAN -> return settings.getBoolean(preference.key, preference.defaultValue as Boolean)
-            FLOAT -> return settings.getFloat(preference.key, preference.defaultValue as Float)
-            INTEGER -> return settings.getInt(preference.key, preference.defaultValue as Int)
-            LONG -> return settings.getLong(preference.key, preference.defaultValue as Long)
-            STRING, TIME_STRING -> return settings.getString(preference.key, preference.defaultValue as String)
-            STRING_SET -> return settings.getStringSet(preference.key, preference.defaultValue as Set<String>)
-            else -> {
-                throw IllegalArgumentException("Preference '" + preference.key + "' has a non supported type: " + preference.type)
-            }
+        @Suppress("UNCHECKED_CAST") // it's sure a string set
+        return when (preference.type) {
+            BOOLEAN -> settings.getBoolean(preference.key, preference.defaultValue as Boolean)
+            FLOAT -> settings.getFloat(preference.key, preference.defaultValue as Float)
+            INTEGER -> settings.getInt(preference.key, preference.defaultValue as Int)
+            LONG -> settings.getLong(preference.key, preference.defaultValue as Long)
+            STRING, TIME_STRING -> settings.getString(preference.key, preference.defaultValue as String)
+            STRING_SET -> settings.getStringSet(preference.key, preference.defaultValue as Set<String>)
         }
     }
 
@@ -316,75 +309,10 @@ class PrefsAccessor
      * Checks that any data in the SharedPreferences are of the expected type. Should we find anything that doesn't fit the
      * expectations, we delete it and recreate it with it's default value.
      */
-    fun checkSettings(context: Context, logSettings: Boolean) {
-
-        // Define all preference keys and their default values
-        addPreference(keyActive, false, BOOLEAN, context)
-        addPreference(keyActiveOnDaysOfWeek, HashSet(Arrays.asList(*arrayOf("1", "2", "3", "4", "5", "6", "7"))),
-                STRING_SET, context)
-        addPreference(keyAudioStream, "0", STRING, context)
-        addPreference(keyDismissNotification, false, BOOLEAN, context)
-        addPreference(keyEnd, "21:00", TIME_STRING, context)
-        addPreference(keyFrequency, "00:15", TIME_STRING, context) // 15 min
-        addPreference(keyKeepScreenOn, true, BOOLEAN, context)
-        addPreference(keyMeditating, false, BOOLEAN, context)
-        addPreference(keyMeditationBeginningBell, "3", STRING, context)
-        addPreference(keyMeditationDuration, "00:25", TIME_STRING, context)
-        addPreference(keyMeditationEndingBell, "2", STRING, context)
-        addPreference(keyMeditationEndingTimeMillis, -1L, LONG, context)
-        addPreference(keyMeditationInterruptingBell, "1", STRING, context)
-        addPreference(keyMeditationStartingTimeMillis, -1L, LONG, context)
-        addPreference(keyMuteInFlightMode, false, BOOLEAN, context)
-        addPreference(keyMuteOffHook, true, BOOLEAN, context)
-        addPreference(keyMutedTill, -1L, LONG, context)
-        addPreference(keyMuteWithAudioStream, true, BOOLEAN, context)
-        addPreference(keyMuteWithPhone, true, BOOLEAN, context)
-        addPreference(keyNormalize, NORMALIZE_NONE, STRING, context)
-        addPreference(keyNoSoundOnMusic, false, BOOLEAN, context)
-        addPreference(keyNotification, false, BOOLEAN, context)
-        addPreference(keyNotificationText, context.getText(R.string.prefsNotificationTextDefault), STRING, context)
-        addPreference(keyNotificationTitle, context.getText(R.string.prefsNotificationTitleDefault), STRING, context)
-        addPreference(keyNotificationVisibilityPublic, true, BOOLEAN, context)
-        addPreference(keyOriginalVolume, -1, INTEGER, context)
-        addPreference(keyPattern, "100:200:100:600", STRING, context)
-        addPreference(keyPatternOfPeriods, "x", STRING, context)
-        addPreference(keyPauseAudioOnSound, false, BOOLEAN, context)
-        addPreference(keyPopup, -1, INTEGER, context)
-        addPreference(keyRampUpStartingTimeMillis, -1L, LONG, context)
-        addPreference(keyRampUpTime, "00:30", TIME_STRING, context)
-        addPreference(keyRandomize, true, BOOLEAN, context)
-        addPreference(keyReminderBell, DEFAULT_REMINDER_BELL, STRING, context)
-        addPreference(keyRingtone, "", STRING, context) // no useful default, code relies on <defaultValue>.isEmpty()
-        addPreference(keyShow, true, BOOLEAN, context)
-        addPreference(keySound, true, BOOLEAN, context)
-        addPreference(keyStart, "09:00", TIME_STRING, context)
-        addPreference(keyStartMeditationDirectly, false, BOOLEAN, context)
-        addPreference(keyStatus, false, BOOLEAN, context)
-        addPreference(keyStatusIconMaterialDesign, true, BOOLEAN, context)
-        addPreference(keyStatusVisibilityPublic, true, BOOLEAN, context)
-        addPreference(keyStopMeditationAutomatically, false, BOOLEAN, context)
-        addPreference(keyUseWorkaroundBell, false, BOOLEAN, context)
-        addPreference(keyUseAudioStreamVolumeSetting, true, BOOLEAN, context)
-        addPreference(keyVibrate, false, BOOLEAN, context)
-        addPreference(keyVolume, DEFAULT_VOLUME, FLOAT, context)
-        addPreference(keyMeditationVolume, volume, FLOAT, context) // for existing users: use standard volume as default here
-
-        // Map preference keys to their allowed entryValues
-        entryValuesMap.put(keyActiveOnDaysOfWeek, context.resources.getStringArray(R.array.weekdayEntryValues))
-        entryValuesMap.put(keyAudioStream, context.resources.getStringArray(R.array.audioStreamPersistedEntryValues))
-        entryValuesMap.put(keyMeditationBeginningBell, context.resources.getStringArray(R.array.meditationBellEntryValues))
-        entryValuesMap.put(keyMeditationEndingBell, context.resources.getStringArray(R.array.meditationBellEntryValues))
-        entryValuesMap.put(keyMeditationInterruptingBell, context.resources.getStringArray(R.array.meditationBellEntryValues))
-        entryValuesMap.put(keyNormalize, context.resources.getStringArray(R.array.normalizeEntryValues))
-        entryValuesMap.put(keyNotificationText, arrayOf()) // we cannot verify the entered notification text
-        entryValuesMap.put(keyNotificationTitle, arrayOf()) // we cannot verify the entered notification title
-        entryValuesMap.put(keyPattern, context.resources.getStringArray(R.array.patternEntryValues))
-        entryValuesMap.put(keyPatternOfPeriods, arrayOf()) // we cannot verify the entered notification text
-        entryValuesMap.put(keyReminderBell, context.resources.getStringArray(R.array.reminderBellEntryValues))
-        entryValuesMap.put(keyRingtone, arrayOf()) // we don't need to know the possible ringtone values
+    private fun checkSettings() {
 
         // Convert old settings from previous versions
-        convertOldSettings(context)
+        convertOldSettings()
 
         // Track whether a stacktrace shall be logged to find out the reason for sometimes deleted preferences
         var logStackTrace = false
@@ -402,17 +330,95 @@ class PrefsAccessor
             MindBell.logDebug("Preferences checked and found to be ok")
         }
 
-        // Finally report all currently existing settings if requested
-        if (logSettings) {
-            val sb = StringBuilder()
-            sb.append("Effective settings: ")
-            val orderedSettings = TreeMap<String, Any>(settings.all)
-            for ((key, value) in orderedSettings) {
-                sb.append(key).append("=").append(value).append(", ")
-            }
-            sb.setLength(sb.length - 2) // remove last ", "
-            MindBell.logDebug(sb.toString())
+        // Report all currently existing settings
+        logSettings()
+    }
+
+    /**
+     * Fill entryValuesMap with all preference keys and their allowed entryValues
+     */
+    private fun fillEntryValuesMap() {
+        entryValuesMap[keyActiveOnDaysOfWeek] = context.resources.getStringArray(R.array.weekdayEntryValues)
+        entryValuesMap[keyAudioStream] = context.resources.getStringArray(R.array.audioStreamPersistedEntryValues)
+        entryValuesMap[keyMeditationBeginningBell] = context.resources.getStringArray(R.array.meditationBellEntryValues)
+        entryValuesMap[keyMeditationEndingBell] = context.resources.getStringArray(R.array.meditationBellEntryValues)
+        entryValuesMap[keyMeditationInterruptingBell] = context.resources.getStringArray(R.array.meditationBellEntryValues)
+        entryValuesMap[keyNormalize] = context.resources.getStringArray(R.array.normalizeEntryValues)
+        entryValuesMap[keyNotificationText] = arrayOf() // we cannot verify the entered notification text
+        entryValuesMap[keyNotificationTitle] = arrayOf() // we cannot verify the entered notification title
+        entryValuesMap[keyPattern] = context.resources.getStringArray(R.array.patternEntryValues)
+        entryValuesMap[keyPatternOfPeriods] = arrayOf() // we cannot verify the entered notification text
+        entryValuesMap[keyReminderBell] = context.resources.getStringArray(R.array.reminderBellEntryValues)
+        entryValuesMap[keyRingtone] = arrayOf() // we don't need to know the possible ringtone values
+    }
+
+    /**
+     * Fill preferenceMap with all preference keys and their default values.
+     */
+    private fun fillPreferenceMap() {
+        addPreference(keyActive, false, BOOLEAN)
+        addPreference(keyActiveOnDaysOfWeek, HashSet(Arrays.asList("1", "2", "3", "4", "5", "6", "7")),
+                STRING_SET)
+        addPreference(keyAudioStream, "0", STRING)
+        addPreference(keyDismissNotification, false, BOOLEAN)
+        addPreference(keyEnd, "21:00", TIME_STRING)
+        addPreference(keyFrequency, "00:15", TIME_STRING) // 15 min
+        addPreference(keyKeepScreenOn, true, BOOLEAN)
+        addPreference(keyMeditating, false, BOOLEAN)
+        addPreference(keyMeditationBeginningBell, "3", STRING)
+        addPreference(keyMeditationDuration, "00:25", TIME_STRING)
+        addPreference(keyMeditationEndingBell, "2", STRING)
+        addPreference(keyMeditationEndingTimeMillis, -1L, LONG)
+        addPreference(keyMeditationInterruptingBell, "1", STRING)
+        addPreference(keyMeditationStartingTimeMillis, -1L, LONG)
+        addPreference(keyMuteInFlightMode, false, BOOLEAN)
+        addPreference(keyMuteOffHook, true, BOOLEAN)
+        addPreference(keyMutedTill, -1L, LONG)
+        addPreference(keyMuteWithAudioStream, true, BOOLEAN)
+        addPreference(keyMuteWithPhone, true, BOOLEAN)
+        addPreference(keyNormalize, NORMALIZE_NONE, STRING)
+        addPreference(keyNoSoundOnMusic, false, BOOLEAN)
+        addPreference(keyNotification, false, BOOLEAN)
+        addPreference(keyNotificationText, context.getText(prefsNotificationTextDefault), STRING)
+        addPreference(keyNotificationTitle, context.getText(prefsNotificationTitleDefault), STRING)
+        addPreference(keyNotificationVisibilityPublic, true, BOOLEAN)
+        addPreference(keyOriginalVolume, -1, INTEGER)
+        addPreference(keyPattern, "100:200:100:600", STRING)
+        addPreference(keyPatternOfPeriods, "x", STRING)
+        addPreference(keyPauseAudioOnSound, false, BOOLEAN)
+        addPreference(keyPopup, -1, INTEGER)
+        addPreference(keyRampUpStartingTimeMillis, -1L, LONG)
+        addPreference(keyRampUpTime, "00:30", TIME_STRING)
+        addPreference(keyRandomize, true, BOOLEAN)
+        addPreference(keyReminderBell, DEFAULT_REMINDER_BELL, STRING)
+        addPreference(keyRingtone, "", STRING) // no useful default, code relies on <defaultValue>.isEmpty()
+        addPreference(keyShow, true, BOOLEAN)
+        addPreference(keySound, true, BOOLEAN)
+        addPreference(keyStart, "09:00", TIME_STRING)
+        addPreference(keyStartMeditationDirectly, false, BOOLEAN)
+        addPreference(keyStatus, false, BOOLEAN)
+        addPreference(keyStatusIconMaterialDesign, true, BOOLEAN)
+        addPreference(keyStatusVisibilityPublic, true, BOOLEAN)
+        addPreference(keyStopMeditationAutomatically, false, BOOLEAN)
+        addPreference(keyUseWorkaroundBell, false, BOOLEAN)
+        addPreference(keyUseAudioStreamVolumeSetting, true, BOOLEAN)
+        addPreference(keyVibrate, false, BOOLEAN)
+        addPreference(keyVolume, DEFAULT_VOLUME, FLOAT)
+        addPreference(keyMeditationVolume, volume, FLOAT) // for existing users: use standard volume as default here
+    }
+
+    /**
+     * Write all currently existing settings to the log.
+     */
+    fun logSettings() {
+        val sb = StringBuilder()
+        sb.append("Effective settings: ")
+        val orderedSettings = TreeMap<String, Any>(settings.all)
+        for ((key, value) in orderedSettings) {
+            sb.append(key).append("=").append(value).append(", ")
         }
+        sb.setLength(sb.length - 2) // remove last ", "
+        MindBell.logDebug(sb.toString())
     }
 
     /**
@@ -421,22 +427,20 @@ class PrefsAccessor
      * @param resid
      * @param defaultValue
      * @param type
-     * @param context
      */
-    private fun addPreference(resid: Int, defaultValue: Any, type: Preference.Type, context: Context) {
-        preferenceMap.put(resid, Preference(resid, context.getString(resid), defaultValue, type))
+    private fun addPreference(resid: Int, defaultValue: Any, type: Preference.Type) {
+        preferenceMap[resid] = Preference(resid, context.getString(resid), defaultValue, type)
     }
 
     /**
      * Convert old settings from previous versions ... remove code after a while.
      */
-    private fun convertOldSettings(context: Context) {
+    private fun convertOldSettings() {
         // Version 3.1.0 replaced numberOfPeriods by patternOfPeriods
         val keyNumberOfPeriods = "numberOfPeriods"
         val oldNumberOfPeriods = settings.getInt(keyNumberOfPeriods, 0)
         if (oldNumberOfPeriods > 0) {
-            var patternOfPeriods = derivePatternOfPeriods(oldNumberOfPeriods)
-            patternOfPeriods = patternOfPeriods
+            val patternOfPeriods = derivePatternOfPeriods(oldNumberOfPeriods)
             settings.edit().remove(keyNumberOfPeriods).apply()
             MindBell.logWarn("Converted old setting for '" + keyNumberOfPeriods + "' (" + oldNumberOfPeriods + ") to '" +
                     context.getText(keyPatternOfPeriods) + "' (" + patternOfPeriods + ")")
@@ -535,11 +539,12 @@ class PrefsAccessor
                     }
                 }
                 STRING_SET -> {
+                    @Suppress("UNCHECKED_CAST") // it's sure a string set
                     val stringSetValue = value as Set<String>?
                     if (stringSetValue != null) {
                         for (aStringInSet in stringSetValue) {
                             val entryValues = Arrays.asList(*entryValuesMap[preference.resid]!!)
-                            if (aStringInSet != null && !entryValues.contains(aStringInSet)) {
+                            if (!entryValues.contains(aStringInSet)) {
                                 settings.edit().remove(preference.key).apply()
                                 MindBell.logWarn("Removed setting '" + preference + "' since it had (at least one) wrong value '" +
                                         aStringInSet + "'")
@@ -610,6 +615,7 @@ class PrefsAccessor
      * @param value
      */
     private fun setSetting(preference: Preference, value: Any) {
+        @Suppress("UNCHECKED_CAST") // it's sure a string set
         when (preference.type) {
             BOOLEAN -> settings.edit().putBoolean(preference.key, value as Boolean).apply()
             FLOAT -> settings.edit().putFloat(preference.key, value as Float).apply()
@@ -617,7 +623,6 @@ class PrefsAccessor
             LONG -> settings.edit().putLong(preference.key, value as Long).apply()
             STRING, TIME_STRING -> settings.edit().putString(preference.key, value as String).apply()
             STRING_SET -> settings.edit().putStringSet(preference.key, value as Set<String>).apply()
-            else -> MindBell.logError("Preference '" + preference.key + "' has a non supported type: " + preference.type)
         }
     }
 
@@ -632,6 +637,7 @@ class PrefsAccessor
      * @return
      */
     private fun getStringSetSetting(resid: Int): Set<String> {
+        @Suppress("UNCHECKED_CAST") // it's sure a string set
         return getSetting(resid) as Set<String>
     }
 
@@ -655,13 +661,13 @@ class PrefsAccessor
     /**
      * Returns the chosen sound depending on settings for reminderBell, ringtone and useWorkaroundBell.
      */
-    fun getReminderSoundUri(context: Context): Uri? {
+    fun getReminderSoundUri(): Uri? {
         // This implementation is almost the same as MindBellPreferences#getReminderSoundUri()
-        var soundUri = getReminderBellSoundUri(context)
+        var soundUri = getReminderBellSoundUri()
         if (soundUri == null) { // use system notification ringtone if reminder bell sound is not set
             val ringtone = ringtone
             if (ringtone.isEmpty()) {
-                soundUri = getDefaultReminderBellSoundUri(context)
+                soundUri = getDefaultReminderBellSoundUri()
             } else {
                 return Uri.parse(ringtone)
             }
@@ -669,20 +675,35 @@ class PrefsAccessor
         return soundUri
     }
 
-    fun getReminderBellSoundUri(context: Context): Uri? {
-        return getBellSoundUri(context, getStringSetting(keyReminderBell))
+    private fun getReminderBellSoundUri(): Uri? {
+        return getBellSoundUri(getStringSetting(keyReminderBell))
     }
 
-    fun getDefaultReminderBellSoundUri(context: Context): Uri? {
-        return getBellSoundUri(context, DEFAULT_REMINDER_BELL)
+    fun getDefaultReminderBellSoundUri(): Uri? {
+        return getBellSoundUri(DEFAULT_REMINDER_BELL)
     }
 
-    fun getBellSoundUri(context: Context, key: String): Uri? {
-        return getBellSoundUri(context, key, isUseWorkaroundBell)
+    fun getBellSoundUri(key: String): Uri? {
+        return getBellSoundUri(key, isUseWorkaroundBell)
     }
 
     fun useStatusIconMaterialDesign(): Boolean {
         return getBooleanSetting(keyStatusIconMaterialDesign)
+    }
+
+    fun getDefaultReminderBellSoundUri(isUseWorkaroundBell: Boolean): Uri {
+        return getBellSoundUri(DEFAULT_REMINDER_BELL, isUseWorkaroundBell)!!
+    }
+
+    fun getBellSoundUri(key: String, isUseWorkaroundBell: Boolean): Uri? {
+        val arrayIdentifier = if (isUseWorkaroundBell) R.array.bellWorkaroundFilenameEntries else R.array.bellFilenameEntries
+        val bellFilenameArray = context.resources.getStringArray(arrayIdentifier)
+        val index = Integer.valueOf(key)!!
+        if (index == BELL_ENTRY_VALUE_INDEX_NO_SOUND) {
+            return null
+        }
+        val identifier = context.resources.getIdentifier(bellFilenameArray[index], "raw", context.packageName)
+        return Utils.getResourceUri(context, identifier)
     }
 
     /**
@@ -731,24 +752,24 @@ class PrefsAccessor
         resetSetting(keyPopup)
     }
 
-    fun forRegularOperation(): ActivityPrefsAccessor {
-        return activityPrefsForRegularOperation
+    fun forRegularOperation(): InterruptSettings {
+        return interruptSettingsForRegularOperation
     }
 
-    fun forRingingOnce(): ActivityPrefsAccessor {
-        return activityPrefsForRingingOnce
+    fun forRingingOnce(): InterruptSettings {
+        return interruptSettingsForRingingOnce
     }
 
-    fun forMeditationBeginning(): ActivityPrefsAccessor {
-        return activityPrefsForMeditationBeginning
+    fun forMeditationBeginning(): InterruptSettings {
+        return interruptSettingsForMeditationBeginning
     }
 
-    fun forMeditationInterrupting(): ActivityPrefsAccessor {
-        return activityPrefsForMeditationInterrupting
+    fun forMeditationInterrupting(): InterruptSettings {
+        return interruptSettingsForMeditationInterrupting
     }
 
-    fun forMeditationEnding(): ActivityPrefsAccessor {
-        return activityPrefsForMeditationEnding
+    fun forMeditationEnding(): InterruptSettings {
+        return interruptSettingsForMeditationEnding
     }
 
     internal class Preference(val resid: Int, val key: String, val defaultValue: Any, val type: Type) {
@@ -759,7 +780,7 @@ class PrefsAccessor
 
     }
 
-    private inner class ActivityPrefsAccessorForRegularOperation : ActivityPrefsAccessor {
+    private inner class InterruptSettingsForRegularOperation : InterruptSettings {
 
         override val isShow: Boolean
             get() = this@PrefsAccessor.isShow
@@ -779,13 +800,13 @@ class PrefsAccessor
         override val isDismissNotification: Boolean
             get() = this@PrefsAccessor.isDismissNotification
 
-        override fun getSoundUri(context: Context): Uri? {
-            return this@PrefsAccessor.getReminderSoundUri(context)
+        override fun getSoundUri(): Uri? {
+            return this@PrefsAccessor.getReminderSoundUri()
         }
 
     }
 
-    private inner class ActivityPrefsAccessorForRingingOnce : ActivityPrefsAccessor {
+    private inner class InterruptSettingsForRingingOnce : InterruptSettings {
 
         override val isShow: Boolean
             get() = false
@@ -805,13 +826,13 @@ class PrefsAccessor
         override val isDismissNotification: Boolean
             get() = false
 
-        override fun getSoundUri(context: Context): Uri? {
-            return this@PrefsAccessor.getReminderSoundUri(context)
+        override fun getSoundUri(): Uri? {
+            return this@PrefsAccessor.getReminderSoundUri()
         }
 
     }
 
-    private abstract inner class ActivityPrefsAccessorForMeditation : ActivityPrefsAccessor {
+    private abstract inner class InterruptSettingsForMeditation : InterruptSettings {
 
         override val isShow: Boolean
             get() = false
@@ -831,30 +852,30 @@ class PrefsAccessor
         override val isDismissNotification: Boolean
             get() = false
 
-        abstract override fun getSoundUri(context: Context): Uri?
+        abstract override fun getSoundUri(): Uri?
 
     }
 
-    private inner class ActivityPrefsAccessorForMeditationBeginning : ActivityPrefsAccessorForMeditation() {
+    private inner class InterruptSettingsForMeditationBeginning : InterruptSettingsForMeditation() {
 
-        override fun getSoundUri(context: Context): Uri? {
-            return if (isStartMeditationDirectly) null else this@PrefsAccessor.getBellSoundUri(context, meditationBeginningBell)
+        override fun getSoundUri(): Uri? {
+            return if (isStartMeditationDirectly) null else this@PrefsAccessor.getBellSoundUri(meditationBeginningBell)
         }
 
     }
 
-    private inner class ActivityPrefsAccessorForMeditationInterrupting : ActivityPrefsAccessorForMeditation() {
+    private inner class InterruptSettingsForMeditationInterrupting : InterruptSettingsForMeditation() {
 
-        override fun getSoundUri(context: Context): Uri? {
-            return this@PrefsAccessor.getBellSoundUri(context, meditationInterruptingBell)
+        override fun getSoundUri(): Uri? {
+            return this@PrefsAccessor.getBellSoundUri(meditationInterruptingBell)
         }
 
     }
 
-    private inner class ActivityPrefsAccessorForMeditationEnding : ActivityPrefsAccessorForMeditation() {
+    private inner class InterruptSettingsForMeditationEnding : InterruptSettingsForMeditation() {
 
-        override fun getSoundUri(context: Context): Uri? {
-            return this@PrefsAccessor.getBellSoundUri(context, meditationEndingBell)
+        override fun getSoundUri(): Uri? {
+            return this@PrefsAccessor.getBellSoundUri(meditationEndingBell)
         }
 
     }
@@ -864,27 +885,26 @@ class PrefsAccessor
         /**
          * One minute in milliseconds.
          */
-        val ONE_MINUTE_MILLIS = 60000L
+        const val ONE_MINUTE_MILLIS = 60000L
 
         /**
          * One minute in milliseconds plus an error indicator millisecond value.
          */
-        val ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION = ONE_MINUTE_MILLIS + 1L
-        val ONE_MINUTE_MILLIS_VARIABLE_PERIOD_MISSING = ONE_MINUTE_MILLIS + 2L
-        val ONE_MINUTE_MILLIS_NEGATIVE_PERIOD = ONE_MINUTE_MILLIS + 3L
-        val ONE_MINUTE_MILLIS_PERIOD_TOO_SHORT = ONE_MINUTE_MILLIS + 4L
-        val ONE_MINUTE_MILLIS_PERIOD_NOT_EXISTING = ONE_MINUTE_MILLIS + 5L
+        const val ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION = ONE_MINUTE_MILLIS + 1L
+        const val ONE_MINUTE_MILLIS_VARIABLE_PERIOD_MISSING = ONE_MINUTE_MILLIS + 2L
+        const val ONE_MINUTE_MILLIS_NEGATIVE_PERIOD = ONE_MINUTE_MILLIS + 3L
+        const val ONE_MINUTE_MILLIS_PERIOD_TOO_SHORT = ONE_MINUTE_MILLIS + 4L
+        const val ONE_MINUTE_MILLIS_PERIOD_NOT_EXISTING = ONE_MINUTE_MILLIS + 5L
 
         /**
          * Regular expressions to verify a pattern of periods string.
          */
-        val STATIC_PERIOD_REGEX = "([1-9][0-9]{0,2})"
-        val VARIABLE_PERIOD_REGEX = "(x)"
-        val PERIOD_REGEX = "($STATIC_PERIOD_REGEX|$VARIABLE_PERIOD_REGEX)"
-        val PERIOD_SEPARATOR = ","
-        val PERIOD_SEPARATOR_REGEX = PERIOD_SEPARATOR
-        val PERIOD_SEPARATOR_WITH_BLANKS_REGEX = " *$PERIOD_SEPARATOR_REGEX *"
-        val PERIOD_SEPARATOR_WITH_BLANK = ", "
+        private const val STATIC_PERIOD_REGEX = "([1-9][0-9]{0,2})"
+        private const val VARIABLE_PERIOD_REGEX = "(x)"
+        private const val PERIOD_SEPARATOR = ","
+        private const val PERIOD_SEPARATOR_REGEX = PERIOD_SEPARATOR
+        const val PERIOD_SEPARATOR_WITH_BLANKS_REGEX = " *$PERIOD_SEPARATOR_REGEX *"
+        const val PERIOD_SEPARATOR_WITH_BLANK = ", "
 
         /**
          * Minimum value for ramp up time
@@ -899,75 +919,71 @@ class PrefsAccessor
         /**
          * Time to wait for displayed bell to be send back (without silence in the beginning).
          */
-        val WAITING_TIME = 10000L
+        const val WAITING_TIME = 10000L
 
-        /**
-         * Silence added in the beginning of the standard bell as workaround for phones starting sounds with increasing volume.
-         */
-        val WORKAROUND_SILENCE_TIME = 3000L
+        const val NORMALIZE_NONE = "-1"
 
-        val NORMALIZE_NONE = "-1"
-
-        val DEFAULT_VOLUME = 0.501187234f
+        const val DEFAULT_VOLUME = 0.501187234f
 
         /**
          * Regular expression to verify a time string preference
          */
-        private val TIME_STRING_REGEX = "\\d?\\d(:\\d\\d)?"
+        private const val TIME_STRING_REGEX = "\\d?\\d(:\\d\\d)?"
 
         /**
          * Index of entry in bellEntryValues that represents the 'use system notification ringtone' setting.
          */
-        private val BELL_ENTRY_VALUE_INDEX_NO_SOUND = 0
+        private const val BELL_ENTRY_VALUE_INDEX_NO_SOUND = 0
 
         /**
          * Default reminder bell sound, also used in case the set sound uri is not accessible.
          */
-        private val DEFAULT_REMINDER_BELL = "1"
+        private const val DEFAULT_REMINDER_BELL = "1"
 
         /**
          * Unique string to be added to a Scheduling Intent to see which meditation period the bell is in.
          */
-        val EXTRA_MEDITATION_PERIOD = "com.googlecode.mindbell.SchedulerService.MeditationPeriod"
+        const val EXTRA_MEDITATION_PERIOD = "com.googlecode.mindbell.SchedulerService.MeditationPeriod"
 
         /**
          * Unique string to be added to a Scheduling Intent to see who sent it.
          */
 
-        val EXTRA_IS_RESCHEDULING = "com.googlecode.mindbell.SchedulerService.IsRescheduling"
+        const val EXTRA_IS_RESCHEDULING = "com.googlecode.mindbell.SchedulerService.IsRescheduling"
 
         /**
          * Unique string to be added to a Scheduling Intent to see for which time the bell was scheduled.
          */
-        val EXTRA_NOW_TIME_MILLIS = "com.googlecode.mindbell.SchedulerService.NowTimeMillis"
+        const val EXTRA_NOW_TIME_MILLIS = "com.googlecode.mindbell.SchedulerService.NowTimeMillis"
 
         /**
          * Unique string to be added to a MindBell intent to see if it has to be kept open.
          */
-        val EXTRA_KEEP = "com.googlecode.mindbell.MindBell.Keep"
+        const val EXTRA_KEEP = "com.googlecode.mindbell.MindBell.Keep"
 
         /**
          * Unique string to be added to an Intent to see if MindBellMain is opened to stop meditation mode.
          */
-        val EXTRA_STOP_MEDITATION = "com.googlecode.mindbell.MindBellMail.StopMeditation"
+        const val EXTRA_STOP_MEDITATION = "com.googlecode.mindbell.MindBellMail.StopMeditation"
+
+        /*
+         * The one and only instance of this class.
+         */
+        var instance: PrefsAccessor? = null
+
+        /*
+         * Returns the one and only instance of this class.
+         */
+        @Synchronized
+        fun getInstance(context: Context): PrefsAccessor {
+            if (instance == null) {
+                instance = PrefsAccessor(context)
+            }
+            return instance!!
+        }
 
         fun isUseStandardBell(reminderBell: String): Boolean {
             return Integer.valueOf(reminderBell) != BELL_ENTRY_VALUE_INDEX_NO_SOUND
-        }
-
-        fun getDefaultReminderBellSoundUri(context: Context, isUseWorkaroundBell: Boolean): Uri {
-            return getBellSoundUri(context, DEFAULT_REMINDER_BELL, isUseWorkaroundBell)!!
-        }
-
-        fun getBellSoundUri(context: Context, key: String, isUseWorkaroundBell: Boolean): Uri? {
-            val arrayIdentifier = if (isUseWorkaroundBell) R.array.bellWorkaroundFilenameEntries else R.array.bellFilenameEntries
-            val bellFilenameArray = context.resources.getStringArray(arrayIdentifier)
-            val index = Integer.valueOf(key)!!
-            if (index == BELL_ENTRY_VALUE_INDEX_NO_SOUND) {
-                return null
-            }
-            val identifier = context.resources.getIdentifier(bellFilenameArray[index], "raw", context.packageName)
-            return Utils.getResourceUri(context, identifier)
         }
 
         /**
@@ -976,7 +992,7 @@ class PrefsAccessor
         fun derivePatternOfPeriods(numberOfPeriods: Int): String {
             val sb = StringBuilder()
             for (i in 0 until numberOfPeriods) {
-                if (sb.length > 0) {
+                if (sb.isNotEmpty()) {
                     sb.append(", ")
                 }
                 sb.append("x")
@@ -998,12 +1014,10 @@ class PrefsAccessor
             for (i in periods.indices) {
                 periods[i] = periods[i].trim({ it <= ' ' })
                 val period = periods[i]
-                if (period.matches(STATIC_PERIOD_REGEX.toRegex())) {
-                    sumOfPeriodsLengths += Integer.valueOf(period)!!
-                } else if (period.matches(VARIABLE_PERIOD_REGEX.toRegex())) {
-                    numberOfVariablePeriods++
-                } else {
-                    return ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION
+                when {
+                    period.matches(STATIC_PERIOD_REGEX.toRegex()) -> sumOfPeriodsLengths += Integer.valueOf(period)
+                    period.matches(VARIABLE_PERIOD_REGEX.toRegex()) -> numberOfVariablePeriods++
+                    else -> return ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION
                 }
             }
             if (numberOfVariablePeriods == 0) {
@@ -1037,13 +1051,6 @@ class PrefsAccessor
         }
 
         /**
-         * Returns true if the given normalize value means normalization is on.
-         */
-        fun isNormalize(normalizeValue: Int): Boolean {
-            return normalizeValue >= 0
-        }
-
-        /**
          * Returns a numberOfPeriods string that corresponds with the patternOfPeriods: "x" -> 1, "3, x" -> 2, ...
          */
         fun deriveNumberOfPeriods(patternOfPeriods: String): Int {
@@ -1051,12 +1058,12 @@ class PrefsAccessor
         }
 
         fun getAudioStream(audioStreamSetting: String): Int {
-            when (audioStreamSetting) {
-                "1" -> return AudioManager.STREAM_NOTIFICATION
-                "2" -> return AudioManager.STREAM_MUSIC
-                "0" -> return AudioManager.STREAM_ALARM
+            return when (audioStreamSetting) {
+                "1" -> AudioManager.STREAM_NOTIFICATION
+                "2" -> AudioManager.STREAM_MUSIC
+                "0" -> AudioManager.STREAM_ALARM
             // fall-thru to use "0" as default
-                else -> return AudioManager.STREAM_ALARM
+                else -> AudioManager.STREAM_ALARM
             }
         }
     }

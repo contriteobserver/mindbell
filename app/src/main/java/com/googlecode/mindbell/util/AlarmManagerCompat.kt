@@ -27,15 +27,12 @@ import android.os.Build
 /**
  * Hide Android API level differences from application code. See these links for more information:
  *
- * https://developer.android.com/reference/android/app/AlarmManager.html https://lab.getbase.com/androids-new-doze-and-app-standby/
+ * https://developer.android.com/reference/android/app/AlarmManager.html
+ * https://lab.getbase.com/androids-new-doze-and-app-standby/
  */
-class AlarmManagerCompat(context: Context) {
+class AlarmManagerCompat private constructor(context: Context) {
 
-    private val alarmManager: AlarmManager
-
-    init {
-        alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    }
+    private val alarmManager: AlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     /**
      * For API level prior to 19 [AlarmManager.set] means to be exact and allowed while idle. Hence
@@ -57,6 +54,14 @@ class AlarmManagerCompat(context: Context) {
      */
     fun cancel(operation: PendingIntent) {
         alarmManager.cancel(operation)
+    }
+
+    companion object {
+
+        fun getInstance(context: Context): AlarmManagerCompat {
+            return AlarmManagerCompat(context.getApplicationContext())
+        }
+
     }
 
 }

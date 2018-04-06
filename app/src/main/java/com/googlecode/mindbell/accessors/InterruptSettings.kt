@@ -18,14 +18,13 @@
  */
 package com.googlecode.mindbell.accessors
 
-import android.content.Context
 import android.net.Uri
 
 /**
- * All preference getter methods that influence the activities when the bell rings if active or meditating. It is used to enable
- * using different tones for different periods of meditation and for regular activity.
+ * All settings that influence interrupt (actions) either for reminder or for meditation. It is used to enable using different
+ * tones for different periods of meditation and for regular activity.
  */
-interface ActivityPrefsAccessor {
+interface InterruptSettings {
 
     val isShow: Boolean
 
@@ -39,6 +38,6 @@ interface ActivityPrefsAccessor {
 
     val isDismissNotification: Boolean
 
-    fun getSoundUri(context: Context): Uri?
+    fun getSoundUri(): Uri?
 
 }

@@ -22,6 +22,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.googlecode.mindbell.accessors.ContextAccessor
+import com.googlecode.mindbell.accessors.PrefsAccessor
 
 /**
  * Restarts reminder scheduling and (just in case) stops meditation after after the app has been restarted (due to a reboot or
@@ -32,7 +33,8 @@ class RestartBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         MindBell.logDebug("RestartBroadcastReceiver received intent with action ${intent.action} ")
         val contextAccessor = ContextAccessor.getInstance(context)
-        contextAccessor.prefs.isMeditating = false // do not continue meditation after rebooting during meditation (probably rare)
+        val prefs = PrefsAccessor.getInstance(context)
+        prefs.isMeditating = false // do not continue meditation after rebooting during meditation (probably rare)
         contextAccessor.updateBellScheduleForReminder(true)
     }
 

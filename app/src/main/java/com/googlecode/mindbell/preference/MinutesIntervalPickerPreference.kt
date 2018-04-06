@@ -38,6 +38,7 @@ class MinutesIntervalPickerPreference(ctxt: Context, attrs: AttributeSet) : Time
 
     override fun onDialogClosed(positiveResult: Boolean) {
         if (positiveResult) {
+            @Suppress("DEPRECATION") // getCurrent*() deprecated now but not for older API levels < 23
             var newTime = TimeOfDay(picker!!.currentHour, picker!!.currentMinute)
             if (newTime.interval < MIN_INTERVAL.interval) {
                 newTime = MIN_INTERVAL

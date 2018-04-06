@@ -76,12 +76,12 @@ class MindBellPreferences : PreferenceActivity(), ActivityCompat.OnRequestPermis
             return sb.toString()
         }
 
-    override// deprecation is because MindBell is not fragment-based
+    @Suppress("DEPRECATION") // some methods deprecated because fragments are state of the art instead
+    override
     fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // check settings, delete any settings that are not valid
-        val prefs = ContextAccessor.getInstance(this).prefs
+        val prefs = PrefsAccessor.getInstance(this)
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences_1)
@@ -110,9 +110,9 @@ class MindBellPreferences : PreferenceActivity(), ActivityCompat.OnRequestPermis
         val preferenceBatterySettings = preferenceScreen.findPreference(getText(R.string.keyBatterySettings)) as Preference
         val preferenceSendMail = preferenceScreen.findPreference(getText(R.string.keySendMail)) as Preference
 
-        preferenceUseAudioStreamVolumeSetting.onPreferenceChangeListener = OnPreferenceChangeListener { preference, newValue ->
+        preferenceUseAudioStreamVolumeSetting.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
             val isChecked = newValue as Boolean
-            if (!isChecked && prefs!!.mustUseAudioStreamVolumeSetting()) {
+            if (!isChecked && prefs.mustUseAudioStreamVolumeSetting()) {
                 Toast.makeText(this@MindBellPreferences, R.string.mustUseAudioStreamSetting, Toast.LENGTH_SHORT).show()
                 false
             } else {
@@ -122,11 +122,11 @@ class MindBellPreferences : PreferenceActivity(), ActivityCompat.OnRequestPermis
             }
         }
 
-        preferenceStatus.onPreferenceChangeListener = OnPreferenceChangeListener { preference, newValue -> mediateMuteOffHookAndStatus(preferenceMuteOffHook, newValue, REQUEST_CODE_STATUS) }
+        preferenceStatus.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue -> mediateMuteOffHookAndStatus(preferenceMuteOffHook, newValue, REQUEST_CODE_STATUS) }
 
-        preferenceShow.onPreferenceChangeListener = OnPreferenceChangeListener { preference, newValue -> mediateShowAndSoundAndVibrate(preferenceSound, preferenceVibrate, newValue) }
+        preferenceShow.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue -> mediateShowAndSoundAndVibrate(preferenceSound, preferenceVibrate, newValue) }
 
-        preferenceSound.onPreferenceChangeListener = OnPreferenceChangeListener { preference, newValue ->
+        preferenceSound.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
             if (mediateShowAndSoundAndVibrate(preferenceShow, preferenceVibrate, newValue) && mediateSoundDurationRelatedSettings(preferenceFrequency, preferenceUseWorkaroundBell,
                     preferenceReminderBell, preferenceRingtoneValue, newValue)) {
                 val isChecked = newValue as Boolean
@@ -145,7 +145,7 @@ class MindBellPreferences : PreferenceActivity(), ActivityCompat.OnRequestPermis
             true
         }
 
-        preferenceReminderBell.onPreferenceChangeListener = OnPreferenceChangeListener { preference, newValue ->
+        preferenceReminderBell.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
             val reminderBell = newValue as String
             val isChecked = PrefsAccessor.isUseStandardBell(reminderBell)
             if (PrefsAccessor.isUseStandardBell(reminderBell) || ContextCompat.checkSelfPermission(this@MindBellPreferences, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
@@ -169,7 +169,7 @@ class MindBellPreferences : PreferenceActivity(), ActivityCompat.OnRequestPermis
             }
         }
 
-        preferenceRingtone.onPreferenceChangeListener = OnPreferenceChangeListener { preference, newValue ->
+        preferenceRingtone.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
             val newRingtoneValue = newValue as String
             if (validatePreferenceRingtone(newRingtoneValue) && mediateSoundDurationRelatedSettings(preferenceFrequency, preferenceUseWorkaroundBell,
                     preferenceReminderBell, newRingtoneValue, preferenceSound)) {
@@ -183,17 +183,17 @@ class MindBellPreferences : PreferenceActivity(), ActivityCompat.OnRequestPermis
             }
         }
 
-        preferenceVibrate.onPreferenceChangeListener = OnPreferenceChangeListener { preference, newValue -> mediateShowAndSoundAndVibrate(preferenceShow, preferenceSound, newValue) }
+        preferenceVibrate.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue -> mediateShowAndSoundAndVibrate(preferenceShow, preferenceSound, newValue) }
 
-        preferencePattern.onPreferenceChangeListener = OnPreferenceChangeListener { preference, newValue ->
+        preferencePattern.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
             val vibrator = this@MindBellPreferences.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibrator.vibrate(PrefsAccessor.getVibrationPattern(newValue as String), -1)
             true
         }
 
-        preferenceMuteOffHook.onPreferenceChangeListener = OnPreferenceChangeListener { preference, newValue -> mediateMuteOffHookAndStatus(preferenceStatus, newValue, REQUEST_CODE_MUTE_OFF_HOOK) }
+        preferenceMuteOffHook.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue -> mediateMuteOffHookAndStatus(preferenceStatus, newValue, REQUEST_CODE_MUTE_OFF_HOOK) }
 
-        preferenceRandomize.onPreferenceChangeListener = OnPreferenceChangeListener { preference, newValue ->
+        preferenceRandomize.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
             if (newValue as Boolean) {
                 // if interval deviation is selected, normalize is disabled on screen but it must be disabled in preferences,
                 // too. Otherwise the following scenario could happen: set interval 1 h, de-select randomize, set normalize to
@@ -204,7 +204,7 @@ class MindBellPreferences : PreferenceActivity(), ActivityCompat.OnRequestPermis
             true
         }
 
-        preferenceFrequency.onPreferenceChangeListener = OnPreferenceChangeListener { preference, newValue ->
+        preferenceFrequency.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
             if (!mediateSoundDurationRelatedSettings(newValue, preferenceUseWorkaroundBell, preferenceReminderBell,
                     preferenceRingtoneValue, preferenceSound)) {
                 return@OnPreferenceChangeListener false
@@ -226,7 +226,7 @@ class MindBellPreferences : PreferenceActivity(), ActivityCompat.OnRequestPermis
             true
         }
 
-        preferenceNormalize.onPreferenceChangeListener = OnPreferenceChangeListener { preference, newValue ->
+        preferenceNormalize.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
             if (!isNormalize(newValue as String)) {
                 // if normalize - ringing on the minute - is not wanted, it's fine, no more to check here
                 true
@@ -240,7 +240,7 @@ class MindBellPreferences : PreferenceActivity(), ActivityCompat.OnRequestPermis
             }
         }
 
-        preferenceActiveOnDaysOfWeek.onPreferenceChangeListener = OnPreferenceChangeListener { preference, newValues ->
+        preferenceActiveOnDaysOfWeek.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValues ->
             if ((newValues as Set<*>).isEmpty()) {
                 Toast.makeText(this@MindBellPreferences, R.string.atLeastOneActiveDayNeeded, Toast.LENGTH_SHORT).show()
                 return@OnPreferenceChangeListener false
@@ -260,7 +260,7 @@ class MindBellPreferences : PreferenceActivity(), ActivityCompat.OnRequestPermis
             true
         }
 
-        preferenceUseWorkaroundBell.onPreferenceChangeListener = OnPreferenceChangeListener { preference, newValue ->
+        preferenceUseWorkaroundBell.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
             if (mediateSoundDurationRelatedSettings(preferenceFrequency, newValue, preferenceReminderBell,
                     preferenceRingtoneValue, preferenceSound)) {
                 val isChecked = newValue as Boolean
@@ -277,7 +277,7 @@ class MindBellPreferences : PreferenceActivity(), ActivityCompat.OnRequestPermis
                     .setTitle(R.string.prefsSendMail) //
                     .setMessage(R.string.mailInfo1) //
                     .setIcon(R.mipmap.ic_launcher) //
-                    .setPositiveButton(android.R.string.ok) { dialog, which -> onClickReallySendInfo() } //
+                    .setPositiveButton(android.R.string.ok) { _, _ -> onClickReallySendInfo() } //
                     .setNegativeButton(android.R.string.cancel, null) //
                     .show()
             true
@@ -288,7 +288,7 @@ class MindBellPreferences : PreferenceActivity(), ActivityCompat.OnRequestPermis
         preferenceMeditationVolume.isEnabled = !preferenceUseAudioStreamVolumeSetting.isChecked
         preferenceReminderBell.isEnabled = preferenceSound.isChecked
         preferenceRingtone.isEnabled = preferenceSound.isChecked && !PrefsAccessor.isUseStandardBell(preferenceReminderBell.value)
-        preferenceRingtoneValue = prefs!!.ringtone // cannot be retrieved from preference
+        preferenceRingtoneValue = prefs.ringtone // cannot be retrieved from preference
         setPreferenceRingtoneSummary(preferenceRingtone, preferenceRingtoneValue)
         setPreferenceVolumeSoundUri(preferenceVolume, preferenceReminderBell.value, preferenceUseWorkaroundBell.isChecked,
                 preferenceRingtoneValue)
@@ -362,11 +362,12 @@ class MindBellPreferences : PreferenceActivity(), ActivityCompat.OnRequestPermis
      * Returns the chosen sound depending on settings for reminderBell, ringtone and useWorkaroundBell.
      */
     private fun getReminderSoundUri(reminderBell: String, isUseWorkaroundBell: Boolean, ringtone: String?): Uri? {
-        // This implementation is almost the same as PrefsAccessor#getReminderSoundUri()
-        var soundUri = PrefsAccessor.getBellSoundUri(this, reminderBell, isUseWorkaroundBell)
+        var prefs = PrefsAccessor.getInstance(this)
+        // This implementation is almost the same as PrefsAccessor#getReminderBellSoundUri()
+        var soundUri = prefs.getBellSoundUri(reminderBell, isUseWorkaroundBell)
         if (soundUri == null) { // use system notification ringtone if reminder bell sound is not set
             if (ringtone!!.isEmpty()) {
-                soundUri = PrefsAccessor.getDefaultReminderBellSoundUri(this, isUseWorkaroundBell)
+                soundUri = prefs.getDefaultReminderBellSoundUri(isUseWorkaroundBell)
             } else {
                 soundUri = Uri.parse(ringtone)
             }
@@ -469,7 +470,7 @@ class MindBellPreferences : PreferenceActivity(), ActivityCompat.OnRequestPermis
                         .setTitle(R.string.prefsBatterySettings) //
                         .setMessage(R.string.summaryBatterySettingsWhitelisted) //
                         .setNegativeButton(android.R.string.cancel, null) //
-                        .setPositiveButton(android.R.string.ok) { dialog, which ->
+                        .setPositiveButton(android.R.string.ok) { _, _ ->
                             // Take user to the battery settings so he can check the settings
                             startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
                         } //
@@ -479,7 +480,7 @@ class MindBellPreferences : PreferenceActivity(), ActivityCompat.OnRequestPermis
                         .setTitle(R.string.prefsBatterySettings) //
                         .setMessage(R.string.summaryBatterySettingsNotWhitelisted) //
                         .setNegativeButton(android.R.string.cancel, null) //
-                        .setPositiveButton(android.R.string.ok) { dialog, which ->
+                        .setPositiveButton(android.R.string.ok) { _, _ ->
                             // Take user to the battery settings instead of adding a new permission that might result in
                             // suspending MindBell from Google Play Store. See the comments for this answer:
                             // https://stackoverflow.com/a/33114136/2532583
@@ -521,7 +522,7 @@ class MindBellPreferences : PreferenceActivity(), ActivityCompat.OnRequestPermis
      * Handles click on confirmation to send info.
      */
     private fun onClickReallySendInfo() {
-        ContextAccessor.getInstanceAndLogPreferences(this) // write settings to log
+        PrefsAccessor.getInstance(this).logSettings()
         MindBell.logDebug("Excluded from battery optimization (always false for SDK < 23)? -> " + Utils.isAppWhitelisted(this))
         val i = Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getText(R.string.emailAddress).toString(), null))
         i.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.emailSubject))
@@ -567,10 +568,12 @@ class MindBellPreferences : PreferenceActivity(), ActivityCompat.OnRequestPermis
 
     public override fun onPause() {
         super.onPause()
-        ContextAccessor.getInstanceAndLogPreferences(this).updateBellScheduleForReminder(true)
+        PrefsAccessor.getInstance(this).logSettings()
+        ContextAccessor.getInstance(this).updateBellScheduleForReminder(true)
     }
 
-    override// deprecation is because MindBell is not fragment-based
+    @Suppress("DEPRECATION") // some methods deprecated because fragments are state of the art instead
+    override
     fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
             REQUEST_CODE_STATUS -> {
@@ -616,6 +619,7 @@ class MindBellPreferences : PreferenceActivity(), ActivityCompat.OnRequestPermis
     }
 
     private fun handleRingtonePermissionRequestResult(grantResults: IntArray) {
+        @Suppress("DEPRECATION") // getPreferenceScreen() deprecated because fragments are state of the art instead
         val preferenceReminderBell = preferenceScreen.findPreference(getText(R.string.keyReminderBell)) as ListPreferenceWithSummaryFix
         if (grantResults.size == 0) {
             // if request is cancelled, the result arrays are empty, so leave this option "on" and don't explain it

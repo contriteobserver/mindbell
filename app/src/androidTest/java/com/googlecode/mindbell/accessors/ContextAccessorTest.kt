@@ -31,17 +31,20 @@ class ContextAccessorTest {
 
     private lateinit var ca: ContextAccessor
 
+    private lateinit var prefs: PrefsAccessor
+
     @Before
     fun setUp() {
         ca = ContextAccessor.getInstance(InstrumentationRegistry.getTargetContext())
+        prefs = PrefsAccessor.getInstance(InstrumentationRegistry.getTargetContext())
     }
 
     @Test
     fun testBellVolume() {
         // setup
-        ca.prefs.resetOriginalVolume()
+        prefs.resetOriginalVolume()
         // exercise
-        ca.startReminderActions(ca.prefs.forRegularOperation(), null)
+        ca.startInterruptActions(prefs.forRegularOperation(), null)
         // verify ... be sure to have sound checked as an activity on your emulated device
         // verify ... be sure to have pause audio unchecked on your emulated device
         // verify ... be sure to have audio stream set to alarm on your emulated device
@@ -56,11 +59,11 @@ class ContextAccessorTest {
     @Test
     fun testFinish() {
         // setup
-        ca.prefs.resetOriginalVolume()
+        prefs.resetOriginalVolume()
         ca.alarmVolume = ca.alarmMaxVolume / 2
         val alarmVolume = ca.alarmVolume
         // exercise
-        ca.startReminderActions(ca.prefs.forRegularOperation(), null)
+        ca.startInterruptActions(prefs.forRegularOperation(), null)
         ca.finishBellSound()
         // verify
         Assert.assertFalse(ca.isBellSoundPlaying)
@@ -70,10 +73,10 @@ class ContextAccessorTest {
     @Test
     fun testOriginalVolume() {
         // setup
-        ca.prefs.resetOriginalVolume()
+        prefs.resetOriginalVolume()
         val originalVolume = ca.alarmVolume
         // exercise
-        ca.startReminderActions(ca.prefs.forRegularOperation(), null)
+        ca.startInterruptActions(prefs.forRegularOperation(), null)
         ca.finishBellSound()
         // verify
         Assert.assertEquals(originalVolume, ca.alarmVolume)
@@ -83,7 +86,7 @@ class ContextAccessorTest {
     fun testPlay() {
         // setup
         // exercise
-        ca.startReminderActions(ca.prefs.forRegularOperation(), null)
+        ca.startInterruptActions(prefs.forRegularOperation(), null)
         // verify ... be sure to have sound checked as an activity on your emulated device
         Assert.assertTrue(ca.isBellSoundPlaying)
     }

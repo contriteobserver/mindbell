@@ -22,8 +22,9 @@ package com.googlecode.mindbell
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import com.googlecode.mindbell.accessors.ActivityPrefsAccessor
 import com.googlecode.mindbell.accessors.ContextAccessor
+import com.googlecode.mindbell.accessors.InterruptSettings
+import com.googlecode.mindbell.accessors.PrefsAccessor
 import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.EXTRA_IS_RESCHEDULING
 import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.EXTRA_MEDITATION_PERIOD
 import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.EXTRA_NOW_TIME_MILLIS
@@ -52,18 +53,18 @@ class SchedulerService : Service() {
 
         // Create working environment
         val contextAccessor = ContextAccessor.getInstance(applicationContext)
-        val prefs = contextAccessor.prefs
+        val prefs = PrefsAccessor.getInstance(applicationContext)
 
-        var pair: Pair<ActivityPrefsAccessor?, Runnable?>
+        var pair: Pair<InterruptSettings?, Runnable?>
 
         // Evaluate next time to remind and reschedule or terminate method if neither active nor meditating
         if (prefs.isMeditating) { // Meditating overrides Active therefore check this first
 
-            pair = handleMeditatingBell(contextAccessor, nowTimeMillis, meditationPeriod)
+            pair = handleMeditatingBell(nowTimeMillis, meditationPeriod)
 
         } else if (prefs.isActive) {
 
-            pair = handleActiveBell(contextAccessor, nowTimeMillis, isRescheduling)
+            pair = handleActiveBell(nowTimeMillis, isRescheduling)
 
         } else {
 
@@ -80,7 +81,7 @@ class SchedulerService : Service() {
         if (pair.first == null) {
             stopSelf()
         } else {
-            contextAccessor.startReminderActions(pair.first!!, pair.second, this)
+            contextAccessor.startInterruptActions(pair.first!!, pair.second, this)
         }
 
         return START_STICKY
@@ -89,9 +90,11 @@ class SchedulerService : Service() {
     /**
      * Reschedules next alarm and rings differently depending on the currently started (!) meditation period.
      */
-    private fun handleMeditatingBell(contextAccessor: ContextAccessor, nowTimeMillis: Long, meditationPeriod: Int):
-            Pair<ActivityPrefsAccessor?, Runnable?> {
-        val prefs = contextAccessor.prefs
+    private fun handleMeditatingBell(nowTimeMillis: Long, meditationPeriod: Int):
+            Pair<InterruptSettings?, Runnable?> {
+
+        val contextAccessor = ContextAccessor.getInstance(this)
+        val prefs = PrefsAccessor.getInstance(this)
 
         val numberOfPeriods = prefs.numberOfPeriods
 
@@ -131,9 +134,11 @@ class SchedulerService : Service() {
     /**
      * Reschedules next alarm, shows bell, plays bell sound and vibrates - whatever is requested.
      */
-    private fun handleActiveBell(contextAccessor: ContextAccessor, nowTimeMillis: Long, isRescheduling: Boolean):
-            Pair<ActivityPrefsAccessor?, Runnable?> {
-        val prefs = contextAccessor.prefs
+    private fun handleActiveBell(nowTimeMillis: Long, isRescheduling: Boolean):
+            Pair<InterruptSettings?, Runnable?> {
+
+        val contextAccessor = ContextAccessor.getInstance(this)
+        val prefs = PrefsAccessor.getInstance(this)
 
         val nextTargetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs)
         contextAccessor.reschedule(nextTargetTimeMillis, null)

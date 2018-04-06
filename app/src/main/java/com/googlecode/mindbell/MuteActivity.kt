@@ -24,6 +24,7 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.widget.NumberPicker
 import com.googlecode.mindbell.accessors.ContextAccessor
+import com.googlecode.mindbell.accessors.PrefsAccessor
 
 /**
  * Activity to ask for the time period to mute the bell for.
@@ -33,6 +34,7 @@ class MuteActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val contextAccessor = ContextAccessor.getInstance(this)
+        val prefs = PrefsAccessor.getInstance(this)
         val numberPicker = NumberPicker(this)
         val hours = 24
         numberPicker.minValue = 0
@@ -41,15 +43,15 @@ class MuteActivity : Activity() {
         AlertDialog.Builder(this) //
                 .setTitle(R.string.statusActionMuteFor) //
                 .setView(numberPicker) //
-                .setPositiveButton(android.R.string.ok) { dialog, which ->
+                .setPositiveButton(android.R.string.ok) { _, _ ->
                     val newValue = numberPicker.value
                     val nextTargetTimeMillis = System.currentTimeMillis() + newValue * 3600000L
-                    contextAccessor.prefs!!.mutedTill = nextTargetTimeMillis
+                    prefs.mutedTill = nextTargetTimeMillis
                     contextAccessor.updateStatusNotification()
                     contextAccessor.scheduleUpdateStatusNotificationMutedTill(nextTargetTimeMillis)
                     this@MuteActivity.finish()
                 } //
-                .setNegativeButton(android.R.string.cancel) { dialog, which -> this@MuteActivity.finish() } //
+                .setNegativeButton(android.R.string.cancel) { _, _ -> this@MuteActivity.finish() } //
                 .show()
     }
 

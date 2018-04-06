@@ -32,7 +32,7 @@ import android.os.Build
  * would have required to *type* all delegate method because AndroidStudio is not able to generate them - probably because of (2)
  * or because one would not do that ;-).
  */
-class NotificationManagerCompatExtension(val context: Context) {
+class NotificationManagerCompatExtension private constructor(val context: Context) {
 
     /**
      * Creates a notification channel with API level 26 or higher, does nothing otherwise.
@@ -44,7 +44,6 @@ class NotificationManagerCompatExtension(val context: Context) {
     fun createNotificationChannel(id: String, name: String, description: String, importance: Int = NotificationManager
             .IMPORTANCE_DEFAULT, lights: Boolean = false, lightColor: Int? = null, vibration: Boolean = false) {
         if (Build.VERSION.SDK_INT >= 26) {
-            val importance = android.app.NotificationManager.IMPORTANCE_LOW
             val mChannel = NotificationChannel(id, name, importance)
             mChannel.description = description
             mChannel.enableLights(lights)
@@ -60,8 +59,8 @@ class NotificationManagerCompatExtension(val context: Context) {
 
     companion object {
 
-        fun from(context: Context): NotificationManagerCompatExtension {
-            return NotificationManagerCompatExtension(context)
+        fun getInstance(context: Context): NotificationManagerCompatExtension {
+            return NotificationManagerCompatExtension(context.getApplicationContext())
         }
 
     }

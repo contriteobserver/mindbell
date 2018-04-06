@@ -162,28 +162,28 @@ class TimeOfDay {
      *
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    override fun equals(obj: Any?): Boolean {
-        if (this === obj) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
             return true
         }
-        if (obj == null) {
+        if (other == null) {
             return false
         }
-        if (javaClass != obj.javaClass) {
+        if (javaClass != other.javaClass) {
             return false
         }
-        val other = obj as TimeOfDay?
-        if (hour != other!!.hour) {
+        val otherTimeOfDay = other as TimeOfDay?
+        if (hour != otherTimeOfDay!!.hour) {
             return false
         }
-        if (minute != other.minute) {
+        if (minute != otherTimeOfDay.minute) {
             return false
         }
         if (weekday == null) {
-            if (other.weekday != null) {
+            if (otherTimeOfDay.weekday != null) {
                 return false
             }
-        } else if (weekday != other.weekday) {
+        } else if (weekday != otherTimeOfDay.weekday) {
             return false
         }
         return true

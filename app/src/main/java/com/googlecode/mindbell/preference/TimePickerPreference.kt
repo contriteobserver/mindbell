@@ -60,12 +60,15 @@ open class TimePickerPreference(ctxt: Context, attrs: AttributeSet) : DialogPref
     override fun onBindDialogView(v: View) {
         super.onBindDialogView(v)
 
+        @Suppress("DEPRECATION") // setCurrent*() deprecated now but not for older API levels < 23
         picker!!.currentHour = time.hour
+        @Suppress("DEPRECATION") // setCurrent*() deprecated now but not for older API levels < 23
         picker!!.currentMinute = time.minute
     }
 
     override fun onDialogClosed(positiveResult: Boolean) {
         if (positiveResult) {
+            @Suppress("DEPRECATION") // getCurrent*() deprecated now but not for older API levels < 23
             val newTime = TimeOfDay(picker!!.currentHour, picker!!.currentMinute)
             val newTimeString = newTime.persistString
             if (callChangeListener(newTimeString)) {
