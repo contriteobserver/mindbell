@@ -39,7 +39,6 @@ import com.googlecode.mindbell.util.TimeOfDay
 import com.googlecode.mindbell.util.Utils
 import kotlinx.android.synthetic.main.countdown.*
 import kotlinx.android.synthetic.main.main.*
-import kotlinx.android.synthetic.main.meditation_dialog.*
 import kotlinx.android.synthetic.main.meditation_dialog.view.*
 
 class MainActivity : Activity() {
@@ -133,7 +132,7 @@ class MainActivity : Activity() {
                 object : OnPickListener {
                     override fun onPick(): Boolean {
                         val numberOfPeriods = Integer.valueOf(view.textViewNumberOfPeriods.text.toString())!!
-                        textViewPatternOfPeriods.text = Prefs.derivePatternOfPeriods(numberOfPeriods)
+                        view.textViewPatternOfPeriods.text = Prefs.derivePatternOfPeriods(numberOfPeriods)
                         return isValidMeditationSetup(view.textViewNumberOfPeriods, view.textViewMeditationDuration, view.textViewNumberOfPeriods,
                                 view.textViewPatternOfPeriods)
                     }
@@ -392,7 +391,7 @@ class MainActivity : Activity() {
             prefs.rampUpStartingTimeMillis = rampUpStartingTimeMillis
             prefs.meditationStartingTimeMillis = meditationStartingTimeMillis
             prefs.meditationEndingTimeMillis = meditationEndingTimeMillis
-            scheduler.updateBellScheduleForMeditation()
+            scheduler.updateBellScheduleForMeditation(rampUpStartingTimeMillis, if (prefs.isStartMeditationDirectly) 1 else 0)
             countdownView.startDisplayUpdateTimer()
             if (prefs.isKeepScreenOn) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)

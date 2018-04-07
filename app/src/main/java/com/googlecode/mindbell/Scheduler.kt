@@ -86,10 +86,16 @@ class Scheduler private constructor(val context: Context) {
 
     /**
      * Send a newly created intent to InterruptService to update notification and setup a new bell schedule for meditation.
+     *
+     * @param nowTimeMillis
+     * If not null millis to be given to InterruptService as now (or nextTargetTimeMillis from the perspective of the previous
+     * call)
+     * @param meditationPeriod
+     * Zero: ramp-up, 1-(n-1): intermediate period, n: last period, n+1: beyond end
      */
-    fun updateBellScheduleForMeditation() {
-        ReminderShowActivity.logDebug("Update bell schedule for meditation requested")
-        val intent = createSchedulerServiceIntent(false, null, null)
+    fun updateBellScheduleForMeditation(nextTargetTimeMillis: Long?, meditationPeriod: Int?) {
+        ReminderShowActivity.logDebug("Update bell schedule for meditation requested, nextTargetTimeMillis=$nextTargetTimeMillis")
+        val intent = createSchedulerServiceIntent(false, nextTargetTimeMillis, meditationPeriod)
         ContextCompat.startForegroundService(context, intent)
     }
 
