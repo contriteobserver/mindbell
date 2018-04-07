@@ -20,6 +20,9 @@ package com.googlecode.mindbell
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
+import com.googlecode.mindbell.mission.ActionsExecutor
+import com.googlecode.mindbell.mission.Prefs
+import com.googlecode.mindbell.mission.Scheduler
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test

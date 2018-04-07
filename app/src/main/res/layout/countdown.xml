@@ -25,7 +25,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.googlecode.mindbell.CountdownView
+    <com.googlecode.mindbell.view.CountdownView
         android:id="@+id/countdownView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

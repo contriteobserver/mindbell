@@ -16,12 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.googlecode.mindbell
+package com.googlecode.mindbell.activity
 
 import android.app.Activity
 import android.app.AlertDialog
 import android.os.Bundle
 import android.widget.NumberPicker
+import com.googlecode.mindbell.R
+import com.googlecode.mindbell.mission.Notifier
+import com.googlecode.mindbell.mission.Prefs
 
 /**
  * Activity to ask for the time period to mute the bell for.
@@ -53,7 +56,7 @@ class MuteActivity : Activity() {
     }
 
     private fun createDisplayedHourValues(hours: Int): Array<String> {
-        return Array<String>(hours + 1, { i -> i.toString() + " h" })
+        return Array(hours + 1, { i -> i.toString() + " h" })
     }
 
 }

@@ -23,6 +23,7 @@ import android.content.Context
 import android.preference.PreferenceManager
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
+import com.googlecode.mindbell.mission.Prefs
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
@@ -39,18 +40,10 @@ class RingBellTest {
     private fun setBooleanContext(keyID: Int, value: Boolean) {
         val key = context.getString(keyID)
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        // Log.d(MindBellPreferences.LOGTAG, "The following settings are in the shared prefs:");
-        // for (Entry<String, ?> k : sp.getAll().entrySet()) {
-        // Log.d(MindBellPreferences.LOGTAG, k.getKey() + " = " + k.getValue());
-        // }
         if (!booleanSettings.containsKey(key)) {
             if (sp.contains(key)) {
                 val orig = sp.getBoolean(key, value)
-                // Log.d(MindBellPreferences.LOGTAG, "Remembering setting: " + key + " == " + orig);
                 booleanSettings.put(key, orig)
-//            } else {
-                // Log.d(MindBellPreferences.LOGTAG, "Remembering that setting was unset: " + key);
-//                booleanSettings.put(key, null)
             }
         }
         val spe = sp.edit()
@@ -71,10 +64,8 @@ class RingBellTest {
         for (key in booleanSettings.keys) {
             val value = booleanSettings[key]
             if (value == null) {
-                // Log.d(MindBellPreferences.LOGTAG, "Restoring setting to unset: " + key);
                 spe.remove(key)
             } else {
-                // Log.d(MindBellPreferences.LOGTAG, "Restoring setting: " + key + " = " + value);
                 spe.putBoolean(key, value)
             }
         }

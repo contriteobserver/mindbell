@@ -22,6 +22,8 @@ package com.googlecode.mindbell
 import android.support.test.InstrumentationRegistry
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
+import com.googlecode.mindbell.activity.ReminderShowActivity
+import com.googlecode.mindbell.mission.Scheduler
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith

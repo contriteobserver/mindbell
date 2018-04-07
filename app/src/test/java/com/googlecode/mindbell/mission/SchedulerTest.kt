@@ -16,9 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.googlecode.mindbell
+package com.googlecode.mindbell.mission
 
-import com.googlecode.mindbell.Prefs.Companion.ONE_MINUTE_MILLIS
+import com.googlecode.mindbell.mission.Prefs.Companion.ONE_MINUTE_MILLIS
 import com.googlecode.mindbell.util.TimeOfDay
 import junit.framework.Assert.assertEquals
 import org.junit.Assert
@@ -26,7 +26,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
-import org.mockito.runners.MockitoJUnitRunner
+import org.mockito.junit.MockitoJUnitRunner
 import java.util.*
 
 @RunWith(MockitoJUnitRunner::class)
@@ -37,7 +37,7 @@ class SchedulerTest {
             val prefs = mock<Prefs>(Prefs::class.java)
             `when`(prefs.daytimeStart).thenReturn(TimeOfDay(9, 0))
             `when`(prefs.daytimeEnd).thenReturn(TimeOfDay(21, 0))
-            `when`(prefs.activeOnDaysOfWeek).thenReturn(HashSet(Arrays.asList(*arrayOf(2, 3, 4, 5, 6))))
+            `when`(prefs.activeOnDaysOfWeek).thenReturn(HashSet(Arrays.asList(2, 3, 4, 5, 6)))
             `when`(prefs.isRandomize).thenReturn(true)
             `when`(prefs.normalize).thenReturn(-1)
             `when`(prefs.interval).thenReturn(60 * ONE_MINUTE_MILLIS)
@@ -49,7 +49,7 @@ class SchedulerTest {
             val prefs = mock<Prefs>(Prefs::class.java)
             `when`(prefs.daytimeStart).thenReturn(TimeOfDay(13, 0))
             `when`(prefs.daytimeEnd).thenReturn(TimeOfDay(2, 0))
-            `when`(prefs.activeOnDaysOfWeek).thenReturn(HashSet(Arrays.asList(*arrayOf(2, 3, 4, 5, 6))))
+            `when`(prefs.activeOnDaysOfWeek).thenReturn(HashSet(Arrays.asList(2, 3, 4, 5, 6)))
             `when`(prefs.isRandomize).thenReturn(true)
             `when`(prefs.normalize).thenReturn(-1)
             `when`(prefs.interval).thenReturn(60 * ONE_MINUTE_MILLIS)
@@ -64,17 +64,17 @@ class SchedulerTest {
         var nowTimeMillis = getTimeMillis(5, 0, Calendar.FRIDAY)
         var targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
         // First reschedule from nighttime (05:00, before 09:00) to beginning of daytime (09:00)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertEquals(getTimeMillis(9, 0, Calendar.FRIDAY), targetTimeMillis)
         // Second reschedule
         nowTimeMillis = targetTimeMillis
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertEquals(getTimeMillis(10, 0, Calendar.FRIDAY), targetTimeMillis)
         // Third reschedule
         nowTimeMillis = targetTimeMillis
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertEquals(getTimeMillis(11, 0, Calendar.FRIDAY), targetTimeMillis)
     }
 
@@ -194,15 +194,15 @@ class SchedulerTest {
             Assert.assertEquals(getTimeMillis(18, 52, Calendar.FRIDAY), targetTimeMillis)
             // First reschedule
             targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-            println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+            println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
             Assert.assertEquals(getTimeMillis(18, 55, Calendar.FRIDAY), targetTimeMillis)
             // Second reschedule
             targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-            println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+            println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
             Assert.assertEquals(getTimeMillis(19, 0, Calendar.FRIDAY), targetTimeMillis)
             // Third reschedule
             targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-            println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+            println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
             Assert.assertEquals(getTimeMillis(19, 5, Calendar.FRIDAY), targetTimeMillis)
         }
     }
@@ -217,19 +217,19 @@ class SchedulerTest {
         Assert.assertEquals(getTimeMillis(5, 0, Calendar.FRIDAY), targetTimeMillis)
         // First reschedule from nighttime (05:00, before 09:00) to beginning of daytime (09:00)
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-        println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+        println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertEquals(getTimeMillis(9, 5, Calendar.FRIDAY), targetTimeMillis)
         // Second reschedule
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-        println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+        println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertEquals(getTimeMillis(10, 5, Calendar.FRIDAY), targetTimeMillis)
         // Third reschedule
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-        println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+        println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertEquals(getTimeMillis(11, 5, Calendar.FRIDAY), targetTimeMillis)
         // Fourth reschedule
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-        println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+        println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertEquals(getTimeMillis(12, 5, Calendar.FRIDAY), targetTimeMillis)
     }
 
@@ -244,19 +244,19 @@ class SchedulerTest {
         Assert.assertEquals(getTimeMillis(5, 0, Calendar.FRIDAY), targetTimeMillis)
         // First reschedule from nighttime (05:00, before 09:00) to beginning of daytime (09:00)
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-        println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+        println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertEquals(getTimeMillis(9, 5, Calendar.FRIDAY), targetTimeMillis)
         // Second reschedule
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-        println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+        println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertEquals(getTimeMillis(11, 5, Calendar.FRIDAY), targetTimeMillis)
         // Third reschedule
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-        println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+        println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertEquals(getTimeMillis(13, 5, Calendar.FRIDAY), targetTimeMillis)
         // Fourth reschedule
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-        println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+        println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertEquals(getTimeMillis(15, 5, Calendar.FRIDAY), targetTimeMillis)
     }
 
@@ -271,23 +271,23 @@ class SchedulerTest {
         Assert.assertEquals(getTimeMillis(5, 0, Calendar.FRIDAY), targetTimeMillis)
         // First reschedule from nighttime (05:00, before 09:00) to beginning of daytime (09:00)
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-        println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+        println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertEquals(getTimeMillis(9, 30, Calendar.FRIDAY), targetTimeMillis)
         // Second reschedule
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-        println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+        println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertEquals(getTimeMillis(9, 50, Calendar.FRIDAY), targetTimeMillis)
         // Third reschedule
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-        println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+        println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertEquals(getTimeMillis(10, 10, Calendar.FRIDAY), targetTimeMillis)
         // Fourth reschedule
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-        println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+        println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertEquals(getTimeMillis(10, 30, Calendar.FRIDAY), targetTimeMillis)
         // Fifth reschedule
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-        println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+        println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertEquals(getTimeMillis(10, 50, Calendar.FRIDAY), targetTimeMillis)
     }
 
@@ -302,19 +302,19 @@ class SchedulerTest {
         Assert.assertEquals(getTimeMillis(5, 0, Calendar.FRIDAY), targetTimeMillis)
         // First reschedule from nighttime (05:00, before 09:00) to beginning of daytime (09:00)
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-        println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+        println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertEquals(getTimeMillis(9, 30, Calendar.FRIDAY), targetTimeMillis)
         // Second reschedule
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-        println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+        println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertEquals(getTimeMillis(12, 30, Calendar.FRIDAY), targetTimeMillis)
         // Third reschedule
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-        println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+        println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertEquals(getTimeMillis(15, 30, Calendar.FRIDAY), targetTimeMillis)
         // Fourth reschedule
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-        println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+        println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertEquals(getTimeMillis(18, 30, Calendar.FRIDAY), targetTimeMillis)
     }
 
@@ -330,23 +330,23 @@ class SchedulerTest {
             Assert.assertEquals(getTimeMillis(5, 0, Calendar.FRIDAY), targetTimeMillis)
             // First reschedule from nighttime (05:00, before 09:00) to beginning of daytime (09:00)
             targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-            println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+            println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
             Assert.assertEquals(getTimeMillis(9, 15, Calendar.FRIDAY), targetTimeMillis)
             // Second reschedule
             targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-            println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+            println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
             Assert.assertEquals(getTimeMillis(9, 45, Calendar.FRIDAY), targetTimeMillis)
             // Third reschedule
             targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-            println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+            println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
             Assert.assertEquals(getTimeMillis(10, 15, Calendar.FRIDAY), targetTimeMillis)
             // Fourth reschedule
             targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-            println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+            println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
             Assert.assertEquals(getTimeMillis(10, 45, Calendar.FRIDAY), targetTimeMillis)
             // Fifth reschedule
             targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-            println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+            println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
             Assert.assertEquals(getTimeMillis(11, 15, Calendar.FRIDAY), targetTimeMillis)
         }
         run {
@@ -355,11 +355,11 @@ class SchedulerTest {
             Assert.assertEquals(getTimeMillis(10, 14, Calendar.FRIDAY), targetTimeMillis)
             // First reschedule
             targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-            println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+            println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
             Assert.assertEquals(getTimeMillis(10, 15, Calendar.FRIDAY), targetTimeMillis)
             // Second reschedule
             targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-            println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+            println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
             Assert.assertEquals(getTimeMillis(10, 45, Calendar.FRIDAY), targetTimeMillis)
         }
         run {
@@ -368,11 +368,11 @@ class SchedulerTest {
             Assert.assertEquals(getTimeMillis(10, 15, Calendar.FRIDAY), targetTimeMillis)
             // First reschedule
             targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-            println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+            println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
             Assert.assertEquals(getTimeMillis(10, 45, Calendar.FRIDAY), targetTimeMillis)
             // Second reschedule
             targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-            println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+            println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
             Assert.assertEquals(getTimeMillis(11, 15, Calendar.FRIDAY), targetTimeMillis)
         }
         run {
@@ -381,11 +381,11 @@ class SchedulerTest {
             Assert.assertEquals(getTimeMillis(10, 16, Calendar.FRIDAY), targetTimeMillis)
             // First reschedule
             targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-            println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+            println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
             Assert.assertEquals(getTimeMillis(10, 45, Calendar.FRIDAY), targetTimeMillis)
             // Second reschedule
             targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-            println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+            println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
             Assert.assertEquals(getTimeMillis(11, 15, Calendar.FRIDAY), targetTimeMillis)
         }
     }
@@ -401,23 +401,23 @@ class SchedulerTest {
         Assert.assertEquals(getTimeMillis(5, 0, Calendar.FRIDAY), targetTimeMillis)
         // First reschedule from nighttime (05:00, before 09:00) to beginning of daytime (09:00)
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-        println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+        println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertEquals(getTimeMillis(9, 10, Calendar.FRIDAY), targetTimeMillis)
         // Second reschedule
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-        println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+        println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertEquals(getTimeMillis(9, 30, Calendar.FRIDAY), targetTimeMillis)
         // Third reschedule
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-        println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+        println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertEquals(getTimeMillis(9, 50, Calendar.FRIDAY), targetTimeMillis)
         // Fourth reschedule
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-        println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+        println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertEquals(getTimeMillis(10, 10, Calendar.FRIDAY), targetTimeMillis)
         // Fifth reschedule
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(targetTimeMillis, prefs)
-        println("targetTimeMillis=" + TimeOfDay(targetTimeMillis).toString())
+        println("targetTimeMillis=${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertEquals(getTimeMillis(10, 30, Calendar.FRIDAY), targetTimeMillis)
     }
 
@@ -440,21 +440,21 @@ class SchedulerTest {
         do {
             targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
         } while (getTimeMillis(9, 0, Calendar.FRIDAY) == targetTimeMillis && ++fails < 10) // may fail randomly sometimes
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(getTimeMillis(9, 0, Calendar.FRIDAY) != targetTimeMillis)
         Assert.assertTrue(targetTimeMillis >= getTimeMillis(9, 0, Calendar.FRIDAY)) // min(randomizedInterval - meanInterval / 2)
         Assert.assertTrue(targetTimeMillis <= getTimeMillis(10, 0, Calendar.FRIDAY)) // max(randomizedInterval - meanInterval / 2)
         // Second reschedule
         nowTimeMillis = targetTimeMillis
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(getTimeMillis(10, 0, Calendar.FRIDAY) != targetTimeMillis) // may fail randomly from time to time
         Assert.assertTrue(targetTimeMillis >= nowTimeMillis + prefs.interval * 0.5) // * 0.5 = min(randomizedInterval)
         Assert.assertTrue(targetTimeMillis <= nowTimeMillis + prefs.interval * 1.5) // * 1.5 = max(randomizedInterval)
         // Third reschedule
         nowTimeMillis = targetTimeMillis
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(getTimeMillis(11, 0, Calendar.FRIDAY) != targetTimeMillis) // may fail randomly from time to time
         Assert.assertTrue(targetTimeMillis >= nowTimeMillis + prefs.interval * 0.5) // * 0.5 = min(randomizedInterval)
         Assert.assertTrue(targetTimeMillis <= nowTimeMillis + prefs.interval * 1.5) // * 1.5 = max(randomizedInterval)
@@ -465,7 +465,7 @@ class SchedulerTest {
         val prefs = dayPrefs
         val nowTimeMillis = getTimeMillis(12, 0, Calendar.FRIDAY)
         val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(targetTimeMillis > nowTimeMillis)
         Assert.assertEquals(Calendar.FRIDAY.toLong(), getWeekday(targetTimeMillis).toLong())
         Assert.assertTrue(TimeOfDay(targetTimeMillis).isDaytime(prefs))
@@ -482,7 +482,7 @@ class SchedulerTest {
         val prefs = dayPrefs
         val nowTimeMillis = getTimeMillis(1, 0, Calendar.FRIDAY)
         val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(targetTimeMillis > nowTimeMillis)
         Assert.assertEquals(Calendar.FRIDAY.toLong(), getWeekday(targetTimeMillis).toLong())
         Assert.assertTrue(TimeOfDay(targetTimeMillis).isDaytime(prefs))
@@ -493,7 +493,7 @@ class SchedulerTest {
         val prefs = dayPrefs
         val nowTimeMillis = getTimeMillis(23, 0, Calendar.FRIDAY)
         val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(targetTimeMillis > nowTimeMillis)
         Assert.assertEquals(Calendar.MONDAY.toLong(), getWeekday(targetTimeMillis).toLong())
         Assert.assertTrue(TimeOfDay(targetTimeMillis).isDaytime(prefs))
@@ -504,7 +504,7 @@ class SchedulerTest {
         val prefs = dayPrefs
         val nowTimeMillis = getTimeMillis(20, 59, Calendar.FRIDAY)
         val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(targetTimeMillis > nowTimeMillis)
         Assert.assertEquals(Calendar.MONDAY.toLong(), getWeekday(targetTimeMillis).toLong())
         Assert.assertTrue(TimeOfDay(targetTimeMillis).isDaytime(prefs))
@@ -515,7 +515,7 @@ class SchedulerTest {
         val prefs = nightPrefs
         val nowTimeMillis = getTimeMillis(1, 0, Calendar.FRIDAY)
         val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(targetTimeMillis > nowTimeMillis)
         Assert.assertEquals(Calendar.FRIDAY.toLong(), getWeekday(targetTimeMillis).toLong())
         Assert.assertTrue(TimeOfDay(targetTimeMillis).isDaytime(prefs))
@@ -526,7 +526,7 @@ class SchedulerTest {
         val prefs = nightPrefs
         val nowTimeMillis = getTimeMillis(12, 0, Calendar.FRIDAY)
         val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(targetTimeMillis > nowTimeMillis)
         Assert.assertEquals(Calendar.FRIDAY.toLong(), getWeekday(targetTimeMillis).toLong())
         Assert.assertTrue(TimeOfDay(targetTimeMillis).isDaytime(prefs))
@@ -537,7 +537,7 @@ class SchedulerTest {
         val prefs = dayPrefs
         val nowTimeMillis = getTimeMillis(12, 0, Calendar.MONDAY)
         val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(targetTimeMillis > nowTimeMillis)
         Assert.assertEquals(Calendar.MONDAY.toLong(), getWeekday(targetTimeMillis).toLong())
         Assert.assertTrue(TimeOfDay(targetTimeMillis).isDaytime(prefs))
@@ -548,7 +548,7 @@ class SchedulerTest {
         val prefs = dayPrefs
         val nowTimeMillis = getTimeMillis(1, 0, Calendar.MONDAY)
         val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(targetTimeMillis > nowTimeMillis)
         Assert.assertEquals(Calendar.MONDAY.toLong(), getWeekday(targetTimeMillis).toLong())
         Assert.assertTrue(TimeOfDay(targetTimeMillis).isDaytime(prefs))
@@ -559,7 +559,7 @@ class SchedulerTest {
         val prefs = dayPrefs
         val nowTimeMillis = getTimeMillis(23, 0, Calendar.MONDAY)
         val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(targetTimeMillis > nowTimeMillis)
         Assert.assertEquals(Calendar.TUESDAY.toLong(), getWeekday(targetTimeMillis).toLong())
         Assert.assertTrue(TimeOfDay(targetTimeMillis).isDaytime(prefs))
@@ -570,7 +570,7 @@ class SchedulerTest {
         val prefs = dayPrefs
         val nowTimeMillis = getTimeMillis(20, 59, Calendar.MONDAY)
         val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(targetTimeMillis > nowTimeMillis)
         Assert.assertEquals(Calendar.TUESDAY.toLong(), getWeekday(targetTimeMillis).toLong())
         Assert.assertTrue(TimeOfDay(targetTimeMillis).isDaytime(prefs))
@@ -581,7 +581,7 @@ class SchedulerTest {
         val prefs = nightPrefs
         val nowTimeMillis = getTimeMillis(1, 0, Calendar.MONDAY)
         val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(targetTimeMillis > nowTimeMillis)
         Assert.assertEquals(Calendar.MONDAY.toLong(), getWeekday(targetTimeMillis).toLong())
         Assert.assertTrue(TimeOfDay(targetTimeMillis).isDaytime(prefs))
@@ -592,7 +592,7 @@ class SchedulerTest {
         val prefs = nightPrefs
         val nowTimeMillis = getTimeMillis(12, 0, Calendar.MONDAY)
         val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(targetTimeMillis > nowTimeMillis)
         Assert.assertEquals(Calendar.MONDAY.toLong(), getWeekday(targetTimeMillis).toLong())
         Assert.assertTrue(TimeOfDay(targetTimeMillis).isDaytime(prefs))
@@ -603,7 +603,7 @@ class SchedulerTest {
         val prefs = dayPrefs
         val nowTimeMillis = getTimeMillis(12, 0, Calendar.SATURDAY)
         val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(targetTimeMillis > nowTimeMillis)
         Assert.assertEquals(Calendar.MONDAY.toLong(), getWeekday(targetTimeMillis).toLong())
         Assert.assertTrue(TimeOfDay(targetTimeMillis).isDaytime(prefs))
@@ -614,7 +614,7 @@ class SchedulerTest {
         val prefs = dayPrefs
         val nowTimeMillis = getTimeMillis(1, 0, Calendar.SATURDAY)
         val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(targetTimeMillis > nowTimeMillis)
         Assert.assertEquals(Calendar.MONDAY.toLong(), getWeekday(targetTimeMillis).toLong())
         Assert.assertTrue(TimeOfDay(targetTimeMillis).isDaytime(prefs))
@@ -625,7 +625,7 @@ class SchedulerTest {
         val prefs = dayPrefs
         val nowTimeMillis = getTimeMillis(23, 0, Calendar.SATURDAY)
         val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(targetTimeMillis > nowTimeMillis)
         Assert.assertEquals(Calendar.MONDAY.toLong(), getWeekday(targetTimeMillis).toLong())
         Assert.assertTrue(TimeOfDay(targetTimeMillis).isDaytime(prefs))
@@ -636,7 +636,7 @@ class SchedulerTest {
         val prefs = dayPrefs
         val nowTimeMillis = getTimeMillis(20, 59, Calendar.SATURDAY)
         val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(targetTimeMillis > nowTimeMillis)
         Assert.assertEquals(Calendar.MONDAY.toLong(), getWeekday(targetTimeMillis).toLong())
         Assert.assertTrue(TimeOfDay(targetTimeMillis).isDaytime(prefs))
@@ -647,7 +647,7 @@ class SchedulerTest {
         val prefs = nightPrefs
         val nowTimeMillis = getTimeMillis(0, 30, Calendar.SATURDAY)
         val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(targetTimeMillis > nowTimeMillis)
         Assert.assertEquals(Calendar.SATURDAY.toLong(), getWeekday(targetTimeMillis).toLong())
         Assert.assertTrue(TimeOfDay(targetTimeMillis).isDaytime(prefs))
@@ -658,7 +658,7 @@ class SchedulerTest {
         val prefs = nightPrefs
         val nowTimeMillis = getTimeMillis(12, 0, Calendar.SATURDAY)
         val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(targetTimeMillis > nowTimeMillis)
         Assert.assertEquals(Calendar.MONDAY.toLong(), getWeekday(targetTimeMillis).toLong())
         Assert.assertTrue(TimeOfDay(targetTimeMillis).isDaytime(prefs))
@@ -669,7 +669,7 @@ class SchedulerTest {
         val prefs = dayPrefs
         val nowTimeMillis = getTimeMillis(12, 0, Calendar.SUNDAY)
         val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(targetTimeMillis > nowTimeMillis)
         Assert.assertEquals(Calendar.MONDAY.toLong(), getWeekday(targetTimeMillis).toLong())
         Assert.assertTrue(TimeOfDay(targetTimeMillis).isDaytime(prefs))
@@ -680,7 +680,7 @@ class SchedulerTest {
         val prefs = dayPrefs
         val nowTimeMillis = getTimeMillis(1, 0, Calendar.SUNDAY)
         val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(targetTimeMillis > nowTimeMillis)
         Assert.assertEquals(Calendar.MONDAY.toLong(), getWeekday(targetTimeMillis).toLong())
         Assert.assertTrue(TimeOfDay(targetTimeMillis).isDaytime(prefs))
@@ -691,7 +691,7 @@ class SchedulerTest {
         val prefs = dayPrefs
         val nowTimeMillis = getTimeMillis(23, 0, Calendar.SUNDAY)
         val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(targetTimeMillis > nowTimeMillis)
         Assert.assertEquals(Calendar.MONDAY.toLong(), getWeekday(targetTimeMillis).toLong())
         Assert.assertTrue(TimeOfDay(targetTimeMillis).isDaytime(prefs))
@@ -702,7 +702,7 @@ class SchedulerTest {
         val prefs = dayPrefs
         val nowTimeMillis = getTimeMillis(20, 59, Calendar.SUNDAY)
         val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(targetTimeMillis > nowTimeMillis)
         Assert.assertEquals(Calendar.MONDAY.toLong(), getWeekday(targetTimeMillis).toLong())
         Assert.assertTrue(TimeOfDay(targetTimeMillis).isDaytime(prefs))
@@ -713,7 +713,7 @@ class SchedulerTest {
         val prefs = nightPrefs
         val nowTimeMillis = getTimeMillis(1, 0, Calendar.SUNDAY)
         val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(targetTimeMillis > nowTimeMillis)
         Assert.assertEquals(Calendar.MONDAY.toLong(), getWeekday(targetTimeMillis).toLong())
         Assert.assertTrue(TimeOfDay(targetTimeMillis).isDaytime(prefs))
@@ -724,7 +724,7 @@ class SchedulerTest {
         val prefs = nightPrefs
         val nowTimeMillis = getTimeMillis(12, 0, Calendar.SUNDAY)
         val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        println(TimeOfDay(nowTimeMillis).toString() + " -> " + TimeOfDay(targetTimeMillis).toString())
+        println("${TimeOfDay(nowTimeMillis).toString()} -> ${TimeOfDay(targetTimeMillis).toString()}")
         Assert.assertTrue(targetTimeMillis > nowTimeMillis)
         Assert.assertEquals(Calendar.MONDAY.toLong(), getWeekday(targetTimeMillis).toLong())
         Assert.assertTrue(TimeOfDay(targetTimeMillis).isDaytime(prefs))

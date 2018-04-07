@@ -1,31 +1,33 @@
 /*
  * MindBell - Aims to give you a support for staying mindful in a busy life -
- * for remembering what really counts
- * <p>
- * Copyright (C) 2010-2014 Marc Schroeder
- * Copyright (C) 2014-2018 Uwe Damken
- * <p>
+ *            for remembering what really counts
+ *
+ *     Copyright (C) 2014-2018 Uwe Damken
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.googlecode.mindbell
+package com.googlecode.mindbell.service
 
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import com.googlecode.mindbell.Prefs.Companion.EXTRA_IS_RESCHEDULING
-import com.googlecode.mindbell.Prefs.Companion.EXTRA_MEDITATION_PERIOD
-import com.googlecode.mindbell.Prefs.Companion.EXTRA_NOW_TIME_MILLIS
-import com.googlecode.mindbell.Prefs.Companion.INTERRUPT_NOTIFICATION_ID
+import android.util.Log
+import com.googlecode.mindbell.mission.*
+import com.googlecode.mindbell.mission.Prefs.Companion.EXTRA_IS_RESCHEDULING
+import com.googlecode.mindbell.mission.Prefs.Companion.EXTRA_MEDITATION_PERIOD
+import com.googlecode.mindbell.mission.Prefs.Companion.EXTRA_NOW_TIME_MILLIS
+import com.googlecode.mindbell.mission.Prefs.Companion.INTERRUPT_NOTIFICATION_ID
+import com.googlecode.mindbell.mission.Prefs.Companion.TAG
 import com.googlecode.mindbell.util.TimeOfDay
 import java.util.*
 
@@ -45,28 +47,25 @@ class InterruptService : Service() {
         val nowTimeMillis = intent.getLongExtra(EXTRA_NOW_TIME_MILLIS, Calendar.getInstance().timeInMillis)
         val meditationPeriod = intent.getIntExtra(EXTRA_MEDITATION_PERIOD, -1)
 
-        ReminderShowActivity.logDebug("InterruptService received intent: isRescheduling=" + isRescheduling + ", nowTimeMillis=" + nowTimeMillis +
-                ", meditationPeriod=" + meditationPeriod)
+        Log.d(TAG, "InterruptService received intent: isRescheduling=$isRescheduling, nowTimeMillis=$nowTimeMillis, meditationPeriod=$meditationPeriod")
 
         // Create working environment
         val prefs = Prefs.getInstance(applicationContext)
 
-        var pair: Pair<InterruptSettings?, Runnable?>
+        val pair: Pair<InterruptSettings?, Runnable?>
 
         // Evaluate next time to remind and reschedule or terminate method if neither active nor meditating
-        if (prefs.isMeditating) { // Meditating overrides Active therefore check this first
+        pair = when {
 
-            pair = handleMeditatingBell(nowTimeMillis, meditationPeriod)
+        // Meditating overrides Active therefore check this first
+            prefs.isMeditating -> handleMeditatingBell(nowTimeMillis, meditationPeriod)
 
-        } else if (prefs.isActive) {
+            prefs.isActive -> handleActiveBell(nowTimeMillis, isRescheduling)
 
-            pair = handleActiveBell(nowTimeMillis, isRescheduling)
-
-        } else {
-
-            ReminderShowActivity.logDebug("Bell is neither meditating nor active -- not reminding, not rescheduling.")
-            pair = Pair(null, null)
-
+            else -> {
+                Log.d(TAG, "Bell is neither meditating nor active -- not reminding, not rescheduling.")
+                Pair(null, null)
+            }
         }
 
         val notifier = Notifier.getInstance(applicationContext)
@@ -120,10 +119,10 @@ class InterruptService : Service() {
             if (prefs.isStopMeditationAutomatically) {
                 val actionsExecutor = ActionsExecutor.getInstance(applicationContext)
                 meditationStopper = Runnable { actionsExecutor.stopMeditation() }
-                ReminderShowActivity.logDebug("Meditation is over -- not rescheduling -- automatically stopping meditation mode.")
+                Log.d(TAG, "Meditation is over -- not rescheduling -- automatically stopping meditation mode.")
             } else {
                 meditationStopper = null
-                ReminderShowActivity.logDebug("Meditation is over -- not rescheduling -- meditation mode remains to be active.")
+                Log.d(TAG, "Meditation is over -- not rescheduling -- meditation mode remains to be active.")
             }
             return Pair(prefs.forMeditationEnding(), meditationStopper)
 
@@ -145,22 +144,22 @@ class InterruptService : Service() {
 
         if (!isRescheduling) {
 
-            ReminderShowActivity.logDebug("Not reminding (show/sound/vibrate), has been called by activate bell button or preferences or when boot " + "completed or after updating")
+            Log.d(TAG, "Not reminding (show/sound/vibrate), has been called by activate bell button or preferences or when boot completed or after updating")
             return Pair(null, null)
 
         } else if (!TimeOfDay().isDaytime(prefs)) {
 
-            ReminderShowActivity.logDebug("Not reminding (show/sound/vibrate), it is night time")
+            Log.d(TAG, "Not reminding (show/sound/vibrate), it is night time")
             return Pair(null, null)
 
         } else if (statusDetector.isMuteRequested(true)) {
 
-            ReminderShowActivity.logDebug("Not reminding (show/sound/vibrate), bell is muted")
+            Log.d(TAG, "Not reminding (show/sound/vibrate), bell is muted")
             return Pair(null, null)
 
         } else {
 
-            ReminderShowActivity.logDebug("Start reminder actions (show/sound/vibrate")
+            Log.d(TAG, "Start reminder actions (show/sound/vibrate")
             return Pair(prefs.forRegularOperation(), null)
         }
     }

@@ -2,7 +2,7 @@
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
- *     Copyright (C) 2014-2016 Uwe Damken
+ *     Copyright (C) 2014-2018 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.googlecode.mindbell
+package com.googlecode.mindbell.mission
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.media.AudioManager
 import android.net.Uri
-import com.googlecode.mindbell.Prefs.Preference.Type.*
+import android.util.Log
+import com.googlecode.mindbell.BuildConfig
+import com.googlecode.mindbell.R
 import com.googlecode.mindbell.R.string.*
+import com.googlecode.mindbell.mission.Prefs.Preference.Type.*
 import com.googlecode.mindbell.util.TimeOfDay
 import com.googlecode.mindbell.util.Utils
 import java.util.*
@@ -111,7 +115,7 @@ class Prefs private constructor(val context: Context) {
 
     val activeOnDaysOfWeekString: String
         get() {
-            // Warning: Similar code in MindBellPreferences#setMultiSelectListPreferenceSummary()
+            // Warning: Similar code in SettingsActivity#setMultiSelectListPreferenceSummary()
             val activeOnDaysOfWeek = activeOnDaysOfWeek
             val sb = StringBuilder()
             for (dayOfWeekValue in weekdayEntryValues) {
@@ -325,9 +329,9 @@ class Prefs private constructor(val context: Context) {
 
         // Log stacktrace if a setting has been deleted or set to its default
         if (logStackTrace) {
-            ReminderShowActivity.logWarn("At least one setting has been deleted or reset to its default", Exception())
+            Log.w(TAG, "At least one setting has been deleted or reset to its default", Exception())
         } else {
-            ReminderShowActivity.logDebug("Preferences checked and found to be ok")
+            Log.d(TAG, "Preferences checked and found to be ok")
         }
 
         // Report all currently existing settings
@@ -418,7 +422,7 @@ class Prefs private constructor(val context: Context) {
             sb.append(key).append("=").append(value).append(", ")
         }
         sb.setLength(sb.length - 2) // remove last ", "
-        ReminderShowActivity.logDebug(sb.toString())
+        Log.d(TAG, sb.toString())
     }
 
     /**
@@ -442,8 +446,7 @@ class Prefs private constructor(val context: Context) {
         if (oldNumberOfPeriods > 0) {
             val patternOfPeriods = derivePatternOfPeriods(oldNumberOfPeriods)
             settings.edit().remove(keyNumberOfPeriods).apply()
-            ReminderShowActivity.logWarn("Converted old setting for '" + keyNumberOfPeriods + "' (" + oldNumberOfPeriods + ") to '" +
-                    context.getText(keyPatternOfPeriods) + "' (" + patternOfPeriods + ")")
+            Log.w(TAG, "Converted old setting for '$keyNumberOfPeriods' ($oldNumberOfPeriods) to '${context.getText(keyPatternOfPeriods)}' ($patternOfPeriods)")
         }
         // Version 3.2.0 replaces frequency milliseconds string by time string
         val keyFrequency = context.getString(R.string.keyFrequency)
@@ -453,7 +456,7 @@ class Prefs private constructor(val context: Context) {
                 val milliseconds = java.lang.Long.parseLong(oldFrequency)
                 val frequency = TimeOfDay.fromMillisecondsInterval(milliseconds).persistString
                 setSetting(R.string.keyFrequency, frequency)
-                ReminderShowActivity.logWarn("Converted old value for '$keyFrequency' from '$oldFrequency' to '$frequency'")
+                Log.w(TAG, "Converted old value for '$keyFrequency' from '$oldFrequency' to '$frequency'")
             } catch (e: NumberFormatException) {
                 // invalid preference will be removed by removeInvalidSetting()
             }
@@ -466,7 +469,7 @@ class Prefs private constructor(val context: Context) {
             if (oldRampUpTime >= 0) {
                 val rampUpTime = TimeOfDay.fromSecondsInterval(oldRampUpTime).persistString
                 setSetting(R.string.keyRampUpTime, rampUpTime)
-                ReminderShowActivity.logWarn("Converted old value for '$keyRampUpTime' from '$oldRampUpTime' to '$rampUpTime'")
+                Log.w(TAG, "Converted old value for '$keyRampUpTime' from '$oldRampUpTime' to '$rampUpTime'")
             }
         } catch (e: ClassCastException) {
             // preference has already been converted
@@ -479,8 +482,7 @@ class Prefs private constructor(val context: Context) {
             if (oldMeditationDuration >= 0) {
                 val meditationDuration = TimeOfDay.fromSecondsInterval(oldMeditationDuration).persistString
                 setSetting(R.string.keyMeditationDuration, meditationDuration)
-                ReminderShowActivity.logWarn("Converted old value for '" + keyMeditationDuration + "' from '" + oldMeditationDuration + "' to '" +
-                        meditationDuration + "'")
+                Log.w(TAG, "Converted old value for '$keyMeditationDuration' from '$oldMeditationDuration' to '$meditationDuration'")
             }
         } catch (e: ClassCastException) {
             // preference has already been converted
@@ -493,15 +495,13 @@ class Prefs private constructor(val context: Context) {
                     preferenceMap[keyStatusVisibilityPublic]!!.defaultValue as Boolean)
             setSetting(keyStatusVisibilityPublic, statusVisibilityPublic)
             settings.edit().remove(keyStatusVisiblityPublic).apply()
-            ReminderShowActivity.logWarn("Converted old setting for '" + keyStatusVisiblityPublic + "' (" + statusVisibilityPublic + ") to '" +
-                    context.getText(keyStatusVisibilityPublic) + "' (" + statusVisibilityPublic + ")")
+            Log.w(TAG, "Converted old setting for '$keyStatusVisiblityPublic' ($statusVisibilityPublic) to '${context.getText(keyStatusVisibilityPublic)}' ($statusVisibilityPublic)")
         }
         // Version 3.2.5 introduced keyUseAudioStreamVolumeSetting (default true) but should be false for users of older versions
         if (!settings.contains(context.getText(keyUseAudioStreamVolumeSetting).toString()) && settings.contains(context.getText(keyActive).toString())) {
             val useAudioStreamVolumeSetting = false
             setSetting(keyUseAudioStreamVolumeSetting, useAudioStreamVolumeSetting)
-            ReminderShowActivity.logWarn("Created setting for '" + context.getText(keyUseAudioStreamVolumeSetting) + "' with non-default (" +
-                    useAudioStreamVolumeSetting + ") because an older version was already installed")
+            Log.w(TAG, "Created setting for '${context.getText(keyUseAudioStreamVolumeSetting)}' with non-default ($useAudioStreamVolumeSetting) because an older version was already installed")
         }
         // Version 3.2.6 replaced useStandardBell by reminderBell
         val keyUseStandardBell = "useStandardBell"
@@ -510,8 +510,7 @@ class Prefs private constructor(val context: Context) {
             val reminderBell = if (useStandardBell) DEFAULT_REMINDER_BELL else BELL_ENTRY_VALUE_INDEX_NO_SOUND.toString()
             setSetting(keyReminderBell, reminderBell)
             settings.edit().remove(keyUseStandardBell).apply()
-            ReminderShowActivity.logWarn("Converted old setting for '" + keyUseStandardBell + "' (" + useStandardBell + ") to '" +
-                    context.getText(keyReminderBell) + "' (" + reminderBell + ")")
+            Log.w(TAG, "Converted old setting for '$keyUseStandardBell' ($useStandardBell) to '${context.getText(keyReminderBell)}' ($reminderBell)")
         }
     }
 
@@ -533,7 +532,7 @@ class Prefs private constructor(val context: Context) {
                         val entryValues = Arrays.asList(*entryValuesMap[preference.resid]!!)
                         if (entryValues != null && !entryValues.isEmpty() && !entryValues.contains(stringValue)) {
                             settings.edit().remove(preference.key).apply()
-                            ReminderShowActivity.logWarn("Removed setting '$preference' since it had wrong value '$stringValue'")
+                            Log.w(TAG, "Removed setting '$preference' since it had wrong value '$stringValue'")
                             return true
                         }
                     }
@@ -546,8 +545,7 @@ class Prefs private constructor(val context: Context) {
                             val entryValues = Arrays.asList(*entryValuesMap[preference.resid]!!)
                             if (!entryValues.contains(aStringInSet)) {
                                 settings.edit().remove(preference.key).apply()
-                                ReminderShowActivity.logWarn("Removed setting '" + preference + "' since it had (at least one) wrong value '" +
-                                        aStringInSet + "'")
+                                Log.w(TAG, "Removed setting '$preference' since it had (at least one) wrong value '$aStringInSet'")
                                 return true
                             }
                         }
@@ -558,7 +556,7 @@ class Prefs private constructor(val context: Context) {
                     if (timeStringValue != null) {
                         if (!timeStringValue.matches(TIME_STRING_REGEX.toRegex())) {
                             settings.edit().remove(preference.key).apply()
-                            ReminderShowActivity.logWarn("Removed setting '$preference' since it is not a time string '$timeStringValue'")
+                            Log.w(TAG, "Removed setting '$preference' since it is not a time string '$timeStringValue'")
                             return true
                         }
                     }
@@ -567,7 +565,7 @@ class Prefs private constructor(val context: Context) {
             return false
         } catch (e: ClassCastException) {
             settings.edit().remove(preference.key).apply()
-            ReminderShowActivity.logWarn("Removed setting '$preference' since it had wrong type: $e")
+            Log.w(TAG, "Removed setting '$preference' since it had wrong type: $e")
             return true
         }
 
@@ -582,7 +580,7 @@ class Prefs private constructor(val context: Context) {
     private fun resetMissingSetting(preference: Preference): Boolean {
         if (!settings.contains(preference.key)) {
             resetSetting(preference)
-            ReminderShowActivity.logWarn("Reset missing setting for '" + preference.key + "' to '" + preference.defaultValue + "'")
+            Log.w(TAG, "Reset missing setting for '${preference.key}' to '${preference.defaultValue}'")
             return true
         }
         return false
@@ -662,7 +660,7 @@ class Prefs private constructor(val context: Context) {
      * Returns the chosen sound depending on settings for reminderBell, ringtone and useWorkaroundBell.
      */
     fun getReminderSoundUri(): Uri? {
-        // This implementation is almost the same as MindBellPreferences#getReminderSoundUri()
+        // This implementation is almost the same as SettingsActivity#getReminderSoundUri()
         var soundUri = getReminderBellSoundUri()
         if (soundUri == null) { // use system notification ringtone if reminder bell sound is not set
             val ringtone = ringtone
@@ -883,6 +881,11 @@ class Prefs private constructor(val context: Context) {
     companion object {
 
         /**
+         * Tag to be used for logging.
+         */
+        val TAG = "MindBell"
+
+        /**
          * One minute in milliseconds.
          */
         const val ONE_MINUTE_MILLIS = 60000L
@@ -903,7 +906,7 @@ class Prefs private constructor(val context: Context) {
         private const val VARIABLE_PERIOD_REGEX = "(x)"
         private const val PERIOD_SEPARATOR = ","
         private const val PERIOD_SEPARATOR_REGEX = PERIOD_SEPARATOR
-        const val PERIOD_SEPARATOR_WITH_BLANKS_REGEX = " *${PERIOD_SEPARATOR_REGEX} *"
+        const val PERIOD_SEPARATOR_WITH_BLANKS_REGEX = " *$PERIOD_SEPARATOR_REGEX *"
         const val PERIOD_SEPARATOR_WITH_BLANK = ", "
 
         /**
@@ -943,22 +946,22 @@ class Prefs private constructor(val context: Context) {
         /**
          * Unique string to be added to a Scheduling Intent to see which meditation period the bell is in.
          */
-        const val EXTRA_MEDITATION_PERIOD = "com.googlecode.mindbell.InterruptService.MeditationPeriod"
+        const val EXTRA_MEDITATION_PERIOD = "com.googlecode.mindbell.service.InterruptService.MeditationPeriod"
 
         /**
          * Unique string to be added to a Scheduling Intent to see who sent it.
          */
-        const val EXTRA_IS_RESCHEDULING = "com.googlecode.mindbell.InterruptService.IsRescheduling"
+        const val EXTRA_IS_RESCHEDULING = "com.googlecode.mindbell.service.InterruptService.IsRescheduling"
 
         /**
          * Unique string to be added to a Scheduling Intent to see for which time the bell was scheduled.
          */
-        const val EXTRA_NOW_TIME_MILLIS = "com.googlecode.mindbell.InterruptService.NowTimeMillis"
+        const val EXTRA_NOW_TIME_MILLIS = "com.googlecode.mindbell.service.InterruptService.NowTimeMillis"
 
         /**
          * Unique string to be added to a MindBell intent to see if it has to be kept open.
          */
-        const val EXTRA_KEEP = "com.googlecode.mindbell.ReminderShowActivity.Keep"
+        const val EXTRA_KEEP = "com.googlecode.mindbell.activity.ReminderShowActivity.Keep"
 
         /**
          * Unique string to be added to an Intent to see if MainActivity is opened to stop meditation mode.
@@ -983,11 +986,16 @@ class Prefs private constructor(val context: Context) {
         const val SCHEDULER_REQUEST_CODE = 0
         const val UPDATE_STATUS_NOTIFICATION_REQUEST_CODE = 1
         const val UPDATE_STATUS_NOTIFICATION_MUTED_TILL_REQUEST_CODE = 2
-        const val UPDATE_STATUS_NOTIFICATION_DAY_NIGHT_REQUEST_CODE = 4
+        const val UPDATE_STATUS_NOTIFICATION_DAY_NIGHT_REQUEST_CODE = 3
+        const val REQUEST_CODE_STATUS = 10
+        const val REQUEST_CODE_MUTE_OFF_HOOK = 11
+        const val REQUEST_CODE_RINGTONE = 12
 
         /*
          * The one and only instance of this class.
          */
+        @SuppressLint("StaticFieldLeak") // it's fine to hold an ApplicationContext: https://stackoverflow.com/a/39841446
+        @Volatile
         private var instance: Prefs? = null
 
         /*
@@ -996,7 +1004,7 @@ class Prefs private constructor(val context: Context) {
         @Synchronized
         fun getInstance(context: Context): Prefs {
             if (instance == null) {
-                instance = Prefs(context)
+                instance = Prefs(context.applicationContext)
             }
             return instance!!
         }

@@ -16,24 +16,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.googlecode.mindbell
+package com.googlecode.mindbell.activity
 
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
-import com.googlecode.mindbell.Prefs.Companion.MIN_MEDITATION_DURATION
-import com.googlecode.mindbell.Prefs.Companion.MIN_RAMP_UP_TIME
-import com.googlecode.mindbell.Prefs.Companion.ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION
-import com.googlecode.mindbell.Prefs.Companion.ONE_MINUTE_MILLIS_NEGATIVE_PERIOD
-import com.googlecode.mindbell.Prefs.Companion.ONE_MINUTE_MILLIS_PERIOD_NOT_EXISTING
-import com.googlecode.mindbell.Prefs.Companion.ONE_MINUTE_MILLIS_PERIOD_TOO_SHORT
-import com.googlecode.mindbell.Prefs.Companion.ONE_MINUTE_MILLIS_VARIABLE_PERIOD_MISSING
+import com.googlecode.mindbell.R
+import com.googlecode.mindbell.mission.ActionsExecutor
+import com.googlecode.mindbell.mission.Notifier
+import com.googlecode.mindbell.mission.Prefs
+import com.googlecode.mindbell.mission.Prefs.Companion.MIN_MEDITATION_DURATION
+import com.googlecode.mindbell.mission.Prefs.Companion.MIN_RAMP_UP_TIME
+import com.googlecode.mindbell.mission.Prefs.Companion.ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION
+import com.googlecode.mindbell.mission.Prefs.Companion.ONE_MINUTE_MILLIS_NEGATIVE_PERIOD
+import com.googlecode.mindbell.mission.Prefs.Companion.ONE_MINUTE_MILLIS_PERIOD_NOT_EXISTING
+import com.googlecode.mindbell.mission.Prefs.Companion.ONE_MINUTE_MILLIS_PERIOD_TOO_SHORT
+import com.googlecode.mindbell.mission.Prefs.Companion.ONE_MINUTE_MILLIS_VARIABLE_PERIOD_MISSING
+import com.googlecode.mindbell.mission.Prefs.Companion.TAG
+import com.googlecode.mindbell.mission.Scheduler
 import com.googlecode.mindbell.preference.MinutesIntervalPickerPreference
 import com.googlecode.mindbell.util.TimeOfDay
 import com.googlecode.mindbell.util.Utils
@@ -49,7 +56,7 @@ class MainActivity : Activity() {
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ReminderShowActivity.logDebug("Main activity is being created")
+        Log.d(TAG, "Main activity is being created")
         prefs = Prefs.getInstance(this)
         scheduler = Scheduler.getInstance(this)
         // Use the following line to show popup dialog on every start
@@ -58,7 +65,7 @@ class MainActivity : Activity() {
         imageViewShowIntro.setOnClickListener { flipToAppropriateView(true) }
         imageViewHideIntro.setOnClickListener { flipToAppropriateView(false) }
         val ringOnceOnClickListener = View.OnClickListener {
-            ReminderShowActivity.logDebug("Ring once")
+            Log.d(TAG, "Ring once")
             val notifier = Notifier.getInstance(this)
             notifier.updateStatusNotification()
             val actionsExecutor = ActionsExecutor.getInstance(this)
@@ -84,7 +91,7 @@ class MainActivity : Activity() {
         val inflater = menuInflater
         inflater.inflate(R.menu.settings, menu)
         val settingsItem = menu.findItem(R.id.settings)
-        settingsItem.intent = Intent(this, MindBellPreferences::class.java)
+        settingsItem.intent = Intent(this, SettingsActivity::class.java)
         val muteForItem = menu.findItem(R.id.muteFor)
         muteForItem.intent = Intent(this, MuteActivity::class.java)
         val aboutItem = menu.findItem(R.id.about)
@@ -357,7 +364,7 @@ class MainActivity : Activity() {
 
     override fun onResume() {
         if (intent.getBooleanExtra(Prefs.EXTRA_STOP_MEDITATION, false)) {
-            ReminderShowActivity.logDebug("MainActivity received stop meditation intent")
+            Log.d(TAG, "MainActivity received stop meditation intent")
             // If the activity has once been opened from the InterruptService by automatically stopping meditation further screen
             // rotations will stop meditation, too, because getIntent() always returns the intent that initially opened the
             // activity. Hence the extra information must be removed to avoid stopping medtiation in these other cases.
@@ -395,7 +402,7 @@ class MainActivity : Activity() {
             countdownView.startDisplayUpdateTimer()
             if (prefs.isKeepScreenOn) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                ReminderShowActivity.logDebug("Keep screen on activated")
+                Log.d(TAG, "Keep screen on activated")
             }
         } else {
             countdownView.stopDisplayUpdateTimer()
@@ -404,7 +411,7 @@ class MainActivity : Activity() {
             scheduler.updateBellScheduleForReminder(false)
             if (prefs.isKeepScreenOn) {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                ReminderShowActivity.logDebug("Keep screen on deactivated")
+                Log.d(TAG, "Keep screen on deactivated")
             }
         }
         flipToAppropriateView(false)
@@ -454,7 +461,7 @@ class MainActivity : Activity() {
         val popupView = LayoutInflater.from(this).inflate(R.layout.popup_dialog, null)
         val versionName = Utils.getApplicationVersionName(packageManager, packageName)
         val builder = AlertDialog.Builder(this) //
-                .setTitle(getText(R.string.app_name).toString() + " " + versionName) //
+                .setTitle("${getText(R.string.app_name).toString()} $versionName") //
                 .setIcon(R.mipmap.ic_launcher) //
                 .setView(popupView) //
                 .setPositiveButton(android.R.string.ok, null)

@@ -16,21 +16,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.googlecode.mindbell
+package com.googlecode.mindbell.mission
 
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.support.v4.content.ContextCompat
-import com.googlecode.mindbell.Prefs.Companion.EXTRA_IS_RESCHEDULING
-import com.googlecode.mindbell.Prefs.Companion.EXTRA_MEDITATION_PERIOD
-import com.googlecode.mindbell.Prefs.Companion.EXTRA_NOW_TIME_MILLIS
-import com.googlecode.mindbell.Prefs.Companion.SCHEDULER_REQUEST_CODE
+import android.util.Log
+import com.googlecode.mindbell.mission.Prefs.Companion.EXTRA_IS_RESCHEDULING
+import com.googlecode.mindbell.mission.Prefs.Companion.EXTRA_MEDITATION_PERIOD
+import com.googlecode.mindbell.mission.Prefs.Companion.EXTRA_NOW_TIME_MILLIS
+import com.googlecode.mindbell.mission.Prefs.Companion.SCHEDULER_REQUEST_CODE
+import com.googlecode.mindbell.mission.Prefs.Companion.TAG
+import com.googlecode.mindbell.service.InterruptService
 import com.googlecode.mindbell.util.AlarmManagerCompat
 import com.googlecode.mindbell.util.TimeOfDay
 import java.util.*
 
+/**
+ * This class manages the schedule of interrupt actions.
+ */
 class Scheduler private constructor(val context: Context) {
 
     private var notifier = Notifier.getInstance(context)
@@ -40,7 +46,7 @@ class Scheduler private constructor(val context: Context) {
      * requested cancel and newly setup alarms to update notification status depending on day-night mode.
      */
     fun updateBellScheduleForReminder(renewDayNightAlarm: Boolean) {
-        ReminderShowActivity.logDebug("Update bell schedule for reminder requested, renewDayNightAlarm=" + renewDayNightAlarm)
+        Log.d(TAG, "Update bell schedule for reminder requested, renewDayNightAlarm=$renewDayNightAlarm")
         if (renewDayNightAlarm) {
             notifier.scheduleRefreshDayNight()
         }
@@ -69,8 +75,7 @@ class Scheduler private constructor(val context: Context) {
      * Zero: ramp-up, 1-(n-1): intermediate period, n: last period, n+1: beyond end
      */
     private fun createSchedulerServiceIntent(isRescheduling: Boolean, nowTimeMillis: Long?, meditationPeriod: Int?): Intent {
-        ReminderShowActivity.logDebug("Creating scheduler intent: isRescheduling=" + isRescheduling + ", nowTimeMillis=" + nowTimeMillis +
-                ", meditationPeriod=" + meditationPeriod)
+        Log.d(TAG, "Creating scheduler intent: isRescheduling=$isRescheduling, nowTimeMillis=$nowTimeMillis, meditationPeriod=$meditationPeriod")
         val intent = Intent(context, InterruptService::class.java)
         if (isRescheduling) {
             intent.putExtra(EXTRA_IS_RESCHEDULING, true)
@@ -87,14 +92,14 @@ class Scheduler private constructor(val context: Context) {
     /**
      * Send a newly created intent to InterruptService to update notification and setup a new bell schedule for meditation.
      *
-     * @param nowTimeMillis
+     * @param nextTargetTimeMillis
      * If not null millis to be given to InterruptService as now (or nextTargetTimeMillis from the perspective of the previous
      * call)
      * @param meditationPeriod
      * Zero: ramp-up, 1-(n-1): intermediate period, n: last period, n+1: beyond end
      */
     fun updateBellScheduleForMeditation(nextTargetTimeMillis: Long?, meditationPeriod: Int?) {
-        ReminderShowActivity.logDebug("Update bell schedule for meditation requested, nextTargetTimeMillis=$nextTargetTimeMillis")
+        Log.d(TAG, "Update bell schedule for meditation requested, nextTargetTimeMillis=$nextTargetTimeMillis")
         val intent = createSchedulerServiceIntent(false, nextTargetTimeMillis, meditationPeriod)
         ContextCompat.startForegroundService(context, intent)
     }
@@ -112,7 +117,7 @@ class Scheduler private constructor(val context: Context) {
         val alarmManager = AlarmManagerCompat.getInstance(context)
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextTargetTimeMillis, pendingIntent)
         val nextBellTime = TimeOfDay(nextTargetTimeMillis)
-        ReminderShowActivity.logDebug("Scheduled next bell alarm for " + nextBellTime.logString)
+        Log.d(TAG, "Scheduled next bell alarm for ${nextBellTime.logString}")
     }
 
     companion object {

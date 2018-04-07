@@ -2,7 +2,7 @@
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
- *     Copyright (C) 2014-2016 Uwe Damken
+ *     Copyright (C) 2014-2018 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.googlecode.mindbell
+package com.googlecode.mindbell.mission
 
-import com.googlecode.mindbell.Prefs.Companion.ONE_MINUTE_MILLIS
-import com.googlecode.mindbell.Prefs.Companion.ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION
-import com.googlecode.mindbell.Prefs.Companion.ONE_MINUTE_MILLIS_NEGATIVE_PERIOD
-import com.googlecode.mindbell.Prefs.Companion.ONE_MINUTE_MILLIS_PERIOD_NOT_EXISTING
-import com.googlecode.mindbell.Prefs.Companion.ONE_MINUTE_MILLIS_PERIOD_TOO_SHORT
-import com.googlecode.mindbell.Prefs.Companion.ONE_MINUTE_MILLIS_VARIABLE_PERIOD_MISSING
+import com.googlecode.mindbell.mission.Prefs.Companion.ONE_MINUTE_MILLIS
+import com.googlecode.mindbell.mission.Prefs.Companion.ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION
+import com.googlecode.mindbell.mission.Prefs.Companion.ONE_MINUTE_MILLIS_NEGATIVE_PERIOD
+import com.googlecode.mindbell.mission.Prefs.Companion.ONE_MINUTE_MILLIS_PERIOD_NOT_EXISTING
+import com.googlecode.mindbell.mission.Prefs.Companion.ONE_MINUTE_MILLIS_PERIOD_TOO_SHORT
+import com.googlecode.mindbell.mission.Prefs.Companion.ONE_MINUTE_MILLIS_VARIABLE_PERIOD_MISSING
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test

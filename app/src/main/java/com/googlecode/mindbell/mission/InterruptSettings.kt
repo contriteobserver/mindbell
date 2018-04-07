@@ -16,21 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.googlecode.mindbell
+package com.googlecode.mindbell.mission
 
-import android.app.Activity
-import android.os.Bundle
-import android.webkit.WebView
+import android.net.Uri
 
 /**
- * Show about dialog to display e.g. the license.
+ * All settings that influence interrupt (actions) either for reminder or for meditation. It is used to enable using different
+ * tones for different periods of meditation and for regular activity.
  */
-class AboutActivity : Activity() {
+interface InterruptSettings {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_about)
-        val webViewAboutApacheLicenseText = findViewById(R.id.about_html_text) as WebView
-        webViewAboutApacheLicenseText.loadUrl(getString(R.string.about_html_text_url))
-    }
+    val isShow: Boolean
+
+    val isSound: Boolean
+
+    val isVibrate: Boolean
+
+    val volume: Float
+
+    val isNotification: Boolean
+
+    val isDismissNotification: Boolean
+
+    fun getSoundUri(): Uri?
+
 }

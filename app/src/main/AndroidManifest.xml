@@ -34,7 +34,7 @@
         android:theme="@style/MindBellTheme">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -43,39 +43,39 @@
         </activity>
 
         <activity
-            android:name=".MindBellPreferences"
+            android:name=".activity.SettingsActivity"
             android:label="@string/preferencesTitle"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".activity.MainActivity">
         </activity>
 
         <activity
-            android:name=".ReminderShowActivity"
+            android:name=".activity.ReminderShowActivity"
             android:excludeFromRecents="true"
             android:label="@string/app_name">
         </activity>
 
         <activity
-            android:name=".AboutActivity"
+            android:name=".activity.AboutActivity"
             android:label="@string/title_activity_about"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".activity.MainActivity">
         </activity>
 
         <activity
-            android:name=".MuteActivity"
+            android:name=".activity.MuteActivity"
             android:noHistory="true">
         </activity>
 
-        <service android:name=".InterruptService">
+        <service android:name=".service.InterruptService">
         </service>
 
-        <receiver android:name=".RestartReceiver">
+        <receiver android:name=".receiver.RestartReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".RefreshReceiver">
+        <receiver android:name=".receiver.RefreshReceiver">
             <intent-filter>
                 <action android:name="android.app.action.INTERRUPTION_FILTER_CHANGED"/>
                 <action android:name="android.intent.action.AIRPLANE_MODE"/>

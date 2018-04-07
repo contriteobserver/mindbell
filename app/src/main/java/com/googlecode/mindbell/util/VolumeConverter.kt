@@ -24,10 +24,6 @@ package com.googlecode.mindbell.util
  */
 class VolumeConverter(val mDynamicRangeDB: Int, val mMaxProgress: Int) {
 
-    /**
-     * @param progress
-     * @return
-     */
     fun progress2volume(progress: Int): Float {
         if (progress == 0) {
             return 0f
@@ -36,10 +32,6 @@ class VolumeConverter(val mDynamicRangeDB: Int, val mMaxProgress: Int) {
         return Math.pow(10.0, -minusDB / 20.0).toFloat()
     }
 
-    /**
-     * @param volume2
-     * @return
-     */
     fun volume2progress(aVolume: Float): Int {
         if (aVolume < 0.0001) {
             return 0
@@ -52,7 +44,4 @@ class VolumeConverter(val mDynamicRangeDB: Int, val mMaxProgress: Int) {
         return Math.round((mDynamicRangeDB + minusDB) / mDynamicRangeDB * mMaxProgress)
     }
 
-    companion object {
-        val MINUS_ONE_DB = 0.891250938f
-    }
 }

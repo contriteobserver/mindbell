@@ -16,28 +16,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.googlecode.mindbell
+package com.googlecode.mindbell.activity
 
-import android.net.Uri
+import android.app.Activity
+import android.os.Bundle
+import com.googlecode.mindbell.R
+import kotlinx.android.synthetic.main.activity_about.*
 
 /**
- * All settings that influence interrupt (actions) either for reminder or for meditation. It is used to enable using different
- * tones for different periods of meditation and for regular activity.
+ * Show about dialog to display e.g. the license.
  */
-interface InterruptSettings {
+class AboutActivity : Activity() {
 
-    val isShow: Boolean
-
-    val isSound: Boolean
-
-    val isVibrate: Boolean
-
-    val volume: Float
-
-    val isNotification: Boolean
-
-    val isDismissNotification: Boolean
-
-    fun getSoundUri(): Uri?
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_about)
+        webViewAboutHtmlText.loadUrl(getString(R.string.about_html_text_url))
+    }
 }

@@ -53,7 +53,7 @@
         <item>hh:55</item>
     </string-array>
 
-    <!-- Weekdays for selection in MindBellPreferences -->
+    <!-- Weekdays for selection in SettingsActivity -->
     <string-array name="weekdayEntries">
         <item>Montag</item>
         <item>Dienstag</item>
@@ -64,7 +64,7 @@
         <item>Sonntag</item>
     </string-array>
 
-    <!-- Internal value (ordered regarding Calendar) for the weekday selection in MindBellPreferences -->
+    <!-- Internal value (ordered regarding Calendar) for the weekday selection in SettingsActivity -->
     <string-array name="weekdayEntryValues">
         <item>2</item>
         <item>3</item>

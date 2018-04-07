@@ -59,7 +59,7 @@
         and all log entries produced by MindBell to help finding a possible bug.</string>
     <string name="noEmailClients">There are no email clients installed.</string>
 
-    <!-- MindBellPreferences -->
+    <!-- SettingsActivity -->
     <string name="preferencesTitle">MindBell Preferences</string>
 
     <string name="prefsCategorySoundOutput">Sound output</string>

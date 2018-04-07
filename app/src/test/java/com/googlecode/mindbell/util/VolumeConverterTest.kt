@@ -25,7 +25,7 @@ import org.junit.Test
 
 class VolumeConverterTest {
 
-    lateinit var c: VolumeConverter
+    private lateinit var c: VolumeConverter
 
     @Before
     fun setUp() {
@@ -50,7 +50,7 @@ class VolumeConverterTest {
     fun testProgressWillNeverBeNegative() {
         val volume = 0.001f
         val progress = c.volume2progress(volume)
-        Assert.assertTrue("Progress should not be negative, but is " + progress, progress >= 0)
+        Assert.assertTrue("Progress should not be negative, but is $progress", progress >= 0)
     }
 
     @Test

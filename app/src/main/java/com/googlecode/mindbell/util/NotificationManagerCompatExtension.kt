@@ -19,6 +19,7 @@
 
 package com.googlecode.mindbell.util
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -41,6 +42,7 @@ class NotificationManagerCompatExtension private constructor(val context: Contex
      * everytime when notifying: >> Creating an existing notification channel with its original values performs no operation, so
      * it's safe to call this code when starting an app. <<
      */
+    @SuppressLint("InlinedApi") // IMPORTANCE_DEFAULT is ignored in method body for API level < 26
     fun createNotificationChannel(id: String, name: String, description: String, importance: Int = NotificationManager
             .IMPORTANCE_DEFAULT, lights: Boolean = false, lightColor: Int? = null, vibration: Boolean = false) {
         if (Build.VERSION.SDK_INT >= 26) {
@@ -60,7 +62,7 @@ class NotificationManagerCompatExtension private constructor(val context: Contex
     companion object {
 
         fun getInstance(context: Context): NotificationManagerCompatExtension {
-            return NotificationManagerCompatExtension(context.getApplicationContext())
+            return NotificationManagerCompatExtension(context.applicationContext)
         }
 
     }

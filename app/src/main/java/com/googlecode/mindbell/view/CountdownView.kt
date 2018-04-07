@@ -16,13 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.googlecode.mindbell
+package com.googlecode.mindbell.view
 
 import android.content.Context
 import android.graphics.*
 import android.text.TextPaint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
+import com.googlecode.mindbell.R
+import com.googlecode.mindbell.mission.Prefs
+import com.googlecode.mindbell.mission.Prefs.Companion.TAG
 import java.util.*
 
 /**
@@ -135,7 +139,7 @@ class CountdownView : View {
             }
         }, 0, ONE_SECOND) // draw at once and then every second
 
-        ReminderShowActivity.logDebug("Countdown timers started")
+        Log.d(TAG, "Countdown timers started")
     }
 
     public override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -270,7 +274,7 @@ class CountdownView : View {
             displayUpdateTimer!!.cancel()
             displayUpdateTimer = null
         }
-        ReminderShowActivity.logDebug("Countdown timers stopped")
+        Log.d(TAG, "Countdown timers stopped")
     }
 
     /**
@@ -292,7 +296,7 @@ class CountdownView : View {
 
     companion object {
 
-        val ONE_SECOND: Long = 1000
+        const val ONE_SECOND: Long = 1000
     }
 
 }

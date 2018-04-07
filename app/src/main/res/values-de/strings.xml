@@ -59,7 +59,7 @@
         Geräteinformationen und alle von MindBell erzeugten Log-Einträge, die bei der Fehlersuche helfen sollen.</string>
     <string name="noEmailClients">Es ist keine E-Mail-App installiert.</string>
 
-    <!-- MindBellPreferences -->
+    <!-- SettingsActivity -->
     <string name="preferencesTitle">MindBell Einstellungen</string>
 
     <string name="prefsCategorySoundOutput">Klangausgabe</string>

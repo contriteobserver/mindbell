@@ -28,9 +28,10 @@ import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
+import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
-import com.googlecode.mindbell.ReminderShowActivity
+import com.googlecode.mindbell.mission.Prefs.Companion.TAG
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -40,14 +41,14 @@ object Utils {
     /**
      *
      */
-    private val CUT_OFF_MESSAGE = "[... log to long ... cut off ...]"
+    private const val CUT_OFF_MESSAGE = "[... log to long ... cut off ...]"
     /**
      * A TransactionTooLargeException is thrown if extra data transferred by an intent is too large (community is experiencing 90KB,
      * 500KB, 1MB to be the max, on emulator with API level 16, 100KB is already too much, so 70KB should be enough to read), this
      * results in a FAILED BINDER TRANSACTION crash of the caller app but exception is thrown in the called app. Therefore log
      * output is limited to this size.
      */
-    private val MAX_LOG_LENGTH = 70000
+    private const val MAX_LOG_LENGTH = 70000
 
     /**
      * Read log entries of this application and return them as concatenated string but try to avoid a TransactionTooLargeException
@@ -67,21 +68,21 @@ object Utils {
                     sb.append(line).append("\n")
                     line = reader.readLine()
                 }
-                ReminderShowActivity.logInfo("Length of extracted application log is: " + sb.length)
+                Log.i(TAG, "Length of extracted application log is: ${sb.length}")
                 if (sb.length > MAX_LOG_LENGTH) {
                     sb.replace(headerLength, sb.length - MAX_LOG_LENGTH + headerLength + CUT_OFF_MESSAGE.length, CUT_OFF_MESSAGE)
-                    ReminderShowActivity.logWarn("Cut off extracted application log to length: " + sb.length)
+                    Log.w(TAG, "Cut off extracted application log to length: ${sb.length}")
                 }
                 sb.append("===== end of application log =====").append("\n")
                 return sb.toString()
             } catch (e: IOException) {
-                ReminderShowActivity.logError("Could not read application log", e)
+                Log.e(TAG, "Could not read application log", e)
             } finally {
                 if (reader != null) {
                     try {
                         reader.close()
                     } catch (e: IOException) {
-                        ReminderShowActivity.logWarn("Could not close log output stream" + e)
+                        Log.w(TAG, "Could not close log output stream", e)
                     }
 
                 }
@@ -135,7 +136,7 @@ object Utils {
             val packageInfo = packageManager.getPackageInfo(packageName, 0)
             return packageInfo.versionName
         } catch (e: NameNotFoundException) {
-            ReminderShowActivity.logError("Could not retrieve package information" + e)
+            Log.e(TAG, "Could not retrieve package information", e)
             return "N/A"
         }
 
@@ -149,7 +150,7 @@ object Utils {
             val packageInfo = packageManager.getPackageInfo(packageName, 0)
             return packageInfo.versionCode
         } catch (e: NameNotFoundException) {
-            ReminderShowActivity.logError("Could not retrieve package information" + e)
+            Log.e(TAG, "Could not retrieve package information", e)
             return 0
         }
 
@@ -193,7 +194,7 @@ object Utils {
             val durationString = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
             return if (durationString == null) null else java.lang.Long.parseLong(durationString)
         } catch (e: Exception) {
-            ReminderShowActivity.logWarn("Sound <$soundUri> not accessible", e)
+            Log.w(TAG, "Sound <$soundUri> not accessible", e)
             return null
         }
 
@@ -210,18 +211,18 @@ object Utils {
     @Throws(NotFoundException::class)
     fun getResourceUri(context: Context, resid: Int): Uri {
         val resources = context.resources
-        return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + resources.getResourcePackageName(resid) + "/" + resid)
+        return Uri.parse("${ContentResolver.SCHEME_ANDROID_RESOURCE}://${resources.getResourcePackageName(resid)}/$resid")
     }
 
     /**
      * Returns true if MindBell is exclude from battery optimization.
      */
     fun isAppWhitelisted(context: Context): Boolean {
-        if (Build.VERSION.SDK_INT >= 23) {
+        return if (Build.VERSION.SDK_INT >= 23) {
             val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
-            return pm.isIgnoringBatteryOptimizations(context.packageName)
+            pm.isIgnoringBatteryOptimizations(context.packageName)
         } else {
-            return false
+            false
         }
     }
 

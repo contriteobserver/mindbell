@@ -90,15 +90,14 @@ open class TimePickerPreference(ctxt: Context, attrs: AttributeSet) : DialogPref
     }
 
     override fun onSetInitialValue(restoreValue: Boolean, defaultValue: Any?) {
-        var newTimeString: String
-        if (restoreValue) {
+        val newTimeString: String = if (restoreValue) {
             if (defaultValue == null) {
-                newTimeString = getPersistedString("00:00")
+                getPersistedString("00:00")
             } else {
-                newTimeString = getPersistedString(defaultValue.toString())
+                getPersistedString(defaultValue.toString())
             }
         } else {
-            newTimeString = defaultValue!!.toString()
+            defaultValue!!.toString()
         }
         time = TimeOfDay(newTimeString)
     }

@@ -16,24 +16,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.googlecode.mindbell
+package com.googlecode.mindbell.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.util.Log
+import com.googlecode.mindbell.mission.Notifier
+import com.googlecode.mindbell.mission.Prefs.Companion.TAG
 
 /**
- * Restarts reminder scheduling and (just in case) stops meditation after after the app has been restarted (due to a reboot or
- * update).
+ * Update status notification on changes in system settings to display an active icon or active but muted icon or no icon at all.
  */
-class RestartReceiver : BroadcastReceiver() {
+class RefreshReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        ReminderShowActivity.logDebug("RestartReceiver received intent with action ${intent.action} ")
-        val scheduler = Scheduler.getInstance(context)
-        val prefs = Prefs.getInstance(context)
-        prefs.isMeditating = false // do not continue meditation after rebooting during meditation (probably rare)
-        scheduler.updateBellScheduleForReminder(true)
+        Log.d(TAG, "Refresh intent received ${intent.action!!}")
+        val notifier = Notifier.getInstance(context)
+        notifier.updateStatusNotification()
+        notifier.scheduleRefreshDayNight()
     }
 
 }

@@ -29,7 +29,7 @@ import com.googlecode.mindbell.util.TimeOfDay
  */
 class MinutesIntervalPickerPreference(ctxt: Context, attrs: AttributeSet) : TimePickerPreference(ctxt, attrs) {
 
-    protected override val isUse24HourView: Boolean
+    override val isUse24HourView: Boolean
         get() = true
 
     override fun deriveSummary(): String {
@@ -61,7 +61,7 @@ class MinutesIntervalPickerPreference(ctxt: Context, attrs: AttributeSet) : Time
 
         fun deriveSummary(time: TimeOfDay, isMinutesInterval: Boolean): String {
             val unit = if (isMinutesInterval) "min" else "s"
-            return time.displayString + " (" + time.interval + " " + unit + ")"
+            return "${time.displayString} (${time.interval} $unit)"
         }
     }
 

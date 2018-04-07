@@ -16,12 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.googlecode.mindbell
+package com.googlecode.mindbell.activity
 
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
-import com.googlecode.mindbell.Prefs.Companion.EXTRA_KEEP
+import com.googlecode.mindbell.R
+import com.googlecode.mindbell.mission.Prefs.Companion.EXTRA_KEEP
+import com.googlecode.mindbell.mission.Prefs.Companion.TAG
 
 
 class ReminderShowActivity : Activity() {
@@ -34,40 +36,10 @@ class ReminderShowActivity : Activity() {
     override fun onStart() {
         super.onStart()
         val keep = intent.extras?.getBoolean(EXTRA_KEEP)
-        logDebug("ReminderShowActivity.onStart() called EXTRA_KEEP='$keep'")
+        Log.d(TAG, "ReminderShowActivity.onStart() called EXTRA_KEEP='$keep'")
         if (keep != null && !keep) {
             finish()
         }
-    }
-
-    companion object {
-
-        val TAG = "MindBell"
-
-        fun logDebug(message: String) {
-            Log.d(TAG, message)
-        }
-
-        fun logInfo(message: String) {
-            Log.i(TAG, message)
-        }
-
-        fun logWarn(message: String) {
-            Log.w(TAG, message)
-        }
-
-        fun logWarn(message: String, e: Exception) {
-            Log.w(TAG, message, e)
-        }
-
-        fun logError(message: String) {
-            Log.e(TAG, message)
-        }
-
-        fun logError(message: String, e: Exception) {
-            Log.e(TAG, message, e)
-        }
-
     }
 
 }

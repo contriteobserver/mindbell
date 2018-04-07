@@ -59,7 +59,7 @@ class AlarmManagerCompat private constructor(context: Context) {
     companion object {
 
         fun getInstance(context: Context): AlarmManagerCompat {
-            return AlarmManagerCompat(context.getApplicationContext())
+            return AlarmManagerCompat(context.applicationContext)
         }
 
     }

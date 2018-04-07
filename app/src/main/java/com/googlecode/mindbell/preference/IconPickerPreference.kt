@@ -98,7 +98,7 @@ class IconPickerPreference(context: Context, attrs: AttributeSet) : ListPreferen
 
     override fun onSetInitialValue(restoreValue: Boolean, defaultValue: Any?) {
         val effectiveDefaultValue = defaultValue?.toString() ?: "0"
-        var newValue: String =
+        val newValue =
                 if (restoreValue) {
                     getPersistedString(effectiveDefaultValue)
                 } else {

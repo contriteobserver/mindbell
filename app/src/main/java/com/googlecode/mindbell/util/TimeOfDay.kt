@@ -20,7 +20,7 @@
 package com.googlecode.mindbell.util
 
 import android.content.Context
-import com.googlecode.mindbell.Prefs
+import com.googlecode.mindbell.mission.Prefs
 import java.util.*
 
 /**
@@ -106,13 +106,13 @@ class TimeOfDay {
      */
     private fun init(hour: Int, minute: Int, second: Int?, millisecond: Int?, weekday: Int?) {
         if (hour > 23 || hour < 0) {
-            throw IllegalArgumentException("Hour must be between 0 and 23, but is " + hour)
+            throw IllegalArgumentException("Hour must be between 0 and 23, but is $hour")
         }
         if (minute > 59 || minute < 0) {
-            throw IllegalArgumentException("Minute must be between 0 and 59, but is " + minute)
+            throw IllegalArgumentException("Minute must be between 0 and 59, but is $minute")
         }
         if (weekday != null && (weekday > 7 || weekday < 1)) {
-            throw IllegalArgumentException("Weekday must be between 1 and 7, but is " + weekday)
+            throw IllegalArgumentException("Weekday must be between 1 and 7, but is $weekday")
         }
         this.hour = hour
         this.minute = minute
@@ -244,11 +244,11 @@ class TimeOfDay {
         if (start.isBefore(end)) { // day ?
             return isActiveOnThatDay(activeOnDaysOfWeek) // this time of day and the range start are on the same day
         }
-        if (isBefore(end)) { // after midnight?
+        return if (isBefore(end)) { // after midnight?
             val weekdayAtStart = if (weekday == 1) 7 else weekday!! - 1
-            return isActiveOnThatDay(weekdayAtStart, activeOnDaysOfWeek)
+            isActiveOnThatDay(weekdayAtStart, activeOnDaysOfWeek)
         } else {
-            return isActiveOnThatDay(activeOnDaysOfWeek)
+            isActiveOnThatDay(activeOnDaysOfWeek)
         }
     }
 

@@ -16,8 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.googlecode.mindbell
+package com.googlecode.mindbell.mission
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.Notification
 import android.app.NotificationManager.IMPORTANCE_LOW
@@ -26,13 +27,19 @@ import android.content.Context
 import android.content.Intent
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
+import android.util.Log
 import android.widget.Toast
-import com.googlecode.mindbell.Prefs.Companion.INTERRUPT_NOTIFICATION_CHANNEL_ID
-import com.googlecode.mindbell.Prefs.Companion.STATUS_NOTIFICATION_CHANNEL_ID
-import com.googlecode.mindbell.Prefs.Companion.STATUS_NOTIFICATION_ID
-import com.googlecode.mindbell.Prefs.Companion.UPDATE_STATUS_NOTIFICATION_DAY_NIGHT_REQUEST_CODE
-import com.googlecode.mindbell.Prefs.Companion.UPDATE_STATUS_NOTIFICATION_MUTED_TILL_REQUEST_CODE
-import com.googlecode.mindbell.Prefs.Companion.UPDATE_STATUS_NOTIFICATION_REQUEST_CODE
+import com.googlecode.mindbell.R
+import com.googlecode.mindbell.activity.MainActivity
+import com.googlecode.mindbell.activity.MuteActivity
+import com.googlecode.mindbell.activity.SettingsActivity
+import com.googlecode.mindbell.mission.Prefs.Companion.INTERRUPT_NOTIFICATION_CHANNEL_ID
+import com.googlecode.mindbell.mission.Prefs.Companion.STATUS_NOTIFICATION_CHANNEL_ID
+import com.googlecode.mindbell.mission.Prefs.Companion.STATUS_NOTIFICATION_ID
+import com.googlecode.mindbell.mission.Prefs.Companion.TAG
+import com.googlecode.mindbell.mission.Prefs.Companion.UPDATE_STATUS_NOTIFICATION_DAY_NIGHT_REQUEST_CODE
+import com.googlecode.mindbell.mission.Prefs.Companion.UPDATE_STATUS_NOTIFICATION_MUTED_TILL_REQUEST_CODE
+import com.googlecode.mindbell.mission.Prefs.Companion.UPDATE_STATUS_NOTIFICATION_REQUEST_CODE
 import com.googlecode.mindbell.util.AlarmManagerCompat
 import com.googlecode.mindbell.util.NotificationManagerCompatExtension
 import com.googlecode.mindbell.util.TimeOfDay
@@ -47,13 +54,14 @@ class Notifier private constructor(val context: Context) {
     private var prefs: Prefs = Prefs.getInstance(context)
 
     fun showMessage(message: String) {
-        ReminderShowActivity.logDebug(message)
+        Log.d(TAG, message)
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     /**
      * Create the reminder notification which is to be displayed when executing reminder actions.
      */
+    @SuppressLint("InlinedApi") // IMPORTANCE_LOW is ignored in compat class for API level < 26
     fun createInterruptNotification(interruptSettings: InterruptSettings? = null): Notification {
 
         // Create notification channel
@@ -100,7 +108,7 @@ class Notifier private constructor(val context: Context) {
      */
     fun updateStatusNotification() {
         if (!prefs.isActive && !prefs.isMeditating || !prefs.isStatus) {// bell inactive or no notification wanted?
-            ReminderShowActivity.logInfo("Remove status notification because of inactive and non-meditating bell or unwanted status notification")
+            Log.i(TAG, "Remove status notification because of inactive and non-meditating bell or unwanted status notification")
             removeStatusNotification()
             return
         }
@@ -126,7 +134,7 @@ class Notifier private constructor(val context: Context) {
             statusDrawable = R.drawable.ic_warning_white_24dp
             contentTitle = context.getText(R.string.statusTitleNotificationsDisabled)
             contentText = context.getText(R.string.statusTextNotificationsDisabled).toString()
-            targetClass = MindBellPreferences::class.java
+            targetClass = SettingsActivity::class.java
             // Status Notification would not be correct during incoming or outgoing calls because of the missing permission to
             // listen to phone state changes. Therefore we switch off notification and ask user for permission when he tries
             // to enable notification again. In this very moment we cannot ask for permission to avoid an ANR in receiver
@@ -153,7 +161,7 @@ class Notifier private constructor(val context: Context) {
                 .getText(R.string.prefsCategoryStatusNotification).toString(), context.getText(R.string.summaryStatus).toString())
 
         // Now do the notification update
-        ReminderShowActivity.logInfo("Update status notification: " + contentText)
+        Log.i(TAG, "Update status notification: $contentText")
         val openAppIntent = PendingIntent.getActivity(context, 0, Intent(context, targetClass), PendingIntent.FLAG_UPDATE_CURRENT)
         val muteIntent = PendingIntent.getActivity(context, 2, Intent(context, MuteActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT)
         val visibility = if (prefs.isStatusVisibilityPublic) NotificationCompat.VISIBILITY_PUBLIC else NotificationCompat.VISIBILITY_PRIVATE
@@ -192,7 +200,7 @@ class Notifier private constructor(val context: Context) {
         if (prefs.isActive) {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, targetTimeMillis, sender)
             val scheduledTime = TimeOfDay(targetTimeMillis)
-            ReminderShowActivity.logDebug("Update status notification scheduled for " + scheduledTime.logString + " (" + info + ")")
+            Log.d(TAG, "Update status notification scheduled for ${scheduledTime.logString} ($info)")
         }
     }
 
@@ -207,7 +215,6 @@ class Notifier private constructor(val context: Context) {
      * Schedule a refresh to update status notification for the start or the end of the active period.
      */
     fun scheduleRefreshDayNight() {
-        val scheduler = Scheduler.getInstance(context)
         val targetTimeMillis = Scheduler.getNextDayNightChangeInMillis(Calendar.getInstance().timeInMillis, prefs)
         scheduleRefresh(targetTimeMillis, UPDATE_STATUS_NOTIFICATION_DAY_NIGHT_REQUEST_CODE, "day-night")
     }

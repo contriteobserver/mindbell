@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.googlecode.mindbell
+package com.googlecode.mindbell.mission
 
 import android.Manifest
 import android.content.Context
@@ -27,6 +27,9 @@ import android.provider.Settings
 import android.provider.Settings.Global
 import android.support.v4.content.ContextCompat
 import android.telephony.TelephonyManager
+import android.util.Log
+import com.googlecode.mindbell.R
+import com.googlecode.mindbell.mission.Prefs.Companion.TAG
 import com.googlecode.mindbell.util.TimeOfDay
 import java.text.MessageFormat
 import java.util.*
@@ -138,7 +141,7 @@ class StatusDetector private constructor(val context: Context) {
      */
     fun canSettingsBeSatisfied(): Boolean {
         val result = !prefs.isMuteOffHook || ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
-        ReminderShowActivity.logDebug("Can settings be satisfied? -> " + result)
+        Log.d(TAG, "Can settings be satisfied? -> $result")
         return result
     }
 

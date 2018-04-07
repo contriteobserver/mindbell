@@ -16,8 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.googlecode.mindbell
+package com.googlecode.mindbell.mission
 
+import android.annotation.SuppressLint
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -26,8 +27,12 @@ import android.media.AudioManager.*
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Vibrator
-import com.googlecode.mindbell.Prefs.Companion.EXTRA_KEEP
-import com.googlecode.mindbell.Prefs.Companion.WAITING_TIME
+import android.util.Log
+import com.googlecode.mindbell.activity.MainActivity
+import com.googlecode.mindbell.activity.ReminderShowActivity
+import com.googlecode.mindbell.mission.Prefs.Companion.EXTRA_KEEP
+import com.googlecode.mindbell.mission.Prefs.Companion.TAG
+import com.googlecode.mindbell.mission.Prefs.Companion.WAITING_TIME
 import java.io.IOException
 
 /**
@@ -98,34 +103,34 @@ class ActionsExecutor private constructor(val context: Context) : AudioManager.O
         if (isBellSoundPlaying) { // do we hold a reference to a MediaPlayer?
             if (mediaPlayer!!.isPlaying) {
                 mediaPlayer!!.stop()
-                ReminderShowActivity.logDebug("Ongoing MediaPlayer stopped")
+                Log.d(TAG, "Ongoing MediaPlayer stopped")
             }
             mediaPlayer!!.reset() // get rid of "mediaplayer went away with unhandled events" log entries
             mediaPlayer!!.release()
             mediaPlayer = null
-            ReminderShowActivity.logDebug("Reference to MediaPlayer released")
+            Log.d(TAG, "Reference to MediaPlayer released")
             if (prefs.isPauseAudioOnSound) {
                 if (audioManager!!.abandonAudioFocus(this) == AUDIOFOCUS_REQUEST_FAILED) {
-                    ReminderShowActivity.logDebug("Abandon of audio focus failed")
+                    Log.d(TAG, "Abandon of audio focus failed")
                 } else {
-                    ReminderShowActivity.logDebug("Audio focus successfully abandoned")
+                    Log.d(TAG, "Audio focus successfully abandoned")
                 }
             }
         }
         // Reset volume to originalVolume if it has been set before (does not equal -1)
         if (prefs.isUseAudioStreamVolumeSetting) { // we don't care about setting the volume
-            ReminderShowActivity.logDebug("Finish bell sound found without touching audio stream volume")
+            Log.d(TAG, "Finish bell sound found without touching audio stream volume")
         } else {
             val originalVolume = prefs.originalVolume
             if (originalVolume < 0) {
-                ReminderShowActivity.logDebug("Finish bell sound found originalVolume $originalVolume, alarm volume left untouched")
+                Log.d(TAG, "Finish bell sound found originalVolume $originalVolume, alarm volume left untouched")
             } else {
                 val alarmMaxVolume = alarmMaxVolume
                 if (originalVolume == alarmMaxVolume) { // "someone" else set it to max, so we don't touch it
-                    ReminderShowActivity.logDebug(
+                    Log.d(TAG,
                             "Finish bell sound found originalVolume $originalVolume to be max, alarm volume left untouched")
                 } else {
-                    ReminderShowActivity.logDebug("Finish bell sound found originalVolume $originalVolume, setting alarm volume to it")
+                    Log.d(TAG, "Finish bell sound found originalVolume $originalVolume, setting alarm volume to it")
                     alarmVolume = originalVolume
                 }
                 prefs.resetOriginalVolume() // no longer needed therefore invalidate it
@@ -141,29 +146,29 @@ class ActionsExecutor private constructor(val context: Context) : AudioManager.O
         val bellUri = interruptSettings.getSoundUri()
         audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         if (prefs.isNoSoundOnMusic && audioManager!!.isMusicActive) {
-            ReminderShowActivity.logDebug("Sound suppressed because setting is no sound on music and music is playing")
+            Log.d(TAG, "Sound suppressed because setting is no sound on music and music is playing")
             return false
         } else if (bellUri == null) {
-            ReminderShowActivity.logDebug("Sound suppressed because no sound has been set")
+            Log.d(TAG, "Sound suppressed because no sound has been set")
             return false
         } else if (prefs.isPauseAudioOnSound) {
             val requestResult = audioManager!!.requestAudioFocus(this, prefs.audioStream, retrieveDurationHint())
             if (requestResult == AUDIOFOCUS_REQUEST_FAILED) {
-                ReminderShowActivity.logDebug("Sound suppressed because setting is pause audio on sound and request of audio focus failed")
+                Log.d(TAG, "Sound suppressed because setting is pause audio on sound and request of audio focus failed")
                 return false
             }
-            ReminderShowActivity.logDebug("Audio focus successfully requested")
+            Log.d(TAG, "Audio focus successfully requested")
         }
         if (prefs.isUseAudioStreamVolumeSetting) { // we don't care about setting the volume
-            ReminderShowActivity.logDebug("Start playing sound without touching audio stream volume")
+            Log.d(TAG, "Start playing sound without touching audio stream volume")
         } else {
             val originalVolume = alarmVolume
             val alarmMaxVolume = alarmMaxVolume
             if (originalVolume == alarmMaxVolume) { // "someone" else set it to max, so we don't touch it
-                ReminderShowActivity.logDebug(
+                Log.d(TAG,
                         "Start playing sound found originalVolume $originalVolume to be max, alarm volume left untouched")
             } else {
-                ReminderShowActivity.logDebug(
+                Log.d(TAG,
                         "Start playing sound found and stored originalVolume $originalVolume, setting alarm volume to max")
                 alarmVolume = alarmMaxVolume
                 prefs.originalVolume = originalVolume
@@ -189,7 +194,7 @@ class ActionsExecutor private constructor(val context: Context) : AudioManager.O
             mediaPlayer!!.start()
             return true
         } catch (e: IOException) {
-            ReminderShowActivity.logError("Could not start playing sound: " + e.message, e)
+            Log.e(TAG, "Could not start playing sound", e)
             reminderActionsFinisher.run()
             return false
         }
@@ -248,7 +253,7 @@ class ActionsExecutor private constructor(val context: Context) : AudioManager.O
      * Shows bell by starting activity MindBell
      */
     private fun showBell() {
-        ReminderShowActivity.logDebug("Starting ReminderShowActivity to show bell")
+        Log.d(TAG, "Starting ReminderShowActivity to show bell")
         showOrHideBell(true)
     }
 
@@ -256,7 +261,7 @@ class ActionsExecutor private constructor(val context: Context) : AudioManager.O
      * Hides bell by starting activity MindBell
      */
     private fun hideBell() {
-        ReminderShowActivity.logDebug("Starting ReminderShowActivity to hide bell")
+        Log.d(TAG, "Starting ReminderShowActivity to hide bell")
         showOrHideBell(false)
     }
 
@@ -273,7 +278,7 @@ class ActionsExecutor private constructor(val context: Context) : AudioManager.O
     }
 
     override fun onAudioFocusChange(focusChange: Int) {
-        ReminderShowActivity.logDebug("Callback onAudioFocusChange() received focusChange=" + focusChange)
+        Log.d(TAG, "Callback onAudioFocusChange() received focusChange=$focusChange")
         when (focusChange) {
             AUDIOFOCUS_LOSS, AUDIOFOCUS_LOSS_TRANSIENT // could be handled by only pausing playback (not useful for bell sound)
                 , AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK // could also be handled by lowering volume (not useful for bell sound)
@@ -288,7 +293,7 @@ class ActionsExecutor private constructor(val context: Context) : AudioManager.O
      * pressing the stop meditation button manually.
      */
     fun stopMeditation() {
-        ReminderShowActivity.logDebug("Starting activity MainActivity to stop meditation")
+        Log.d(TAG, "Starting activity MainActivity to stop meditation")
         val intent = Intent(context, MainActivity::class.java)
         intent.flags = (Intent.FLAG_ACTIVITY_NEW_TASK // context may be service context only, not an activity context
                 or Intent.FLAG_ACTIVITY_CLEAR_TASK) // MainActivity becomes the new root to let back button return to other apps
@@ -305,6 +310,8 @@ class ActionsExecutor private constructor(val context: Context) : AudioManager.O
         /*
          * The one and only instance of this class.
          */
+        @SuppressLint("StaticFieldLeak") // it's fine to hold an ApplicationContext: https://stackoverflow.com/a/39841446
+        @Volatile
         var instance: ActionsExecutor? = null
 
         /*
@@ -313,7 +320,7 @@ class ActionsExecutor private constructor(val context: Context) : AudioManager.O
         @Synchronized
         fun getInstance(context: Context): ActionsExecutor {
             if (instance == null) {
-                instance = ActionsExecutor(context)
+                instance = ActionsExecutor(context.applicationContext)
             }
             return instance!!
         }

@@ -19,7 +19,7 @@
  */
 package com.googlecode.mindbell.util
 
-import com.googlecode.mindbell.Prefs
+import com.googlecode.mindbell.mission.Prefs
 import junit.framework.Assert.*
 import org.junit.Test
 import java.util.*

@@ -26,11 +26,11 @@ import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.util.AttributeSet
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
-import com.googlecode.mindbell.ReminderShowActivity
 import com.googlecode.mindbell.util.Utils
 import com.googlecode.mindbell.util.VolumeConverter
 import kotlinx.android.synthetic.main.seekbar_dialog.view.*
@@ -48,10 +48,6 @@ class MediaVolumePreference(context: Context, attrs: AttributeSet) : SeekBarPref
     private var mSeekBarVolumizer: SeekBarVolumizer? = null
 
     init {
-        // MindBell.logDebug("Attributes: " + attrs.getAttributeCount());
-        // for (int i = 0; i < attrs.getAttributeCount(); i++) {
-        // MindBell.logDebug("Attr " + i + ": " + attrs.getAttributeName(i) + "=" + attrs.getAttributeValue(i));
-        // }
         mStreamType = attrs.getAttributeIntValue(mindfulns, "streamType", AudioManager.STREAM_NOTIFICATION)
         val mRingtoneResId = attrs.getAttributeResourceValue(mindfulns, "ringtone", -1)
         if (mRingtoneResId != -1) {
@@ -64,18 +60,12 @@ class MediaVolumePreference(context: Context, attrs: AttributeSet) : SeekBarPref
 
         mSeekBarVolumizer = SeekBarVolumizer(context, view.seekBarVolume, mStreamType)
 
-        // getPreferenceManager().registerOnActivityStopListener(this);
-
         // grab focus and key events so that pressing the volume buttons in the
         // dialog doesn't also show the normal volume adjust toast.
         view.setOnKeyListener(this)
         view.isFocusableInTouchMode = true
         view.requestFocus()
     }
-
-    // public void onActivityStop() {
-    // cleanup();
-    // }
 
     override fun onDialogClosed(positiveResult: Boolean) {
         super.onDialogClosed(positiveResult)
@@ -85,9 +75,9 @@ class MediaVolumePreference(context: Context, attrs: AttributeSet) : SeekBarPref
         }
 
         if (positiveResult && mSeekBarVolumizer != null) {
-            ReminderShowActivity.logDebug("Persisting volume as " + mSeekBarVolumizer!!.volume)
+            Log.d(TAG, "Persisting volume as ${mSeekBarVolumizer!!.volume}")
             persistFloat(mSeekBarVolumizer!!.volume)
-            ReminderShowActivity.logDebug("And reverting volume to " + mSeekBarVolumizer!!.mOriginalStreamVolume)
+            Log.d(TAG, "And reverting volume to ${mSeekBarVolumizer!!.mOriginalStreamVolume}")
             mSeekBarVolumizer!!.revertVolume()
 
         }
@@ -121,31 +111,27 @@ class MediaVolumePreference(context: Context, attrs: AttributeSet) : SeekBarPref
             return true
         }
         val isdown = event.action == KeyEvent.ACTION_DOWN
-        when (keyCode) {
+        return when (keyCode) {
             KeyEvent.KEYCODE_VOLUME_DOWN -> {
                 if (isdown) {
                     mSeekBarVolumizer!!.changeVolumeBy(-1)
                 }
-                return true
+                true
             }
             KeyEvent.KEYCODE_VOLUME_UP -> {
                 if (isdown) {
                     mSeekBarVolumizer!!.changeVolumeBy(1)
                 }
-                return true
+                true
             }
-            else -> return false
+            else -> false
         }
     }
 
-    protected fun onSampleStarting(volumizer: SeekBarVolumizer) {
+    private fun onSampleStarting(volumizer: SeekBarVolumizer) {
         if (mSeekBarVolumizer != null && volumizer !== mSeekBarVolumizer) {
             mSeekBarVolumizer!!.stopSample()
         }
-    }
-
-    fun setStreamType(streamType: Int) {
-        mStreamType = streamType
     }
 
     fun setSoundUri(soundUri: Uri) {
@@ -157,15 +143,17 @@ class MediaVolumePreference(context: Context, attrs: AttributeSet) : SeekBarPref
      */
     inner class SeekBarVolumizer(private val mContext: Context, val seekBar: SeekBar, private val mStreamType: Int) : OnSeekBarChangeListener {
 
-        private val mAudioManager: AudioManager
-        private val converter: VolumeConverter
+        private val mAudioManager: AudioManager = mContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
+        private val converter: VolumeConverter = VolumeConverter(DYNAMIC_RANGE_DB, MAX_PROGRESS)
+
         var mOriginalStreamVolume: Int = 0
+
         private var mPlayer: MediaPlayer? = null
+
         var volume: Float = 0.toFloat()
 
         init {
-            mAudioManager = mContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            converter = VolumeConverter(DYNAMIC_RANGE_DB, MAX_PROGRESS)
             initSeekBar(seekBar)
         }
 
@@ -184,7 +172,7 @@ class MediaVolumePreference(context: Context, attrs: AttributeSet) : SeekBarPref
                     mPlayer!!.setDataSource(mContext, mSoundUri!!)
                     mPlayer!!.prepare()
                 } catch (e: IOException) {
-                    ReminderShowActivity.logError("Cannot load ringtone", e)
+                    Log.e(TAG, "Cannot load ringtone", e)
                     mPlayer = null
                 }
 
@@ -250,10 +238,10 @@ class MediaVolumePreference(context: Context, attrs: AttributeSet) : SeekBarPref
 
     companion object {
 
-        val DYNAMIC_RANGE_DB = 50
-        val MAX_PROGRESS = 50
-        private val TAG = "MediaVolumePreference"
-        private val mindfulns = "http://dknapps.de/ns"
+        const val DYNAMIC_RANGE_DB = 50
+        const val MAX_PROGRESS = 50
+        private const val TAG = "MediaVolumePreference"
+        private const val mindfulns = "http://dknapps.de/ns"
     }
 
 }
