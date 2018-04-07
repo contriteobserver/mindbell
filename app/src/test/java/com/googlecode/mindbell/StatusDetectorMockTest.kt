@@ -2,7 +2,7 @@
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
- *     Copyright (C) 2014-2016 Uwe Damken
+ *     Copyright (C) 2014-2018 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ package com.googlecode.mindbell
 import android.content.Context
 import android.content.SharedPreferences
 import android.test.suitebuilder.annotation.SmallTest
-import com.googlecode.mindbell.accessors.PrefsAccessor
 import com.googlecode.mindbell.util.TimeOfDay
 import org.junit.Assert
 import org.junit.Before
@@ -41,7 +40,7 @@ class StatusDetectorMockTest {
     private lateinit var sharedPreferences: SharedPreferences
 
     @Mock
-    private lateinit var prefs: PrefsAccessor
+    private lateinit var prefs: Prefs
 
     @Mock
     private lateinit var context: Context
@@ -81,8 +80,8 @@ class StatusDetectorMockTest {
     @Test
     fun testMutedDuringNighttime_true() {
         val now = Calendar.getInstance().timeInMillis
-        `when`(prefs.daytimeStart).thenReturn(TimeOfDay(now + PrefsAccessor.ONE_MINUTE_MILLIS))
-        `when`(prefs.daytimeEnd).thenReturn(TimeOfDay(now - PrefsAccessor.ONE_MINUTE_MILLIS))
+        `when`(prefs.daytimeStart).thenReturn(TimeOfDay(now + Prefs.ONE_MINUTE_MILLIS))
+        `when`(prefs.daytimeEnd).thenReturn(TimeOfDay(now - Prefs.ONE_MINUTE_MILLIS))
         Assert.assertTrue(statusDetector.isMuteRequested(false))
     }
 
@@ -164,8 +163,8 @@ class StatusDetectorMockTest {
 
     @Test
     fun testReasonableDefault() {
-        Assert.assertTrue(0 <= PrefsAccessor.DEFAULT_VOLUME)
-        Assert.assertTrue(PrefsAccessor.DEFAULT_VOLUME <= 1)
+        Assert.assertTrue(0 <= Prefs.DEFAULT_VOLUME)
+        Assert.assertTrue(Prefs.DEFAULT_VOLUME <= 1)
     }
 
 }

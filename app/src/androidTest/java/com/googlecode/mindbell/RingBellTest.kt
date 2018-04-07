@@ -3,7 +3,7 @@
  *            for remembering what really counts
  *
  *     Copyright (C) 2010-2014 Marc Schroeder
- *     Copyright (C) 2014-2017 Uwe Damken
+ *     Copyright (C) 2014-2018 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import android.content.Context
 import android.preference.PreferenceManager
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
-import com.googlecode.mindbell.accessors.ContextAccessor
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
@@ -84,12 +83,9 @@ class RingBellTest {
 
     @Test
     fun testMuteOffHook_false() {
-        // setup
         setContextMuteOffHook(false)
-        // exercise
-        val ca = ContextAccessor.getInstance(context)
-        // verify
-        assertFalse(ca.prefs.isMuteOffHook)
+        val prefs = Prefs.getInstance(context)
+        assertFalse(prefs.isMuteOffHook)
     }
 
     private fun setContextMuteOffHook(value: Boolean) {
@@ -98,22 +94,16 @@ class RingBellTest {
 
     @Test
     fun testMuteOffHook_true() {
-        // setup
         setContextMuteOffHook(true)
-        // exercise
-        val ca = ContextAccessor.getInstance(context)
-        // verify
-        assertTrue(ca.prefs.isMuteOffHook)
+        val prefs = Prefs.getInstance(context)
+        assertTrue(prefs.isMuteOffHook)
     }
 
     @Test
     fun testMuteWithPhone_false() {
-        // setup
         setContextMuteWithPhone(false)
-        // exercise
-        val ca = ContextAccessor.getInstance(context)
-        // verify
-        assertFalse(ca.prefs.isMuteWithPhone)
+        val prefs = Prefs.getInstance(context)
+        assertFalse(prefs.isMuteWithPhone)
     }
 
     private fun setContextMuteWithPhone(value: Boolean) {
@@ -122,12 +112,9 @@ class RingBellTest {
 
     @Test
     fun testMuteWithPhone_true() {
-        // setup
         setContextMuteWithPhone(true)
-        // exercise
-        val ca = ContextAccessor.getInstance(context)
-        // verify
-        assertTrue(ca.prefs.isMuteWithPhone)
+        val prefs = Prefs.getInstance(context)
+        assertTrue(prefs.isMuteWithPhone)
     }
 
     @Test

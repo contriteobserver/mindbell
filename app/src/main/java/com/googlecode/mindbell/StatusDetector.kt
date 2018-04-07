@@ -2,7 +2,7 @@
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
- *     Copyright (C) 2014-2016 Uwe Damken
+ *     Copyright (C) 2014-2018 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,6 @@ import android.provider.Settings
 import android.provider.Settings.Global
 import android.support.v4.content.ContextCompat
 import android.telephony.TelephonyManager
-import com.googlecode.mindbell.accessors.PrefsAccessor
-import com.googlecode.mindbell.logic.SchedulerLogic
 import com.googlecode.mindbell.util.TimeOfDay
 import java.text.MessageFormat
 import java.util.*
@@ -38,7 +36,7 @@ import java.util.*
  */
 class StatusDetector private constructor(val context: Context) {
 
-    private var prefs = PrefsAccessor.getInstance(context)
+    private var prefs = Prefs.getInstance(context)
 
     val reasonMutedTill: String
         get() {
@@ -82,7 +80,7 @@ class StatusDetector private constructor(val context: Context) {
     val reasonMutedDuringNighttime: String
         get() {
             val nextStartTime = TimeOfDay(
-                    SchedulerLogic.getNextDaytimeStartInMillis(Calendar.getInstance().timeInMillis, prefs.daytimeStart,
+                    Scheduler.getNextDaytimeStartInMillis(Calendar.getInstance().timeInMillis, prefs.daytimeStart,
                             prefs.activeOnDaysOfWeek))
             val weekdayAbbreviation = prefs.getWeekdayAbbreviation(nextStartTime.weekday!!)
             return MessageFormat.format(context.getText(R.string.reasonMutedDuringNighttime).toString(), weekdayAbbreviation,

@@ -3,7 +3,7 @@
  *            for remembering what really counts
  *
  *     Copyright (C) 2010-2014 Marc Schroeder
- *     Copyright (C) 2014-2017 Uwe Damken
+ *     Copyright (C) 2014-2018 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ package com.googlecode.mindbell
 import android.support.test.InstrumentationRegistry
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
-import com.googlecode.mindbell.accessors.ContextAccessor
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -35,7 +34,7 @@ class ReminderShowActivityTest {
 
     @Test
     fun testPreconditions() {
-        val ca = ContextAccessor.getInstance(InstrumentationRegistry.getTargetContext())
+        val ca = Scheduler.getInstance(InstrumentationRegistry.getTargetContext())
         // TODO This is no longer true: Assert.assertTrue(ca.isBellSoundPlaying)
     }
 }

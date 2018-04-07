@@ -2,7 +2,7 @@
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
- *     Copyright (C) 2014-2016 Uwe Damken
+ *     Copyright (C) 2014-2018 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ package com.googlecode.mindbell
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
-import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.EXTRA_KEEP
+import com.googlecode.mindbell.Prefs.Companion.EXTRA_KEEP
 
 
 class ReminderShowActivity : Activity() {

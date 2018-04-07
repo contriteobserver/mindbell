@@ -2,7 +2,7 @@
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
- *     Copyright (C) 2014-2016 Uwe Damken
+ *     Copyright (C) 2014-2018 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,8 @@ import android.media.AudioManager.*
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Vibrator
-import com.googlecode.mindbell.ReminderShowActivity
-import com.googlecode.mindbell.accessors.InterruptSettings
-import com.googlecode.mindbell.accessors.PrefsAccessor
-import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.EXTRA_KEEP
-import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.WAITING_TIME
+import com.googlecode.mindbell.Prefs.Companion.EXTRA_KEEP
+import com.googlecode.mindbell.Prefs.Companion.WAITING_TIME
 import java.io.IOException
 
 /**
@@ -38,7 +35,7 @@ import java.io.IOException
  */
 class ActionsExecutor private constructor(val context: Context) : AudioManager.OnAudioFocusChangeListener {
 
-    private var prefs = PrefsAccessor.getInstance(context)
+    private var prefs = Prefs.getInstance(context)
 
     val isBellSoundPlaying: Boolean
         get() = mediaPlayer != null // if we hold a reference we haven't finished bell sound completely
@@ -295,7 +292,7 @@ class ActionsExecutor private constructor(val context: Context) : AudioManager.O
         val intent = Intent(context, MainActivity::class.java)
         intent.flags = (Intent.FLAG_ACTIVITY_NEW_TASK // context may be service context only, not an activity context
                 or Intent.FLAG_ACTIVITY_CLEAR_TASK) // MainActivity becomes the new root to let back button return to other apps
-        intent.putExtra(PrefsAccessor.EXTRA_STOP_MEDITATION, true)
+        intent.putExtra(Prefs.EXTRA_STOP_MEDITATION, true)
         context.startActivity(intent)
     }
 

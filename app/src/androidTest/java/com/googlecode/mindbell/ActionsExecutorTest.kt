@@ -2,7 +2,7 @@
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
- *     Copyright (C) 2014-2016 Uwe Damken
+ *     Copyright (C) 2014-2018 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@ package com.googlecode.mindbell
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
-import com.googlecode.mindbell.accessors.ContextAccessor
-import com.googlecode.mindbell.accessors.PrefsAccessor
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -32,12 +30,12 @@ class ActionsExecutorTest {
 
     private lateinit var actionsExecutor: ActionsExecutor
 
-    private lateinit var prefs: PrefsAccessor
+    private lateinit var prefs: Prefs
 
     @Before
     fun setUp() {
         actionsExecutor = ActionsExecutor.getInstance(InstrumentationRegistry.getTargetContext())
-        prefs = PrefsAccessor.getInstance(InstrumentationRegistry.getTargetContext())
+        prefs = Prefs.getInstance(InstrumentationRegistry.getTargetContext())
     }
 
     @Test
@@ -53,8 +51,8 @@ class ActionsExecutorTest {
         Assert.assertEquals(actionsExecutor.alarmMaxVolume, actionsExecutor.alarmVolume)
     }
 
-    private fun createContextAccessor(): ContextAccessor {
-        return ContextAccessor.getInstance(InstrumentationRegistry.getTargetContext())
+    private fun createContextAccessor(): Scheduler {
+        return Scheduler.getInstance(InstrumentationRegistry.getTargetContext())
     }
 
     @Test

@@ -2,8 +2,7 @@
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
- *     Copyright (C) 2010-2014 Marc Schroeder
- *     Copyright (C) 2014-2018 Uwe Damken
+ *     Copyright (C) 2014-2016 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.googlecode.mindbell.accessors
+package com.googlecode.mindbell
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.media.AudioManager
 import android.net.Uri
-import com.googlecode.mindbell.BuildConfig
-import com.googlecode.mindbell.R
+import com.googlecode.mindbell.Prefs.Preference.Type.*
 import com.googlecode.mindbell.R.string.*
-import com.googlecode.mindbell.ReminderShowActivity
-import com.googlecode.mindbell.accessors.PrefsAccessor.Preference.Type.*
 import com.googlecode.mindbell.util.TimeOfDay
 import com.googlecode.mindbell.util.Utils
 import java.util.*
@@ -35,7 +31,7 @@ import java.util.*
 /**
  * This singleton class gives access to all constants and preferences of MindBell.
  */
-class PrefsAccessor private constructor(val context: Context) {
+class Prefs private constructor(val context: Context) {
 
     private val settings: SharedPreferences = context.getSharedPreferences(context.packageName + "_preferences", Context.MODE_PRIVATE)
 
@@ -787,25 +783,25 @@ class PrefsAccessor private constructor(val context: Context) {
     private inner class InterruptSettingsForRegularOperation : InterruptSettings {
 
         override val isShow: Boolean
-            get() = this@PrefsAccessor.isShow
+            get() = this@Prefs.isShow
 
         override val isSound: Boolean
-            get() = this@PrefsAccessor.isSound
+            get() = this@Prefs.isSound
 
         override val isVibrate: Boolean
-            get() = this@PrefsAccessor.isVibrate
+            get() = this@Prefs.isVibrate
 
         override val volume: Float
-            get() = this@PrefsAccessor.volume
+            get() = this@Prefs.volume
 
         override val isNotification: Boolean
-            get() = this@PrefsAccessor.isNotification
+            get() = this@Prefs.isNotification
 
         override val isDismissNotification: Boolean
-            get() = this@PrefsAccessor.isDismissNotification
+            get() = this@Prefs.isDismissNotification
 
         override fun getSoundUri(): Uri? {
-            return this@PrefsAccessor.getReminderSoundUri()
+            return this@Prefs.getReminderSoundUri()
         }
 
     }
@@ -822,7 +818,7 @@ class PrefsAccessor private constructor(val context: Context) {
             get() = false
 
         override val volume: Float
-            get() = this@PrefsAccessor.volume
+            get() = this@Prefs.volume
 
         override val isNotification: Boolean
             get() = false
@@ -831,7 +827,7 @@ class PrefsAccessor private constructor(val context: Context) {
             get() = false
 
         override fun getSoundUri(): Uri? {
-            return this@PrefsAccessor.getReminderSoundUri()
+            return this@Prefs.getReminderSoundUri()
         }
 
     }
@@ -848,7 +844,7 @@ class PrefsAccessor private constructor(val context: Context) {
             get() = false
 
         override val volume: Float
-            get() = this@PrefsAccessor.meditationVolume
+            get() = this@Prefs.meditationVolume
 
         override val isNotification: Boolean
             get() = false
@@ -863,7 +859,7 @@ class PrefsAccessor private constructor(val context: Context) {
     private inner class InterruptSettingsForMeditationBeginning : InterruptSettingsForMeditation() {
 
         override fun getSoundUri(): Uri? {
-            return if (isStartMeditationDirectly) null else this@PrefsAccessor.getBellSoundUri(meditationBeginningBell)
+            return if (isStartMeditationDirectly) null else this@Prefs.getBellSoundUri(meditationBeginningBell)
         }
 
     }
@@ -871,7 +867,7 @@ class PrefsAccessor private constructor(val context: Context) {
     private inner class InterruptSettingsForMeditationInterrupting : InterruptSettingsForMeditation() {
 
         override fun getSoundUri(): Uri? {
-            return this@PrefsAccessor.getBellSoundUri(meditationInterruptingBell)
+            return this@Prefs.getBellSoundUri(meditationInterruptingBell)
         }
 
     }
@@ -879,7 +875,7 @@ class PrefsAccessor private constructor(val context: Context) {
     private inner class InterruptSettingsForMeditationEnding : InterruptSettingsForMeditation() {
 
         override fun getSoundUri(): Uri? {
-            return this@PrefsAccessor.getBellSoundUri(meditationEndingBell)
+            return this@Prefs.getBellSoundUri(meditationEndingBell)
         }
 
     }
@@ -907,7 +903,7 @@ class PrefsAccessor private constructor(val context: Context) {
         private const val VARIABLE_PERIOD_REGEX = "(x)"
         private const val PERIOD_SEPARATOR = ","
         private const val PERIOD_SEPARATOR_REGEX = PERIOD_SEPARATOR
-        const val PERIOD_SEPARATOR_WITH_BLANKS_REGEX = " *$PERIOD_SEPARATOR_REGEX *"
+        const val PERIOD_SEPARATOR_WITH_BLANKS_REGEX = " *${PERIOD_SEPARATOR_REGEX} *"
         const val PERIOD_SEPARATOR_WITH_BLANK = ", "
 
         /**
@@ -992,15 +988,15 @@ class PrefsAccessor private constructor(val context: Context) {
         /*
          * The one and only instance of this class.
          */
-        private var instance: PrefsAccessor? = null
+        private var instance: Prefs? = null
 
         /*
          * Returns the one and only instance of this class.
          */
         @Synchronized
-        fun getInstance(context: Context): PrefsAccessor {
+        fun getInstance(context: Context): Prefs {
             if (instance == null) {
-                instance = PrefsAccessor(context)
+                instance = Prefs(context)
             }
             return instance!!
         }

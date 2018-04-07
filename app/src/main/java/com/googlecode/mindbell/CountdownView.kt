@@ -2,7 +2,7 @@
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
- *     Copyright (C) 2014-2017 Uwe Damken
+ *     Copyright (C) 2014-2018 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import android.graphics.*
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
-import com.googlecode.mindbell.accessors.PrefsAccessor
 import java.util.*
 
 /**
@@ -123,7 +122,7 @@ class CountdownView : View {
     fun startDisplayUpdateTimer() {
 
         // Retrieve and store meditation times
-        val prefs = PrefsAccessor.getInstance(context)
+        val prefs = Prefs.getInstance(context)
         this.rampUpStartingTimeMillis = prefs.rampUpStartingTimeMillis
         this.meditationStartingTimeMillis = prefs.meditationStartingTimeMillis
         this.meditationEndingTimeMillis = prefs.meditationEndingTimeMillis

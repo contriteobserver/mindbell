@@ -22,14 +22,10 @@ package com.googlecode.mindbell
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import com.googlecode.mindbell.accessors.ContextAccessor
-import com.googlecode.mindbell.accessors.InterruptSettings
-import com.googlecode.mindbell.accessors.PrefsAccessor
-import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.EXTRA_IS_RESCHEDULING
-import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.EXTRA_MEDITATION_PERIOD
-import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.EXTRA_NOW_TIME_MILLIS
-import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.INTERRUPT_NOTIFICATION_ID
-import com.googlecode.mindbell.logic.SchedulerLogic
+import com.googlecode.mindbell.Prefs.Companion.EXTRA_IS_RESCHEDULING
+import com.googlecode.mindbell.Prefs.Companion.EXTRA_MEDITATION_PERIOD
+import com.googlecode.mindbell.Prefs.Companion.EXTRA_NOW_TIME_MILLIS
+import com.googlecode.mindbell.Prefs.Companion.INTERRUPT_NOTIFICATION_ID
 import com.googlecode.mindbell.util.TimeOfDay
 import java.util.*
 
@@ -53,7 +49,7 @@ class InterruptService : Service() {
                 ", meditationPeriod=" + meditationPeriod)
 
         // Create working environment
-        val prefs = PrefsAccessor.getInstance(applicationContext)
+        val prefs = Prefs.getInstance(applicationContext)
 
         var pair: Pair<InterruptSettings?, Runnable?>
 
@@ -95,27 +91,27 @@ class InterruptService : Service() {
     private fun handleMeditatingBell(nowTimeMillis: Long, meditationPeriod: Int):
             Pair<InterruptSettings?, Runnable?> {
 
-        val contextAccessor = ContextAccessor.getInstance(this)
-        val prefs = PrefsAccessor.getInstance(this)
+        val scheduler = Scheduler.getInstance(this)
+        val prefs = Prefs.getInstance(this)
 
         val numberOfPeriods = prefs.numberOfPeriods
 
         if (meditationPeriod == 0) { // beginning of ramp-up period?
 
             val nextTargetTimeMillis = nowTimeMillis + prefs.rampUpTimeMillis
-            contextAccessor.reschedule(nextTargetTimeMillis, meditationPeriod + 1)
+            scheduler.reschedule(nextTargetTimeMillis, meditationPeriod + 1)
             return Pair(null, null)
 
         } else if (meditationPeriod == 1) { // beginning of meditation period 1
 
             val nextTargetTimeMillis = nowTimeMillis + prefs.getMeditationPeriodMillis(meditationPeriod)
-            contextAccessor.reschedule(nextTargetTimeMillis, meditationPeriod + 1)
+            scheduler.reschedule(nextTargetTimeMillis, meditationPeriod + 1)
             return Pair(prefs.forMeditationBeginning(), null)
 
         } else if (meditationPeriod <= numberOfPeriods) { // beginning of meditation period 2..n
 
             val nextTargetTimeMillis = nowTimeMillis + prefs.getMeditationPeriodMillis(meditationPeriod)
-            contextAccessor.reschedule(nextTargetTimeMillis, meditationPeriod + 1)
+            scheduler.reschedule(nextTargetTimeMillis, meditationPeriod + 1)
             return Pair(prefs.forMeditationInterrupting(), null)
 
         } else { // end of last meditation period
@@ -140,12 +136,12 @@ class InterruptService : Service() {
     private fun handleActiveBell(nowTimeMillis: Long, isRescheduling: Boolean):
             Pair<InterruptSettings?, Runnable?> {
 
-        val contextAccessor = ContextAccessor.getInstance(this)
+        val scheduler = Scheduler.getInstance(this)
         val statusDetector = StatusDetector.getInstance(this)
-        val prefs = PrefsAccessor.getInstance(this)
+        val prefs = Prefs.getInstance(this)
 
-        val nextTargetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        contextAccessor.reschedule(nextTargetTimeMillis, null)
+        val nextTargetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
+        scheduler.reschedule(nextTargetTimeMillis, null)
 
         if (!isRescheduling) {
 

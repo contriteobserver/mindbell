@@ -2,7 +2,7 @@
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
- *     Copyright (C) 2014-2016 Uwe Damken
+ *     Copyright (C) 2014-2018 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,15 +27,13 @@ import android.view.Menu
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
-import com.googlecode.mindbell.accessors.ContextAccessor
-import com.googlecode.mindbell.accessors.PrefsAccessor
-import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.MIN_MEDITATION_DURATION
-import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.MIN_RAMP_UP_TIME
-import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION
-import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.ONE_MINUTE_MILLIS_NEGATIVE_PERIOD
-import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.ONE_MINUTE_MILLIS_PERIOD_NOT_EXISTING
-import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.ONE_MINUTE_MILLIS_PERIOD_TOO_SHORT
-import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.ONE_MINUTE_MILLIS_VARIABLE_PERIOD_MISSING
+import com.googlecode.mindbell.Prefs.Companion.MIN_MEDITATION_DURATION
+import com.googlecode.mindbell.Prefs.Companion.MIN_RAMP_UP_TIME
+import com.googlecode.mindbell.Prefs.Companion.ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION
+import com.googlecode.mindbell.Prefs.Companion.ONE_MINUTE_MILLIS_NEGATIVE_PERIOD
+import com.googlecode.mindbell.Prefs.Companion.ONE_MINUTE_MILLIS_PERIOD_NOT_EXISTING
+import com.googlecode.mindbell.Prefs.Companion.ONE_MINUTE_MILLIS_PERIOD_TOO_SHORT
+import com.googlecode.mindbell.Prefs.Companion.ONE_MINUTE_MILLIS_VARIABLE_PERIOD_MISSING
 import com.googlecode.mindbell.preference.MinutesIntervalPickerPreference
 import com.googlecode.mindbell.util.TimeOfDay
 import com.googlecode.mindbell.util.Utils
@@ -46,15 +44,15 @@ import kotlinx.android.synthetic.main.meditation_dialog.view.*
 
 class MainActivity : Activity() {
 
-    private lateinit var prefs: PrefsAccessor
+    private lateinit var prefs: Prefs
 
-    private lateinit var contextAccessor: ContextAccessor
+    private lateinit var scheduler: Scheduler
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ReminderShowActivity.logDebug("Main activity is being created")
-        prefs = PrefsAccessor.getInstance(this)
-        contextAccessor = ContextAccessor.getInstance(this)
+        prefs = Prefs.getInstance(this)
+        scheduler = Scheduler.getInstance(this)
         // Use the following line to show popup dialog on every start
         // setPopupShown(false);
         setContentView(R.layout.main)
@@ -135,7 +133,7 @@ class MainActivity : Activity() {
                 object : OnPickListener {
                     override fun onPick(): Boolean {
                         val numberOfPeriods = Integer.valueOf(view.textViewNumberOfPeriods.text.toString())!!
-                        textViewPatternOfPeriods.text = PrefsAccessor.derivePatternOfPeriods(numberOfPeriods)
+                        textViewPatternOfPeriods.text = Prefs.derivePatternOfPeriods(numberOfPeriods)
                         return isValidMeditationSetup(view.textViewNumberOfPeriods, view.textViewMeditationDuration, view.textViewNumberOfPeriods,
                                 view.textViewPatternOfPeriods)
                     }
@@ -153,11 +151,11 @@ class MainActivity : Activity() {
                     override fun normalize(value: String): String {
                         return value
                                 .trim { it <= ' ' }
-                                .replace(PrefsAccessor.PERIOD_SEPARATOR_WITH_BLANKS_REGEX.toRegex(), PrefsAccessor.PERIOD_SEPARATOR_WITH_BLANK)
+                                .replace(Prefs.PERIOD_SEPARATOR_WITH_BLANKS_REGEX.toRegex(), Prefs.PERIOD_SEPARATOR_WITH_BLANK)
                     }
                 }, object : OnEnterListener {
             override fun onEnter(value: String): Boolean {
-                view.textViewNumberOfPeriods.text = PrefsAccessor.deriveNumberOfPeriods(value).toString()
+                view.textViewNumberOfPeriods.text = Prefs.deriveNumberOfPeriods(value).toString()
                 return isValidMeditationSetup(view.textViewPatternOfPeriods, view.textViewMeditationDuration, view.textViewNumberOfPeriods,
                         view.textViewPatternOfPeriods)
             }
@@ -194,7 +192,7 @@ class MainActivity : Activity() {
     /**
      * Validate chosen meditation dialog values, if ok store them in preferences and start meditation.
      */
-    private fun onClickStartMeditation(prefs: PrefsAccessor?, meditationDialog: AlertDialog, textViewPatternOfPeriods: TextView,
+    private fun onClickStartMeditation(prefs: Prefs?, meditationDialog: AlertDialog, textViewPatternOfPeriods: TextView,
                                        textViewMeditationDuration: TextView, textViewNumberOfPeriods: TextView,
                                        textViewRampUpTime: TextView, checkBoxKeepScreenOn: CheckBox,
                                        checkBoxStopMeditationAutomatically: CheckBox, startDirectly: Boolean) {
@@ -216,7 +214,7 @@ class MainActivity : Activity() {
      */
     private fun onCheckedChangedActive(isChecked: Boolean): Boolean {
         prefs.isActive = isChecked // toggle active/inactive
-        contextAccessor.updateBellScheduleForReminder(true)
+        scheduler.updateBellScheduleForReminder(true)
         val feedback = getText(if (prefs.isActive) R.string.summaryActive else R.string.summaryNotActive)
         Toast.makeText(this, feedback, Toast.LENGTH_SHORT).show()
         return true
@@ -272,7 +270,7 @@ class MainActivity : Activity() {
         val patternOfPeriods = textViewPatternOfPeriods.text.toString()
         // validate by validating every period, this is not very efficient but all is reduced to a single implementation
         for (i in 1..numberOfPeriods) {
-            val periodMillis = PrefsAccessor.derivePeriodMillis(patternOfPeriods, meditationDuration, i)
+            val periodMillis = Prefs.derivePeriodMillis(patternOfPeriods, meditationDuration, i)
             var message: Int? = null
             if (periodMillis == ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION || periodMillis == ONE_MINUTE_MILLIS_PERIOD_NOT_EXISTING) {
                 message = R.string.invalidPeriodSpecification
@@ -359,12 +357,12 @@ class MainActivity : Activity() {
     }
 
     override fun onResume() {
-        if (intent.getBooleanExtra(PrefsAccessor.EXTRA_STOP_MEDITATION, false)) {
+        if (intent.getBooleanExtra(Prefs.EXTRA_STOP_MEDITATION, false)) {
             ReminderShowActivity.logDebug("MainActivity received stop meditation intent")
             // If the activity has once been opened from the InterruptService by automatically stopping meditation further screen
             // rotations will stop meditation, too, because getIntent() always returns the intent that initially opened the
             // activity. Hence the extra information must be removed to avoid stopping medtiation in these other cases.
-            intent.removeExtra(PrefsAccessor.EXTRA_STOP_MEDITATION)
+            intent.removeExtra(Prefs.EXTRA_STOP_MEDITATION)
             // InterruptService detected meditation to be over and sent intent to leave meditation mode. To be sure user has not stopped
             // meditation in the meantime (between sending and receiving intent) we check that meditation is still running.
             if (prefs.isMeditating) {
@@ -394,7 +392,7 @@ class MainActivity : Activity() {
             prefs.rampUpStartingTimeMillis = rampUpStartingTimeMillis
             prefs.meditationStartingTimeMillis = meditationStartingTimeMillis
             prefs.meditationEndingTimeMillis = meditationEndingTimeMillis
-            contextAccessor.updateBellScheduleForMeditation()
+            scheduler.updateBellScheduleForMeditation()
             countdownView.startDisplayUpdateTimer()
             if (prefs.isKeepScreenOn) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -404,7 +402,7 @@ class MainActivity : Activity() {
             countdownView.stopDisplayUpdateTimer()
             val actionsExecutor = ActionsExecutor.getInstance(this)
             actionsExecutor.finishBellSound()
-            contextAccessor.updateBellScheduleForReminder(false)
+            scheduler.updateBellScheduleForReminder(false)
             if (prefs.isKeepScreenOn) {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 ReminderShowActivity.logDebug("Keep screen on deactivated")

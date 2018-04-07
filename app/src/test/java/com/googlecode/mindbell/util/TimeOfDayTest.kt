@@ -3,7 +3,7 @@
  *            for remembering what really counts
  *
  *     Copyright (C) 2010-2014 Marc Schroeder
- *     Copyright (C) 2014-2017 Uwe Damken
+ *     Copyright (C) 2014-2018 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
  */
 package com.googlecode.mindbell.util
 
-import com.googlecode.mindbell.accessors.PrefsAccessor
+import com.googlecode.mindbell.Prefs
 import junit.framework.Assert.*
 import org.junit.Test
 import java.util.*
@@ -570,7 +570,7 @@ class TimeOfDayTest {
     @Test
     fun testFromMillisecondsInterval() {
         for (min in 0 until 24 * 60 - 1) {
-            val time = TimeOfDay.fromMillisecondsInterval(min * PrefsAccessor.ONE_MINUTE_MILLIS)
+            val time = TimeOfDay.fromMillisecondsInterval(min * Prefs.ONE_MINUTE_MILLIS)
             assertEquals(min, time.interval)
         }
     }

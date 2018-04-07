@@ -2,7 +2,7 @@
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
- *     Copyright (C) 2014-2016 Uwe Damken
+ *     Copyright (C) 2014-2018 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,15 +27,12 @@ import android.content.Intent
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import android.widget.Toast
-import com.googlecode.mindbell.accessors.InterruptSettings
-import com.googlecode.mindbell.accessors.PrefsAccessor
-import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.INTERRUPT_NOTIFICATION_CHANNEL_ID
-import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.STATUS_NOTIFICATION_CHANNEL_ID
-import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.STATUS_NOTIFICATION_ID
-import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.UPDATE_STATUS_NOTIFICATION_DAY_NIGHT_REQUEST_CODE
-import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.UPDATE_STATUS_NOTIFICATION_MUTED_TILL_REQUEST_CODE
-import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.UPDATE_STATUS_NOTIFICATION_REQUEST_CODE
-import com.googlecode.mindbell.logic.SchedulerLogic
+import com.googlecode.mindbell.Prefs.Companion.INTERRUPT_NOTIFICATION_CHANNEL_ID
+import com.googlecode.mindbell.Prefs.Companion.STATUS_NOTIFICATION_CHANNEL_ID
+import com.googlecode.mindbell.Prefs.Companion.STATUS_NOTIFICATION_ID
+import com.googlecode.mindbell.Prefs.Companion.UPDATE_STATUS_NOTIFICATION_DAY_NIGHT_REQUEST_CODE
+import com.googlecode.mindbell.Prefs.Companion.UPDATE_STATUS_NOTIFICATION_MUTED_TILL_REQUEST_CODE
+import com.googlecode.mindbell.Prefs.Companion.UPDATE_STATUS_NOTIFICATION_REQUEST_CODE
 import com.googlecode.mindbell.util.AlarmManagerCompat
 import com.googlecode.mindbell.util.NotificationManagerCompatExtension
 import com.googlecode.mindbell.util.TimeOfDay
@@ -47,7 +44,7 @@ import java.util.*
  */
 class Notifier private constructor(val context: Context) {
 
-    private var prefs: PrefsAccessor = PrefsAccessor.getInstance(context)
+    private var prefs: Prefs = Prefs.getInstance(context)
 
     fun showMessage(message: String) {
         ReminderShowActivity.logDebug(message)
@@ -210,7 +207,8 @@ class Notifier private constructor(val context: Context) {
      * Schedule a refresh to update status notification for the start or the end of the active period.
      */
     fun scheduleRefreshDayNight() {
-        val targetTimeMillis = SchedulerLogic.getNextDayNightChangeInMillis(Calendar.getInstance().timeInMillis, prefs)
+        val scheduler = Scheduler.getInstance(context)
+        val targetTimeMillis = Scheduler.getNextDayNightChangeInMillis(Calendar.getInstance().timeInMillis, prefs)
         scheduleRefresh(targetTimeMillis, UPDATE_STATUS_NOTIFICATION_DAY_NIGHT_REQUEST_CODE, "day-night")
     }
 

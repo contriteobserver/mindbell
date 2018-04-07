@@ -2,7 +2,7 @@
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
- *     Copyright (C) 2014-2016 Uwe Damken
+ *     Copyright (C) 2014-2018 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.os.Bundle
 import android.widget.NumberPicker
-import com.googlecode.mindbell.accessors.PrefsAccessor
 
 /**
  * Activity to ask for the time period to mute the bell for.
@@ -32,7 +31,7 @@ class MuteActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val notifier = Notifier.getInstance(this)
-        val prefs = PrefsAccessor.getInstance(this)
+        val prefs = Prefs.getInstance(this)
         val numberPicker = NumberPicker(this)
         val hours = 24
         numberPicker.minValue = 0
