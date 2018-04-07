@@ -30,7 +30,7 @@ import android.os.Build
 import android.os.PowerManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
-import com.googlecode.mindbell.MindBell
+import com.googlecode.mindbell.ReminderShowActivity
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -67,21 +67,21 @@ object Utils {
                     sb.append(line).append("\n")
                     line = reader.readLine()
                 }
-                MindBell.logInfo("Length of extracted application log is: " + sb.length)
+                ReminderShowActivity.logInfo("Length of extracted application log is: " + sb.length)
                 if (sb.length > MAX_LOG_LENGTH) {
                     sb.replace(headerLength, sb.length - MAX_LOG_LENGTH + headerLength + CUT_OFF_MESSAGE.length, CUT_OFF_MESSAGE)
-                    MindBell.logWarn("Cut off extracted application log to length: " + sb.length)
+                    ReminderShowActivity.logWarn("Cut off extracted application log to length: " + sb.length)
                 }
                 sb.append("===== end of application log =====").append("\n")
                 return sb.toString()
             } catch (e: IOException) {
-                MindBell.logError("Could not read application log", e)
+                ReminderShowActivity.logError("Could not read application log", e)
             } finally {
                 if (reader != null) {
                     try {
                         reader.close()
                     } catch (e: IOException) {
-                        MindBell.logWarn("Could not close log output stream" + e)
+                        ReminderShowActivity.logWarn("Could not close log output stream" + e)
                     }
 
                 }
@@ -135,7 +135,7 @@ object Utils {
             val packageInfo = packageManager.getPackageInfo(packageName, 0)
             return packageInfo.versionName
         } catch (e: NameNotFoundException) {
-            MindBell.logError("Could not retrieve package information" + e)
+            ReminderShowActivity.logError("Could not retrieve package information" + e)
             return "N/A"
         }
 
@@ -149,7 +149,7 @@ object Utils {
             val packageInfo = packageManager.getPackageInfo(packageName, 0)
             return packageInfo.versionCode
         } catch (e: NameNotFoundException) {
-            MindBell.logError("Could not retrieve package information" + e)
+            ReminderShowActivity.logError("Could not retrieve package information" + e)
             return 0
         }
 
@@ -193,7 +193,7 @@ object Utils {
             val durationString = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
             return if (durationString == null) null else java.lang.Long.parseLong(durationString)
         } catch (e: Exception) {
-            MindBell.logWarn("Sound <$soundUri> not accessible", e)
+            ReminderShowActivity.logWarn("Sound <$soundUri> not accessible", e)
             return null
         }
 

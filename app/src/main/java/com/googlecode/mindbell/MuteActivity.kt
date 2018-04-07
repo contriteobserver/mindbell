@@ -2,8 +2,7 @@
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
- *     Copyright (C) 2010-2014 Marc Schroeder
- *     Copyright (C) 2014-2017 Uwe Damken
+ *     Copyright (C) 2014-2016 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +22,6 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.os.Bundle
 import android.widget.NumberPicker
-import com.googlecode.mindbell.accessors.ContextAccessor
 import com.googlecode.mindbell.accessors.PrefsAccessor
 
 /**
@@ -33,7 +31,7 @@ class MuteActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val contextAccessor = ContextAccessor.getInstance(this)
+        val notifier = Notifier.getInstance(this)
         val prefs = PrefsAccessor.getInstance(this)
         val numberPicker = NumberPicker(this)
         val hours = 24
@@ -47,8 +45,8 @@ class MuteActivity : Activity() {
                     val newValue = numberPicker.value
                     val nextTargetTimeMillis = System.currentTimeMillis() + newValue * 3600000L
                     prefs.mutedTill = nextTargetTimeMillis
-                    contextAccessor.updateStatusNotification()
-                    contextAccessor.scheduleUpdateStatusNotificationMutedTill(nextTargetTimeMillis)
+                    notifier.updateStatusNotification()
+                    notifier.scheduleRefreshMutedTill(nextTargetTimeMillis)
                     this@MuteActivity.finish()
                 } //
                 .setNegativeButton(android.R.string.cancel) { _, _ -> this@MuteActivity.finish() } //

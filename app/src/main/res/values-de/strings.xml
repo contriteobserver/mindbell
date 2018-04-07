@@ -32,7 +32,7 @@
 
     <string name="app_name">MindBell</string>
 
-    <!-- MindBellMain -->
+    <!-- MainActivity -->
     <string name="howToActivate">Wenn der Schalter oben an ist, erinnert MindBell regelmäßig im Laufe des Tages mit Anzeige, 
         Klang oder Vibration an unsere Achtsamkeitspraxis. Dann können wir kurz innehalten und uns bewusst werden, was wir gerade 
         tun, und in welchem Geisteszustand wir das angehen, was wir gerade tun.</string>
@@ -42,12 +42,12 @@
     <string name="howToMeditate">Neben dem Schalter ist ein Knopf zum Starten des Meditationsmodus. Darin erklingt die Glocke nur
         zu Beginn und Ende der Meditation (oder der Meditationsabschnitte).</string>
 
-    <!-- Menu of MindBellMain -->
+    <!-- Menu of MainActivity -->
     <string name="menuSettings">Einstellungen</string>
     <string name="menuAbout">Über MindBell</string>
     <string name="menuHelp">Hilfe</string>
 
-    <!-- MindBellMain Preferences -->
+    <!-- MainActivity Preferences -->
     <string name="prefsMutedTillOff">Aus</string>
 
     <!-- Send log by e-mail -->

@@ -30,11 +30,11 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
-import com.googlecode.mindbell.MindBell
+import com.googlecode.mindbell.ReminderShowActivity
 import com.googlecode.mindbell.util.Utils
 import com.googlecode.mindbell.util.VolumeConverter
-import java.io.IOException
 import kotlinx.android.synthetic.main.seekbar_dialog.view.*
+import java.io.IOException
 
 /**
  * @hide
@@ -85,9 +85,9 @@ class MediaVolumePreference(context: Context, attrs: AttributeSet) : SeekBarPref
         }
 
         if (positiveResult && mSeekBarVolumizer != null) {
-            MindBell.logDebug("Persisting volume as " + mSeekBarVolumizer!!.volume)
+            ReminderShowActivity.logDebug("Persisting volume as " + mSeekBarVolumizer!!.volume)
             persistFloat(mSeekBarVolumizer!!.volume)
-            MindBell.logDebug("And reverting volume to " + mSeekBarVolumizer!!.mOriginalStreamVolume)
+            ReminderShowActivity.logDebug("And reverting volume to " + mSeekBarVolumizer!!.mOriginalStreamVolume)
             mSeekBarVolumizer!!.revertVolume()
 
         }
@@ -184,7 +184,7 @@ class MediaVolumePreference(context: Context, attrs: AttributeSet) : SeekBarPref
                     mPlayer!!.setDataSource(mContext, mSoundUri!!)
                     mPlayer!!.prepare()
                 } catch (e: IOException) {
-                    MindBell.logError("Cannot load ringtone", e)
+                    ReminderShowActivity.logError("Cannot load ringtone", e)
                     mPlayer = null
                 }
 

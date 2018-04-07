@@ -28,10 +28,10 @@ import com.googlecode.mindbell.accessors.PrefsAccessor
  * Restarts reminder scheduling and (just in case) stops meditation after after the app has been restarted (due to a reboot or
  * update).
  */
-class RestartBroadcastReceiver : BroadcastReceiver() {
+class RestartReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        MindBell.logDebug("RestartBroadcastReceiver received intent with action ${intent.action} ")
+        ReminderShowActivity.logDebug("RestartReceiver received intent with action ${intent.action} ")
         val contextAccessor = ContextAccessor.getInstance(context)
         val prefs = PrefsAccessor.getInstance(context)
         prefs.isMeditating = false // do not continue meditation after rebooting during meditation (probably rare)

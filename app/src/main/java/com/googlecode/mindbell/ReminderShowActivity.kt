@@ -2,8 +2,7 @@
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
- *     Copyright (C) 2010-2014 Marc Schroeder
- *     Copyright (C) 2014-2018 Uwe Damken
+ *     Copyright (C) 2014-2016 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +24,7 @@ import android.util.Log
 import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.EXTRA_KEEP
 
 
-class MindBell : Activity() {
+class ReminderShowActivity : Activity() {
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +34,7 @@ class MindBell : Activity() {
     override fun onStart() {
         super.onStart()
         val keep = intent.extras?.getBoolean(EXTRA_KEEP)
-        MindBell.logDebug("MindBell.onStart() called EXTRA_KEEP='$keep'")
+        logDebug("ReminderShowActivity.onStart() called EXTRA_KEEP='$keep'")
         if (keep != null && !keep) {
             finish()
         }

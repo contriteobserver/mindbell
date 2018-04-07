@@ -1,16 +1,15 @@
 /*
  * MindBell - Aims to give you a support for staying mindful in a busy life -
- * for remembering what really counts
- * <p/>
- * Copyright (C) 2010-2014 Marc Schroeder
- * Copyright (C) 2014-2018 Uwe Damken
- * <p/>
+ *            for remembering what really counts
+ *
+ *     Copyright (C) 2014-2016 Uwe Damken
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p/>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -45,26 +44,28 @@ import kotlinx.android.synthetic.main.main.*
 import kotlinx.android.synthetic.main.meditation_dialog.*
 import kotlinx.android.synthetic.main.meditation_dialog.view.*
 
-class MindBellMain : Activity() {
-
-    private lateinit var contextAccessor: ContextAccessor
+class MainActivity : Activity() {
 
     private lateinit var prefs: PrefsAccessor
 
+    private lateinit var contextAccessor: ContextAccessor
+
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        MindBell.logDebug("Main activity is being created")
-        contextAccessor = ContextAccessor.getInstance(this)
+        ReminderShowActivity.logDebug("Main activity is being created")
         prefs = PrefsAccessor.getInstance(this)
+        contextAccessor = ContextAccessor.getInstance(this)
         // Use the following line to show popup dialog on every start
         // setPopupShown(false);
         setContentView(R.layout.main)
         imageViewShowIntro.setOnClickListener { flipToAppropriateView(true) }
         imageViewHideIntro.setOnClickListener { flipToAppropriateView(false) }
         val ringOnceOnClickListener = View.OnClickListener {
-            MindBell.logDebug("Ring once")
-            contextAccessor.updateStatusNotification()
-            contextAccessor.startInterruptActions(prefs.forRingingOnce(), null, null)
+            ReminderShowActivity.logDebug("Ring once")
+            val notifier = Notifier.getInstance(this)
+            notifier.updateStatusNotification()
+            val actionsExecutor = ActionsExecutor.getInstance(this)
+            actionsExecutor.startInterruptActions(prefs.forRingingOnce(), null, null)
         }
         imageViewRingOncePlayCollapsed.setOnClickListener(ringOnceOnClickListener)
         imageViewRingOnceBellCollapsed.setOnClickListener(ringOnceOnClickListener)
@@ -140,7 +141,7 @@ class MindBellMain : Activity() {
                     }
                 })
         view.imageViewExplanationNumberOfPeriods.setOnClickListener {
-            AlertDialog.Builder(this@MindBellMain) //
+            AlertDialog.Builder(this@MainActivity) //
                     .setTitle(R.string.prefsNumberOfPeriods) //
                     .setMessage(R.string.explanationNumberOfPeriods) //
                     .setPositiveButton(android.R.string.ok, null) //
@@ -162,7 +163,7 @@ class MindBellMain : Activity() {
             }
         })
         view.imageViewExplanationPatternOfPeriods.setOnClickListener {
-            AlertDialog.Builder(this@MindBellMain) //
+            AlertDialog.Builder(this@MainActivity) //
                     .setTitle(R.string.prefsPatternOfPeriods) //
                     .setMessage(R.string.explanationPatternOfPeriods) //
                     .setPositiveButton(android.R.string.ok, null) //
@@ -198,7 +199,7 @@ class MindBellMain : Activity() {
                                        textViewRampUpTime: TextView, checkBoxKeepScreenOn: CheckBox,
                                        checkBoxStopMeditationAutomatically: CheckBox, startDirectly: Boolean) {
         if (isValidMeditationSetup(textViewPatternOfPeriods, textViewMeditationDuration, textViewNumberOfPeriods,
-                textViewPatternOfPeriods)) {
+                        textViewPatternOfPeriods)) {
             prefs!!.rampUpTime = MinutesIntervalPickerPreference.parseTimeOfDayFromSummary(textViewRampUpTime.text.toString())
             prefs.meditationDuration = MinutesIntervalPickerPreference.parseTimeOfDayFromSummary(textViewMeditationDuration.text.toString())
             prefs.patternOfPeriods = textViewPatternOfPeriods.text.toString()
@@ -228,14 +229,14 @@ class MindBellMain : Activity() {
                                            min: TimeOfDay, isMinutesInterval: Boolean,
                                            onPickListener: OnPickListener?) {
         val onClickListener = View.OnClickListener {
-            val timePicker = TimePicker(this@MindBellMain)
+            val timePicker = TimePicker(this@MainActivity)
             timePicker.setIs24HourView(true)
             val time = MinutesIntervalPickerPreference.parseTimeOfDayFromSummary(textView.text.toString())
             @Suppress("DEPRECATION") // setCurrent*() deprecated now but not for older API levels < 23
             timePicker.currentHour = time.hour
             @Suppress("DEPRECATION") // setCurrent*() deprecated now but not for older API levels < 23
             timePicker.currentMinute = time.minute
-            AlertDialog.Builder(this@MindBellMain) //
+            AlertDialog.Builder(this@MainActivity) //
                     .setTitle(residTitle) //
                     .setView(timePicker) //
                     .setPositiveButton(android.R.string.ok) { _, _ ->
@@ -297,11 +298,11 @@ class MindBellMain : Activity() {
     private fun attachNumberPickerDialog(textViewLabel: TextView, textView: TextView, residTitle: Int,
                                          min: Int, max: Int, onPickListener: OnPickListener?) {
         val onClickListener = View.OnClickListener {
-            val numberPicker = NumberPicker(this@MindBellMain)
+            val numberPicker = NumberPicker(this@MainActivity)
             numberPicker.minValue = min
             numberPicker.maxValue = max
             numberPicker.value = Integer.valueOf(textView.text.toString())!!
-            AlertDialog.Builder(this@MindBellMain) //
+            AlertDialog.Builder(this@MainActivity) //
                     .setTitle(residTitle) //
                     .setView(numberPicker) //
                     .setPositiveButton(android.R.string.ok) { _, _ ->
@@ -322,13 +323,13 @@ class MindBellMain : Activity() {
     private fun attachEditTextDialog(textViewLabel: TextView, textView: TextView, residTitle: Int,
                                      normalizer: Normalizer?, onEnterListener: OnEnterListener?) {
         val onClickListener = View.OnClickListener {
-            val editText = EditText(this@MindBellMain)
+            val editText = EditText(this@MainActivity)
             editText.setText(textView.text)
-            AlertDialog.Builder(this@MindBellMain) //
+            AlertDialog.Builder(this@MainActivity) //
                     .setTitle(residTitle) //
                     .setView(editText) //
                     .setPositiveButton(android.R.string.ok) { _, _ ->
-                        Utils.hideKeyboard(this@MindBellMain, editText)
+                        Utils.hideKeyboard(this@MainActivity, editText)
                         var newValue = editText.text.toString()
                         if (normalizer != null) {
                             newValue = normalizer.normalize(newValue)
@@ -336,7 +337,7 @@ class MindBellMain : Activity() {
                         textView.text = newValue
                         onEnterListener?.onEnter(newValue)
                     } //
-                    .setNegativeButton(android.R.string.cancel) { _, _ -> Utils.hideKeyboard(this@MindBellMain, editText) } //
+                    .setNegativeButton(android.R.string.cancel) { _, _ -> Utils.hideKeyboard(this@MainActivity, editText) } //
                     .show()
         }
         textViewLabel.setOnClickListener(onClickListener)
@@ -359,12 +360,12 @@ class MindBellMain : Activity() {
 
     override fun onResume() {
         if (intent.getBooleanExtra(PrefsAccessor.EXTRA_STOP_MEDITATION, false)) {
-            MindBell.logDebug("MindBellMain received stop meditation intent")
-            // If the activity has once been opened from the SchedulerService by automatically stopping meditation further screen
+            ReminderShowActivity.logDebug("MainActivity received stop meditation intent")
+            // If the activity has once been opened from the InterruptService by automatically stopping meditation further screen
             // rotations will stop meditation, too, because getIntent() always returns the intent that initially opened the
             // activity. Hence the extra information must be removed to avoid stopping medtiation in these other cases.
             intent.removeExtra(PrefsAccessor.EXTRA_STOP_MEDITATION)
-            // SchedulerService detected meditation to be over and sent intent to leave meditation mode. To be sure user has not stopped
+            // InterruptService detected meditation to be over and sent intent to leave meditation mode. To be sure user has not stopped
             // meditation in the meantime (between sending and receiving intent) we check that meditation is still running.
             if (prefs.isMeditating) {
                 toggleMeditating() // as meditation is still running this means to stop the meditation mode
@@ -397,15 +398,16 @@ class MindBellMain : Activity() {
             countdownView.startDisplayUpdateTimer()
             if (prefs.isKeepScreenOn) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                MindBell.logDebug("Keep screen on activated")
+                ReminderShowActivity.logDebug("Keep screen on activated")
             }
         } else {
             countdownView.stopDisplayUpdateTimer()
-            contextAccessor.finishBellSound()
+            val actionsExecutor = ActionsExecutor.getInstance(this)
+            actionsExecutor.finishBellSound()
             contextAccessor.updateBellScheduleForReminder(false)
             if (prefs.isKeepScreenOn) {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                MindBell.logDebug("Keep screen on deactivated")
+                ReminderShowActivity.logDebug("Keep screen on deactivated")
             }
         }
         flipToAppropriateView(false)

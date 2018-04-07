@@ -523,7 +523,7 @@ class MindBellPreferences : PreferenceActivity(), ActivityCompat.OnRequestPermis
      */
     private fun onClickReallySendInfo() {
         PrefsAccessor.getInstance(this).logSettings()
-        MindBell.logDebug("Excluded from battery optimization (always false for SDK < 23)? -> " + Utils.isAppWhitelisted(this))
+        ReminderShowActivity.logDebug("Excluded from battery optimization (always false for SDK < 23)? -> " + Utils.isAppWhitelisted(this))
         val i = Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getText(R.string.emailAddress).toString(), null))
         i.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.emailSubject))
         i.putExtra(Intent.EXTRA_TEXT, infoMailText)
@@ -557,7 +557,7 @@ class MindBellPreferences : PreferenceActivity(), ActivityCompat.OnRequestPermis
         if (soundDuration > maxDuration) {
             val msg = String.format(getText(R.string.ringtoneDurationTooLong).toString(), soundDuration, maxDuration,
                     frequency.interval * 60L)
-            MindBell.logWarn(msg + " (" + soundUri.toString() + ")")
+            ReminderShowActivity.logWarn(msg + " (" + soundUri.toString() + ")")
             Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
             return false
         } else if (soundDuration > 10L) {

@@ -19,411 +19,44 @@
  */
 package com.googlecode.mindbell.accessors
 
-import android.Manifest
 import android.app.AlarmManager
-import android.app.Notification
 import android.app.PendingIntent
-import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.media.AudioManager
-import android.media.AudioManager.*
 import android.media.MediaPlayer
-import android.os.Build
-import android.os.Vibrator
-import android.provider.Settings
-import android.provider.Settings.Global
-import android.support.v4.app.NotificationCompat
-import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.content.ContextCompat
-import android.telephony.TelephonyManager
-import android.widget.Toast
-import com.googlecode.mindbell.*
+import com.googlecode.mindbell.InterruptService
+import com.googlecode.mindbell.Notifier
+import com.googlecode.mindbell.ReminderShowActivity
 import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.EXTRA_IS_RESCHEDULING
-import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.EXTRA_KEEP
 import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.EXTRA_MEDITATION_PERIOD
 import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.EXTRA_NOW_TIME_MILLIS
-import com.googlecode.mindbell.logic.SchedulerLogic
+import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.SCHEDULER_REQUEST_CODE
 import com.googlecode.mindbell.util.AlarmManagerCompat
-import com.googlecode.mindbell.util.NotificationManagerCompatExtension
 import com.googlecode.mindbell.util.TimeOfDay
-import java.io.IOException
-import java.text.MessageFormat
-import java.util.*
 
-class ContextAccessor private constructor(val context: Context) : AudioManager.OnAudioFocusChangeListener {
+class ContextAccessor private constructor(val context: Context) {
 
-    private var prefs: PrefsAccessor = PrefsAccessor.getInstance(context)
+    private var notifier = Notifier.getInstance(context)
 
-    val reasonMutedTill: String
-        get() {
-            val mutedTill = TimeOfDay(prefs.mutedTill)
-            return MessageFormat.format(context.getText(R.string.reasonMutedTill).toString(), mutedTill.getDisplayString(context))
-        }
-
-    val isPhoneMuted: Boolean
-        get() {
-            val audioMan = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            return audioMan.getStreamVolume(AudioManager.STREAM_RING) == 0
-        }
-
-    val reasonMutedWithPhone: String
-        get() = context.getText(R.string.reasonMutedWithPhone).toString()
-
-    val isAudioStreamMuted: Boolean
-        get() {
-            val audioMan = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            return audioMan.getStreamVolume(prefs.audioStream) == 0
-        }
-
-    val reasonMutedWithAudioStream: String
-        get() = context.getText(R.string.reasonMutedWithAudioStream).toString()
-
-    val isPhoneOffHook: Boolean
-        get() {
-            val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            return telephonyManager.callState != TelephonyManager.CALL_STATE_IDLE
-        }
-
-    val reasonMutedOffHook: String
-        get() = context.getText(R.string.reasonMutedOffHook).toString()
-
-    val isPhoneInFlightMode: Boolean
-        get() = Settings.System.getInt(context.contentResolver, retrieveAirplaneModeOnConstantName(), 0) == 1
-
-    val reasonMutedInFlightMode: String
-        get() = context.getText(R.string.reasonMutedInFlightMode).toString()
-
-    val reasonMutedDuringNighttime: String
-        get() {
-            val nextStartTime = TimeOfDay(
-                    SchedulerLogic.getNextDaytimeStartInMillis(Calendar.getInstance().timeInMillis, prefs.daytimeStart,
-                            prefs.activeOnDaysOfWeek))
-            val weekdayAbbreviation = prefs.getWeekdayAbbreviation(nextStartTime.weekday!!)
-            return MessageFormat.format(context.getText(R.string.reasonMutedDuringNighttime).toString(), weekdayAbbreviation,
-                    nextStartTime.getDisplayString(context))
-        }
-
-    // if we hold a reference we haven't finished bell sound completely so only the reference is checked
-    val isBellSoundPlaying: Boolean
-        get() = mediaPlayer != null
-
-    val alarmMaxVolume: Int
-        get() {
-            val audioMan = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            return audioMan.getStreamMaxVolume(AudioManager.STREAM_ALARM)
-        }
-
-    var alarmVolume: Int
-        get() {
-            val audioMan = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            return audioMan.getStreamVolume(AudioManager.STREAM_ALARM)
-        }
-        set(volume) {
-            val audioMan = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            audioMan.setStreamVolume(AudioManager.STREAM_ALARM, volume, 0)
-
-        }
+    private var prefs = PrefsAccessor.getInstance(context)
 
     /**
-     * Return whether bell should be muted and show reason message if shouldShowMessage is true.
-     */
-    fun isMuteRequested(shouldShowMessage: Boolean): Boolean {
-        return getMuteRequestReason(shouldShowMessage) != null
-    }
-
-    /**
-     * Check whether bell should be muted, show reason if requested, and return reason, null otherwise.
-     */
-    private fun getMuteRequestReason(shouldShowMessage: Boolean): String? {
-        var reason: String? = null
-        if (System.currentTimeMillis() < prefs.mutedTill) { // Muted manually?
-            reason = reasonMutedTill
-        } else if (prefs.isMuteWithPhone && isPhoneMuted) { // Mute bell with phone?
-            reason = reasonMutedWithPhone
-        } else if (prefs.isMuteWithAudioStream && isAudioStreamMuted) { // Mute bell with audio stream?
-            reason = reasonMutedWithAudioStream
-        } else if (prefs.isMuteOffHook && isPhoneOffHook) { // Mute bell while phone is off hook (or ringing)?
-            reason = reasonMutedOffHook
-        } else if (prefs.isMuteInFlightMode && isPhoneInFlightMode) { // Mute bell while in flight mode?
-            reason = reasonMutedInFlightMode
-        } else if (!TimeOfDay().isDaytime(prefs)) { // Always mute bell during nighttime
-            reason = reasonMutedDuringNighttime
-        }
-        if (reason != null && shouldShowMessage) {
-            showMessage(reason)
-        }
-        return reason
-    }
-
-    private fun showMessage(message: String) {
-        MindBell.logDebug(message)
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-    }
-
-    /**
-     * Returns name of the airplane-mode-on constant depending on the version of Android.
-     */
-    private fun retrieveAirplaneModeOnConstantName(): String {
-        return if (Build.VERSION.SDK_INT >= 17) {
-            Global.AIRPLANE_MODE_ON
-        } else {
-            @Suppress("DEPRECATION") // deprecated now but not for older API levels < 17
-            Settings.System.AIRPLANE_MODE_ON
-        }
-    }
-
-    /**
-     * Start interrupt actions (show/sound/vibrate) and setup handler to finish the actions after sound or timer ends.
-     */
-    fun startInterruptActions(interruptSettings: InterruptSettings, meditationStopper: Runnable?, callingService: Service? = null) {
-
-        // Stop an already ongoing sound, this isn't wrong when phone and bell are muted, too
-        finishBellSound()
-
-        // Runnable that finishes all reminder actions and stops the meditation if requested. It is either executed after the
-        // sound has been played or after a timer has expired.
-        val reminderActionsFinisher = Runnable { finishReminderActions(interruptSettings, meditationStopper, callingService) }
-
-        // Show bell if wanted
-        if (interruptSettings.isShow) {
-            showBell()
-        }
-
-        // Raise alarm volume to the max but keep the original volume for reset by finishBellSound() and start playing sound if
-        // requested by preferences
-        var playingSoundStarted = false
-        if (interruptSettings.isSound) {
-            playingSoundStarted = startPlayingSound(interruptSettings, reminderActionsFinisher)
-        }
-
-        // Explicitly start vibration if not already done by ring notification
-        if (interruptSettings.isVibrate && !interruptSettings.isNotification) {
-            startVibration()
-        }
-
-        // If no sound has been started (as requested or due to a failure starting it) a timer is used to finish the reminder
-        // actions when it has expired.
-        if (!playingSoundStarted) {
-            startWaiting(reminderActionsFinisher)
-        }
-
-    }
-
-    fun finishBellSound() {
-        if (isBellSoundPlaying) { // do we hold a reference to a MediaPlayer?
-            if (mediaPlayer!!.isPlaying) {
-                mediaPlayer!!.stop()
-                MindBell.logDebug("Ongoing MediaPlayer stopped")
-            }
-            mediaPlayer!!.reset() // get rid of "mediaplayer went away with unhandled events" log entries
-            mediaPlayer!!.release()
-            mediaPlayer = null
-            MindBell.logDebug("Reference to MediaPlayer released")
-            if (prefs.isPauseAudioOnSound) {
-                if (audioManager!!.abandonAudioFocus(this) == AUDIOFOCUS_REQUEST_FAILED) {
-                    MindBell.logDebug("Abandon of audio focus failed")
-                } else {
-                    MindBell.logDebug("Audio focus successfully abandoned")
-                }
-            }
-        }
-        // Reset volume to originalVolume if it has been set before (does not equal -1)
-        if (prefs.isUseAudioStreamVolumeSetting) { // we don't care about setting the volume
-            MindBell.logDebug("Finish bell sound found without touching audio stream volume")
-        } else {
-            val originalVolume = prefs.originalVolume
-            if (originalVolume < 0) {
-                MindBell.logDebug("Finish bell sound found originalVolume $originalVolume, alarm volume left untouched")
-            } else {
-                val alarmMaxVolume = alarmMaxVolume
-                if (originalVolume == alarmMaxVolume) { // "someone" else set it to max, so we don't touch it
-                    MindBell.logDebug(
-                            "Finish bell sound found originalVolume $originalVolume to be max, alarm volume left untouched")
-                } else {
-                    MindBell.logDebug("Finish bell sound found originalVolume $originalVolume, setting alarm volume to it")
-                    alarmVolume = originalVolume
-                }
-                prefs.resetOriginalVolume() // no longer needed therefore invalidate it
-            }
-        }
-    }
-
-    /**
-     * Create the reminder notification which is to be displayed when executing reminder actions.
-     */
-    fun createReminderNotification(interruptSettings: InterruptSettings? = null): Notification {
-
-        // Create notification channel
-        NotificationManagerCompatExtension.getInstance(context).createNotificationChannel(REMINDER_NOTIFICATION_CHANNEL_ID, context
-                .getText(R.string.prefsCategoryRingNotification).toString(), context.getText(R.string.summaryNotification).toString())
-
-        // Derive visibility
-        val visibility = if (prefs.isNotificationVisibilityPublic)
-            NotificationCompat.VISIBILITY_PUBLIC
-        else
-            NotificationCompat.VISIBILITY_PRIVATE
-
-        // Now create the notification
-        @Suppress("DEPRECATION") // getColor() deprecated now but not for older API levels < 23
-        val notificationBuilder = NotificationCompat.Builder(context.applicationContext, REMINDER_NOTIFICATION_CHANNEL_ID) //
-                .setCategory(NotificationCompat.CATEGORY_ALARM) //
-                .setAutoCancel(true) // cancel notification on touch
-                .setColor(context.resources.getColor(R.color.backgroundColor)) //
-                .setContentTitle(prefs.notificationTitle) //
-                .setContentText(prefs.notificationText).setSmallIcon(R.drawable.ic_stat_bell_ring) //
-                .setVisibility(visibility)
-        if (interruptSettings != null && interruptSettings.isVibrate) {
-            notificationBuilder.setVibrate(prefs.vibrationPattern)
-        }
-
-        return notificationBuilder.build()
-    }
-
-    /**
-     * Start playing bell sound and call runWhenDone when playing finishes but only if bell is not muted - returns true when
-     * sound has been started, false otherwise.
-     */
-    private fun startPlayingSound(interruptSettings: InterruptSettings, reminderActionsFinisher: Runnable): Boolean {
-        val bellUri = interruptSettings.getSoundUri()
-        audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        if (prefs.isNoSoundOnMusic && audioManager!!.isMusicActive) {
-            MindBell.logDebug("Sound suppressed because setting is no sound on music and music is playing")
-            return false
-        } else if (bellUri == null) {
-            MindBell.logDebug("Sound suppressed because no sound has been set")
-            return false
-        } else if (prefs.isPauseAudioOnSound) {
-            val requestResult = audioManager!!.requestAudioFocus(this, prefs.audioStream, retrieveDurationHint())
-            if (requestResult == AUDIOFOCUS_REQUEST_FAILED) {
-                MindBell.logDebug("Sound suppressed because setting is pause audio on sound and request of audio focus failed")
-                return false
-            }
-            MindBell.logDebug("Audio focus successfully requested")
-        }
-        if (prefs.isUseAudioStreamVolumeSetting) { // we don't care about setting the volume
-            MindBell.logDebug("Start playing sound without touching audio stream volume")
-        } else {
-            val originalVolume = alarmVolume
-            val alarmMaxVolume = alarmMaxVolume
-            if (originalVolume == alarmMaxVolume) { // "someone" else set it to max, so we don't touch it
-                MindBell.logDebug(
-                        "Start playing sound found originalVolume $originalVolume to be max, alarm volume left untouched")
-            } else {
-                MindBell.logDebug(
-                        "Start playing sound found and stored originalVolume $originalVolume, setting alarm volume to max")
-                alarmVolume = alarmMaxVolume
-                prefs.originalVolume = originalVolume
-            }
-        }
-        mediaPlayer = MediaPlayer()
-        mediaPlayer!!.setAudioStreamType(prefs.audioStream)
-        if (!prefs.isUseAudioStreamVolumeSetting) { // care about setting the volume
-            val bellVolume = interruptSettings.volume
-            mediaPlayer!!.setVolume(bellVolume, bellVolume)
-        }
-        try {
-            try {
-                mediaPlayer!!.setDataSource(context, bellUri)
-            } catch (e: IOException) { // probably because of withdrawn permissions, hence use default bell
-                mediaPlayer!!.setDataSource(context, prefs.getDefaultReminderBellSoundUri()!!)
-            }
-
-            mediaPlayer!!.prepare()
-            mediaPlayer!!.setOnCompletionListener {
-                reminderActionsFinisher.run()
-            }
-            mediaPlayer!!.start()
-            return true
-        } catch (e: IOException) {
-            MindBell.logError("Could not start playing sound: " + e.message, e)
-            reminderActionsFinisher.run()
-            return false
-        }
-
-    }
-
-    /**
-     * Finishes reminder actions (show/sound/vibrate) after sound or timer has ended.
-     */
-    private fun finishReminderActions(interruptSettings: InterruptSettings, runWhenDone: Runnable?, callingService: Service?) {
-        // nothing to do to finish vibration
-        finishBellSound()
-//        cancelRingNotification(interruptSettings)
-        if (interruptSettings.isShow) {
-            hideBell()
-        }
-        runWhenDone?.run()
-        callingService?.stopSelf()
-    }
-
-    /**
-     * Vibrate with the requested vibration pattern.
-     */
-    private fun startVibration() {
-        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        vibrator.vibrate(prefs.vibrationPattern, -1)
-    }
-
-    /**
-     * Start waiting for a specific time period and call runWhenDone when time is over.
-     */
-    private fun startWaiting(reminderActionsFinisher: Runnable) {
-        Thread(Runnable {
-            try {
-                Thread.sleep(PrefsAccessor.WAITING_TIME)
-            } catch (e: InterruptedException) {
-                // doesn't care if sleep was interrupted, just move on
-            }
-
-            reminderActionsFinisher.run()
-        }).start()
-    }
-
-    /**
-     * Cancel the ring notification if ring notification and its dismissal is requested.
-     */
-    fun cancelRingNotification(interruptSettings: InterruptSettings) {
-        if (interruptSettings.isNotification && interruptSettings.isDismissNotification) {
-            NotificationManagerCompat.from(context).cancel(REMINDER_NOTIFICATION_ID)
-        }
-    }
-
-    /**
-     * Returns duration hint for requesting audio focus depending on the version of Android.
-     */
-    private fun retrieveDurationHint(): Int {
-        return if (Build.VERSION.SDK_INT >= 19) {
-            AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE
-        } else {
-            AUDIOFOCUS_GAIN_TRANSIENT
-        }
-    }
-
-    /**
-     * Send a newly created intent to SchedulerService to update notification and setup a new bell schedule for reminder, if
-     * requested cancel and newly setup alarms to update noticiation status depending on day-night mode.
+     * Send a newly created intent to InterruptService to update notification and setup a new bell schedule for reminder, if
+     * requested cancel and newly setup alarms to update notification status depending on day-night mode.
      */
     fun updateBellScheduleForReminder(renewDayNightAlarm: Boolean) {
-        MindBell.logDebug("Update bell schedule for reminder requested, renewDayNightAlarm=" + renewDayNightAlarm)
+        ReminderShowActivity.logDebug("Update bell schedule for reminder requested, renewDayNightAlarm=" + renewDayNightAlarm)
         if (renewDayNightAlarm) {
-            scheduleUpdateStatusNotificationDayNight()
+            notifier.scheduleRefreshDayNight()
         }
         val intent = createSchedulerServiceIntent(false, null, null)
         ContextCompat.startForegroundService(context, intent)
     }
 
     /**
-     * Schedule an update status notification for the start or the end of the active period.
-     */
-    fun scheduleUpdateStatusNotificationDayNight() {
-        val targetTimeMillis = SchedulerLogic.getNextDayNightChangeInMillis(Calendar.getInstance().timeInMillis, prefs)
-        scheduleUpdateStatusNotification(targetTimeMillis, UPDATE_STATUS_NOTIFICATION_DAY_NIGHT_REQUEST_CODE, "day-night")
-    }
-
-    /**
-     * Create a pending intent to be send to SchedulerService to update notification and to (re-)schedule the bell.
+     * Create a pending intent to be send to InterruptService to update notification and to (re-)schedule the bell.
      */
     private fun createSchedulerServicePendingIntent(isRescheduling: Boolean, nowTimeMillis: Long?, meditationPeriod: Int?):
             PendingIntent {
@@ -432,20 +65,20 @@ class ContextAccessor private constructor(val context: Context) : AudioManager.O
     }
 
     /**
-     * Create an intent to be send to SchedulerService to update notification and to (re-)schedule the bell.
+     * Create an intent to be send to InterruptService to update notification and to (re-)schedule the bell.
      *
      * @param isRescheduling
      * True if the intents is meant for rescheduling instead of updating bell schedule.
      * @param nowTimeMillis
-     * If not null millis to be given to SchedulerService as now (or nextTargetTimeMillis from the perspective of the previous
+     * If not null millis to be given to InterruptService as now (or nextTargetTimeMillis from the perspective of the previous
      * call)
      * @param meditationPeriod
      * Zero: ramp-up, 1-(n-1): intermediate period, n: last period, n+1: beyond end
      */
     private fun createSchedulerServiceIntent(isRescheduling: Boolean, nowTimeMillis: Long?, meditationPeriod: Int?): Intent {
-        MindBell.logDebug("Creating scheduler intent: isRescheduling=" + isRescheduling + ", nowTimeMillis=" + nowTimeMillis +
+        ReminderShowActivity.logDebug("Creating scheduler intent: isRescheduling=" + isRescheduling + ", nowTimeMillis=" + nowTimeMillis +
                 ", meditationPeriod=" + meditationPeriod)
-        val intent = Intent(context, SchedulerService::class.java)
+        val intent = Intent(context, InterruptService::class.java)
         if (isRescheduling) {
             intent.putExtra(EXTRA_IS_RESCHEDULING, true)
         }
@@ -459,41 +92,19 @@ class ContextAccessor private constructor(val context: Context) : AudioManager.O
     }
 
     /**
-     * Schedule an update status notification for the future.
-     */
-    private fun scheduleUpdateStatusNotification(targetTimeMillis: Long, requestCode: Int, info: String) {
-        val sender = createRefreshBroadcastIntent(requestCode)
-        val alarmManager = AlarmManagerCompat.getInstance(context)
-        alarmManager.cancel(sender) // cancel old alarm, it has either gone away or became obsolete
-        if (prefs.isActive) {
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, targetTimeMillis, sender)
-            val scheduledTime = TimeOfDay(targetTimeMillis)
-            MindBell.logDebug("Update status notification scheduled for " + scheduledTime.logString + " (" + info + ")")
-        }
-    }
-
-    /**
-     * Create an intent to be send to UpdateStatusNotification to update notification.
-     */
-    private fun createRefreshBroadcastIntent(requestCode: Int): PendingIntent {
-        return PendingIntent.getBroadcast(context, requestCode, Intent("com.googlecode.mindbell.UPDATE_STATUS_NOTIFICATION"),
-                PendingIntent.FLAG_UPDATE_CURRENT)
-    }
-
-    /**
-     * Send a newly created intent to SchedulerService to update notification and setup a new bell schedule for meditation.
+     * Send a newly created intent to InterruptService to update notification and setup a new bell schedule for meditation.
      */
     fun updateBellScheduleForMeditation() {
-        MindBell.logDebug("Update bell schedule for meditation requested")
+        ReminderShowActivity.logDebug("Update bell schedule for meditation requested")
         val intent = createSchedulerServiceIntent(false, null, null)
         ContextCompat.startForegroundService(context, intent)
     }
 
     /**
-     * Reschedule the bell by letting AlarmManager send an intent to SchedulerService.
+     * Reschedule the bell by letting AlarmManager send an intent to InterruptService.
      *
      * @param nextTargetTimeMillis
-     * Millis to be given to SchedulerService as now (or nextTargetTimeMillis from the perspective of the previous call)
+     * Millis to be given to InterruptService as now (or nextTargetTimeMillis from the perspective of the previous call)
      * @param nextMeditationPeriod
      * null if not meditating, otherwise 0: ramp-up, 1-(n-1): intermediate period, n: last period, n+1: beyond end
      */
@@ -502,182 +113,10 @@ class ContextAccessor private constructor(val context: Context) : AudioManager.O
         val alarmManager = AlarmManagerCompat.getInstance(context)
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextTargetTimeMillis, pendingIntent)
         val nextBellTime = TimeOfDay(nextTargetTimeMillis)
-        MindBell.logDebug("Scheduled next bell alarm for " + nextBellTime.logString)
-    }
-
-    /**
-     * Send an intent to MindBellMain to finally stop meditation (change status, stop countdown) automatically instead of
-     * pressing the stop meditation button manually.
-     */
-    fun stopMeditation() {
-        MindBell.logDebug("Starting activity MindBellMain to stop meditation")
-        val intent = Intent(context, MindBellMain::class.java)
-        intent.flags = (Intent.FLAG_ACTIVITY_NEW_TASK // context may be service context only, not an activity context
-                or Intent.FLAG_ACTIVITY_CLEAR_TASK) // MindBellMain becomes the new root to let back button return to other apps
-        intent.putExtra(PrefsAccessor.EXTRA_STOP_MEDITATION, true)
-        context.startActivity(intent)
-    }
-
-    /**
-     * Shows bell by starting activity MindBell
-     */
-    private fun showBell() {
-        MindBell.logDebug("Starting activity MindBell to show bell")
-        showOrHideBell(true)
-    }
-
-    /**
-     * Hides bell by starting activity MindBell
-     */
-    private fun hideBell() {
-        MindBell.logDebug("Starting activity MindBell to hide bell")
-        showOrHideBell(false)
-    }
-
-    /**
-     * Show or hide bell by starting activity MindBell following this idea: https://stackoverflow.com/a/14411650
-     */
-    private fun showOrHideBell(show: Boolean) {
-        val intent = Intent(context, MindBell::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) // context may be service context only, not an activity context
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK) // MindBell becomes the new root to let back button return to other apps
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP) // don't launch activity a second time when hiding "on top" of showing
-        intent.putExtra(EXTRA_KEEP, show)
-        context.startActivity(intent)
-    }
-
-    /**
-     * This is about updating the status notification on changes in system settings.
-     */
-    fun updateStatusNotification() {
-        if (!prefs.isActive && !prefs.isMeditating || !prefs.isStatus) {// bell inactive or no notification wanted?
-            MindBell.logInfo("Remove status notification because of inactive and non-meditating bell or unwanted status notification")
-            removeStatusNotification()
-            return
-        }
-        // Choose material design or pre material design status icons
-        val bellActiveDrawable: Int
-        val bellActiveButMutedDrawable: Int
-        if (prefs.useStatusIconMaterialDesign()) {
-            bellActiveDrawable = R.drawable.ic_stat_bell_active
-            bellActiveButMutedDrawable = R.drawable.ic_stat_bell_active_but_muted
-        } else {
-            bellActiveDrawable = R.drawable.golden_bell_status_active
-            bellActiveButMutedDrawable = R.drawable.golden_bell_status_active_but_muted
-        }
-        // Suppose bell is active and not muted and all settings can be satisfied
-        var statusDrawable = bellActiveDrawable
-        var contentTitle = context.getText(R.string.statusTitleBellActive)
-        val contentText: String
-        val muteRequestReason = getMuteRequestReason(false)
-        var targetClass: Class<*> = MindBellMain::class.java
-        // Override icon and notification text if bell is muted or permissions are insufficient
-        if (!canSettingsBeSatisfied(prefs)) { // Insufficient permissions => override icon/text, switch notifications off
-            statusDrawable = R.drawable.ic_warning_white_24dp
-            contentTitle = context.getText(R.string.statusTitleNotificationsDisabled)
-            contentText = context.getText(R.string.statusTextNotificationsDisabled).toString()
-            targetClass = MindBellPreferences::class.java
-            // Status Notification would not be correct during incoming or outgoing calls because of the missing permission to
-            // listen to phone state changes. Therefore we switch off notification and ask user for permission when he tries
-            // to enable notification again. In this very moment we cannot ask for permission to avoid an ANR in receiver
-            // UpdateStatusNotification.
-            prefs.isStatus = false
-        } else if (prefs.isMeditating) {// Bell meditation => override icon and notification text
-            statusDrawable = R.drawable.ic_stat_bell_meditating
-            contentTitle = context.getText(R.string.statusTitleBellMeditating)
-            contentText = MessageFormat.format(context.getText(R.string.statusTextBellMeditating).toString(), //
-                    prefs.meditationDuration.interval, //
-                    TimeOfDay(prefs.meditationEndingTimeMillis).getDisplayString(context))
-        } else if (muteRequestReason != null) { // Bell muted => override icon and notification text
-            statusDrawable = bellActiveButMutedDrawable
-            contentText = muteRequestReason
-        } else { // enrich standard notification by times and days
-            contentText = MessageFormat.format(context.getText(R.string.statusTextBellActive).toString(), //
-                    prefs.daytimeStart.getDisplayString(context), //
-                    prefs.daytimeEnd.getDisplayString(context), //
-                    prefs.activeOnDaysOfWeekString)
-        }
-
-        // Create notification channel
-        NotificationManagerCompatExtension.getInstance(context).createNotificationChannel(STATUS_NOTIFICATION_CHANNEL_ID, context
-                .getText(R.string.prefsCategoryStatusNotification).toString(), context.getText(R.string.summaryStatus).toString())
-
-        // Now do the notification update
-        MindBell.logInfo("Update status notification: " + contentText)
-        val openAppIntent = PendingIntent.getActivity(context, 0, Intent(context, targetClass), PendingIntent.FLAG_UPDATE_CURRENT)
-        val muteIntent = PendingIntent.getActivity(context, 2, Intent(context, MuteActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT)
-        val visibility = if (prefs.isStatusVisibilityPublic) NotificationCompat.VISIBILITY_PUBLIC else NotificationCompat.VISIBILITY_PRIVATE
-        @Suppress("DEPRECATION") // getColor() deprecated now but not for older API levels < 23
-        val notificationBuilder = NotificationCompat.Builder(context.applicationContext, STATUS_NOTIFICATION_CHANNEL_ID) //
-                .setCategory(NotificationCompat.CATEGORY_STATUS) //
-                .setColor(context.resources.getColor(R.color.backgroundColor)) //
-                .setContentTitle(contentTitle) //
-                .setContentText(contentText) //
-                .setContentIntent(openAppIntent) //
-                .setOngoing(true) // ongoing is *not* shown on wearable
-                .setSmallIcon(statusDrawable) //
-                .setVisibility(visibility)
-        if (!prefs.isMeditating) {
-            // Do not allow other actions than stopping meditation while meditating
-            notificationBuilder //
-                    .addAction(R.drawable.ic_action_refresh_status, context.getText(R.string.statusActionRefreshStatus),
-                            createRefreshBroadcastIntent(UPDATE_STATUS_NOTIFICATION_REQUEST_CODE)) //
-                    .addAction(R.drawable.ic_stat_bell_active_but_muted, context.getText(R.string.statusActionMuteFor), muteIntent)
-        }
-        val notification = notificationBuilder.build()
-        NotificationManagerCompat.from(context).notify(STATUS_NOTIFICATION_ID, notification)
-    }
-
-    private fun removeStatusNotification() {
-        NotificationManagerCompat.from(context).cancel(STATUS_NOTIFICATION_ID)
-    }
-
-    /**
-     * Returns true if mute bell with phone isn't requested or if the app has the permission to be informed in case of incoming or
-     * outgoing calls. Notification bell could not be turned over correctly if muting with phone were requested without permission
-     * granted.
-     */
-    private fun canSettingsBeSatisfied(prefs: PrefsAccessor): Boolean {
-        val result = !prefs.isMuteOffHook || ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
-        MindBell.logDebug("Can settings be satisfied? -> " + result)
-        return result
-    }
-
-    /**
-     * Schedule an update status notification for the end of a manual mute.
-     */
-    fun scheduleUpdateStatusNotificationMutedTill(targetTimeMillis: Long) {
-        scheduleUpdateStatusNotification(targetTimeMillis, UPDATE_STATUS_NOTIFICATION_MUTED_TILL_REQUEST_CODE, "muted till")
-    }
-
-    override fun onAudioFocusChange(focusChange: Int) {
-        MindBell.logDebug("Callback onAudioFocusChange() received focusChange=" + focusChange)
-        when (focusChange) {
-            AUDIOFOCUS_LOSS, AUDIOFOCUS_LOSS_TRANSIENT // could be handled by only pausing playback (not useful for bell sound)
-                , AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK // could also be handled by lowering volume (not useful for bell sound)
-            -> finishBellSound()
-            else -> {
-            }
-        }
+        ReminderShowActivity.logDebug("Scheduled next bell alarm for " + nextBellTime.logString)
     }
 
     companion object {
-
-        private val REMINDER_NOTIFICATION_CHANNEL_ID = "${BuildConfig.APPLICATION_ID}.reminder"
-
-        private val STATUS_NOTIFICATION_CHANNEL_ID = "${BuildConfig.APPLICATION_ID}.status"
-
-        private val STATUS_NOTIFICATION_ID = 0x7f030001 // historically, has been R.layout.bell for a long time
-
-        val REMINDER_NOTIFICATION_ID = STATUS_NOTIFICATION_ID + 1
-
-        private val SCHEDULER_REQUEST_CODE = 0
-
-        private val UPDATE_STATUS_NOTIFICATION_REQUEST_CODE = 1
-
-        private val UPDATE_STATUS_NOTIFICATION_MUTED_TILL_REQUEST_CODE = 2
-
-        private val UPDATE_STATUS_NOTIFICATION_DAY_NIGHT_REQUEST_CODE = 4
 
         // Keep MediaPlayer to finish a started sound explicitly, reclaimed when app gets destroyed: http://stackoverflow.com/a/2476171
         private var mediaPlayer: MediaPlayer? = null

@@ -28,14 +28,15 @@ import com.googlecode.mindbell.accessors.PrefsAccessor
 import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.EXTRA_IS_RESCHEDULING
 import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.EXTRA_MEDITATION_PERIOD
 import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.EXTRA_NOW_TIME_MILLIS
+import com.googlecode.mindbell.accessors.PrefsAccessor.Companion.INTERRUPT_NOTIFICATION_ID
 import com.googlecode.mindbell.logic.SchedulerLogic
 import com.googlecode.mindbell.util.TimeOfDay
 import java.util.*
 
 /**
- * Remind (show/sound/vibrate) and reschedule.
+ * Delivers an interrupt to the user by executing interrupt actions (show/sound/vibrate) and rescheduling.
  */
-class SchedulerService : Service() {
+class InterruptService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -48,11 +49,10 @@ class SchedulerService : Service() {
         val nowTimeMillis = intent.getLongExtra(EXTRA_NOW_TIME_MILLIS, Calendar.getInstance().timeInMillis)
         val meditationPeriod = intent.getIntExtra(EXTRA_MEDITATION_PERIOD, -1)
 
-        MindBell.logDebug("SchedulerService received intent: isRescheduling=" + isRescheduling + ", nowTimeMillis=" + nowTimeMillis +
+        ReminderShowActivity.logDebug("InterruptService received intent: isRescheduling=" + isRescheduling + ", nowTimeMillis=" + nowTimeMillis +
                 ", meditationPeriod=" + meditationPeriod)
 
         // Create working environment
-        val contextAccessor = ContextAccessor.getInstance(applicationContext)
         val prefs = PrefsAccessor.getInstance(applicationContext)
 
         var pair: Pair<InterruptSettings?, Runnable?>
@@ -68,20 +68,22 @@ class SchedulerService : Service() {
 
         } else {
 
-            MindBell.logDebug("Bell is neither meditating nor active -- not reminding, not rescheduling.")
+            ReminderShowActivity.logDebug("Bell is neither meditating nor active -- not reminding, not rescheduling.")
             pair = Pair(null, null)
 
         }
 
-        startForeground(ContextAccessor.REMINDER_NOTIFICATION_ID, contextAccessor.createReminderNotification(pair.first))
+        val notifier = Notifier.getInstance(applicationContext)
+        startForeground(INTERRUPT_NOTIFICATION_ID, notifier.createInterruptNotification(pair.first))
 
         // Update notification just in case state has changed or MindBell missed a muting
-        contextAccessor.updateStatusNotification()
+        notifier.updateStatusNotification()
 
         if (pair.first == null) {
             stopSelf()
         } else {
-            contextAccessor.startInterruptActions(pair.first!!, pair.second, this)
+            val actionsExecutor = ActionsExecutor.getInstance(applicationContext)
+            actionsExecutor.startInterruptActions(pair.first!!, pair.second, this)
         }
 
         return START_STICKY
@@ -120,11 +122,12 @@ class SchedulerService : Service() {
 
             val meditationStopper: Runnable?
             if (prefs.isStopMeditationAutomatically) {
-                meditationStopper = Runnable { contextAccessor.stopMeditation() }
-                MindBell.logDebug("Meditation is over -- not rescheduling -- automatically stopping meditation mode.")
+                val actionsExecutor = ActionsExecutor.getInstance(applicationContext)
+                meditationStopper = Runnable { actionsExecutor.stopMeditation() }
+                ReminderShowActivity.logDebug("Meditation is over -- not rescheduling -- automatically stopping meditation mode.")
             } else {
                 meditationStopper = null
-                MindBell.logDebug("Meditation is over -- not rescheduling -- meditation mode remains to be active.")
+                ReminderShowActivity.logDebug("Meditation is over -- not rescheduling -- meditation mode remains to be active.")
             }
             return Pair(prefs.forMeditationEnding(), meditationStopper)
 
@@ -138,6 +141,7 @@ class SchedulerService : Service() {
             Pair<InterruptSettings?, Runnable?> {
 
         val contextAccessor = ContextAccessor.getInstance(this)
+        val statusDetector = StatusDetector.getInstance(this)
         val prefs = PrefsAccessor.getInstance(this)
 
         val nextTargetTimeMillis = SchedulerLogic.getNextTargetTimeMillis(nowTimeMillis, prefs)
@@ -145,22 +149,22 @@ class SchedulerService : Service() {
 
         if (!isRescheduling) {
 
-            MindBell.logDebug("Not reminding (show/sound/vibrate), has been called by activate bell button or preferences or when boot " + "completed or after updating")
+            ReminderShowActivity.logDebug("Not reminding (show/sound/vibrate), has been called by activate bell button or preferences or when boot " + "completed or after updating")
             return Pair(null, null)
 
         } else if (!TimeOfDay().isDaytime(prefs)) {
 
-            MindBell.logDebug("Not reminding (show/sound/vibrate), it is night time")
+            ReminderShowActivity.logDebug("Not reminding (show/sound/vibrate), it is night time")
             return Pair(null, null)
 
-        } else if (contextAccessor.isMuteRequested(true)) {
+        } else if (statusDetector.isMuteRequested(true)) {
 
-            MindBell.logDebug("Not reminding (show/sound/vibrate), bell is muted")
+            ReminderShowActivity.logDebug("Not reminding (show/sound/vibrate), bell is muted")
             return Pair(null, null)
 
         } else {
 
-            MindBell.logDebug("Start reminder actions (show/sound/vibrate")
+            ReminderShowActivity.logDebug("Start reminder actions (show/sound/vibrate")
             return Pair(prefs.forRegularOperation(), null)
         }
     }

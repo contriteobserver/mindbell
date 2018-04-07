@@ -136,7 +136,7 @@ class CountdownView : View {
             }
         }, 0, ONE_SECOND) // draw at once and then every second
 
-        MindBell.logDebug("Countdown timers started")
+        ReminderShowActivity.logDebug("Countdown timers started")
     }
 
     public override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -271,7 +271,7 @@ class CountdownView : View {
             displayUpdateTimer!!.cancel()
             displayUpdateTimer = null
         }
-        MindBell.logDebug("Countdown timers stopped")
+        ReminderShowActivity.logDebug("Countdown timers stopped")
     }
 
     /**

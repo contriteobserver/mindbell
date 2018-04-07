@@ -22,18 +22,17 @@ package com.googlecode.mindbell
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.googlecode.mindbell.accessors.ContextAccessor
 
 /**
  * Update status notification on changes in system settings to display an active icon or active but muted icon or no icon at all.
  */
-class UpdateStatusNotification : BroadcastReceiver() { // TODO RefreshBroadcastReceiver
+class RefreshReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        MindBell.logDebug("Update status notification intent received " + intent.action!!)
-        val contextAccessor = ContextAccessor.getInstance(context)
-        contextAccessor.updateStatusNotification()
-        contextAccessor.scheduleUpdateStatusNotificationDayNight()
+        ReminderShowActivity.logDebug("Refresh intent received " + intent.action!!)
+        val notifier = Notifier.getInstance(context)
+        notifier.updateStatusNotification()
+        notifier.scheduleRefreshDayNight()
     }
 
 }

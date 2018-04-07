@@ -2,8 +2,7 @@
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
- *     Copyright (C) 2010-2014 Marc Schroeder
- *     Copyright (C) 2014-2017 Uwe Damken
+ *     Copyright (C) 2014-2016 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,25 +16,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.googlecode.mindbell.accessors
+package com.googlecode.mindbell
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
+import com.googlecode.mindbell.accessors.ContextAccessor
+import com.googlecode.mindbell.accessors.PrefsAccessor
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class ContextAccessorTest {
+class ActionsExecutorTest {
 
-    private lateinit var ca: ContextAccessor
+    private lateinit var actionsExecutor: ActionsExecutor
 
     private lateinit var prefs: PrefsAccessor
 
     @Before
     fun setUp() {
-        ca = ContextAccessor.getInstance(InstrumentationRegistry.getTargetContext())
+        actionsExecutor = ActionsExecutor.getInstance(InstrumentationRegistry.getTargetContext())
         prefs = PrefsAccessor.getInstance(InstrumentationRegistry.getTargetContext())
     }
 
@@ -44,12 +45,12 @@ class ContextAccessorTest {
         // setup
         prefs.resetOriginalVolume()
         // exercise
-        ca.startInterruptActions(prefs.forRegularOperation(), null)
+        actionsExecutor.startInterruptActions(prefs.forRegularOperation(), null)
         // verify ... be sure to have sound checked as an activity on your emulated device
         // verify ... be sure to have pause audio unchecked on your emulated device
         // verify ... be sure to have audio stream set to alarm on your emulated device
         // verify ... be sure to have use audio stream volume disable on your emulated device
-        Assert.assertEquals(ca.alarmMaxVolume, ca.alarmVolume)
+        Assert.assertEquals(actionsExecutor.alarmMaxVolume, actionsExecutor.alarmVolume)
     }
 
     private fun createContextAccessor(): ContextAccessor {
@@ -60,35 +61,35 @@ class ContextAccessorTest {
     fun testFinish() {
         // setup
         prefs.resetOriginalVolume()
-        ca.alarmVolume = ca.alarmMaxVolume / 2
-        val alarmVolume = ca.alarmVolume
+        actionsExecutor.alarmVolume = actionsExecutor.alarmMaxVolume / 2
+        val alarmVolume = actionsExecutor.alarmVolume
         // exercise
-        ca.startInterruptActions(prefs.forRegularOperation(), null)
-        ca.finishBellSound()
+        actionsExecutor.startInterruptActions(prefs.forRegularOperation(), null)
+        actionsExecutor.finishBellSound()
         // verify
-        Assert.assertFalse(ca.isBellSoundPlaying)
-        Assert.assertEquals(alarmVolume, ca.alarmVolume)
+        Assert.assertFalse(actionsExecutor.isBellSoundPlaying)
+        Assert.assertEquals(alarmVolume, actionsExecutor.alarmVolume)
     }
 
     @Test
     fun testOriginalVolume() {
         // setup
         prefs.resetOriginalVolume()
-        val originalVolume = ca.alarmVolume
+        val originalVolume = actionsExecutor.alarmVolume
         // exercise
-        ca.startInterruptActions(prefs.forRegularOperation(), null)
-        ca.finishBellSound()
+        actionsExecutor.startInterruptActions(prefs.forRegularOperation(), null)
+        actionsExecutor.finishBellSound()
         // verify
-        Assert.assertEquals(originalVolume, ca.alarmVolume)
+        Assert.assertEquals(originalVolume, actionsExecutor.alarmVolume)
     }
 
     @Test
     fun testPlay() {
         // setup
         // exercise
-        ca.startInterruptActions(prefs.forRegularOperation(), null)
+        actionsExecutor.startInterruptActions(prefs.forRegularOperation(), null)
         // verify ... be sure to have sound checked as an activity on your emulated device
-        Assert.assertTrue(ca.isBellSoundPlaying)
+        Assert.assertTrue(actionsExecutor.isBellSoundPlaying)
     }
 
 }

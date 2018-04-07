@@ -23,14 +23,18 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.media.AudioManager
 import android.net.Uri
-import com.googlecode.mindbell.MindBell
+import com.googlecode.mindbell.BuildConfig
 import com.googlecode.mindbell.R
 import com.googlecode.mindbell.R.string.*
+import com.googlecode.mindbell.ReminderShowActivity
 import com.googlecode.mindbell.accessors.PrefsAccessor.Preference.Type.*
 import com.googlecode.mindbell.util.TimeOfDay
 import com.googlecode.mindbell.util.Utils
 import java.util.*
 
+/**
+ * This singleton class gives access to all constants and preferences of MindBell.
+ */
 class PrefsAccessor private constructor(val context: Context) {
 
     private val settings: SharedPreferences = context.getSharedPreferences(context.packageName + "_preferences", Context.MODE_PRIVATE)
@@ -325,9 +329,9 @@ class PrefsAccessor private constructor(val context: Context) {
 
         // Log stacktrace if a setting has been deleted or set to its default
         if (logStackTrace) {
-            MindBell.logWarn("At least one setting has been deleted or reset to its default", Exception())
+            ReminderShowActivity.logWarn("At least one setting has been deleted or reset to its default", Exception())
         } else {
-            MindBell.logDebug("Preferences checked and found to be ok")
+            ReminderShowActivity.logDebug("Preferences checked and found to be ok")
         }
 
         // Report all currently existing settings
@@ -418,7 +422,7 @@ class PrefsAccessor private constructor(val context: Context) {
             sb.append(key).append("=").append(value).append(", ")
         }
         sb.setLength(sb.length - 2) // remove last ", "
-        MindBell.logDebug(sb.toString())
+        ReminderShowActivity.logDebug(sb.toString())
     }
 
     /**
@@ -442,7 +446,7 @@ class PrefsAccessor private constructor(val context: Context) {
         if (oldNumberOfPeriods > 0) {
             val patternOfPeriods = derivePatternOfPeriods(oldNumberOfPeriods)
             settings.edit().remove(keyNumberOfPeriods).apply()
-            MindBell.logWarn("Converted old setting for '" + keyNumberOfPeriods + "' (" + oldNumberOfPeriods + ") to '" +
+            ReminderShowActivity.logWarn("Converted old setting for '" + keyNumberOfPeriods + "' (" + oldNumberOfPeriods + ") to '" +
                     context.getText(keyPatternOfPeriods) + "' (" + patternOfPeriods + ")")
         }
         // Version 3.2.0 replaces frequency milliseconds string by time string
@@ -453,7 +457,7 @@ class PrefsAccessor private constructor(val context: Context) {
                 val milliseconds = java.lang.Long.parseLong(oldFrequency)
                 val frequency = TimeOfDay.fromMillisecondsInterval(milliseconds).persistString
                 setSetting(R.string.keyFrequency, frequency)
-                MindBell.logWarn("Converted old value for '$keyFrequency' from '$oldFrequency' to '$frequency'")
+                ReminderShowActivity.logWarn("Converted old value for '$keyFrequency' from '$oldFrequency' to '$frequency'")
             } catch (e: NumberFormatException) {
                 // invalid preference will be removed by removeInvalidSetting()
             }
@@ -466,7 +470,7 @@ class PrefsAccessor private constructor(val context: Context) {
             if (oldRampUpTime >= 0) {
                 val rampUpTime = TimeOfDay.fromSecondsInterval(oldRampUpTime).persistString
                 setSetting(R.string.keyRampUpTime, rampUpTime)
-                MindBell.logWarn("Converted old value for '$keyRampUpTime' from '$oldRampUpTime' to '$rampUpTime'")
+                ReminderShowActivity.logWarn("Converted old value for '$keyRampUpTime' from '$oldRampUpTime' to '$rampUpTime'")
             }
         } catch (e: ClassCastException) {
             // preference has already been converted
@@ -479,7 +483,7 @@ class PrefsAccessor private constructor(val context: Context) {
             if (oldMeditationDuration >= 0) {
                 val meditationDuration = TimeOfDay.fromSecondsInterval(oldMeditationDuration).persistString
                 setSetting(R.string.keyMeditationDuration, meditationDuration)
-                MindBell.logWarn("Converted old value for '" + keyMeditationDuration + "' from '" + oldMeditationDuration + "' to '" +
+                ReminderShowActivity.logWarn("Converted old value for '" + keyMeditationDuration + "' from '" + oldMeditationDuration + "' to '" +
                         meditationDuration + "'")
             }
         } catch (e: ClassCastException) {
@@ -493,14 +497,14 @@ class PrefsAccessor private constructor(val context: Context) {
                     preferenceMap[keyStatusVisibilityPublic]!!.defaultValue as Boolean)
             setSetting(keyStatusVisibilityPublic, statusVisibilityPublic)
             settings.edit().remove(keyStatusVisiblityPublic).apply()
-            MindBell.logWarn("Converted old setting for '" + keyStatusVisiblityPublic + "' (" + statusVisibilityPublic + ") to '" +
+            ReminderShowActivity.logWarn("Converted old setting for '" + keyStatusVisiblityPublic + "' (" + statusVisibilityPublic + ") to '" +
                     context.getText(keyStatusVisibilityPublic) + "' (" + statusVisibilityPublic + ")")
         }
         // Version 3.2.5 introduced keyUseAudioStreamVolumeSetting (default true) but should be false for users of older versions
         if (!settings.contains(context.getText(keyUseAudioStreamVolumeSetting).toString()) && settings.contains(context.getText(keyActive).toString())) {
             val useAudioStreamVolumeSetting = false
             setSetting(keyUseAudioStreamVolumeSetting, useAudioStreamVolumeSetting)
-            MindBell.logWarn("Created setting for '" + context.getText(keyUseAudioStreamVolumeSetting) + "' with non-default (" +
+            ReminderShowActivity.logWarn("Created setting for '" + context.getText(keyUseAudioStreamVolumeSetting) + "' with non-default (" +
                     useAudioStreamVolumeSetting + ") because an older version was already installed")
         }
         // Version 3.2.6 replaced useStandardBell by reminderBell
@@ -510,7 +514,7 @@ class PrefsAccessor private constructor(val context: Context) {
             val reminderBell = if (useStandardBell) DEFAULT_REMINDER_BELL else BELL_ENTRY_VALUE_INDEX_NO_SOUND.toString()
             setSetting(keyReminderBell, reminderBell)
             settings.edit().remove(keyUseStandardBell).apply()
-            MindBell.logWarn("Converted old setting for '" + keyUseStandardBell + "' (" + useStandardBell + ") to '" +
+            ReminderShowActivity.logWarn("Converted old setting for '" + keyUseStandardBell + "' (" + useStandardBell + ") to '" +
                     context.getText(keyReminderBell) + "' (" + reminderBell + ")")
         }
     }
@@ -533,7 +537,7 @@ class PrefsAccessor private constructor(val context: Context) {
                         val entryValues = Arrays.asList(*entryValuesMap[preference.resid]!!)
                         if (entryValues != null && !entryValues.isEmpty() && !entryValues.contains(stringValue)) {
                             settings.edit().remove(preference.key).apply()
-                            MindBell.logWarn("Removed setting '$preference' since it had wrong value '$stringValue'")
+                            ReminderShowActivity.logWarn("Removed setting '$preference' since it had wrong value '$stringValue'")
                             return true
                         }
                     }
@@ -546,7 +550,7 @@ class PrefsAccessor private constructor(val context: Context) {
                             val entryValues = Arrays.asList(*entryValuesMap[preference.resid]!!)
                             if (!entryValues.contains(aStringInSet)) {
                                 settings.edit().remove(preference.key).apply()
-                                MindBell.logWarn("Removed setting '" + preference + "' since it had (at least one) wrong value '" +
+                                ReminderShowActivity.logWarn("Removed setting '" + preference + "' since it had (at least one) wrong value '" +
                                         aStringInSet + "'")
                                 return true
                             }
@@ -558,7 +562,7 @@ class PrefsAccessor private constructor(val context: Context) {
                     if (timeStringValue != null) {
                         if (!timeStringValue.matches(TIME_STRING_REGEX.toRegex())) {
                             settings.edit().remove(preference.key).apply()
-                            MindBell.logWarn("Removed setting '$preference' since it is not a time string '$timeStringValue'")
+                            ReminderShowActivity.logWarn("Removed setting '$preference' since it is not a time string '$timeStringValue'")
                             return true
                         }
                     }
@@ -567,7 +571,7 @@ class PrefsAccessor private constructor(val context: Context) {
             return false
         } catch (e: ClassCastException) {
             settings.edit().remove(preference.key).apply()
-            MindBell.logWarn("Removed setting '$preference' since it had wrong type: $e")
+            ReminderShowActivity.logWarn("Removed setting '$preference' since it had wrong type: $e")
             return true
         }
 
@@ -582,7 +586,7 @@ class PrefsAccessor private constructor(val context: Context) {
     private fun resetMissingSetting(preference: Preference): Boolean {
         if (!settings.contains(preference.key)) {
             resetSetting(preference)
-            MindBell.logWarn("Reset missing setting for '" + preference.key + "' to '" + preference.defaultValue + "'")
+            ReminderShowActivity.logWarn("Reset missing setting for '" + preference.key + "' to '" + preference.defaultValue + "'")
             return true
         }
         return false
@@ -943,33 +947,52 @@ class PrefsAccessor private constructor(val context: Context) {
         /**
          * Unique string to be added to a Scheduling Intent to see which meditation period the bell is in.
          */
-        const val EXTRA_MEDITATION_PERIOD = "com.googlecode.mindbell.SchedulerService.MeditationPeriod"
+        const val EXTRA_MEDITATION_PERIOD = "com.googlecode.mindbell.InterruptService.MeditationPeriod"
 
         /**
          * Unique string to be added to a Scheduling Intent to see who sent it.
          */
-
-        const val EXTRA_IS_RESCHEDULING = "com.googlecode.mindbell.SchedulerService.IsRescheduling"
+        const val EXTRA_IS_RESCHEDULING = "com.googlecode.mindbell.InterruptService.IsRescheduling"
 
         /**
          * Unique string to be added to a Scheduling Intent to see for which time the bell was scheduled.
          */
-        const val EXTRA_NOW_TIME_MILLIS = "com.googlecode.mindbell.SchedulerService.NowTimeMillis"
+        const val EXTRA_NOW_TIME_MILLIS = "com.googlecode.mindbell.InterruptService.NowTimeMillis"
 
         /**
          * Unique string to be added to a MindBell intent to see if it has to be kept open.
          */
-        const val EXTRA_KEEP = "com.googlecode.mindbell.MindBell.Keep"
+        const val EXTRA_KEEP = "com.googlecode.mindbell.ReminderShowActivity.Keep"
 
         /**
-         * Unique string to be added to an Intent to see if MindBellMain is opened to stop meditation mode.
+         * Unique string to be added to an Intent to see if MainActivity is opened to stop meditation mode.
          */
         const val EXTRA_STOP_MEDITATION = "com.googlecode.mindbell.MindBellMail.StopMeditation"
+
+        /**
+         * IDs for notification channels created by MindBell.
+         */
+        const val STATUS_NOTIFICATION_CHANNEL_ID = "${BuildConfig.APPLICATION_ID}.status"
+        const val INTERRUPT_NOTIFICATION_CHANNEL_ID = "${BuildConfig.APPLICATION_ID}.interrupt"
+
+        /**
+         * IDs for notifications created by MindBell.
+         */
+        const val STATUS_NOTIFICATION_ID = 0x7f030001 // historically, has been R.layout.bell for a long time
+        const val INTERRUPT_NOTIFICATION_ID = STATUS_NOTIFICATION_ID + 1
+
+        /**
+         * Request codes for intents created by MindBell.
+         */
+        const val SCHEDULER_REQUEST_CODE = 0
+        const val UPDATE_STATUS_NOTIFICATION_REQUEST_CODE = 1
+        const val UPDATE_STATUS_NOTIFICATION_MUTED_TILL_REQUEST_CODE = 2
+        const val UPDATE_STATUS_NOTIFICATION_DAY_NIGHT_REQUEST_CODE = 4
 
         /*
          * The one and only instance of this class.
          */
-        var instance: PrefsAccessor? = null
+        private var instance: PrefsAccessor? = null
 
         /*
          * Returns the one and only instance of this class.

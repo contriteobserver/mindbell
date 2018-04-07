@@ -32,7 +32,7 @@
 
     <string name="app_name">MindBell</string>
 
-    <!-- MindBellMain -->
+    <!-- MainActivity -->
     <string name="howToActivate">When the switch at the top is on MindBell reminds us regularly throughout the day of our
         mindfulness practice with display, sound or vibration, encouraging us to pause and become mindful of what we are doing
         and in what state of mind we are in.</string>
@@ -42,12 +42,12 @@
     <string name="howToMeditate">Next to the switch is a button to enable meditation mode during which the bell only rings to
         signal the start and end of meditation (or meditation periods).</string>
 
-    <!-- Menu of MindBellMain -->
+    <!-- Menu of MainActivity -->
     <string name="menuSettings">Settings</string>
     <string name="menuAbout">About MindBell</string>
     <string name="menuHelp">Help</string>
 
-    <!-- MindBellMain Preferences -->
+    <!-- MainActivity Preferences -->
     <string name="prefsMutedTillOff">Off</string>
 
     <!-- Send log by e-mail -->
