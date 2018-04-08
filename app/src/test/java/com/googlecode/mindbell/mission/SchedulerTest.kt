@@ -40,6 +40,7 @@ class SchedulerTest {
             `when`(prefs.activeOnDaysOfWeek).thenReturn(HashSet(Arrays.asList(2, 3, 4, 5, 6)))
             `when`(prefs.isRandomize).thenReturn(true)
             `when`(prefs.normalize).thenReturn(-1)
+            `when`(prefs.isNormalize).thenReturn(false)
             `when`(prefs.interval).thenReturn(60 * ONE_MINUTE_MILLIS)
             return prefs
         }
@@ -52,6 +53,7 @@ class SchedulerTest {
             `when`(prefs.activeOnDaysOfWeek).thenReturn(HashSet(Arrays.asList(2, 3, 4, 5, 6)))
             `when`(prefs.isRandomize).thenReturn(true)
             `when`(prefs.normalize).thenReturn(-1)
+            `when`(prefs.isNormalize).thenReturn(false)
             `when`(prefs.interval).thenReturn(60 * ONE_MINUTE_MILLIS)
             return prefs
         }
@@ -187,6 +189,7 @@ class SchedulerTest {
         val prefs = dayPrefs
         `when`(prefs.isRandomize).thenReturn(false)
         `when`(prefs.normalize).thenReturn(5)
+        `when`(prefs.isNormalize).thenReturn(true)
         `when`(prefs.interval).thenReturn(5 * ONE_MINUTE_MILLIS)
         run {
             // Current time setting in the middle of the evening (18:52)
@@ -212,6 +215,7 @@ class SchedulerTest {
         val prefs = dayPrefs
         `when`(prefs.isRandomize).thenReturn(false)
         `when`(prefs.normalize).thenReturn(5)
+        `when`(prefs.isNormalize).thenReturn(true)
         // Current time setting in the middle of the night (05:00)
         var targetTimeMillis = getTimeMillis(5, 0, Calendar.FRIDAY)
         Assert.assertEquals(getTimeMillis(5, 0, Calendar.FRIDAY), targetTimeMillis)
@@ -238,6 +242,7 @@ class SchedulerTest {
         val prefs = dayPrefs
         `when`(prefs.isRandomize).thenReturn(false)
         `when`(prefs.normalize).thenReturn(5)
+        `when`(prefs.isNormalize).thenReturn(true)
         `when`(prefs.interval).thenReturn(120 * ONE_MINUTE_MILLIS)
         // Current time setting in the middle of the night (05:00)
         var targetTimeMillis = getTimeMillis(5, 0, Calendar.FRIDAY)
@@ -265,6 +270,7 @@ class SchedulerTest {
         val prefs = dayPrefs
         `when`(prefs.isRandomize).thenReturn(false)
         `when`(prefs.normalize).thenReturn(30)
+        `when`(prefs.isNormalize).thenReturn(true)
         `when`(prefs.interval).thenReturn(20 * ONE_MINUTE_MILLIS)
         // Current time setting in the middle of the night (05:00)
         var targetTimeMillis = getTimeMillis(5, 0, Calendar.FRIDAY)
@@ -296,6 +302,7 @@ class SchedulerTest {
         val prefs = dayPrefs
         `when`(prefs.isRandomize).thenReturn(false)
         `when`(prefs.normalize).thenReturn(30)
+        `when`(prefs.isNormalize).thenReturn(true)
         `when`(prefs.interval).thenReturn(180 * ONE_MINUTE_MILLIS)
         // Current time setting in the middle of the night (05:00)
         var targetTimeMillis = getTimeMillis(5, 0, Calendar.FRIDAY)
@@ -323,6 +330,7 @@ class SchedulerTest {
         val prefs = dayPrefs
         `when`(prefs.isRandomize).thenReturn(false)
         `when`(prefs.normalize).thenReturn(15)
+        `when`(prefs.isNormalize).thenReturn(true)
         `when`(prefs.interval).thenReturn(30 * ONE_MINUTE_MILLIS)
         run {
             // Current time setting in the middle of the night (05:00)
@@ -395,6 +403,7 @@ class SchedulerTest {
         val prefs = dayPrefs
         `when`(prefs.isRandomize).thenReturn(false)
         `when`(prefs.normalize).thenReturn(10)
+        `when`(prefs.isNormalize).thenReturn(true)
         `when`(prefs.interval).thenReturn(20 * ONE_MINUTE_MILLIS)
         // Current time setting in the middle of the night (05:00)
         var targetTimeMillis = getTimeMillis(5, 0, Calendar.FRIDAY)
