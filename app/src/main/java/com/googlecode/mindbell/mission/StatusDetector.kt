@@ -37,9 +37,7 @@ import java.util.*
 /**
  * This class detects all statuses of MindBell itself and of the phone that are relevant for MindBell.
  */
-class StatusDetector private constructor(val context: Context) {
-
-    private var prefs = Prefs.getInstance(context)
+class StatusDetector internal constructor(val context: Context, val prefs: Prefs) {
 
     val reasonMutedTill: String
         get() {
@@ -151,7 +149,16 @@ class StatusDetector private constructor(val context: Context) {
          * Returns an instance of this class.
          */
         fun getInstance(context: Context): StatusDetector {
-            return StatusDetector(context.applicationContext)
+            return StatusDetector(context.applicationContext, Prefs.getInstance(context))
+        }
+
+        /**
+         * Returns an instance of this class.
+         *
+         * WARNING: Only to be used for unit tests. Initializing prefs with declaration lets unit test fail.
+         */
+        internal fun getInstance(context: Context, prefs: Prefs): StatusDetector {
+            return StatusDetector(context.applicationContext, prefs)
         }
 
     }

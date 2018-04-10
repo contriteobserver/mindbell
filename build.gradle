@@ -2,7 +2,7 @@
 
 buildscript {
     ext.kotlin_version = '1.2.31'
-    ext.mockito_version = '2.18.0'
+    ext.mockk_version = '1.7.15'
     repositories {
         jcenter()
         maven {
