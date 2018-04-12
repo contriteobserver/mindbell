@@ -38,9 +38,7 @@ import java.io.IOException
 /**
  * This singleton class executes all actions which in fact is everything around interrupt actions.
  */
-class ActionsExecutor private constructor(val context: Context) : AudioManager.OnAudioFocusChangeListener {
-
-    private var prefs = Prefs.getInstance(context)
+class ActionsExecutor private constructor(val context: Context, val prefs: Prefs) : AudioManager.OnAudioFocusChangeListener {
 
     val isBellSoundPlaying: Boolean
         get() = mediaPlayer != null // if we hold a reference we haven't finished bell sound completely
@@ -320,7 +318,20 @@ class ActionsExecutor private constructor(val context: Context) : AudioManager.O
         @Synchronized
         fun getInstance(context: Context): ActionsExecutor {
             if (instance == null) {
-                instance = ActionsExecutor(context.applicationContext)
+                instance = ActionsExecutor(context.applicationContext, Prefs.getInstance(context))
+            }
+            return instance!!
+        }
+
+        /**
+         * Returns the one and only instance of this class.
+         *
+         * WARNING: Only to be used for unit tests. Initializing prefs with declaration lets unit test fail.
+         */
+        @Synchronized
+        internal fun getInstance(context: Context, prefs: Prefs): ActionsExecutor {
+            if (instance == null) {
+                instance = ActionsExecutor(context.applicationContext, prefs)
             }
             return instance!!
         }

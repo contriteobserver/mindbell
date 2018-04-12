@@ -49,9 +49,7 @@ import java.util.*
 /**
  * This class delivers all messages and notifications of MindBell.
  */
-class Notifier private constructor(val context: Context) {
-
-    private var prefs: Prefs = Prefs.getInstance(context)
+class Notifier private constructor(val context: Context, val prefs: Prefs) {
 
     fun showMessage(message: String) {
         Log.d(TAG, message)
@@ -233,7 +231,16 @@ class Notifier private constructor(val context: Context) {
          * Returns an instance of this class.
          */
         fun getInstance(context: Context): Notifier {
-            return Notifier(context.applicationContext)
+            return Notifier(context.applicationContext, Prefs.getInstance(context))
+        }
+
+        /**
+         * Returns an instance of this class.
+         *
+         * WARNING: Only to be used for unit tests. Initializing prefs with declaration lets unit test fail.
+         */
+        internal fun getInstance(context: Context, prefs: Prefs): Notifier {
+            return Notifier(context.applicationContext, prefs)
         }
 
     }
