@@ -16,13 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.googlecode.mindbell
+package com.googlecode.mindbell.mission
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
-import com.googlecode.mindbell.mission.ActionsExecutor
-import com.googlecode.mindbell.mission.Prefs
-import com.googlecode.mindbell.mission.Scheduler
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
