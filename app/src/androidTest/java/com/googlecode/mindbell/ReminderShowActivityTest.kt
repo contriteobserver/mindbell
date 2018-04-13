@@ -19,11 +19,13 @@
  */
 package com.googlecode.mindbell
 
-import android.support.test.InstrumentationRegistry
+import android.support.test.espresso.Espresso.onView
+import android.support.test.espresso.assertion.ViewAssertions.matches
+import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
+import android.support.test.espresso.matcher.ViewMatchers.withId
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import com.googlecode.mindbell.activity.ReminderShowActivity
-import com.googlecode.mindbell.mission.Scheduler
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -32,11 +34,10 @@ import org.junit.runner.RunWith
 class ReminderShowActivityTest {
 
     @get:Rule
-    val activityRule: ActivityTestRule<ReminderShowActivity> = ActivityTestRule(ReminderShowActivity::class.java)
+    val activity = ActivityTestRule<ReminderShowActivity>(ReminderShowActivity::class.java)
 
     @Test
-    fun testPreconditions() {
-        val ca = Scheduler.getInstance(InstrumentationRegistry.getTargetContext())
-        // TODO This is no longer true: Assert.assertTrue(ca.isBellSoundPlaying)
+    fun testBellIsDisplayed() {
+        onView(withId(R.id.bell)).check(matches(isDisplayed()))
     }
 }
