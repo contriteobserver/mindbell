@@ -36,7 +36,7 @@ class ReminderShowActivityTest {
     val activity = ActivityTestRule<ReminderShowActivity>(ReminderShowActivity::class.java)
 
     @Test
-    fun testBellIsDisplayed() {
+    fun testActivityIsDisplayed() {
         onView(withId(R.id.bell)).check(matches(isDisplayed()))
     }
 }

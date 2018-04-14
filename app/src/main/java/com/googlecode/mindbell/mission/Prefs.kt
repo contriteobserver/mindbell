@@ -310,6 +310,14 @@ class Prefs private constructor(val context: Context) {
     }
 
     /**
+     * Resets all settings by removing all shared preferences and setting all preferences to default values.
+     */
+    public fun resetSettings() {
+        settings.edit().clear().apply()
+        checkSettings()
+    }
+
+    /**
      * Checks that any data in the SharedPreferences are of the expected type. Should we find anything that doesn't fit the
      * expectations, we delete it and recreate it with it's default value.
      */

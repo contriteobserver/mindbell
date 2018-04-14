@@ -2,7 +2,7 @@
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
- *     Copyright (C) 2014-2018 Uwe Damken
+ *     Copyright (C) 2014-2016 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ class ActionsExecutorTest {
         prefs.resetOriginalVolume()
         // exercise
         actionsExecutor.startInterruptActions(prefs.forRegularOperation(), null)
-        // verify ... be sure to have sound checked as an activity on your emulated device
+        // verify ... be sure to have sound checked as an activityTestRule on your emulated device
         // verify ... be sure to have pause audio unchecked on your emulated device
         // verify ... be sure to have audio stream set to alarm on your emulated device
         // verify ... be sure to have use audio stream volume disable on your emulated device
@@ -86,7 +86,7 @@ class ActionsExecutorTest {
         // setup
         // exercise
         actionsExecutor.startInterruptActions(prefs.forRegularOperation(), null)
-        // verify ... be sure to have sound checked as an activity on your emulated device
+        // verify ... be sure to have sound checked as an activityTestRule on your emulated device
         Assert.assertTrue(actionsExecutor.isBellSoundPlaying)
     }
 
