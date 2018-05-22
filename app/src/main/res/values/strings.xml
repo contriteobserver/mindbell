@@ -320,6 +320,7 @@
     <string name="keySound" translatable="false">sound</string>
     <string name="keyStart" translatable="false">start</string>
     <string name="keyStartMeditationDirectly" translatable="false">startMeditationDirectly</string>
+    <string name="keyStatistics" translatable="false">statistics</string>
     <string name="keyStatus" translatable="false">status</string>
     <string name="keyStatusIconMaterialDesign" translatable="false">statusIconMaterialDesign</string>
     <string name="keyStatusVisibilityPublic" translatable="false">statusVisibilityPublic</string>
