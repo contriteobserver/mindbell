@@ -81,7 +81,8 @@ class Notifier private constructor(val context: Context, val prefs: Prefs) {
                 .setAutoCancel(true) // cancel notification on touch
                 .setColor(context.resources.getColor(R.color.backgroundColor)) //
                 .setContentTitle(prefs.notificationTitle) //
-                .setContentText(prefs.notificationText).setSmallIcon(R.drawable.ic_stat_bell_ring) //
+                .setContentText(prefs.notificationText) //
+                .setSmallIcon(R.drawable.ic_stat_bell_ring) //
                 .setSound(null) // no notification sound for API level < 26
                 .setVisibility(visibility)
         if (interruptSettings != null && interruptSettings.isVibrate) {

@@ -16,28 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.googlecode.mindbell.mission
 
-import android.net.Uri
+package com.googlecode.mindbell.mission.model
 
-/**
- * All settings that influence interrupt (actions) either for reminder or for meditation. It is used to enable using different
- * tones for different periods of meditation and for regular activity.
- */
-interface InterruptSettings {
+enum class NoActionsReason {
 
-    val isShow: Boolean
-
-    val isSound: Boolean
-
-    val isVibrate: Boolean
-
-    val volume: Float
-
-    val isNotification: Boolean
-
-    val isDismissNotification: Boolean
-
-    val soundUri: Uri?
+    INACTIVE, // Bell is neither meditating nor active -- not reminding, not rescheduling
+    MEDITATION_RAMP_UP, // Bell is in ramp-up phase of meditation
+    BUTTON_OR_PREFS_OR_REBOOT, // Bell called by activate bell button or preferences or when boot completed or after updating
+    NIGHT_TIME, // Bell called during night time
+    MUTED, // Bell called but is muted
+    NONE // Only used to allow default constructor for StatisticsEntry object
 
 }

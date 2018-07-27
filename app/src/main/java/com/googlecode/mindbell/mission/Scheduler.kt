@@ -29,6 +29,7 @@ import com.googlecode.mindbell.mission.Prefs.Companion.EXTRA_MEDITATION_PERIOD
 import com.googlecode.mindbell.mission.Prefs.Companion.EXTRA_NOW_TIME_MILLIS
 import com.googlecode.mindbell.mission.Prefs.Companion.SCHEDULER_REQUEST_CODE
 import com.googlecode.mindbell.mission.Prefs.Companion.TAG
+import com.googlecode.mindbell.mission.model.Statistics
 import com.googlecode.mindbell.service.InterruptService
 import com.googlecode.mindbell.util.AlarmManagerCompat
 import com.googlecode.mindbell.util.TimeOfDay
@@ -50,21 +51,21 @@ class Scheduler private constructor(val context: Context) {
         if (renewDayNightAlarm) {
             notifier.scheduleRefreshDayNight()
         }
-        val intent = createSchedulerServiceIntent(false, null, null)
+        val intent = createInterruptServiceIntent(false, null, null)
         ContextCompat.startForegroundService(context, intent)
     }
 
     /**
-     * Create a pending intent to be send to InterruptService to update notification and to (re-)schedule the bell.
+     * Create a pending intent to be sent to InterruptService to update notification and to (re-)schedule the bell.
      */
-    private fun createSchedulerServicePendingIntent(isRescheduling: Boolean, nowTimeMillis: Long?, meditationPeriod: Int?):
+    private fun createInterruptServicePendingIntent(nowTimeMillis: Long?, meditationPeriod: Int?):
             PendingIntent {
-        val intent = createSchedulerServiceIntent(isRescheduling, nowTimeMillis, meditationPeriod)
+        val intent = createInterruptServiceIntent(true, nowTimeMillis, meditationPeriod)
         return PendingIntent.getService(context, SCHEDULER_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     /**
-     * Create an intent to be send to InterruptService to update notification and to (re-)schedule the bell.
+     * Create an intent to be sent to InterruptService to update notification and to (re-)schedule the bell.
      *
      * @param isRescheduling
      * True if the intents is meant for rescheduling instead of updating bell schedule.
@@ -74,7 +75,7 @@ class Scheduler private constructor(val context: Context) {
      * @param meditationPeriod
      * Zero: ramp-up, 1-(n-1): intermediate period, n: last period, n+1: beyond end
      */
-    private fun createSchedulerServiceIntent(isRescheduling: Boolean, nowTimeMillis: Long?, meditationPeriod: Int?): Intent {
+    private fun createInterruptServiceIntent(isRescheduling: Boolean, nowTimeMillis: Long?, meditationPeriod: Int?): Intent {
         Log.d(TAG, "Creating scheduler intent: isRescheduling=$isRescheduling, nowTimeMillis=$nowTimeMillis, meditationPeriod=$meditationPeriod")
         val intent = Intent(context, InterruptService::class.java)
         if (isRescheduling) {
@@ -100,7 +101,7 @@ class Scheduler private constructor(val context: Context) {
      */
     fun updateBellScheduleForMeditation(nextTargetTimeMillis: Long?, meditationPeriod: Int?) {
         Log.d(TAG, "Update bell schedule for meditation requested, nextTargetTimeMillis=$nextTargetTimeMillis")
-        val intent = createSchedulerServiceIntent(false, nextTargetTimeMillis, meditationPeriod)
+        val intent = createInterruptServiceIntent(false, nextTargetTimeMillis, meditationPeriod)
         ContextCompat.startForegroundService(context, intent)
     }
 
@@ -113,11 +114,13 @@ class Scheduler private constructor(val context: Context) {
      * null if not meditating, otherwise 0: ramp-up, 1-(n-1): intermediate period, n: last period, n+1: beyond end
      */
     fun reschedule(nextTargetTimeMillis: Long, nextMeditationPeriod: Int?) {
-        val pendingIntent = createSchedulerServicePendingIntent(true, nextTargetTimeMillis, nextMeditationPeriod)
+        val pendingIntent = createInterruptServicePendingIntent(nextTargetTimeMillis, nextMeditationPeriod)
         val alarmManager = AlarmManagerCompat.getInstance(context)
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextTargetTimeMillis, pendingIntent)
         val nextBellTime = TimeOfDay(nextTargetTimeMillis)
         Log.d(TAG, "Scheduled next bell alarm for ${nextBellTime.logString}")
+        val prefs = Prefs.getInstance(context)
+        prefs.addStatisticsEntry(Statistics.ReschedulingStatisticsEntry(nextTargetTimeMillis, nextMeditationPeriod))
     }
 
     companion object {

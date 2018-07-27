@@ -61,7 +61,7 @@ class SchedulerTest {
         }
 
     @Test
-    fun testRescheduleNotRandomized() {
+    fun testRescheduleNotRandomized1() {
         val prefs = dayPrefs
         every { prefs.isRandomize } returns false
         // Current time setting in the middle of the night (05:00)
@@ -80,6 +80,34 @@ class SchedulerTest {
         targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
         println("${TimeOfDay(nowTimeMillis)} -> ${TimeOfDay(targetTimeMillis)}")
         Assert.assertEquals(getTimeMillis(11, 0, Calendar.FRIDAY), targetTimeMillis)
+    }
+
+    @Test
+    fun testRescheduleNotRandomized2() {
+        val prefs = dayPrefs
+        every { prefs.daytimeStart } returns TimeOfDay(11, 11)
+        every { prefs.daytimeEnd } returns TimeOfDay(11, 30)
+        every { prefs.isRandomize } returns false
+        // Current time setting short before the alarm should go off
+        var nowTimeMillis = getTimeMillis(10, 0, Calendar.FRIDAY)
+        var targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
+        // First reschedule from nighttime (05:00, before 09:00) to beginning of daytime (09:00)
+        println("${TimeOfDay(nowTimeMillis)} -> ${TimeOfDay(targetTimeMillis)}")
+        Assert.assertEquals(getTimeMillis(11, 11, Calendar.FRIDAY), targetTimeMillis)
+    }
+
+    @Test
+    fun testRescheduleNotRandomized3() {
+        val prefs = dayPrefs
+        every { prefs.daytimeStart } returns TimeOfDay(11, 11)
+        every { prefs.daytimeEnd } returns TimeOfDay(11, 30)
+        every { prefs.isRandomize } returns false
+        // Current time setting *very* short before the alarm should go off
+        var nowTimeMillis = getTimeMillis(11, 0, Calendar.FRIDAY)
+        var targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
+        // First reschedule from nighttime (05:00, before 09:00) to beginning of daytime (09:00)
+        println("${TimeOfDay(nowTimeMillis)} -> ${TimeOfDay(targetTimeMillis)}")
+        Assert.assertEquals(getTimeMillis(11, 11, Calendar.FRIDAY), targetTimeMillis)
     }
 
     private fun getTimeMillis(hour: Int, minute: Int, weekday: Int): Long {

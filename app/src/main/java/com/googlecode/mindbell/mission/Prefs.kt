@@ -24,10 +24,16 @@ import android.content.SharedPreferences
 import android.media.AudioManager
 import android.net.Uri
 import android.util.Log
+import com.fasterxml.jackson.annotation.JsonAutoDetect
+import com.fasterxml.jackson.annotation.PropertyAccessor
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.googlecode.mindbell.BuildConfig
 import com.googlecode.mindbell.R
 import com.googlecode.mindbell.R.string.*
 import com.googlecode.mindbell.mission.Prefs.Preference.Type.*
+import com.googlecode.mindbell.mission.model.Statistics
+import com.googlecode.mindbell.mission.model.Statistics.StatisticsEntry
 import com.googlecode.mindbell.util.TimeOfDay
 import com.googlecode.mindbell.util.Utils
 import java.util.*
@@ -37,7 +43,8 @@ import java.util.*
  */
 class Prefs private constructor(val context: Context) {
 
-    private val settings: SharedPreferences = context.getSharedPreferences(context.packageName + "_preferences", Context.MODE_PRIVATE)
+    private val settings: SharedPreferences = context
+            .getSharedPreferences(context.packageName + "_preferences", Context.MODE_PRIVATE)
 
     private val weekdayEntryValues = context.resources.getStringArray(R.array.weekdayEntryValues)
 
@@ -254,7 +261,16 @@ class Prefs private constructor(val context: Context) {
         get() = getIntSetting(keyPopup)
         set(popup) = setSetting(keyPopup, popup)
 
+    private var statistics: Statistics
+        get() = parseStatistics(getStringSetting(keyStatistics)) ?: Statistics()
+        set(value) = setSetting(keyStatistics, dumpStatistics(value))
+
+    private val xmlMapper = ObjectMapper()
+
     init {
+
+        xmlMapper.enableDefaultTyping()
+        xmlMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY); // dump private fields, too
 
         // Define all preference keys and their default values
         fillPreferenceMap()
@@ -300,7 +316,7 @@ class Prefs private constructor(val context: Context) {
             FLOAT -> settings.getFloat(preference.key, preference.defaultValue as Float)
             INTEGER -> settings.getInt(preference.key, preference.defaultValue as Int)
             LONG -> settings.getLong(preference.key, preference.defaultValue as Long)
-            STRING, TIME_STRING -> settings.getString(preference.key, preference.defaultValue as String)
+            STRING, STATISTICS_STRING, TIME_STRING -> settings.getString(preference.key, preference.defaultValue as String)
             STRING_SET -> settings.getStringSet(preference.key, preference.defaultValue as Set<String>)
         }
     }
@@ -312,7 +328,7 @@ class Prefs private constructor(val context: Context) {
     /**
      * Resets all settings by removing all shared preferences and setting all preferences to default values.
      */
-    public fun resetSettings() {
+    fun resetSettings() {
         settings.edit().clear().apply()
         checkSettings()
     }
@@ -408,6 +424,7 @@ class Prefs private constructor(val context: Context) {
         addPreference(keySound, true, BOOLEAN)
         addPreference(keyStart, "09:00", TIME_STRING)
         addPreference(keyStartMeditationDirectly, false, BOOLEAN)
+        addPreference(keyStatistics, dumpStatistics(Statistics()), STATISTICS_STRING)
         addPreference(keyStatus, false, BOOLEAN)
         addPreference(keyStatusIconMaterialDesign, true, BOOLEAN)
         addPreference(keyStatusVisibilityPublic, true, BOOLEAN)
@@ -424,12 +441,25 @@ class Prefs private constructor(val context: Context) {
      */
     fun logSettings() {
         val sb = StringBuilder()
-        sb.append("Effective settings: ")
+        sb.append("Effective settings:")
         val orderedSettings = TreeMap<String, Any>(settings.all)
         for ((key, value) in orderedSettings) {
-            sb.append(key).append("=").append(value).append(", ")
+            if (key != preferenceMap[keyStatistics]!!.key) {  // skip statistics in favor of logStatistics()
+                sb.append("\n  ").append(key).append("=").append(value)
+            }
         }
-        sb.setLength(sb.length - 2) // remove last ", "
+        Log.d(TAG, sb.toString())
+    }
+
+    /**
+     * Write all currently existing statistics to the log.
+     */
+    fun logStatistics() {
+        val sb = StringBuilder()
+        sb.append("Statistics:")
+        for (entry in statistics.entryList) {
+            sb.append("\n  ").append(entry.toString())
+        }
         Log.d(TAG, sb.toString())
     }
 
@@ -454,7 +484,8 @@ class Prefs private constructor(val context: Context) {
         if (oldNumberOfPeriods > 0) {
             val patternOfPeriods = derivePatternOfPeriods(oldNumberOfPeriods)
             settings.edit().remove(keyNumberOfPeriods).apply()
-            Log.w(TAG, "Converted old setting for '$keyNumberOfPeriods' ($oldNumberOfPeriods) to '${context.getText(keyPatternOfPeriods)}' ($patternOfPeriods)")
+            Log
+                    .w(TAG, "Converted old setting for '$keyNumberOfPeriods' ($oldNumberOfPeriods) to '${context.getText(keyPatternOfPeriods)}' ($patternOfPeriods)")
         }
         // Version 3.2.0 replaces frequency milliseconds string by time string
         val keyFrequency = context.getString(R.string.keyFrequency)
@@ -490,7 +521,8 @@ class Prefs private constructor(val context: Context) {
             if (oldMeditationDuration >= 0) {
                 val meditationDuration = TimeOfDay.fromSecondsInterval(oldMeditationDuration).persistString
                 setSetting(R.string.keyMeditationDuration, meditationDuration)
-                Log.w(TAG, "Converted old value for '$keyMeditationDuration' from '$oldMeditationDuration' to '$meditationDuration'")
+                Log
+                        .w(TAG, "Converted old value for '$keyMeditationDuration' from '$oldMeditationDuration' to '$meditationDuration'")
             }
         } catch (e: ClassCastException) {
             // preference has already been converted
@@ -503,13 +535,15 @@ class Prefs private constructor(val context: Context) {
                     preferenceMap[keyStatusVisibilityPublic]!!.defaultValue as Boolean)
             setSetting(keyStatusVisibilityPublic, statusVisibilityPublic)
             settings.edit().remove(keyStatusVisiblityPublic).apply()
-            Log.w(TAG, "Converted old setting for '$keyStatusVisiblityPublic' ($statusVisibilityPublic) to '${context.getText(keyStatusVisibilityPublic)}' ($statusVisibilityPublic)")
+            Log
+                    .w(TAG, "Converted old setting for '$keyStatusVisiblityPublic' ($statusVisibilityPublic) to '${context.getText(keyStatusVisibilityPublic)}' ($statusVisibilityPublic)")
         }
         // Version 3.2.5 introduced keyUseAudioStreamVolumeSetting (default true) but should be false for users of older versions
         if (!settings.contains(context.getText(keyUseAudioStreamVolumeSetting).toString()) && settings.contains(context.getText(keyActive).toString())) {
             val useAudioStreamVolumeSetting = false
             setSetting(keyUseAudioStreamVolumeSetting, useAudioStreamVolumeSetting)
-            Log.w(TAG, "Created setting for '${context.getText(keyUseAudioStreamVolumeSetting)}' with non-default ($useAudioStreamVolumeSetting) because an older version was already installed")
+            Log
+                    .w(TAG, "Created setting for '${context.getText(keyUseAudioStreamVolumeSetting)}' with non-default ($useAudioStreamVolumeSetting) because an older version was already installed")
         }
         // Version 3.2.6 replaced useStandardBell by reminderBell
         val keyUseStandardBell = "useStandardBell"
@@ -518,7 +552,8 @@ class Prefs private constructor(val context: Context) {
             val reminderBell = if (useStandardBell) DEFAULT_REMINDER_BELL else BELL_ENTRY_VALUE_INDEX_NO_SOUND.toString()
             setSetting(keyReminderBell, reminderBell)
             settings.edit().remove(keyUseStandardBell).apply()
-            Log.w(TAG, "Converted old setting for '$keyUseStandardBell' ($useStandardBell) to '${context.getText(keyReminderBell)}' ($reminderBell)")
+            Log
+                    .w(TAG, "Converted old setting for '$keyUseStandardBell' ($useStandardBell) to '${context.getText(keyReminderBell)}' ($reminderBell)")
         }
     }
 
@@ -556,6 +591,17 @@ class Prefs private constructor(val context: Context) {
                                 Log.w(TAG, "Removed setting '$preference' since it had (at least one) wrong value '$aStringInSet'")
                                 return true
                             }
+                        }
+                    }
+                }
+                STATISTICS_STRING -> {
+                    val statisticsStringValue = value as String?
+                    if (statisticsStringValue != null) {
+                        if (parseStatistics(statisticsStringValue) == null) {
+                            settings.edit().remove(preference.key).apply()
+                            Log.w(TAG, "Removed setting '$preference' since it is not a statistics string " +
+                                    "'$statisticsStringValue'")
+                            return true
                         }
                     }
                 }
@@ -627,7 +673,7 @@ class Prefs private constructor(val context: Context) {
             FLOAT -> settings.edit().putFloat(preference.key, value as Float).apply()
             INTEGER -> settings.edit().putInt(preference.key, value as Int).apply()
             LONG -> settings.edit().putLong(preference.key, value as Long).apply()
-            STRING, TIME_STRING -> settings.edit().putString(preference.key, value as String).apply()
+            STRING, STATISTICS_STRING, TIME_STRING -> settings.edit().putString(preference.key, value as String).apply()
             STRING_SET -> settings.edit().putStringSet(preference.key, value as Set<String>).apply()
         }
     }
@@ -758,6 +804,32 @@ class Prefs private constructor(val context: Context) {
         resetSetting(keyPopup)
     }
 
+    fun resetStatistics() {
+        resetSetting(keyStatistics)
+    }
+
+    fun addStatisticsEntry(newEntry: StatisticsEntry) {
+        val newStatistics = statistics
+        while (newStatistics.entryList.size >= MAX_STATISTICS_ENTRY_COUNT) {
+            newStatistics.entryList.removeAt(0)
+        }
+        newStatistics.entryList.add(newEntry)
+        statistics = newStatistics
+    }
+
+    private fun parseStatistics(statisticsString: String): Statistics? {
+        try {
+            return xmlMapper.readValue<Statistics>(statisticsString, Statistics::class.java)
+        } catch (e: JsonProcessingException) {
+            Log.d(TAG, "Parsing $statisticsString failed", e)
+            return null
+        }
+    }
+
+    private fun dumpStatistics(newStatistics: Statistics): String {
+        return xmlMapper.writeValueAsString(newStatistics)
+    }
+
     fun forRegularOperation(): InterruptSettings {
         return interruptSettingsForRegularOperation
     }
@@ -781,7 +853,7 @@ class Prefs private constructor(val context: Context) {
     internal class Preference(val resid: Int, val key: String, val defaultValue: Any, val type: Type) {
 
         internal enum class Type {
-            BOOLEAN, FLOAT, INTEGER, LONG, STRING, STRING_SET, TIME_STRING
+            BOOLEAN, FLOAT, INTEGER, LONG, STRING, STRING_SET, STATISTICS_STRING, TIME_STRING
         }
 
     }
@@ -806,9 +878,8 @@ class Prefs private constructor(val context: Context) {
         override val isDismissNotification: Boolean
             get() = this@Prefs.isDismissNotification
 
-        override fun getSoundUri(): Uri? {
-            return this@Prefs.getReminderSoundUri()
-        }
+        override val soundUri: Uri?
+            get() = this@Prefs.getReminderSoundUri()
 
     }
 
@@ -832,9 +903,8 @@ class Prefs private constructor(val context: Context) {
         override val isDismissNotification: Boolean
             get() = false
 
-        override fun getSoundUri(): Uri? {
-            return this@Prefs.getReminderSoundUri()
-        }
+        override val soundUri: Uri?
+            get() = this@Prefs.getReminderSoundUri()
 
     }
 
@@ -858,31 +928,26 @@ class Prefs private constructor(val context: Context) {
         override val isDismissNotification: Boolean
             get() = false
 
-        abstract override fun getSoundUri(): Uri?
-
     }
 
     private inner class InterruptSettingsForMeditationBeginning : InterruptSettingsForMeditation() {
 
-        override fun getSoundUri(): Uri? {
-            return if (isStartMeditationDirectly) null else this@Prefs.getBellSoundUri(meditationBeginningBell)
-        }
+        override val soundUri: Uri?
+            get() = if (isStartMeditationDirectly) null else this@Prefs.getBellSoundUri(meditationBeginningBell)
 
     }
 
     private inner class InterruptSettingsForMeditationInterrupting : InterruptSettingsForMeditation() {
 
-        override fun getSoundUri(): Uri? {
-            return this@Prefs.getBellSoundUri(meditationInterruptingBell)
-        }
+        override val soundUri: Uri?
+            get() = this@Prefs.getBellSoundUri(meditationInterruptingBell)
 
     }
 
     private inner class InterruptSettingsForMeditationEnding : InterruptSettingsForMeditation() {
 
-        override fun getSoundUri(): Uri? {
-            return this@Prefs.getBellSoundUri(meditationEndingBell)
-        }
+        override val soundUri: Uri?
+            get() = this@Prefs.getBellSoundUri(meditationEndingBell)
 
     }
 
@@ -891,7 +956,7 @@ class Prefs private constructor(val context: Context) {
         /**
          * Tag to be used for logging.
          */
-        val TAG = "MindBell"
+        const val TAG = "MindBell"
 
         /**
          * One minute in milliseconds.
@@ -998,6 +1063,11 @@ class Prefs private constructor(val context: Context) {
         const val REQUEST_CODE_STATUS = 10
         const val REQUEST_CODE_MUTE_OFF_HOOK = 11
         const val REQUEST_CODE_RINGTONE = 12
+
+        /**
+         * Maximum number of statistics entries to be stored in preferences.
+         */
+        const val MAX_STATISTICS_ENTRY_COUNT = 50
 
         /*
          * The one and only instance of this class.

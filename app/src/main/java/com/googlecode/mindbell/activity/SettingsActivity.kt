@@ -65,6 +65,7 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
      */
     private val infoMailText: String
         get() {
+            val prefs = Prefs.getInstance(this)
             val sb = StringBuilder()
             sb.append("\n\n------------------------------\n")
             sb.append(getText(R.string.mailInfo1))
@@ -528,7 +529,9 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
      * Handles click on confirmation to send info.
      */
     private fun onClickReallySendInfo() {
-        Prefs.getInstance(this).logSettings()
+        val prefs = Prefs.getInstance(this)
+        prefs.logStatistics()
+        prefs.logSettings()
         Log.d(TAG, "Excluded from battery optimization (always false for SDK < 23)? -> ${Utils.isAppWhitelisted(this)}")
         val i = Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getText(R.string.emailAddress).toString(), null))
         i.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.emailSubject))

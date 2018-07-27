@@ -33,6 +33,7 @@ import com.googlecode.mindbell.activity.ReminderShowActivity
 import com.googlecode.mindbell.mission.Prefs.Companion.EXTRA_KEEP
 import com.googlecode.mindbell.mission.Prefs.Companion.TAG
 import com.googlecode.mindbell.mission.Prefs.Companion.WAITING_TIME
+import com.googlecode.mindbell.mission.model.Statistics.ActionsFinishedStatisticsEntry
 import java.io.IOException
 
 /**
@@ -141,7 +142,7 @@ class ActionsExecutor private constructor(val context: Context, val prefs: Prefs
      * sound has been started, false otherwise.
      */
     private fun startPlayingSound(interruptSettings: InterruptSettings, reminderActionsFinisher: Runnable): Boolean {
-        val bellUri = interruptSettings.getSoundUri()
+        val bellUri = interruptSettings.soundUri
         audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         if (prefs.isNoSoundOnMusic && audioManager!!.isMusicActive) {
             Log.d(TAG, "Sound suppressed because setting is no sound on music and music is playing")
@@ -210,6 +211,7 @@ class ActionsExecutor private constructor(val context: Context, val prefs: Prefs
             hideBell()
         }
         runWhenDone?.run()
+        prefs.addStatisticsEntry(ActionsFinishedStatisticsEntry(interruptSettings))
         callingService?.stopSelf()
     }
 
