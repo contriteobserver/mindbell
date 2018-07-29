@@ -68,7 +68,7 @@ class Scheduler private constructor(val context: Context) {
      * Create an intent to be sent to InterruptService to update notification and to (re-)schedule the bell.
      *
      * @param isRescheduling
-     * True if the intents is meant for rescheduling instead of updating bell schedule.
+     * True if the intent is meant for rescheduling instead of updating bell schedule.
      * @param nowTimeMillis
      * If not null millis to be given to InterruptService as now (or nextTargetTimeMillis from the perspective of the previous
      * call)
@@ -117,8 +117,6 @@ class Scheduler private constructor(val context: Context) {
         val pendingIntent = createInterruptServicePendingIntent(nextTargetTimeMillis, nextMeditationPeriod)
         val alarmManager = AlarmManagerCompat.getInstance(context)
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextTargetTimeMillis, pendingIntent)
-        val nextBellTime = TimeOfDay(nextTargetTimeMillis)
-        Log.d(TAG, "Scheduled next bell alarm for ${nextBellTime.logString}")
         val prefs = Prefs.getInstance(context)
         prefs.addStatisticsEntry(Statistics.ReschedulingStatisticsEntry(nextTargetTimeMillis, nextMeditationPeriod))
     }

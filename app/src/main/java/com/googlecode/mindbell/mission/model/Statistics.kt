@@ -28,6 +28,33 @@ class Statistics {
 
     var entryList: MutableList<StatisticsEntry> = ArrayList()
 
+    /**
+     * Write all currently existing statistics to the log.
+     */
+    override fun toString(): String {
+        val sb = StringBuilder()
+        sb.append("Statistics:")
+        for ((outerIndex, outerEntry) in entryList.withIndex()) {
+            sb.append("\n  ").append(outerEntry.toString())
+            if (outerEntry is ActionsStatisticsEntry) {
+                // search for last rescheduling entry before this non-finishing action entry
+                for (innerIndex in outerIndex downTo 0) {
+                    val innerEntry = entryList.get(innerIndex)
+                    if (innerEntry is ReschedulingStatisticsEntry) {
+                        sb.append(", scheduled at ").append(TimeOfDay(innerEntry.nowTimeMillis).logString)
+                        sb.append(" for ").append(TimeOfDay(innerEntry.nextTargetTimeMillis).logString)
+                        val delayTimeMillis = outerEntry.nowTimeMillis - innerEntry.nextTargetTimeMillis
+                        val delayComment = if (delayTimeMillis < 5000L) "on time" else "delayed"
+                        sb.append(" (+").append(delayTimeMillis).append(" ms, ").append(delayComment).append(")")
+                        break
+                    }
+                }
+            }
+        }
+        return sb.toString()
+    }
+
+
     private class NoInterruptSettings : InterruptSettings {
 
         override val isShow: Boolean
@@ -55,11 +82,11 @@ class Statistics {
 
     abstract class StatisticsEntry {
 
-        private val nowTimeMillis = Calendar.getInstance().timeInMillis
+        val nowTimeMillis = Calendar.getInstance().timeInMillis
 
         override fun toString(): String {
             val now = TimeOfDay(nowTimeMillis).logString
-            return "$now ${type()}: "
+            return "$now ${type()}"
         }
 
         abstract fun type(): String
@@ -78,11 +105,10 @@ class Statistics {
         private val soundUriString = interruptSettings.soundUri?.toString()
 
         override fun toString(): String {
-            val timeAndType = super.toString()
             val show = if (isShow) "show" else "no show"
             val sound = if (isSound) "sound" else "no sound"
             val vibrate = if (isVibrate) "vibrate" else "no vibration"
-            return "$timeAndType$show, $sound, $vibrate, uri='$soundUriString'"
+            return "${super.toString()} with $show, $sound, $vibrate, uri='$soundUriString'"
         }
 
     }
@@ -92,12 +118,11 @@ class Statistics {
             ActionsStatisticsEntry(interruptSettings) {
 
         override fun toString(): String {
-            val timeAndType = super.toString()
-            return "$timeAndType, $numberOfPeriods periods"
+            return "${super.toString()}, $numberOfPeriods periods"
         }
 
         override fun type(): String {
-            return "Meditation Beginning"
+            return "Beginning meditation"
         }
 
     }
@@ -107,12 +132,11 @@ class Statistics {
             ActionsStatisticsEntry(interruptSettings) {
 
         override fun toString(): String {
-            val timeAndType = super.toString()
-            return "$timeAndType, period $meditationPeriod/$numberOfPeriods"
+            return "${super.toString()}, period $meditationPeriod/$numberOfPeriods"
         }
 
         override fun type(): String {
-            return "Meditation Interrupting"
+            return "Interrupting meditation"
         }
 
     }
@@ -122,13 +146,12 @@ class Statistics {
             ActionsStatisticsEntry(interruptSettings) {
 
         override fun toString(): String {
-            val timeAndType = super.toString()
             val stopAutomatically = if (isStopAutomatically) "stop automatically" else "don't stop automatically"
-            return "$timeAndType$stopAutomatically"
+            return "${super.toString()}, $stopAutomatically"
         }
 
         override fun type(): String {
-            return "Meditation Ending"
+            return "Ending meditation"
         }
 
     }
@@ -137,7 +160,7 @@ class Statistics {
             ActionsStatisticsEntry(interruptSettings) {
 
         override fun type(): String {
-            return "Reminder"
+            return "Reminding"
         }
 
     }
@@ -146,13 +169,25 @@ class Statistics {
             ActionsStatisticsEntry(interruptSettings) {
 
         override fun type(): String {
-            return "Ring Once"
+            return "Ringing once"
         }
 
     }
 
-    class ActionsFinishedStatisticsEntry(interruptSettings: InterruptSettings = NO_INTERRUPT_SETTING) :
+    class SuppressedActionsStatisticsEntry(interruptSettings: InterruptSettings = NO_INTERRUPT_SETTING, private val reason: NoActionsReason = NONE) :
             ActionsStatisticsEntry(interruptSettings) {
+
+        override fun toString(): String {
+            return "${super.toString()}, ${reason.name}"
+        }
+
+        override fun type(): String {
+            return "Actions suppressed"
+        }
+
+    }
+
+    class FinishedStatisticsEntry : StatisticsEntry() {
 
         override fun type(): String {
             return "Finished"
@@ -163,24 +198,22 @@ class Statistics {
     class NoActionsStatisticsEntry(private val reason: NoActionsReason = NONE) : StatisticsEntry() {
 
         override fun toString(): String {
-            val timeAndType = super.toString()
-            return "$timeAndType${reason.name}"
+            return "${super.toString()} because of ${reason.name}"
         }
 
         override fun type(): String {
-            return "No Actions"
+            return "No actions"
         }
 
     }
 
-    class ReschedulingStatisticsEntry(private val nextTargetTimeMillis: Long = 0L, private val nextMeditationPeriod: Int? = null) :
+    class ReschedulingStatisticsEntry(val nextTargetTimeMillis: Long = 0L, private val nextMeditationPeriod: Int? = null) :
             StatisticsEntry() {
 
         override fun toString(): String {
-            val timeAndType = super.toString()
             val targetTime = TimeOfDay(nextTargetTimeMillis).logString
             val intention = if (nextMeditationPeriod == null) "reminder" else "meditation period $nextMeditationPeriod"
-            return "${timeAndType}for $intention at $targetTime"
+            return "${super.toString()} for $intention at $targetTime"
         }
 
         override fun type(): String {

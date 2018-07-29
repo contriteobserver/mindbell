@@ -33,7 +33,7 @@ import com.googlecode.mindbell.activity.ReminderShowActivity
 import com.googlecode.mindbell.mission.Prefs.Companion.EXTRA_KEEP
 import com.googlecode.mindbell.mission.Prefs.Companion.TAG
 import com.googlecode.mindbell.mission.Prefs.Companion.WAITING_TIME
-import com.googlecode.mindbell.mission.model.Statistics.ActionsFinishedStatisticsEntry
+import com.googlecode.mindbell.mission.model.Statistics.FinishedStatisticsEntry
 import java.io.IOException
 
 /**
@@ -211,7 +211,7 @@ class ActionsExecutor private constructor(val context: Context, val prefs: Prefs
             hideBell()
         }
         runWhenDone?.run()
-        prefs.addStatisticsEntry(ActionsFinishedStatisticsEntry(interruptSettings))
+        prefs.addStatisticsEntry(FinishedStatisticsEntry())
         callingService?.stopSelf()
     }
 

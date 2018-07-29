@@ -455,12 +455,7 @@ class Prefs private constructor(val context: Context) {
      * Write all currently existing statistics to the log.
      */
     fun logStatistics() {
-        val sb = StringBuilder()
-        sb.append("Statistics:")
-        for (entry in statistics.entryList) {
-            sb.append("\n  ").append(entry.toString())
-        }
-        Log.d(TAG, sb.toString())
+        Log.d(TAG, statistics.toString())
     }
 
     /**
@@ -815,6 +810,7 @@ class Prefs private constructor(val context: Context) {
         }
         newStatistics.entryList.add(newEntry)
         statistics = newStatistics
+        Log.d(TAG, "StatisticsEntry added: $newEntry")
     }
 
     private fun parseStatistics(statisticsString: String): Statistics? {

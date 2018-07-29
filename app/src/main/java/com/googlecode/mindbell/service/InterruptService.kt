@@ -55,35 +55,36 @@ class InterruptService : Service() {
         // Create working environment
         val prefs = Prefs.getInstance(applicationContext)
 
-        val triple: Triple<InterruptSettings?, Runnable?, StatisticsEntry>
-
         // Evaluate next time to remind and reschedule or terminate method if neither active nor meditating
-        triple = when {
+        val handlerResult: HandlerResult = when {
 
-        // Meditating overrides Active therefore check this first
-            prefs.isMeditating -> handleMeditatingBell(nowTimeMillis, meditationPeriod)
+            prefs.isMeditating -> handleMeditatingBell(nowTimeMillis, meditationPeriod) // meditation has higher prio than active
 
             prefs.isActive -> handleActiveBell(nowTimeMillis, isRescheduling)
 
-            else -> {
-                Log.d(TAG, "Bell is neither meditating nor active -- not reminding, not rescheduling.")
-                Triple(null, null, NoActionsStatisticsEntry(INACTIVE))
-            }
+            else -> HandlerResult(null, null, NoActionsStatisticsEntry(INACTIVE), null)
         }
 
+        // Ensure this service may do its work (binding it to a foreground notification let's survive longer executions, too)
         val notifier = Notifier.getInstance(applicationContext)
-        startForeground(INTERRUPT_NOTIFICATION_ID, notifier.createInterruptNotification(triple.first))
+        startForeground(INTERRUPT_NOTIFICATION_ID, notifier.createInterruptNotification(handlerResult.interruptSettings))
+
+        prefs.addStatisticsEntry(handlerResult.statisticsEntry)
+
+        if (handlerResult.reschedule != null) {
+            val scheduler = Scheduler.getInstance(this)
+            scheduler.reschedule(handlerResult.reschedule.nextTargetTimeMillis, handlerResult.reschedule.nextMeditationPeriod)
+        }
 
         // Update notification just in case state has changed or MindBell missed a muting
         notifier.updateStatusNotification()
 
-        prefs.addStatisticsEntry(triple.third)
-
-        if (triple.first == null) {
+        if (handlerResult.interruptSettings == null) {
+            prefs.addStatisticsEntry(FinishedStatisticsEntry())
             stopSelf()
         } else {
             val actionsExecutor = ActionsExecutor.getInstance(applicationContext)
-            actionsExecutor.startInterruptActions(triple.first!!, triple.second, this)
+            actionsExecutor.startInterruptActions(handlerResult.interruptSettings!!, handlerResult.meditationStopper, this)
         }
 
         return START_STICKY
@@ -93,9 +94,8 @@ class InterruptService : Service() {
      * Reschedules next alarm and rings differently depending on the currently started (!) meditation period.
      */
     private fun handleMeditatingBell(nowTimeMillis: Long, meditationPeriod: Int):
-            Triple<InterruptSettings?, Runnable?, StatisticsEntry> {
+            HandlerResult {
 
-        val scheduler = Scheduler.getInstance(this)
         val prefs = Prefs.getInstance(this)
 
         val numberOfPeriods = prefs.numberOfPeriods
@@ -103,24 +103,24 @@ class InterruptService : Service() {
         if (meditationPeriod == 0) { // beginning of ramp-up period?
 
             val nextTargetTimeMillis = nowTimeMillis + prefs.rampUpTimeMillis
-            scheduler.reschedule(nextTargetTimeMillis, meditationPeriod + 1)
-            return Triple(null, null, NoActionsStatisticsEntry(MEDITATION_RAMP_UP))
+            val reschedule = Reschedule(nextTargetTimeMillis, meditationPeriod + 1)
+            return HandlerResult(null, null, NoActionsStatisticsEntry(MEDITATION_RAMP_UP), reschedule)
 
         } else if (meditationPeriod == 1) { // beginning of meditation period 1
 
             val nextTargetTimeMillis = nowTimeMillis + prefs.getMeditationPeriodMillis(meditationPeriod)
-            scheduler.reschedule(nextTargetTimeMillis, meditationPeriod + 1)
+            val reschedule = Reschedule(nextTargetTimeMillis, meditationPeriod + 1)
             val interruptSettings = prefs.forMeditationBeginning()
             val statisticsEntry = MeditationBeginningActionsStatisticsEntry(interruptSettings, numberOfPeriods)
-            return Triple(interruptSettings, null, statisticsEntry)
+            return HandlerResult(interruptSettings, null, statisticsEntry, reschedule)
 
         } else if (meditationPeriod <= numberOfPeriods) { // beginning of meditation period 2..n
 
             val nextTargetTimeMillis = nowTimeMillis + prefs.getMeditationPeriodMillis(meditationPeriod)
-            scheduler.reschedule(nextTargetTimeMillis, meditationPeriod + 1)
+            val reschedule = Reschedule(nextTargetTimeMillis, meditationPeriod + 1)
             val interruptSettings = prefs.forMeditationInterrupting()
             val statisticsEntry = MeditationInterruptingActionsStatisticsEntry(interruptSettings, meditationPeriod, numberOfPeriods)
-            return Triple(interruptSettings, null, statisticsEntry)
+            return HandlerResult(interruptSettings, null, statisticsEntry, reschedule)
 
         } else { // end of last meditation period
 
@@ -128,14 +128,12 @@ class InterruptService : Service() {
             if (prefs.isStopMeditationAutomatically) {
                 val actionsExecutor = ActionsExecutor.getInstance(applicationContext)
                 meditationStopper = Runnable { actionsExecutor.stopMeditation() }
-                Log.d(TAG, "Meditation is over -- not rescheduling -- automatically stopping meditation mode.")
             } else {
                 meditationStopper = null
-                Log.d(TAG, "Meditation is over -- not rescheduling -- meditation mode remains to be active.")
             }
             val interruptSettings = prefs.forMeditationEnding()
             val statisticsEntry = MeditationEndingActionsStatisticsEntry(interruptSettings, meditationStopper != null)
-            return Triple(interruptSettings, meditationStopper, statisticsEntry)
+            return HandlerResult(interruptSettings, meditationStopper, statisticsEntry, null)
 
         }
     }
@@ -144,37 +142,41 @@ class InterruptService : Service() {
      * Reschedules next alarm, shows bell, plays bell sound and vibrates - whatever is requested.
      */
     private fun handleActiveBell(nowTimeMillis: Long, isRescheduling: Boolean):
-            Triple<InterruptSettings?, Runnable?, StatisticsEntry> {
+            HandlerResult {
 
-        val scheduler = Scheduler.getInstance(this)
         val statusDetector = StatusDetector.getInstance(this)
         val prefs = Prefs.getInstance(this)
 
+        val interruptSettings = prefs.forRegularOperation()
         val nextTargetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
-        scheduler.reschedule(nextTargetTimeMillis, null)
+        val reschedule = Reschedule(nextTargetTimeMillis, null)
 
         if (!isRescheduling) {
 
-            Log
-                    .d(TAG, "Not reminding (show/sound/vibrate), has been called by activate bell button or preferences or when boot completed or after updating")
-            return Triple(null, null, NoActionsStatisticsEntry(BUTTON_OR_PREFS_OR_REBOOT))
+            return HandlerResult(null, null, NoActionsStatisticsEntry(BUTTON_OR_PREFS_OR_REBOOT), reschedule)
 
         } else if (!TimeOfDay().isDaytime(prefs)) {
 
-            Log.d(TAG, "Not reminding (show/sound/vibrate), it is night time")
-            return Triple(null, null, NoActionsStatisticsEntry(NIGHT_TIME))
+            return HandlerResult(null, null, SuppressedActionsStatisticsEntry(interruptSettings, NIGHT_TIME), reschedule)
 
         } else if (statusDetector.isMuteRequested(true)) {
 
-            Log.d(TAG, "Not reminding (show/sound/vibrate), bell is muted")
-            return Triple(null, null, NoActionsStatisticsEntry(MUTED)) // TODO Add more precise reason
+            // TODO Add more precise reason
+            return HandlerResult(null, null, SuppressedActionsStatisticsEntry(interruptSettings, MUTED), reschedule)
 
         } else {
 
-            Log.d(TAG, "Start reminder actions (show/sound/vibrate")
-            val interruptSettings = prefs.forRegularOperation()
-            return Triple(interruptSettings, null, ReminderActionsStatisticsEntry(interruptSettings))
+            return HandlerResult(interruptSettings, null, ReminderActionsStatisticsEntry(interruptSettings), reschedule)
         }
+    }
+
+    class HandlerResult(val interruptSettings: InterruptSettings?, val meditationStopper: Runnable?, val statisticsEntry:
+    StatisticsEntry, val reschedule: Reschedule?) {
+
+    }
+
+    class Reschedule(val nextTargetTimeMillis: Long, val nextMeditationPeriod: Int?) {
+
     }
 
 }
