@@ -64,7 +64,6 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
      */
     private val infoMailText: String
         get() {
-            val prefs = Prefs.getInstance(this)
             val sb = StringBuilder()
             sb.append("\n\n------------------------------\n")
             sb.append(getText(R.string.mailInfo1))
@@ -116,6 +115,7 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
         val preferenceUseWorkaroundBell = preferenceScreen.findPreference(getText(R.string.keyUseWorkaroundBell)) as CheckBoxPreference
         val preferenceFAQ = preferenceScreen.findPreference(getText(R.string.keyFAQ)) as Preference
         val preferenceBatterySettings = preferenceScreen.findPreference(getText(R.string.keyBatterySettings)) as Preference
+        val InternalStatistics = preferenceScreen.findPreference(getText(R.string.keyInternalStatistics)) as Preference
         val preferenceSendMail = preferenceScreen.findPreference(getText(R.string.keySendMail)) as Preference
 
         preferenceUseAudioStreamVolumeSetting.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
@@ -278,6 +278,11 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
             } else {
                 false
             }
+        }
+
+        InternalStatistics.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+            startActivity(Intent(this, InternalStatisticsActivity::class.java))
+            true
         }
 
         preferenceSendMail.onPreferenceClickListener = Preference.OnPreferenceClickListener {

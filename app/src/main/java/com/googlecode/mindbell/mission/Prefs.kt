@@ -46,7 +46,7 @@ class Prefs private constructor(val context: Context) {
     private val settings: SharedPreferences = context
             .getSharedPreferences(context.packageName + "_preferences", Context.MODE_PRIVATE)
 
-    private lateinit var sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener
+    private var sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener
 
     private val weekdayEntryValues = context.resources.getStringArray(R.array.weekdayEntryValues)
 
@@ -295,6 +295,13 @@ class Prefs private constructor(val context: Context) {
         }
         settings.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
 
+    }
+
+    /**
+     * Return statics as String
+     */
+    fun getStatisticsString(): String {
+        return statistics.toString()
     }
 
     /**

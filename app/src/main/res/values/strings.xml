@@ -185,6 +185,8 @@
         increase sound volume - only affects bell sounds, not system sounds. If extra silence is needed by your phone, it
         should already be in the sound file.</string>
     <string name="summaryDontUseWorkaroundBell">Use bell sound as it is</string>
+    <string name="prefsInternalStatistics">Internal Statistics</string>
+    <string name="summaryInternalStatistics">Show times of occurred or scheduled reminders and meditation bells.</string>
     <string name="prefsSendMail">&constSendMail;</string>
     <string name="summarySendMail">For suggestions or questions not answered in the \'&constFAQ;\' you can send an e-mail with
         log information. Please don\'t forget to add your question or a description of the problem.</string>
@@ -211,7 +213,7 @@
     <string name="frequencyDoesNotFitIntoAnHour">Reminder to the minute not possible with chosen interval</string>
     <string name="ringtoneNotAccessible">Chosen sound cannot be accessed (missing permissions?)</string>
     <string name="reminderSoundLength">The duration of the chosen sound is %s s. %s</string>
-    <string name="ringtoneDurationTooLong">Duration of chosen sound (%s s) longer than 1/4 of the interval (%d s)</string>
+    <string name="ringtoneDurationTooLong">Duration of chosen sound (%s s) longer than &#188; of the interval (%d s)</string>
     <string name="invalidPeriodSpecification">Please specify periods as minutes or x.</string>
     <string name="variablePeriodMissing">Please specify at least one x.</string>
     <string name="negativePeriod">Periods must fit into duration: Please increase duration or reduce or shorten periods.</string>
@@ -221,6 +223,9 @@
 
     <!-- AboutActivity -->
     <string name="title_activity_about">About MindBell</string>
+
+    <!-- InternalStatisticsActivity -->
+    <string name="title_activity_internal_statistics">Internal Statistics</string>
 
     <!-- Status bar notifications -->
     <string name="statusTitleNotificationsDisabled">Please check notification settings</string>
@@ -285,6 +290,7 @@
     <string name="keyFAQ" translatable="false">FAQ</string> <!-- fake, key only used as id -->
     <string name="keyFrequency" translatable="false">frequency</string>
     <string name="keyKeepScreenOn" translatable="false">keepScreenOn</string>
+    <string name="keyInternalStatistics" translatable="false">internalStatistics</string> <!-- fake, key only used as id -->
     <string name="keyMeditating" translatable="false">meditating</string>
     <string name="keyMeditationBeginningBell" translatable="false">meditationBeginningBell</string>
     <string name="keyMeditationDuration" translatable="false">meditationDuration</string>

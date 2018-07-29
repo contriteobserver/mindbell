@@ -187,6 +187,9 @@
         Telefonen mit langsam anschwellender Lautstärke - wirkt nur für Glockenklänge, nicht für Systemklänge. Wenn Sonder-Stille
         auf Ihrem Telefon benötigt wird, sollte sie bereits in der Klangdatei enthalten sein.</string>
     <string name="summaryDontUseWorkaroundBell">Verwende Glockenklänge ohne Stille am Anfang</string>
+    <string name="prefsInternalStatistics">Interne Statistik</string>
+    <string name="summaryInternalStatistics">Zeiten vergangener oder geplanter Erinnerungen und Meditationsglocken anzeigen
+        .</string>
     <string name="prefsSendMail">&constSendMail;</string>
     <string name="summarySendMail">Für Vorschläge oder Fragen, die in den \'&constFAQ;\' nicht beantwortet werden, können Sie
         eine E-Mail mit Log-Informationen senden. Bitte vergessen Sie nicht, Ihre Frage oder eine Beschreibung des Problems zu
@@ -215,7 +218,7 @@
     <string name="frequencyDoesNotFitIntoAnHour">Erinnern auf die Minute beim gewählten Intervall nicht möglich</string>
     <string name="ringtoneNotAccessible">Ausgewählter Klang nicht zugreifbar (fehlende Rechte?)</string>
     <string name="reminderSoundLength">Die Dauer des ausgewählten Klangs beträgt %s s. %s</string>
-    <string name="ringtoneDurationTooLong">Dauer des ausgewählten Klangs (%s s) ist länger als 1/4 des Intervalls (%d s)</string>
+    <string name="ringtoneDurationTooLong">Dauer des ausgewählten Klangs (%s s) ist länger als &#188; des Intervalls (%d s)</string>
     <string name="invalidPeriodSpecification">Bitte Abschnitte als Minuten oder x angeben.</string>
     <string name="variablePeriodMissing">Bitte mindestens ein x angeben.</string>
     <string name="negativePeriod">Abschnitte müssen in die Dauer passen: Bitte Dauer erhöhen oder Abschnitte reduzieren oder
@@ -226,6 +229,9 @@
 
     <!-- AboutActivity -->
     <string name="title_activity_about">Über MindBell</string>
+
+    <!-- InternalStatisticsActivity -->
+    <string name="title_activity_internal_statistics">Interne Statistik</string>
 
     <!-- Status bar notification -->
     <string name="statusTitleNotificationsDisabled">Bitte Benachrichtigungseinstellungen prüfen</string>

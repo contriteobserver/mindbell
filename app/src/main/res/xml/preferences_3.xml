@@ -116,6 +116,12 @@
             android:summaryOn="@string/summaryUseWorkaroundBell"
             android:title="@string/prefsUseWorkaroundBell"/>
         <Preference
+            android:icon="@drawable/ic_info_white_24dp"
+            android:key="@string/keyInternalStatistics"
+            android:layout="@layout/preference"
+            android:summary="@string/summaryInternalStatistics"
+            android:title="@string/prefsInternalStatistics"/>
+        <Preference
             android:icon="@drawable/ic_mail_outline_white_24dp"
             android:key="@string/keySendMail"
             android:layout="@layout/preference"

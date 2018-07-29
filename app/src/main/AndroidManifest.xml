@@ -61,6 +61,12 @@
         </activity>
 
         <activity
+            android:name=".activity.InternalStatisticsActivity"
+            android:label="@string/title_activity_internal_statistics"
+            android:parentActivityName=".activity.SettingsActivity">
+        </activity>
+
+        <activity
             android:name=".activity.MuteActivity"
             android:noHistory="true">
         </activity>
