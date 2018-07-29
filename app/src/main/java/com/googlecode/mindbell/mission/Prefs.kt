@@ -46,6 +46,8 @@ class Prefs private constructor(val context: Context) {
     private val settings: SharedPreferences = context
             .getSharedPreferences(context.packageName + "_preferences", Context.MODE_PRIVATE)
 
+    private lateinit var sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener
+
     private val weekdayEntryValues = context.resources.getStringArray(R.array.weekdayEntryValues)
 
     private val weekdayAbbreviationEntries = context.resources.getStringArray(R.array.weekdayAbbreviationEntries)
@@ -281,6 +283,18 @@ class Prefs private constructor(val context: Context) {
         // Check that any data in the SharedPreferences are of the expected type
         checkSettings()
 
+        // Register shared preferences change listener to update bell schedule accordingly
+        sharedPreferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+            run {
+                val preference = getPreference(key)
+                if (preference.isUpdateBellScheduleForReminderOnChange) {
+                    Log.d(TAG, "Setting for '${preference.key}' has been changed to '${getSetting(preference)}'")
+                    Scheduler.getInstance(context).updateBellScheduleForReminder(true)
+                }
+            }
+        }
+        settings.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
+
     }
 
     /**
@@ -301,6 +315,16 @@ class Prefs private constructor(val context: Context) {
      */
     private fun getSetting(resid: Int): Any {
         return getSetting(preferenceMap[resid]!!)
+    }
+
+    /**
+     * Returns the preference with the given key
+     *
+     * @param key
+     * @return
+     */
+    private fun getPreference(key: String): Preference {
+        return preferenceMap.filterValues { preference -> preference.key == key }.values.first()
     }
 
     /**
@@ -384,56 +408,57 @@ class Prefs private constructor(val context: Context) {
      * Fill preferenceMap with all preference keys and their default values.
      */
     private fun fillPreferenceMap() {
-        addPreference(keyActive, false, BOOLEAN)
+        addPreference(keyActive, false, BOOLEAN, false) // schedule updated by direct call
         addPreference(keyActiveOnDaysOfWeek, HashSet(Arrays.asList("1", "2", "3", "4", "5", "6", "7")),
-                STRING_SET)
-        addPreference(keyAudioStream, "0", STRING)
-        addPreference(keyDismissNotification, false, BOOLEAN)
-        addPreference(keyEnd, "21:00", TIME_STRING)
-        addPreference(keyFrequency, "00:15", TIME_STRING) // 15 min
-        addPreference(keyKeepScreenOn, true, BOOLEAN)
-        addPreference(keyMeditating, false, BOOLEAN)
-        addPreference(keyMeditationBeginningBell, "3", STRING)
-        addPreference(keyMeditationDuration, "00:25", TIME_STRING)
-        addPreference(keyMeditationEndingBell, "2", STRING)
-        addPreference(keyMeditationEndingTimeMillis, -1L, LONG)
-        addPreference(keyMeditationInterruptingBell, "1", STRING)
-        addPreference(keyMeditationStartingTimeMillis, -1L, LONG)
-        addPreference(keyMuteInFlightMode, false, BOOLEAN)
-        addPreference(keyMuteOffHook, true, BOOLEAN)
-        addPreference(keyMutedTill, -1L, LONG)
-        addPreference(keyMuteWithAudioStream, true, BOOLEAN)
-        addPreference(keyMuteWithPhone, true, BOOLEAN)
-        addPreference(keyNormalize, NORMALIZE_NONE, STRING)
-        addPreference(keyNoSoundOnMusic, false, BOOLEAN)
-        addPreference(keyNotification, false, BOOLEAN)
-        addPreference(keyNotificationText, context.getText(prefsNotificationTextDefault), STRING)
-        addPreference(keyNotificationTitle, context.getText(prefsNotificationTitleDefault), STRING)
-        addPreference(keyNotificationVisibilityPublic, true, BOOLEAN)
-        addPreference(keyOriginalVolume, -1, INTEGER)
-        addPreference(keyPattern, "100:200:100:600", STRING)
-        addPreference(keyPatternOfPeriods, "x", STRING)
-        addPreference(keyPauseAudioOnSound, false, BOOLEAN)
-        addPreference(keyPopup, -1, INTEGER)
-        addPreference(keyRampUpStartingTimeMillis, -1L, LONG)
-        addPreference(keyRampUpTime, "00:30", TIME_STRING)
-        addPreference(keyRandomize, true, BOOLEAN)
-        addPreference(keyReminderBell, DEFAULT_REMINDER_BELL, STRING)
-        addPreference(keyRingtone, "", STRING) // no useful default, code relies on <defaultValue>.isEmpty()
-        addPreference(keyShow, true, BOOLEAN)
-        addPreference(keySound, true, BOOLEAN)
-        addPreference(keyStart, "09:00", TIME_STRING)
-        addPreference(keyStartMeditationDirectly, false, BOOLEAN)
-        addPreference(keyStatistics, dumpStatistics(Statistics()), STATISTICS_STRING)
-        addPreference(keyStatus, false, BOOLEAN)
-        addPreference(keyStatusIconMaterialDesign, true, BOOLEAN)
-        addPreference(keyStatusVisibilityPublic, true, BOOLEAN)
-        addPreference(keyStopMeditationAutomatically, false, BOOLEAN)
-        addPreference(keyUseWorkaroundBell, false, BOOLEAN)
-        addPreference(keyUseAudioStreamVolumeSetting, true, BOOLEAN)
-        addPreference(keyVibrate, false, BOOLEAN)
-        addPreference(keyVolume, DEFAULT_VOLUME, FLOAT)
-        addPreference(keyMeditationVolume, volume, FLOAT) // for existing users: use standard volume as default here
+                STRING_SET,
+                true)
+        addPreference(keyAudioStream, "0", STRING, false)
+        addPreference(keyDismissNotification, false, BOOLEAN, false)
+        addPreference(keyEnd, "21:00", TIME_STRING, true)
+        addPreference(keyFrequency, "00:15", TIME_STRING, true) // 15 min
+        addPreference(keyKeepScreenOn, true, BOOLEAN, false)
+        addPreference(keyMeditating, false, BOOLEAN, false)
+        addPreference(keyMeditationBeginningBell, "3", STRING, false)
+        addPreference(keyMeditationDuration, "00:25", TIME_STRING, false)
+        addPreference(keyMeditationEndingBell, "2", STRING, false)
+        addPreference(keyMeditationEndingTimeMillis, -1L, LONG, false)
+        addPreference(keyMeditationInterruptingBell, "1", STRING, false)
+        addPreference(keyMeditationStartingTimeMillis, -1L, LONG, false)
+        addPreference(keyMuteInFlightMode, false, BOOLEAN, false)
+        addPreference(keyMuteOffHook, true, BOOLEAN, false)
+        addPreference(keyMutedTill, -1L, LONG, false)
+        addPreference(keyMuteWithAudioStream, true, BOOLEAN, false)
+        addPreference(keyMuteWithPhone, true, BOOLEAN, false)
+        addPreference(keyNormalize, NORMALIZE_NONE, STRING, true)
+        addPreference(keyNoSoundOnMusic, false, BOOLEAN, false)
+        addPreference(keyNotification, false, BOOLEAN, false)
+        addPreference(keyNotificationText, context.getText(prefsNotificationTextDefault), STRING, false)
+        addPreference(keyNotificationTitle, context.getText(prefsNotificationTitleDefault), STRING, false)
+        addPreference(keyNotificationVisibilityPublic, true, BOOLEAN, false)
+        addPreference(keyOriginalVolume, -1, INTEGER, false)
+        addPreference(keyPattern, "100:200:100:600", STRING, false)
+        addPreference(keyPatternOfPeriods, "x", STRING, false)
+        addPreference(keyPauseAudioOnSound, false, BOOLEAN, false)
+        addPreference(keyPopup, -1, INTEGER, false)
+        addPreference(keyRampUpStartingTimeMillis, -1L, LONG, false)
+        addPreference(keyRampUpTime, "00:30", TIME_STRING, false)
+        addPreference(keyRandomize, true, BOOLEAN, true)
+        addPreference(keyReminderBell, DEFAULT_REMINDER_BELL, STRING, false)
+        addPreference(keyRingtone, "", STRING, false) // no useful default, code relies on <defaultValue>.isEmpty()
+        addPreference(keyShow, true, BOOLEAN, false)
+        addPreference(keySound, true, BOOLEAN, false)
+        addPreference(keyStart, "09:00", TIME_STRING, true)
+        addPreference(keyStartMeditationDirectly, false, BOOLEAN, false)
+        addPreference(keyStatistics, dumpStatistics(Statistics()), STATISTICS_STRING, false)
+        addPreference(keyStatus, false, BOOLEAN, true)
+        addPreference(keyStatusIconMaterialDesign, true, BOOLEAN, true)
+        addPreference(keyStatusVisibilityPublic, true, BOOLEAN, true)
+        addPreference(keyStopMeditationAutomatically, false, BOOLEAN, false)
+        addPreference(keyUseWorkaroundBell, false, BOOLEAN, false)
+        addPreference(keyUseAudioStreamVolumeSetting, true, BOOLEAN, false)
+        addPreference(keyVibrate, false, BOOLEAN, false)
+        addPreference(keyVolume, DEFAULT_VOLUME, FLOAT, false)
+        addPreference(keyMeditationVolume, volume, FLOAT, false) // for existing users: use standard volume as default here
     }
 
     /**
@@ -465,8 +490,8 @@ class Prefs private constructor(val context: Context) {
      * @param defaultValue
      * @param type
      */
-    private fun addPreference(resid: Int, defaultValue: Any, type: Preference.Type) {
-        preferenceMap[resid] = Preference(resid, context.getString(resid), defaultValue, type)
+    private fun addPreference(resid: Int, defaultValue: Any, type: Preference.Type, isUpdateBellScheduleForReminderOnChange: Boolean) {
+        preferenceMap[resid] = Preference(resid, context.getString(resid), defaultValue, type, isUpdateBellScheduleForReminderOnChange)
     }
 
     /**
@@ -846,7 +871,8 @@ class Prefs private constructor(val context: Context) {
         return interruptSettingsForMeditationEnding
     }
 
-    internal class Preference(val resid: Int, val key: String, val defaultValue: Any, val type: Type) {
+    internal class Preference(val resid: Int, val key: String, val defaultValue: Any, val type: Type, val
+    isUpdateBellScheduleForReminderOnChange: Boolean) {
 
         internal enum class Type {
             BOOLEAN, FLOAT, INTEGER, LONG, STRING, STRING_SET, STATISTICS_STRING, TIME_STRING

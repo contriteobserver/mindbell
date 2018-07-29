@@ -44,7 +44,6 @@ import com.googlecode.mindbell.mission.Prefs.Companion.REQUEST_CODE_MUTE_OFF_HOO
 import com.googlecode.mindbell.mission.Prefs.Companion.REQUEST_CODE_RINGTONE
 import com.googlecode.mindbell.mission.Prefs.Companion.REQUEST_CODE_STATUS
 import com.googlecode.mindbell.mission.Prefs.Companion.TAG
-import com.googlecode.mindbell.mission.Scheduler
 import com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
 import com.googlecode.mindbell.preference.MediaVolumePreference
 import com.googlecode.mindbell.preference.MinutesIntervalPickerPreference
@@ -577,8 +576,6 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
 
     public override fun onPause() {
         super.onPause()
-        Prefs.getInstance(this).logSettings()
-        Scheduler.getInstance(this).updateBellScheduleForReminder(true)
     }
 
     @Suppress("DEPRECATION") // some methods deprecated because fragments are state of the art instead
