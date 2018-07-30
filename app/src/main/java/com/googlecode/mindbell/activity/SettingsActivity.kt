@@ -99,7 +99,7 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
         val preferenceStatus = preferenceScreen.findPreference(getText(R.string.keyStatus)) as CheckBoxPreference
         val preferenceShow = preferenceScreen.findPreference(getText(R.string.keyShow)) as CheckBoxPreference
         val preferenceSound = preferenceScreen.findPreference(getText(R.string.keySound)) as CheckBoxPreference
-        val preferenceReminderSoundLength = preferenceScreen.findPreference(getText(R.string.keyReminderSoundLength)) as Preference
+        val preferenceReminderSoundLength = preferenceScreen.findPreference(getText(R.string.keyReminderSoundLengthIdOnly)) as Preference
         val preferenceReminderBell = preferenceScreen.findPreference(getText(R.string.keyReminderBell)) as ListPreferenceWithSummaryFix
         val preferenceVolume = preferenceScreen.findPreference(getText(R.string.keyVolume)) as MediaVolumePreference
         val preferenceRingtone = preferenceScreen.findPreference(getText(R.string.keyRingtone)) as RingtonePreference
@@ -114,9 +114,9 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
         val preferenceMeditationVolume = preferenceScreen.findPreference(getText(R.string.keyMeditationVolume)) as MediaVolumePreference
         val preferenceUseWorkaroundBell = preferenceScreen.findPreference(getText(R.string.keyUseWorkaroundBell)) as CheckBoxPreference
         val preferenceFAQ = preferenceScreen.findPreference(getText(R.string.keyFAQ)) as Preference
-        val preferenceBatterySettings = preferenceScreen.findPreference(getText(R.string.keyBatterySettings)) as Preference
-        val InternalStatistics = preferenceScreen.findPreference(getText(R.string.keyInternalStatistics)) as Preference
-        val preferenceSendMail = preferenceScreen.findPreference(getText(R.string.keySendMail)) as Preference
+        val preferenceBatterySettings = preferenceScreen.findPreference(getText(R.string.keyBatterySettingsIdOnly)) as Preference
+        val InternalStatistics = preferenceScreen.findPreference(getText(R.string.keyStatisticsIdOnly)) as Preference
+        val preferenceSendMail = preferenceScreen.findPreference(getText(R.string.keySendMailIdOnly)) as Preference
 
         preferenceUseAudioStreamVolumeSetting.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
             val isChecked = newValue as Boolean
@@ -281,7 +281,7 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
         }
 
         InternalStatistics.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            startActivity(Intent(this, InternalStatisticsActivity::class.java))
+            startActivity(Intent(this, StatisticsActivity::class.java))
             true
         }
 

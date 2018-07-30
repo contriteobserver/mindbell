@@ -61,7 +61,7 @@
         </activity>
 
         <activity
-            android:name=".activity.InternalStatisticsActivity"
+            android:name=".activity.StatisticsActivity"
             android:label="@string/title_activity_internal_statistics"
             android:parentActivityName=".activity.SettingsActivity">
         </activity>

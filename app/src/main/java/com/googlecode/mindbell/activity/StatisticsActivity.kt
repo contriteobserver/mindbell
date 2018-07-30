@@ -22,16 +22,16 @@ import android.app.Activity
 import android.os.Bundle
 import com.googlecode.mindbell.R
 import com.googlecode.mindbell.mission.Prefs
-import kotlinx.android.synthetic.main.activity_internal_statistics.*
+import kotlinx.android.synthetic.main.activity_statistics.*
 
 /**
  * Show about dialog to display e.g. the license.
  */
-class InternalStatisticsActivity : Activity() {
+class StatisticsActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_internal_statistics)
+        setContentView(R.layout.activity_statistics)
         val prefs = Prefs.getInstance(applicationContext)
         summary.text = prefs.getStatisticsString()
     }

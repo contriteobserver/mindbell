@@ -185,8 +185,8 @@
         increase sound volume - only affects bell sounds, not system sounds. If extra silence is needed by your phone, it
         should already be in the sound file.</string>
     <string name="summaryDontUseWorkaroundBell">Use bell sound as it is</string>
-    <string name="prefsInternalStatistics">Internal Statistics</string>
-    <string name="summaryInternalStatistics">Show times of occurred or scheduled reminders and meditation bells.</string>
+    <string name="prefsStatistics">Internal Statistics</string>
+    <string name="summaryStatistics">Show times of occurred or scheduled reminders and meditation bells.</string>
     <string name="prefsSendMail">&constSendMail;</string>
     <string name="summarySendMail">For suggestions or questions not answered in the \'&constFAQ;\' you can send an e-mail with
         log information. Please don\'t forget to add your question or a description of the problem.</string>
@@ -224,7 +224,7 @@
     <!-- AboutActivity -->
     <string name="title_activity_about">About MindBell</string>
 
-    <!-- InternalStatisticsActivity -->
+    <!-- StatisticsActivity -->
     <string name="title_activity_internal_statistics">Internal Statistics</string>
 
     <!-- Status bar notifications -->
@@ -284,13 +284,12 @@
     <string name="keyActiveOnDaysOfWeek" translatable="false">activeOnDaysOfWeek</string>
     <string name="keyActive" translatable="false">active</string>
     <string name="keyAudioStream" translatable="false">audioStream</string>
-    <string name="keyBatterySettings" translatable="false">batterySettings</string> <!-- fake, key only used as id -->
+    <string name="keyBatterySettingsIdOnly" translatable="false">batterySettingsIdOnly</string>
     <string name="keyDismissNotification" translatable="false">dismissNotification</string>
     <string name="keyEnd" translatable="false">end</string>
-    <string name="keyFAQ" translatable="false">FAQ</string> <!-- fake, key only used as id -->
+    <string name="keyFAQ" translatable="false">faqIdOnly</string>
     <string name="keyFrequency" translatable="false">frequency</string>
     <string name="keyKeepScreenOn" translatable="false">keepScreenOn</string>
-    <string name="keyInternalStatistics" translatable="false">internalStatistics</string> <!-- fake, key only used as id -->
     <string name="keyMeditating" translatable="false">meditating</string>
     <string name="keyMeditationBeginningBell" translatable="false">meditationBeginningBell</string>
     <string name="keyMeditationDuration" translatable="false">meditationDuration</string>
@@ -318,15 +317,16 @@
     <string name="keyRampUpStartingTimeMillis" translatable="false">rampUpStartingTimeMillis</string>
     <string name="keyRampUpTime" translatable="false">rampUpTime</string>
     <string name="keyReminderBell" translatable="false">reminderBell</string>
-    <string name="keyReminderSoundLength" translatable="false">reminderSoundLength</string> <!-- fake, key only used as id -->
+    <string name="keyReminderSoundLengthIdOnly" translatable="false">reminderSoundLengthIdOnly</string>
     <string name="keyRandomize" translatable="false">randomize</string>
     <string name="keyRingtone" translatable="false">ringtone</string>
-    <string name="keySendMail" translatable="false">sendMail</string> <!-- fake, key only used as id -->
+    <string name="keySendMailIdOnly" translatable="false">sendMailIdOnly</string>
     <string name="keyShow" translatable="false">show</string>
     <string name="keySound" translatable="false">sound</string>
     <string name="keyStart" translatable="false">start</string>
     <string name="keyStartMeditationDirectly" translatable="false">startMeditationDirectly</string>
     <string name="keyStatistics" translatable="false">statistics</string>
+    <string name="keyStatisticsIdOnly" translatable="false">statisticsIdOnly</string>
     <string name="keyStatus" translatable="false">status</string>
     <string name="keyStatusIconMaterialDesign" translatable="false">statusIconMaterialDesign</string>
     <string name="keyStatusVisibilityPublic" translatable="false">statusVisibilityPublic</string>

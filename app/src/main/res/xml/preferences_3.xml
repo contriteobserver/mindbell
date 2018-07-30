@@ -106,7 +106,7 @@
             android:title="@string/prefsFAQ"/>
         <Preference
             android:icon="@drawable/ic_info_white_24dp"
-            android:key="@string/keyBatterySettings"
+            android:key="@string/keyBatterySettingsIdOnly"
             android:layout="@layout/preference"
             android:summary="@string/summaryBatterySettings"
             android:title="@string/prefsBatterySettings"/>
@@ -117,13 +117,13 @@
             android:title="@string/prefsUseWorkaroundBell"/>
         <Preference
             android:icon="@drawable/ic_info_white_24dp"
-            android:key="@string/keyInternalStatistics"
+            android:key="@string/keyStatisticsIdOnly"
             android:layout="@layout/preference"
-            android:summary="@string/summaryInternalStatistics"
-            android:title="@string/prefsInternalStatistics"/>
+            android:summary="@string/summaryStatistics"
+            android:title="@string/prefsStatistics"/>
         <Preference
             android:icon="@drawable/ic_mail_outline_white_24dp"
-            android:key="@string/keySendMail"
+            android:key="@string/keySendMailIdOnly"
             android:layout="@layout/preference"
             android:summary="@string/summarySendMail"
             android:title="@string/prefsSendMail"/>

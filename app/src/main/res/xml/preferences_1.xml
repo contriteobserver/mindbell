@@ -111,7 +111,7 @@
             <Preference
                 android:dependency="@string/keySound"
                 android:icon="@drawable/ic_info_white_24dp"
-                android:key="@string/keyReminderSoundLength"
+                android:key="@string/keyReminderSoundLengthIdOnly"
                 android:layout="@layout/preference"
                 android:summary="@string/summaryReminderSoundLength"
                 android:title="@string/prefsReminderSoundLength"/>
