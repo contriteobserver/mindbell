@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ MindBell - Aims to give you a support for staying mindful in a busy life -
+  ~            for remembering what really counts
+  ~
+  ~     Copyright (C) 2014-2018 Uwe Damken
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="15dp">
+
+    <TextView
+        android:id="@+id/now"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:focusable="false"
+        android:paddingLeft="10dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/dknapps_de_white"/>
+
+    <TextView
+        android:id="@+id/comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/judgment"
+        android:layout_toRightOf="@id/now"
+        android:paddingLeft="5dp"
+        android:paddingTop="3dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/dknapps_de_white"/>
+
+    <ImageView
+        android:id="@+id/judgment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:paddingRight="10dp"
+        android:paddingTop="3dp"/>
+
+</RelativeLayout>

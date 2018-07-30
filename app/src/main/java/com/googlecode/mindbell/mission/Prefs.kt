@@ -300,8 +300,8 @@ class Prefs private constructor(val context: Context) {
     /**
      * Return statics as String
      */
-    fun getStatisticsString(): String {
-        return statistics.toString()
+    fun getStatisticsEntryList(): List<StatisticsEntry> {
+        return statistics.entryList
     }
 
     /**

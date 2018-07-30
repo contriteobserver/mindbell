@@ -19,6 +19,7 @@
 package com.googlecode.mindbell.mission.model
 
 import android.net.Uri
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.googlecode.mindbell.mission.InterruptSettings
 import com.googlecode.mindbell.mission.model.NoActionsReason.NONE
 import com.googlecode.mindbell.util.TimeOfDay
@@ -84,8 +85,10 @@ class Statistics {
 
         val nowTimeMillis = Calendar.getInstance().timeInMillis
 
+        @JsonIgnore
+        val now = TimeOfDay(nowTimeMillis).logString
+
         override fun toString(): String {
-            val now = TimeOfDay(nowTimeMillis).logString
             return "$now ${type()}"
         }
 

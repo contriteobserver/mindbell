@@ -18,21 +18,43 @@
  */
 package com.googlecode.mindbell.activity
 
-import android.app.Activity
+import android.app.ListActivity
+import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import com.googlecode.mindbell.R
 import com.googlecode.mindbell.mission.Prefs
+import com.googlecode.mindbell.mission.model.Statistics.StatisticsEntry
 import kotlinx.android.synthetic.main.activity_statistics.*
+import kotlinx.android.synthetic.main.activity_statistics_item.view.*
 
 /**
  * Show about dialog to display e.g. the license.
  */
-class StatisticsActivity : Activity() {
+class StatisticsActivity : ListActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_statistics)
         val prefs = Prefs.getInstance(applicationContext)
-        summary.text = prefs.getStatisticsString()
+        list.adapter = StatisticsEntryListAdapter(applicationContext, R.layout.activity_statistics_item, prefs
+                .getStatisticsEntryList())
     }
+
+    private inner class StatisticsEntryListAdapter(context: Context, private val resource: Int, objects: List<StatisticsEntry>)
+        : ArrayAdapter<StatisticsEntry>(context, resource, objects) {
+
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            val itemView = convertView ?: LayoutInflater.from(context).inflate(resource, parent, false)
+            val statisticsEntry = getItem(position)
+            itemView.now.text = statisticsEntry.now
+            itemView.comment.text = statisticsEntry.toString()
+            // itemView.judgment ...
+            return itemView
+        }
+    }
+
 }
