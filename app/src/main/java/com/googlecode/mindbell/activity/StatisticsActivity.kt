@@ -27,6 +27,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.googlecode.mindbell.R
 import com.googlecode.mindbell.mission.Prefs
+import com.googlecode.mindbell.mission.model.Statistics
 import com.googlecode.mindbell.mission.model.Statistics.StatisticsEntry
 import kotlinx.android.synthetic.main.activity_statistics.*
 import kotlinx.android.synthetic.main.activity_statistics_item.view.*
@@ -52,9 +53,24 @@ class StatisticsActivity : ListActivity() {
             val statisticsEntry = getItem(position)
             itemView.now.text = statisticsEntry.now
             itemView.comment.text = statisticsEntry.comment
-            // itemView.judgment ...
+            when (statisticsEntry.judgment) {
+                Statistics.Judgment.ON_TIME -> setJudgmentImage(itemView, R.drawable.ic_check_black_24dp)
+                Statistics.Judgment.OVERDUE -> setJudgmentImage(itemView, R.drawable.ic_priority_high_black_24dp)
+                else -> unsetJudgmentImage(itemView)
+            }
             return itemView
         }
+
+        private fun setJudgmentImage(itemView: View, resid: Int) {
+            itemView.judgment.setImageResource(resid)
+            itemView.judgment.imageAlpha = 255 // revert showing the background of unsetJudgmentImage()
+        }
+
+        private fun unsetJudgmentImage(itemView: View) {
+            // setImageResource not needed because it's intended to be completely transparent anyway
+            itemView.judgment.imageAlpha = 0 // just show the background
+        }
+
     }
 
 }

@@ -50,16 +50,17 @@ class Statistics {
             if (!entry.isPrepared) with(entry) {
                 now = TimeOfDay(nowTimeMillis).logString
                 comment = deriveComment()
-                if (entry is ActionsStatisticsEntry) {
+                if (entry is ScheduledActionsStatisticsEntry) {
                     // enrich comment with data from last rescheduling entry before this one
                     val originEntry = findOriginEntry(entryList.subList(0, index))
                     if (originEntry != null) {
                         val next = TimeOfDay(originEntry.nextTargetTimeMillis).logString
                         val delayTimeMillis = entry.nowTimeMillis - originEntry.nextTargetTimeMillis
-                        entry.judgment = if (delayTimeMillis < 5000L) Judgment.ON_TIME else Judgment.OVERDUE
+                        judgment = if (delayTimeMillis < 5000L) Judgment.ON_TIME else Judgment.OVERDUE
                         comment = "$comment, scheduled at ${originEntry.now} for $next (+$delayTimeMillis ms)"
                     }
                 }
+                isPrepared = true
             }
         }
     }
