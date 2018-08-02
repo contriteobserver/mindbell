@@ -308,7 +308,6 @@ class Prefs private constructor(val context: Context) {
      * Returns the current string setting of the preference with the given resid.
      *
      * @param resid
-     * @return
      */
     private fun getStringSetting(resid: Int): String {
         return getSetting(resid) as String
@@ -833,16 +832,14 @@ class Prefs private constructor(val context: Context) {
 
     fun addStatisticsEntry(newEntry: StatisticsEntry) {
         val newStatistics = statistics
-        while (newStatistics.entryList.size >= MAX_STATISTICS_ENTRY_COUNT) {
-            newStatistics.entryList.removeAt(0)
-        }
-        newStatistics.entryList.add(newEntry)
+        newStatistics.addStatisticsEntry(newEntry)
         statistics = newStatistics
         Log.d(TAG, "StatisticsEntry added: $newEntry")
     }
 
     private fun parseStatistics(statisticsString: String): Statistics? {
         try {
+            // Log.d(TAG, "parseStatistics : $statisticsString")
             return xmlMapper.readValue<Statistics>(statisticsString, Statistics::class.java)
         } catch (e: JsonProcessingException) {
             Log.d(TAG, "Parsing $statisticsString failed", e)
@@ -851,7 +848,9 @@ class Prefs private constructor(val context: Context) {
     }
 
     private fun dumpStatistics(newStatistics: Statistics): String {
-        return xmlMapper.writeValueAsString(newStatistics)
+        val statisticsString = xmlMapper.writeValueAsString(newStatistics)
+        // Log.d(TAG, "dumpStatistics : $statisticsString")
+        return statisticsString
     }
 
     fun forRegularOperation(): InterruptSettings {

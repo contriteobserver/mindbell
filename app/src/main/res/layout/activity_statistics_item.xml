@@ -20,16 +20,15 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="15dp">
+                android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/now"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="2dp"
         android:clickable="false"
         android:focusable="false"
-        android:paddingLeft="10dp"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/dknapps_de_white"/>
 
@@ -40,7 +39,7 @@
         android:layout_toLeftOf="@id/judgment"
         android:layout_toRightOf="@id/now"
         android:paddingLeft="5dp"
-        android:paddingTop="3dp"
+        android:paddingRight="5dp"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/dknapps_de_white"/>
 
@@ -49,7 +48,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:paddingRight="10dp"
-        android:paddingTop="3dp"/>
+        />
 
 </RelativeLayout>

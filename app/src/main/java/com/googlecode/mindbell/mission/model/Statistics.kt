@@ -21,6 +21,7 @@ package com.googlecode.mindbell.mission.model
 import android.net.Uri
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.googlecode.mindbell.mission.InterruptSettings
+import com.googlecode.mindbell.mission.Prefs
 import com.googlecode.mindbell.mission.model.NoActionsReason.NONE
 import com.googlecode.mindbell.util.TimeOfDay
 import java.util.*
@@ -28,6 +29,14 @@ import java.util.*
 class Statistics {
 
     var entryList: MutableList<StatisticsEntry> = ArrayList()
+
+    fun addStatisticsEntry(newEntry: StatisticsEntry) {
+        while (entryList.size >= Prefs.MAX_STATISTICS_ENTRY_COUNT) {
+            entryList.removeAt(0)
+        }
+        entryList.add(newEntry)
+        prepareEntries()
+    }
 
     @JsonIgnore
     fun getPreparedEntryList(): List<StatisticsEntry> {
@@ -47,7 +56,7 @@ class Statistics {
 
     private fun prepareEntries() {
         for ((index, entry) in entryList.withIndex()) {
-            if (!entry.isPrepared) with(entry) {
+            if (!entry.prepared) with(entry) {
                 now = TimeOfDay(nowTimeMillis).logString
                 comment = deriveComment()
                 if (entry is ScheduledActionsStatisticsEntry) {
@@ -60,7 +69,7 @@ class Statistics {
                         comment = "$comment, scheduled at ${originEntry.now} for $next (+$delayTimeMillis ms)"
                     }
                 }
-                isPrepared = true
+                prepared = true
             }
         }
     }
@@ -106,7 +115,7 @@ class Statistics {
         val nowTimeMillis = Calendar.getInstance().timeInMillis
 
         @JsonIgnore
-        var isPrepared = false
+        var prepared = false // can't name it isPrepared because Jackson then interferes with Kotlin somehow
 
         @JsonIgnore
         var now = ""
@@ -212,7 +221,8 @@ class Statistics {
 
     }
 
-    class MeditationInterruptingActionsStatisticsEntry(interruptSettings: InterruptSettings = NO_INTERRUPT_SETTING, private val meditationPeriod: Int, private val
+    class MeditationInterruptingActionsStatisticsEntry(interruptSettings: InterruptSettings = NO_INTERRUPT_SETTING, private val
+    meditationPeriod: Int = -1, private val
     numberOfPeriods: Int = 0) :
             ScheduledActionsStatisticsEntry(interruptSettings) {
 
