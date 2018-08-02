@@ -301,7 +301,7 @@ class Prefs private constructor(val context: Context) {
      * Return statics as String
      */
     fun getStatisticsEntryList(): List<StatisticsEntry> {
-        return statistics.entryList
+        return statistics.getPreparedEntryList()
     }
 
     /**
@@ -829,10 +829,6 @@ class Prefs private constructor(val context: Context) {
 
     fun resetPopup() {
         resetSetting(keyPopup)
-    }
-
-    fun resetStatistics() {
-        resetSetting(keyStatistics)
     }
 
     fun addStatisticsEntry(newEntry: StatisticsEntry) {

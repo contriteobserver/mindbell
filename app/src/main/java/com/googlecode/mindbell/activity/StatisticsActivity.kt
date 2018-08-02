@@ -51,7 +51,7 @@ class StatisticsActivity : ListActivity() {
             val itemView = convertView ?: LayoutInflater.from(context).inflate(resource, parent, false)
             val statisticsEntry = getItem(position)
             itemView.now.text = statisticsEntry.now
-            itemView.comment.text = statisticsEntry.toString()
+            itemView.comment.text = statisticsEntry.comment
             // itemView.judgment ...
             return itemView
         }

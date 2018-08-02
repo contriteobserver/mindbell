@@ -29,32 +29,47 @@ class Statistics {
 
     var entryList: MutableList<StatisticsEntry> = ArrayList()
 
-    /**
-     * Write all currently existing statistics to the log.
-     */
+    @JsonIgnore
+    fun getPreparedEntryList(): List<StatisticsEntry> {
+        prepareEntries()
+        return entryList
+    }
+
     override fun toString(): String {
+        prepareEntries()
         val sb = StringBuilder()
         sb.append("Statistics:")
-        for ((outerIndex, outerEntry) in entryList.withIndex()) {
-            sb.append("\n  ").append(outerEntry.toString())
-            if (outerEntry is ActionsStatisticsEntry) {
-                // search for last rescheduling entry before this non-finishing action entry
-                for (innerIndex in outerIndex downTo 0) {
-                    val innerEntry = entryList.get(innerIndex)
-                    if (innerEntry is ReschedulingStatisticsEntry) {
-                        sb.append(", scheduled at ").append(TimeOfDay(innerEntry.nowTimeMillis).logString)
-                        sb.append(" for ").append(TimeOfDay(innerEntry.nextTargetTimeMillis).logString)
-                        val delayTimeMillis = outerEntry.nowTimeMillis - innerEntry.nextTargetTimeMillis
-                        val delayComment = if (delayTimeMillis < 5000L) "on time" else "delayed"
-                        sb.append(" (+").append(delayTimeMillis).append(" ms, ").append(delayComment).append(")")
-                        break
-                    }
-                }
-            }
+        for (entry in entryList) {
+            sb.append("\n  ${entry.toString()}")
         }
         return sb.toString()
     }
 
+    private fun prepareEntries() {
+        for ((index, entry) in entryList.withIndex()) {
+            if (!entry.isPrepared) with(entry) {
+                now = TimeOfDay(nowTimeMillis).logString
+                comment = deriveComment()
+                if (entry is ActionsStatisticsEntry) {
+                    // enrich comment with data from last rescheduling entry before this one
+                    val originEntry = findOriginEntry(entryList.subList(0, index))
+                    if (originEntry != null) {
+                        val next = TimeOfDay(originEntry.nextTargetTimeMillis).logString
+                        val delayTimeMillis = entry.nowTimeMillis - originEntry.nextTargetTimeMillis
+                        entry.judgment = if (delayTimeMillis < 5000L) Judgment.ON_TIME else Judgment.OVERDUE
+                        comment = "$comment, scheduled at ${originEntry.now} for $next (+$delayTimeMillis ms)"
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns the last rescheduling statistics entry in the sublist.
+     */
+    private fun findOriginEntry(entrySubList: List<StatisticsEntry>): ReschedulingStatisticsEntry? {
+        return entrySubList.reversed().find { entry -> entry is ReschedulingStatisticsEntry } as ReschedulingStatisticsEntry?
+    }
 
     private class NoInterruptSettings : InterruptSettings {
 
@@ -81,18 +96,70 @@ class Statistics {
 
     }
 
+    enum class Judgment {
+        NOT_APPLICABLE, ON_TIME, OVERDUE
+    }
+
     abstract class StatisticsEntry {
 
         val nowTimeMillis = Calendar.getInstance().timeInMillis
 
         @JsonIgnore
-        val now = TimeOfDay(nowTimeMillis).logString
+        var isPrepared = false
+
+        @JsonIgnore
+        var now = ""
+
+        @JsonIgnore
+        var comment = ""
+
+        @JsonIgnore
+        var judgment = Judgment.NOT_APPLICABLE
 
         override fun toString(): String {
-            return "$now ${type()}"
+            return "$now $comment $judgment"
+        }
+
+        open fun deriveComment(): String {
+            return "${type()}"
         }
 
         abstract fun type(): String
+
+    }
+
+    class FinishedStatisticsEntry : StatisticsEntry() {
+
+        override fun type(): String {
+            return "Finished"
+        }
+
+    }
+
+    class NoActionsStatisticsEntry(private val reason: NoActionsReason = NONE) : StatisticsEntry() {
+
+        override fun deriveComment(): String {
+            return "${super.deriveComment()} because of ${reason.name}"
+        }
+
+        override fun type(): String {
+            return "No actions"
+        }
+
+    }
+
+    class ReschedulingStatisticsEntry(val nextTargetTimeMillis: Long = 0L, private val nextMeditationPeriod: Int? = null) :
+            StatisticsEntry() {
+
+        override fun deriveComment(): String {
+            val targetTime = TimeOfDay(nextTargetTimeMillis).logString
+            val intention = if (nextMeditationPeriod == null) "reminder" else "meditation period $nextMeditationPeriod"
+            return "${super.deriveComment()} for $intention at $targetTime"
+        }
+
+        override fun type(): String {
+            return "Rescheduling"
+        }
 
     }
 
@@ -107,63 +174,11 @@ class Statistics {
 
         private val soundUriString = interruptSettings.soundUri?.toString()
 
-        override fun toString(): String {
+        override fun deriveComment(): String {
             val show = if (isShow) "show" else "no show"
             val sound = if (isSound) "sound" else "no sound"
             val vibrate = if (isVibrate) "vibrate" else "no vibration"
-            return "${super.toString()} with $show, $sound, $vibrate, uri='$soundUriString'"
-        }
-
-    }
-
-    class MeditationBeginningActionsStatisticsEntry(interruptSettings: InterruptSettings = NO_INTERRUPT_SETTING, private val
-    numberOfPeriods: Int = 0) :
-            ActionsStatisticsEntry(interruptSettings) {
-
-        override fun toString(): String {
-            return "${super.toString()}, $numberOfPeriods periods"
-        }
-
-        override fun type(): String {
-            return "Beginning meditation"
-        }
-
-    }
-
-    class MeditationInterruptingActionsStatisticsEntry(interruptSettings: InterruptSettings = NO_INTERRUPT_SETTING, private val meditationPeriod: Int, private val
-    numberOfPeriods: Int = 0) :
-            ActionsStatisticsEntry(interruptSettings) {
-
-        override fun toString(): String {
-            return "${super.toString()}, period $meditationPeriod/$numberOfPeriods"
-        }
-
-        override fun type(): String {
-            return "Interrupting meditation"
-        }
-
-    }
-
-    class MeditationEndingActionsStatisticsEntry(interruptSettings: InterruptSettings = NO_INTERRUPT_SETTING, private val
-    isStopAutomatically: Boolean = false) :
-            ActionsStatisticsEntry(interruptSettings) {
-
-        override fun toString(): String {
-            val stopAutomatically = if (isStopAutomatically) "stop automatically" else "don't stop automatically"
-            return "${super.toString()}, $stopAutomatically"
-        }
-
-        override fun type(): String {
-            return "Ending meditation"
-        }
-
-    }
-
-    class ReminderActionsStatisticsEntry(interruptSettings: InterruptSettings = NO_INTERRUPT_SETTING) :
-            ActionsStatisticsEntry(interruptSettings) {
-
-        override fun type(): String {
-            return "Reminding"
+            return "${super.deriveComment()} with $show, $sound, $vibrate, uri='$soundUriString'"
         }
 
     }
@@ -177,50 +192,72 @@ class Statistics {
 
     }
 
-    class SuppressedActionsStatisticsEntry(interruptSettings: InterruptSettings = NO_INTERRUPT_SETTING, private val reason: NoActionsReason = NONE) :
+    abstract class ScheduledActionsStatisticsEntry(interruptSettings: InterruptSettings) :
             ActionsStatisticsEntry(interruptSettings) {
 
-        override fun toString(): String {
-            return "${super.toString()}, ${reason.name}"
+    }
+
+    class MeditationBeginningActionsStatisticsEntry(interruptSettings: InterruptSettings = NO_INTERRUPT_SETTING, private val
+    numberOfPeriods: Int = 0) :
+            ScheduledActionsStatisticsEntry(interruptSettings) {
+
+        override fun deriveComment(): String {
+            return "${super.deriveComment()}, $numberOfPeriods periods"
+        }
+
+        override fun type(): String {
+            return "Beginning meditation"
+        }
+
+    }
+
+    class MeditationInterruptingActionsStatisticsEntry(interruptSettings: InterruptSettings = NO_INTERRUPT_SETTING, private val meditationPeriod: Int, private val
+    numberOfPeriods: Int = 0) :
+            ScheduledActionsStatisticsEntry(interruptSettings) {
+
+        override fun deriveComment(): String {
+            return "${super.deriveComment()}, period $meditationPeriod/$numberOfPeriods"
+        }
+
+        override fun type(): String {
+            return "Interrupting meditation"
+        }
+
+    }
+
+    class MeditationEndingActionsStatisticsEntry(interruptSettings: InterruptSettings = NO_INTERRUPT_SETTING, private val
+    isStopAutomatically: Boolean = false) :
+            ScheduledActionsStatisticsEntry(interruptSettings) {
+
+        override fun deriveComment(): String {
+            val stopAutomatically = if (isStopAutomatically) "stop automatically" else "don't stop automatically"
+            return "${super.deriveComment()}, $stopAutomatically"
+        }
+
+        override fun type(): String {
+            return "Ending meditation"
+        }
+
+    }
+
+    class ReminderActionsStatisticsEntry(interruptSettings: InterruptSettings = NO_INTERRUPT_SETTING) :
+            ScheduledActionsStatisticsEntry(interruptSettings) {
+
+        override fun type(): String {
+            return "Reminding"
+        }
+
+    }
+
+    class SuppressedActionsStatisticsEntry(interruptSettings: InterruptSettings = NO_INTERRUPT_SETTING, private val reason: NoActionsReason = NONE) :
+            ScheduledActionsStatisticsEntry(interruptSettings) {
+
+        override fun deriveComment(): String {
+            return "${super.deriveComment()}, ${reason.name}"
         }
 
         override fun type(): String {
             return "Actions suppressed"
-        }
-
-    }
-
-    class FinishedStatisticsEntry : StatisticsEntry() {
-
-        override fun type(): String {
-            return "Finished"
-        }
-
-    }
-
-    class NoActionsStatisticsEntry(private val reason: NoActionsReason = NONE) : StatisticsEntry() {
-
-        override fun toString(): String {
-            return "${super.toString()} because of ${reason.name}"
-        }
-
-        override fun type(): String {
-            return "No actions"
-        }
-
-    }
-
-    class ReschedulingStatisticsEntry(val nextTargetTimeMillis: Long = 0L, private val nextMeditationPeriod: Int? = null) :
-            StatisticsEntry() {
-
-        override fun toString(): String {
-            val targetTime = TimeOfDay(nextTargetTimeMillis).logString
-            val intention = if (nextMeditationPeriod == null) "reminder" else "meditation period $nextMeditationPeriod"
-            return "${super.toString()} for $intention at $targetTime"
-        }
-
-        override fun type(): String {
-            return "Rescheduling"
         }
 
     }
