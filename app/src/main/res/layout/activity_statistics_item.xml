@@ -24,7 +24,7 @@
 
     <TextView
         android:id="@+id/now"
-        android:layout_width="wrap_content"
+        android:layout_width="105dp"
         android:layout_height="wrap_content"
         android:layout_marginRight="2dp"
         android:clickable="false"
@@ -45,9 +45,8 @@
 
     <ImageView
         android:id="@+id/judgment"
-        android:layout_width="wrap_content"
+        android:layout_width="45dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        />
+        android:layout_alignParentRight="true"/>
 
 </RelativeLayout>
