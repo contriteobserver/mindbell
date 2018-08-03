@@ -67,7 +67,7 @@ class Statistics {
                     if (originEntry != null) {
                         val next = TimeOfDay(originEntry.nextTargetTimeMillis).logString
                         val delayTimeMillis = entry.nowTimeMillis - originEntry.nextTargetTimeMillis
-                        judgment = if (delayTimeMillis < 5000L) Judgment.ON_TIME else Judgment.DELAYED
+                        judgment = if (delayTimeMillis < 60000L) Judgment.ON_TIME else Judgment.DELAYED
                         comment = "$comment, scheduled at ${originEntry.now} for $next (+$delayTimeMillis ms)"
                     }
                 }
