@@ -125,10 +125,10 @@
     <string name="summaryStatusVisibilityPublic">Status-Text auf Sperrbildschirm anzeigen</string>
     <string name="summaryStatusVisibilityPrivate">Status-Text auf Sperrbildschirm ausblenden</string>
 
-    <string name="prefsCategoryRingNotification">Erinnerungsbenachrichtigung</string>
-    <string name="prefsNotification">Benachrichtigung anzeigen</string>
-    <string name="summaryNotification">Zeige Erinnerungsbenachrichtigung an (auch auf Wearables)</string>
-    <string name="summaryNoNotification">Keine Erinnerungsbenachrichtigung (Wearables bekommen nichts mit)</string>
+    <string name="prefsCategoryReminderNotification">Erinnerungsbenachrichtigung</string>
+    <string name="prefsNotificationOnWearables">Benachrichtigung auf Wearables</string>
+    <string name="summaryNotificationOnWearables">Erinnerungsbenachrichtigung auf Wearables anzeigen</string>
+    <string name="summaryNoNotificationOnWearables">Keine Erinnerungsbenachrichtigung auf Wearables</string>
     <string name="prefsNotificationTitle">Titel der Benachrichtung</string>
     <string name="prefsNotificationTitleDefault">MindBell &#8230;</string>
     <string name="prefsNotificationText">Text der Benachrichtung</string>
@@ -136,9 +136,6 @@
     <string name="prefsNotificationVisibilityPublic">Benachrichtigungstext auf Sperrbildschirm</string>
     <string name="summaryNotificationVisibilityPublic">Benachrichtigungstext auf Sperrbildschirm anzeigen</string>
     <string name="summaryNotificationVisibilityPrivate">Benachrichtigungstext auf Sperrbildschirm ausblenden</string>
-    <string name="prefsDismissNotification">Benachrichtigung danach verwerfen</string>
-    <string name="summaryDismissNotification">Verwerfe Benachrichtigung nach dem Erinnern (auch auf Wearables)</string>
-    <string name="summaryDontDismissNotification">Benachrichtigung nach dem Erinnern stehen lassen (auch auf Wearables)</string>
 
     <string name="prefsCategoryMuteRules">Stillstellregeln</string>
     <string name="prefsMuteWithPhone">Kein Erinnern, wenn Klingelton still</string>

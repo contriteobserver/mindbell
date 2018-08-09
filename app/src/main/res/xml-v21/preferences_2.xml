@@ -44,37 +44,28 @@
 
     </PreferenceScreen>
 
-    <PreferenceScreen android:title="@string/prefsCategoryRingNotification">
+    <PreferenceScreen android:title="@string/prefsCategoryReminderNotification">
 
         <CheckBoxPreference
-            android:key="@string/keyNotification"
-            android:summaryOff="@string/summaryNoNotification"
-            android:summaryOn="@string/summaryNotification"
-            android:title="@string/prefsNotification"/>
+            android:key="@string/keyNotificationOnWearables"
+            android:summaryOff="@string/summaryNoNotificationOnWearables"
+            android:summaryOn="@string/summaryNotificationOnWearables"
+            android:title="@string/prefsNotificationOnWearables" />
         <com.googlecode.mindbell.preference.EditTextPreferenceWithSummary
             android:defaultValue="@string/prefsNotificationTitleDefault"
-            android:dependency="@string/keyNotification"
             android:key="@string/keyNotificationTitle"
             android:summary="%s"
             android:title="@string/prefsNotificationTitle"/>
         <com.googlecode.mindbell.preference.EditTextPreferenceWithSummary
             android:defaultValue="@string/prefsNotificationTextDefault"
-            android:dependency="@string/keyNotification"
             android:key="@string/keyNotificationText"
             android:summary="%s"
             android:title="@string/prefsNotificationText"/>
         <CheckBoxPreference
-            android:dependency="@string/keyNotification"
             android:key="@string/keyNotificationVisibilityPublic"
             android:summaryOff="@string/summaryNotificationVisibilityPrivate"
             android:summaryOn="@string/summaryNotificationVisibilityPublic"
             android:title="@string/prefsNotificationVisibilityPublic"/>
-        <CheckBoxPreference
-            android:dependency="@string/keyNotification"
-            android:key="@string/keyDismissNotification"
-            android:summaryOff="@string/summaryDontDismissNotification"
-            android:summaryOn="@string/summaryDismissNotification"
-            android:title="@string/prefsDismissNotification"/>
 
     </PreferenceScreen>
 

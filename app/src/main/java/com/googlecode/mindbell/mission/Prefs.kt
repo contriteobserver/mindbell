@@ -103,11 +103,8 @@ class Prefs private constructor(val context: Context) {
         get() = getBooleanSetting(keyStatus)
         set(statusNotification) = setSetting(keyStatus, statusNotification)
 
-    val isNotification: Boolean
-        get() = getBooleanSetting(keyNotification)
-
-    val isDismissNotification: Boolean
-        get() = getBooleanSetting(keyDismissNotification)
+    val isNotificationOnWearables: Boolean
+        get() = getBooleanSetting(keyNotificationOnWearables)
 
     val activeOnDaysOfWeek: Set<Int>
         get() {
@@ -419,7 +416,6 @@ class Prefs private constructor(val context: Context) {
                 STRING_SET,
                 true)
         addPreference(keyAudioStream, "0", STRING, false)
-        addPreference(keyDismissNotification, false, BOOLEAN, false)
         addPreference(keyEnd, "21:00", TIME_STRING, true)
         addPreference(keyFrequency, "00:15", TIME_STRING, true) // 15 min
         addPreference(keyKeepScreenOn, true, BOOLEAN, false)
@@ -437,7 +433,7 @@ class Prefs private constructor(val context: Context) {
         addPreference(keyMuteWithPhone, true, BOOLEAN, false)
         addPreference(keyNormalize, NORMALIZE_NONE, STRING, true)
         addPreference(keyNoSoundOnMusic, false, BOOLEAN, false)
-        addPreference(keyNotification, false, BOOLEAN, false)
+        addPreference(keyNotificationOnWearables, false, BOOLEAN, false)
         addPreference(keyNotificationText, context.getText(prefsNotificationTextDefault), STRING, false)
         addPreference(keyNotificationTitle, context.getText(prefsNotificationTitleDefault), STRING, false)
         addPreference(keyNotificationVisibilityPublic, true, BOOLEAN, false)
@@ -558,11 +554,11 @@ class Prefs private constructor(val context: Context) {
         val keyStatusVisiblityPublic = "statusVisiblityPublic"
         if (settings.contains(keyStatusVisiblityPublic)) {
             val statusVisibilityPublic = settings.getBoolean(keyStatusVisiblityPublic,
-                    preferenceMap[keyStatusVisibilityPublic]!!.defaultValue as Boolean)
-            setSetting(keyStatusVisibilityPublic, statusVisibilityPublic)
+                    preferenceMap[R.string.keyStatusVisibilityPublic]!!.defaultValue as Boolean)
+            setSetting(R.string.keyStatusVisibilityPublic, statusVisibilityPublic)
             settings.edit().remove(keyStatusVisiblityPublic).apply()
             Log
-                    .w(TAG, "Converted old setting for '$keyStatusVisiblityPublic' ($statusVisibilityPublic) to '${context.getText(keyStatusVisibilityPublic)}' ($statusVisibilityPublic)")
+                    .w(TAG, "Converted old setting for '$keyStatusVisiblityPublic' ($statusVisibilityPublic) to '${context.getText(R.string.keyStatusVisibilityPublic)}' ($statusVisibilityPublic)")
         }
         // Version 3.2.5 introduced keyUseAudioStreamVolumeSetting (default true) but should be false for users of older versions
         if (!settings.contains(context.getText(keyUseAudioStreamVolumeSetting).toString()) && settings.contains(context.getText(keyActive).toString())) {
@@ -580,6 +576,22 @@ class Prefs private constructor(val context: Context) {
             settings.edit().remove(keyUseStandardBell).apply()
             Log
                     .w(TAG, "Converted old setting for '$keyUseStandardBell' ($useStandardBell) to '${context.getText(keyReminderBell)}' ($reminderBell)")
+        }
+        // Version 3.5.0 renamed notification to notificationOnWearables
+        val keyNotification = "notification"
+        if (settings.contains(keyNotification)) {
+            val notificationOnWearables = settings.getBoolean(keyNotification,
+                    preferenceMap[R.string.keyNotificationOnWearables]!!.defaultValue as Boolean)
+            setSetting(R.string.keyNotificationOnWearables, notificationOnWearables)
+            settings.edit().remove(keyNotification).apply()
+            Log
+                    .w(TAG, "Converted old setting for '$keyNotification' ($notificationOnWearables) to '${context.getText(R.string.keyNotificationOnWearables)}' ($notificationOnWearables)")
+        }
+        // Version 3.5.0 removed dismissNotification
+        val keyDismissNotification = "dismissNotification"
+        if (settings.contains(keyDismissNotification)) {
+            settings.edit().remove(keyDismissNotification).apply()
+            Log.w(TAG, "Removed old setting for '$keyDismissNotification'")
         }
     }
 
@@ -897,10 +909,7 @@ class Prefs private constructor(val context: Context) {
             get() = this@Prefs.volume
 
         override val isNotification: Boolean
-            get() = this@Prefs.isNotification
-
-        override val isDismissNotification: Boolean
-            get() = this@Prefs.isDismissNotification
+            get() = this@Prefs.isNotificationOnWearables
 
         override val soundUri: Uri?
             get() = this@Prefs.getReminderSoundUri()
@@ -924,9 +933,6 @@ class Prefs private constructor(val context: Context) {
         override val isNotification: Boolean
             get() = false
 
-        override val isDismissNotification: Boolean
-            get() = false
-
         override val soundUri: Uri?
             get() = this@Prefs.getReminderSoundUri()
 
@@ -947,9 +953,6 @@ class Prefs private constructor(val context: Context) {
             get() = this@Prefs.meditationVolume
 
         override val isNotification: Boolean
-            get() = false
-
-        override val isDismissNotification: Boolean
             get() = false
 
     }
@@ -1076,6 +1079,7 @@ class Prefs private constructor(val context: Context) {
          */
         const val STATUS_NOTIFICATION_ID = 0x7f030001 // historically, has been R.layout.bell for a long time
         const val INTERRUPT_NOTIFICATION_ID = STATUS_NOTIFICATION_ID + 1
+        const val WEARABLE_INTERRUPT_NOTIFICATION_ID = INTERRUPT_NOTIFICATION_ID + 1
 
         /**
          * Request codes for intents created by MindBell.
@@ -1191,7 +1195,7 @@ class Prefs private constructor(val context: Context) {
                 "1" -> AudioManager.STREAM_NOTIFICATION
                 "2" -> AudioManager.STREAM_MUSIC
                 "0" -> AudioManager.STREAM_ALARM
-            // fall-thru to use "0" as default
+                // fall-thru to use "0" as default
                 else -> AudioManager.STREAM_ALARM
             }
         }

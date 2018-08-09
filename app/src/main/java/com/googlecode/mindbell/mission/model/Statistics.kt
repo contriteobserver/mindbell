@@ -100,9 +100,6 @@ class Statistics {
         override val isNotification: Boolean
             get() = false
 
-        override val isDismissNotification: Boolean
-            get() = false
-
         override val soundUri: Uri?
             get() = null
 

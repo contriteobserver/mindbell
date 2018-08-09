@@ -40,6 +40,7 @@ import com.googlecode.mindbell.mission.Prefs.Companion.TAG
 import com.googlecode.mindbell.mission.Prefs.Companion.UPDATE_STATUS_NOTIFICATION_DAY_NIGHT_REQUEST_CODE
 import com.googlecode.mindbell.mission.Prefs.Companion.UPDATE_STATUS_NOTIFICATION_MUTED_TILL_REQUEST_CODE
 import com.googlecode.mindbell.mission.Prefs.Companion.UPDATE_STATUS_NOTIFICATION_REQUEST_CODE
+import com.googlecode.mindbell.mission.Prefs.Companion.WEARABLE_INTERRUPT_NOTIFICATION_ID
 import com.googlecode.mindbell.util.AlarmManagerCompat
 import com.googlecode.mindbell.util.NotificationManagerCompatExtension
 import com.googlecode.mindbell.util.TimeOfDay
@@ -57,14 +58,15 @@ class Notifier private constructor(val context: Context, val prefs: Prefs) {
     }
 
     /**
-     * Create the reminder notification which is to be displayed when executing reminder actions.
+     * Create the reminder notification which is to be displayed when executing reminder actions. A corresponding notification
+     * is displayed on wearables it the options says so.
      */
     @SuppressLint("InlinedApi") // IMPORTANCE_LOW is ignored in compat class for API level < 26
     fun createInterruptNotification(interruptSettings: InterruptSettings? = null): Notification {
 
         // Create notification channel
         NotificationManagerCompatExtension.getInstance(context).createNotificationChannel(INTERRUPT_NOTIFICATION_CHANNEL_ID, context
-                .getText(R.string.prefsCategoryRingNotification).toString(), context.getText(R.string.summaryNotification)
+                .getText(R.string.prefsCategoryReminderNotification).toString(), context.getText(R.string.summaryNotificationOnWearables)
                 .toString(), //
                 IMPORTANCE_LOW) // no notification sound for API level >= 26
 
@@ -76,31 +78,42 @@ class Notifier private constructor(val context: Context, val prefs: Prefs) {
 
         // Now create the notification
         @Suppress("DEPRECATION") // getColor() deprecated now but not for older API levels < 23
-        val notificationBuilder = NotificationCompat.Builder(context.applicationContext, INTERRUPT_NOTIFICATION_CHANNEL_ID) //
+        val phoneNotificationBuilder = NotificationCompat.Builder(context.applicationContext, INTERRUPT_NOTIFICATION_CHANNEL_ID) //
                 .setCategory(NotificationCompat.CATEGORY_ALARM) //
                 .setAutoCancel(true) // cancel notification on touch
                 .setColor(context.resources.getColor(R.color.backgroundColor)) //
                 .setContentTitle(prefs.notificationTitle) //
                 .setContentText(prefs.notificationText) //
+                .setGroup(INTERRUPT_NOTIFICATION_CHANNEL_ID) // group phone and wearable notification
+                .setOngoing(false) // notifications bound to a foreground service are always ongoing
                 .setSmallIcon(R.drawable.ic_stat_bell_ring) //
                 .setSound(null) // no notification sound for API level < 26
+                .setGroupSummary(true) // summarize group on phone not on wearable
                 .setVisibility(visibility)
-        if (interruptSettings != null && interruptSettings.isVibrate) {
-            notificationBuilder.setVibrate(prefs.vibrationPattern)
+        if (interruptSettings != null && interruptSettings.isNotification) {
+            @Suppress("DEPRECATION") // getColor() deprecated now but not for older API levels < 23
+            val wearableNotificationBuilder = NotificationCompat.Builder(context.applicationContext, INTERRUPT_NOTIFICATION_CHANNEL_ID) //
+                    .setCategory(NotificationCompat.CATEGORY_ALARM) //
+                    .setAutoCancel(true) // cancel notification on touch
+                    .setColor(context.resources.getColor(R.color.backgroundColor)) //
+                    .setContentTitle(prefs.notificationTitle) //
+                    .setContentText(prefs.notificationText) //
+                    .setGroup(INTERRUPT_NOTIFICATION_CHANNEL_ID) // group phone and wearable notification
+                    .setOngoing(false) // ongoing notification are not displayed on wearables
+                    .setSmallIcon(R.drawable.ic_stat_bell_ring) //
+                    .setSound(null) // no notification sound for API level < 21, would play on default channel anyway
+                    .setGroupSummary(false) // summarize group on phone not on wearable
+                    .setVisibility(visibility)
+            if (interruptSettings.isVibrate) {
+                wearableNotificationBuilder.setVibrate(prefs.vibrationPattern)
+            }
+            NotificationManagerCompat.from(context).notify(WEARABLE_INTERRUPT_NOTIFICATION_ID, wearableNotificationBuilder.build())
         }
-
-        return notificationBuilder.build()
+        if (interruptSettings != null && interruptSettings.isVibrate && !interruptSettings.isNotification) {
+            phoneNotificationBuilder.setVibrate(prefs.vibrationPattern)
+        }
+        return phoneNotificationBuilder.build()
     }
-
-    /**
-     * Cancel the ring notification if ring notification and its dismissal is requested.
-     */
-    // TODO Delete ... notification is automatically cancelled by finishing the foreground service
-//    fun cancelInterruptNotification(interruptSettings: InterruptSettings) {
-//        if (interruptSettings.isNotification && interruptSettings.isDismissNotification) {
-//            NotificationManagerCompat.from(context).cancel(INTERRUPT_NOTIFICATION_ID)
-//        }
-//    }
 
     /**
      * This is about updating the status notification on changes in system settings.

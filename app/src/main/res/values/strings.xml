@@ -123,10 +123,10 @@
     <string name="summaryStatusVisibilityPublic">Show status text on lock screen</string>
     <string name="summaryStatusVisibilityPrivate">Hide status text on lock screen</string>
 
-    <string name="prefsCategoryRingNotification">Reminder notification</string>
-    <string name="prefsNotification">Show notification</string>
-    <string name="summaryNotification">Show reminder notification (also on wearables)</string>
-    <string name="summaryNoNotification">No reminder notification (wearables remain to be unaware)</string>
+    <string name="prefsCategoryReminderNotification">Reminder notification</string>
+    <string name="prefsNotificationOnWearables">Notification on wearables</string>
+    <string name="summaryNotificationOnWearables">Show reminder notification on wearables</string>
+    <string name="summaryNoNotificationOnWearables">No reminder notification on wearables</string>
     <string name="prefsNotificationTitle">Title of reminder notification</string>
     <string name="prefsNotificationTitleDefault">MindBell &#8230;</string>
     <string name="prefsNotificationText">Text of reminder notification</string>
@@ -134,9 +134,6 @@
     <string name="prefsNotificationVisibilityPublic">Show reminder notification text on lock screen</string>
     <string name="summaryNotificationVisibilityPublic">Show reminder notification text on lock screen</string>
     <string name="summaryNotificationVisibilityPrivate">Hide reminder notification text on lock screen</string>
-    <string name="prefsDismissNotification">Dismiss notification afterwards</string>
-    <string name="summaryDismissNotification">Dismiss notification after reminder (also on wearables)</string>
-    <string name="summaryDontDismissNotification">Keep notification after reminder (also on wearables)</string>
 
     <string name="prefsCategoryMuteRules">Mute rules</string>
     <string name="prefsMuteWithPhone">Don\'t remind if ringtone is muted</string>
@@ -285,7 +282,6 @@
     <string name="keyActive" translatable="false">active</string>
     <string name="keyAudioStream" translatable="false">audioStream</string>
     <string name="keyBatterySettingsIdOnly" translatable="false">batterySettingsIdOnly</string>
-    <string name="keyDismissNotification" translatable="false">dismissNotification</string>
     <string name="keyEnd" translatable="false">end</string>
     <string name="keyFAQ" translatable="false">faqIdOnly</string>
     <string name="keyFrequency" translatable="false">frequency</string>
@@ -305,7 +301,7 @@
     <string name="keyMuteWithPhone" translatable="false">muteWithPhone</string>
     <string name="keyNormalize" translatable="false">normalize</string>
     <string name="keyNoSoundOnMusic" translatable="false">noSoundOnMusic</string>
-    <string name="keyNotification" translatable="false">notification</string>
+    <string name="keyNotificationOnWearables" translatable="false">notificationOnWearables</string>
     <string name="keyNotificationText" translatable="false">notificationText</string>
     <string name="keyNotificationTitle" translatable="false">notificationTitle</string>
     <string name="keyNotificationVisibilityPublic" translatable="false">notificationVisibilityPublic</string>

@@ -36,8 +36,6 @@ interface InterruptSettings {
 
     val isNotification: Boolean
 
-    val isDismissNotification: Boolean
-
     val soundUri: Uri?
 
 }
