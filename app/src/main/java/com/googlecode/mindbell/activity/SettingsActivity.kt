@@ -99,7 +99,6 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
         val preferenceStatus = preferenceScreen.findPreference(getText(R.string.keyStatus)) as CheckBoxPreference
         val preferenceShow = preferenceScreen.findPreference(getText(R.string.keyShow)) as CheckBoxPreference
         val preferenceSound = preferenceScreen.findPreference(getText(R.string.keySound)) as CheckBoxPreference
-        val preferenceReminderSoundLength = preferenceScreen.findPreference(getText(R.string.keyReminderSoundLengthIdOnly)) as Preference
         val preferenceReminderBell = preferenceScreen.findPreference(getText(R.string.keyReminderBell)) as ListPreferenceWithSummaryFix
         val preferenceVolume = preferenceScreen.findPreference(getText(R.string.keyVolume)) as MediaVolumePreference
         val preferenceRingtone = preferenceScreen.findPreference(getText(R.string.keyRingtone)) as RingtonePreference
@@ -145,12 +144,6 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
             } else {
                 false
             }
-        }
-
-        preferenceReminderSoundLength.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            onPreferenceClickReminderSoundLength(preferenceUseWorkaroundBell.isChecked, preferenceReminderBell.value,
-                    preferenceRingtoneValue)
-            true
         }
 
         preferenceReminderBell.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
@@ -456,24 +449,6 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
         return Prefs.NORMALIZE_NONE != normalizeValue
     }
 
-    private fun onPreferenceClickReminderSoundLength(useWorkaroundBell: Boolean, reminderBell: String, ringtoneValue: String?) {
-        val soundUri = getReminderSoundUri(reminderBell, useWorkaroundBell, ringtoneValue)!!
-        var soundDuration = Utils.getSoundDuration(this, soundUri)
-        val msg =
-                if (soundDuration == null) {
-                    getText(R.string.ringtoneNotAccessible).toString()
-                } else {
-                    soundDuration /= 1000L // in seconds
-                    String.format(getText(R.string.reminderSoundLength).toString(), soundDuration,
-                            getText(R.string.summaryReminderSoundLength))
-                }
-        AlertDialog.Builder(this) //
-                .setTitle(R.string.prefsReminderSoundLength) //
-                .setMessage(msg) //
-                .setPositiveButton(android.R.string.ok, null) //
-                .show()
-    }
-
     private fun onPreferenceClickBatterySettings() {
         if (Build.VERSION.SDK_INT >= 23) {
             if (Utils.isAppWhitelisted(this)) {
@@ -573,8 +548,6 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
             Log.w(TAG, "$msg (${soundUri.toString()})")
             Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
             return false
-        } else if (soundDuration > 10L) {
-            Toast.makeText(this, getText(R.string.summaryReminderSoundLength), Toast.LENGTH_LONG).show()
         }
         return true
     }

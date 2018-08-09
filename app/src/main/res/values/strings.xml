@@ -98,9 +98,6 @@
     <string name="prefsSound">Play sound</string>
     <string name="summarySound">Play sound as reminder</string>
     <string name="summaryDontSound">Don\'t play sound as reminder</string>
-    <string name="prefsReminderSoundLength">Sound information</string>
-    <string name="summaryReminderSoundLength">Choosing a sound for reminder that exceeds ten seconds is subject to be cut off. If
-        the chosen sound contains silence between separate bells you may only hear the first bell.</string>
     <string name="prefsReminderBell">Bell sound</string>
     <string name="prefsRingtone">System sound</string>
     <string name="summaryRingtoneNotSet">No system sound selected, play single bell sound</string>
