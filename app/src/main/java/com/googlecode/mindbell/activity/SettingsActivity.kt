@@ -93,7 +93,8 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences_1)
         addPreferencesFromResource(R.xml.preferences_2) // notifications depend on SDK
-        addPreferencesFromResource(R.xml.preferences_3)
+        addPreferencesFromResource(R.xml.preferences_3) // mute rules depend on SDK
+        addPreferencesFromResource(R.xml.preferences_4)
 
         val preferenceUseAudioStreamVolumeSetting = preferenceScreen.findPreference(getText(R.string.keyUseAudioStreamVolumeSetting)) as CheckBoxPreference
         val preferenceStatus = preferenceScreen.findPreference(getText(R.string.keyStatus)) as CheckBoxPreference
@@ -114,7 +115,7 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
         val preferenceUseWorkaroundBell = preferenceScreen.findPreference(getText(R.string.keyUseWorkaroundBell)) as CheckBoxPreference
         val preferenceFAQ = preferenceScreen.findPreference(getText(R.string.keyFAQ)) as Preference
         val preferenceBatterySettings = preferenceScreen.findPreference(getText(R.string.keyBatterySettingsIdOnly)) as Preference
-        val InternalStatistics = preferenceScreen.findPreference(getText(R.string.keyStatisticsIdOnly)) as Preference
+        val preferenceStatistics = preferenceScreen.findPreference(getText(R.string.keyStatisticsIdOnly)) as Preference
         val preferenceSendMail = preferenceScreen.findPreference(getText(R.string.keySendMailIdOnly)) as Preference
 
         preferenceUseAudioStreamVolumeSetting.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
@@ -273,7 +274,7 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
             }
         }
 
-        InternalStatistics.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+        preferenceStatistics.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             startActivity(Intent(this, StatisticsActivity::class.java))
             true
         }

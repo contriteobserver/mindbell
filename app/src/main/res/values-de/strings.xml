@@ -140,6 +140,9 @@
     <string name="prefsMuteWithAudioStream">Kein Erinnern, wenn Audiokanal still</string>
     <string name="summaryMuteWithAudioStream">Bei stillgestelltem Audiokanal nicht erinnern</string>
     <string name="summaryNoMuteWithAudioStream">Auch bei stillgestelltem Audiokanal erinnern</string>
+    <string name="prefsMuteInDoNotDisturbMode">Kein Erinnern im Bitte-nicht-stören-Modus</string>
+    <string name="summaryMuteInDoNotDisturbMode">Im Bitte-nicht-stören-Modus nicht erinnern</string>
+    <string name="summaryNoMuteInDoNotDisturbMode">Auch im Bitte-nicht-stören-Modus erinnern</string>
     <string name="prefsMuteOffHook">&constPrefsMuteOffHook;</string>
     <string name="summaryMuted">Während Telefongesprächen nicht erinnern</string>
     <string name="summaryNotMuted">Auch während Telefongesprächen erinnern</string>
@@ -242,6 +245,7 @@
     <string name="reasonMutedOffHook">Kein Erinnern während Telefonaten</string>
     <string name="reasonMutedTill">Nicht erinnern bis {0}</string>
     <string name="reasonMutedWithAudioStream">Kein Erinnern bei stillgestelltem Audiokanal</string>
+    <string name="reasonMutedInDoNotDisturbMode">Kein Erinnern im Bitte-nicht-stören-Modus</string>
     <string name="reasonMutedWithPhone">Kein Erinnern bei stillgestelltem Klingelton</string>
 
     <!-- Reasons why permission READ_PHONE_STATE should be granted -->

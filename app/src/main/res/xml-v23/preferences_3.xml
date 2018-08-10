@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
     MindBell - Aims to give you a support for staying mindful in a busy life -
                for remembering what really counts
    
@@ -28,32 +27,37 @@
             android:key="@string/keyMuteWithPhone"
             android:summaryOff="@string/summaryNoMuteWithPhone"
             android:summaryOn="@string/summaryMuteWithPhone"
-            android:title="@string/prefsMuteWithPhone"/>
+            android:title="@string/prefsMuteWithPhone" />
         <CheckBoxPreference
             android:key="@string/keyMuteWithAudioStream"
             android:summaryOff="@string/summaryNoMuteWithAudioStream"
             android:summaryOn="@string/summaryMuteWithAudioStream"
-            android:title="@string/prefsMuteWithAudioStream"/>
+            android:title="@string/prefsMuteWithAudioStream" />
+        <CheckBoxPreference
+            android:key="@string/keyMuteInDoNotDisturbMode"
+            android:summaryOff="@string/summaryNoMuteInDoNotDisturbMode"
+            android:summaryOn="@string/summaryMuteInDoNotDisturbMode"
+            android:title="@string/prefsMuteInDoNotDisturbMode" />
         <CheckBoxPreference
             android:key="@string/keyMuteOffHook"
             android:summaryOff="@string/summaryNotMuted"
             android:summaryOn="@string/summaryMuted"
-            android:title="@string/prefsMuteOffHook"/>
+            android:title="@string/prefsMuteOffHook" />
         <CheckBoxPreference
             android:key="@string/keyMuteInFlightMode"
             android:summaryOff="@string/summaryNotMutedInFlightMode"
             android:summaryOn="@string/summaryMutedInFlightMode"
-            android:title="@string/prefsMuteInFlightMode"/>
+            android:title="@string/prefsMuteInFlightMode" />
         <CheckBoxPreference
             android:key="@string/keyNoSoundOnMusic"
             android:summaryOff="@string/summaryNotNoSoundOnMusic"
             android:summaryOn="@string/summaryNoSoundOnMusic"
-            android:title="@string/prefsNoSoundOnMusic"/>
+            android:title="@string/prefsNoSoundOnMusic" />
         <CheckBoxPreference
             android:key="@string/keyPauseAudioOnSound"
             android:summaryOff="@string/summaryNotPauseAudioOnSound"
             android:summaryOn="@string/summaryPauseAudioOnSound"
-            android:title="@string/prefsPauseAudioOnSound"/>
+            android:title="@string/prefsPauseAudioOnSound" />
 
     </PreferenceScreen>
 

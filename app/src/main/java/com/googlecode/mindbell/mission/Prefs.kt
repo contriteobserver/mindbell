@@ -174,6 +174,9 @@ class Prefs private constructor(val context: Context) {
     val isRandomize: Boolean
         get() = getBooleanSetting(keyRandomize)
 
+    val isMuteInDoNotDisturbMode: Boolean
+        get() = getBooleanSetting(keyMuteInDoNotDisturbMode)
+
     val isMuteInFlightMode: Boolean
         get() = getBooleanSetting(keyMuteInFlightMode)
 
@@ -426,6 +429,7 @@ class Prefs private constructor(val context: Context) {
         addPreference(keyMeditationEndingTimeMillis, -1L, LONG, false)
         addPreference(keyMeditationInterruptingBell, "1", STRING, false)
         addPreference(keyMeditationStartingTimeMillis, -1L, LONG, false)
+        addPreference(keyMuteInDoNotDisturbMode, true, BOOLEAN, false)
         addPreference(keyMuteInFlightMode, false, BOOLEAN, false)
         addPreference(keyMuteOffHook, true, BOOLEAN, false)
         addPreference(keyMutedTill, -1L, LONG, false)
@@ -506,8 +510,7 @@ class Prefs private constructor(val context: Context) {
         if (oldNumberOfPeriods > 0) {
             val patternOfPeriods = derivePatternOfPeriods(oldNumberOfPeriods)
             settings.edit().remove(keyNumberOfPeriods).apply()
-            Log
-                    .w(TAG, "Converted old setting for '$keyNumberOfPeriods' ($oldNumberOfPeriods) to '${context.getText(keyPatternOfPeriods)}' ($patternOfPeriods)")
+            Log.w(TAG, "Converted old setting for '$keyNumberOfPeriods' ($oldNumberOfPeriods) to '${context.getText(keyPatternOfPeriods)}' ($patternOfPeriods)")
         }
         // Version 3.2.0 replaces frequency milliseconds string by time string
         val keyFrequency = context.getString(R.string.keyFrequency)
@@ -543,8 +546,7 @@ class Prefs private constructor(val context: Context) {
             if (oldMeditationDuration >= 0) {
                 val meditationDuration = TimeOfDay.fromSecondsInterval(oldMeditationDuration).persistString
                 setSetting(R.string.keyMeditationDuration, meditationDuration)
-                Log
-                        .w(TAG, "Converted old value for '$keyMeditationDuration' from '$oldMeditationDuration' to '$meditationDuration'")
+                Log.w(TAG, "Converted old value for '$keyMeditationDuration' from '$oldMeditationDuration' to '$meditationDuration'")
             }
         } catch (e: ClassCastException) {
             // preference has already been converted
@@ -557,15 +559,13 @@ class Prefs private constructor(val context: Context) {
                     preferenceMap[R.string.keyStatusVisibilityPublic]!!.defaultValue as Boolean)
             setSetting(R.string.keyStatusVisibilityPublic, statusVisibilityPublic)
             settings.edit().remove(keyStatusVisiblityPublic).apply()
-            Log
-                    .w(TAG, "Converted old setting for '$keyStatusVisiblityPublic' ($statusVisibilityPublic) to '${context.getText(R.string.keyStatusVisibilityPublic)}' ($statusVisibilityPublic)")
+            Log.w(TAG, "Converted old setting for '$keyStatusVisiblityPublic' ($statusVisibilityPublic) to '${context.getText(R.string.keyStatusVisibilityPublic)}' ($statusVisibilityPublic)")
         }
         // Version 3.2.5 introduced keyUseAudioStreamVolumeSetting (default true) but should be false for users of older versions
         if (!settings.contains(context.getText(keyUseAudioStreamVolumeSetting).toString()) && settings.contains(context.getText(keyActive).toString())) {
             val useAudioStreamVolumeSetting = false
             setSetting(keyUseAudioStreamVolumeSetting, useAudioStreamVolumeSetting)
-            Log
-                    .w(TAG, "Created setting for '${context.getText(keyUseAudioStreamVolumeSetting)}' with non-default ($useAudioStreamVolumeSetting) because an older version was already installed")
+            Log.w(TAG, "Created setting for '${context.getText(keyUseAudioStreamVolumeSetting)}' with non-default ($useAudioStreamVolumeSetting) because an older version was already installed")
         }
         // Version 3.2.6 replaced useStandardBell by reminderBell
         val keyUseStandardBell = "useStandardBell"
@@ -574,8 +574,16 @@ class Prefs private constructor(val context: Context) {
             val reminderBell = if (useStandardBell) DEFAULT_REMINDER_BELL else BELL_ENTRY_VALUE_INDEX_NO_SOUND.toString()
             setSetting(keyReminderBell, reminderBell)
             settings.edit().remove(keyUseStandardBell).apply()
-            Log
-                    .w(TAG, "Converted old setting for '$keyUseStandardBell' ($useStandardBell) to '${context.getText(keyReminderBell)}' ($reminderBell)")
+            Log.w(TAG, "Converted old setting for '$keyUseStandardBell' ($useStandardBell) to '${context.getText(keyReminderBell)}' ($reminderBell)")
+        }
+        // Version 3.5.0 renamed muteOffInFlightMode to muteInFlightMode
+        val keyMuteOffInFlightMode = "muteOffInFlightMode"
+        if (settings.contains(keyMuteOffInFlightMode)) {
+            val muteInFlightMode = settings.getBoolean(keyMuteOffInFlightMode,
+                    preferenceMap[R.string.keyMuteInFlightMode]!!.defaultValue as Boolean)
+            setSetting(R.string.keyMuteInFlightMode, muteInFlightMode)
+            settings.edit().remove(keyMuteOffInFlightMode).apply()
+            Log.w(TAG, "Converted old setting for '$keyMuteOffInFlightMode' ($muteInFlightMode) to '${context.getText(R.string.keyMuteInFlightMode)}' ($muteInFlightMode)")
         }
         // Version 3.5.0 renamed notification to notificationOnWearables
         val keyNotification = "notification"
@@ -584,8 +592,7 @@ class Prefs private constructor(val context: Context) {
                     preferenceMap[R.string.keyNotificationOnWearables]!!.defaultValue as Boolean)
             setSetting(R.string.keyNotificationOnWearables, notificationOnWearables)
             settings.edit().remove(keyNotification).apply()
-            Log
-                    .w(TAG, "Converted old setting for '$keyNotification' ($notificationOnWearables) to '${context.getText(R.string.keyNotificationOnWearables)}' ($notificationOnWearables)")
+            Log.w(TAG, "Converted old setting for '$keyNotification' ($notificationOnWearables) to '${context.getText(R.string.keyNotificationOnWearables)}' ($notificationOnWearables)")
         }
         // Version 3.5.0 removed dismissNotification
         val keyDismissNotification = "dismissNotification"

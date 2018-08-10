@@ -29,7 +29,7 @@ import android.os.Build
  * Hide Android API level differences from application code.
  *
  * However, with Kotlin I found no way to extend existing NotificationManagerCompat. (1) It cannot be inherited from as it is
- * final. (2) Kotlin's delegation feature is not usable because NotficationManagerCompat is no interface. (3) Classic delegation
+ * final. (2) Kotlin's delegation feature is not usable because NotificationManagerCompat is no interface. (3) Classic delegation
  * would have required to *type* all delegate method because AndroidStudio is not able to generate them - probably because of (2)
  * or because one would not do that ;-).
  */
@@ -53,11 +53,23 @@ class NotificationManagerCompatExtension private constructor(val context: Contex
                 mChannel.lightColor = lightColor
             }
             mChannel.enableVibration(vibration)
-            val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
+            val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             mNotificationManager.createNotificationChannel(mChannel)
         }
     }
 
+    /**
+     * Returns the current interruption filter (do-not-disturb mode) for API level 23 or higher, otherwise
+     * NotificationManager.INTERRUPTION_FILTER_NONE.
+     */
+    fun currentInterruptionFilter(): Int {
+        return if (Build.VERSION.SDK_INT >= 23) {
+            val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            mNotificationManager.currentInterruptionFilter
+        } else {
+            NotificationManager.INTERRUPTION_FILTER_NONE
+        }
+    }
 
     companion object {
 

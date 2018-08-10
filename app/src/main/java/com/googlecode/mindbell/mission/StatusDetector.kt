@@ -19,6 +19,7 @@
 package com.googlecode.mindbell.mission
 
 import android.Manifest
+import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.media.AudioManager
@@ -30,6 +31,7 @@ import android.telephony.TelephonyManager
 import android.util.Log
 import com.googlecode.mindbell.R
 import com.googlecode.mindbell.mission.Prefs.Companion.TAG
+import com.googlecode.mindbell.util.NotificationManagerCompatExtension
 import com.googlecode.mindbell.util.TimeOfDay
 import java.text.MessageFormat
 import java.util.*
@@ -62,6 +64,12 @@ class StatusDetector internal constructor(val context: Context, val prefs: Prefs
 
     val reasonMutedWithAudioStream: String
         get() = context.getText(R.string.reasonMutedWithAudioStream).toString()
+
+    val isPhoneInDoNotDisturbMode: Boolean
+        get() = NotificationManagerCompatExtension.getInstance(context).currentInterruptionFilter() != NotificationManager.INTERRUPTION_FILTER_NONE
+
+    val reasonMutedInDoNotDisturbMode: String
+        get() = context.getText(R.string.reasonMutedInDoNotDisturbMode).toString()
 
     val isPhoneOffHook: Boolean
         get() {
@@ -106,6 +114,8 @@ class StatusDetector internal constructor(val context: Context, val prefs: Prefs
             reason = reasonMutedWithPhone
         } else if (prefs.isMuteWithAudioStream && isAudioStreamMuted) { // Mute bell with audio stream?
             reason = reasonMutedWithAudioStream
+        } else if (prefs.isMuteInDoNotDisturbMode && isPhoneInDoNotDisturbMode) { // Mute bell in do-not-disturb mode?
+            reason = reasonMutedInDoNotDisturbMode
         } else if (prefs.isMuteOffHook && isPhoneOffHook) { // Mute bell while phone is off hook (or ringing)?
             reason = reasonMutedOffHook
         } else if (prefs.isMuteInFlightMode && isPhoneInFlightMode) { // Mute bell while in flight mode?
