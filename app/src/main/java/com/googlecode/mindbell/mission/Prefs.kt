@@ -908,7 +908,7 @@ class Prefs private constructor(val context: Context) {
         override val volume: Float
             get() = this@Prefs.volume
 
-        override val isNotification: Boolean
+        override val isNotificationOnWearables: Boolean
             get() = this@Prefs.isNotificationOnWearables
 
         override val soundUri: Uri?
@@ -930,7 +930,7 @@ class Prefs private constructor(val context: Context) {
         override val volume: Float
             get() = this@Prefs.volume
 
-        override val isNotification: Boolean
+        override val isNotificationOnWearables: Boolean
             get() = false
 
         override val soundUri: Uri?
@@ -952,7 +952,7 @@ class Prefs private constructor(val context: Context) {
         override val volume: Float
             get() = this@Prefs.meditationVolume
 
-        override val isNotification: Boolean
+        override val isNotificationOnWearables: Boolean
             get() = false
 
     }

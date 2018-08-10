@@ -23,7 +23,7 @@ enum class NoActionsReason {
 
     INACTIVE, // Bell is neither meditating nor active -- not reminding, not rescheduling
     MEDITATION_RAMP_UP, // Bell is in ramp-up phase of meditation
-    BUTTON_OR_PREFS_OR_REBOOT, // Bell called by activate bell button or preferences or when boot completed or after updating
+    BUTTON_OR_PREFS_OR_REBOOT_OR_UPDATE, // Bell called by activate bell button or preferences or when boot completed or after updating
     NIGHT_TIME, // Bell called during night time
     MUTED, // Bell called but is muted
     NONE // Only used to allow default constructor for StatisticsEntry object

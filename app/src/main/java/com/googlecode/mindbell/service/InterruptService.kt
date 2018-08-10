@@ -153,7 +153,7 @@ class InterruptService : Service() {
 
         if (!isRescheduling) {
 
-            return HandlerResult(null, null, NoActionsStatisticsEntry(BUTTON_OR_PREFS_OR_REBOOT), reschedule)
+            return HandlerResult(null, null, NoActionsStatisticsEntry(BUTTON_OR_PREFS_OR_REBOOT_OR_UPDATE), reschedule)
 
         } else if (!TimeOfDay().isDaytime(prefs)) {
 

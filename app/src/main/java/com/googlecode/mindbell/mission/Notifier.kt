@@ -89,8 +89,9 @@ class Notifier private constructor(val context: Context, val prefs: Prefs) {
                 .setSmallIcon(R.drawable.ic_stat_bell_ring) //
                 .setSound(null) // no notification sound for API level < 26
                 .setGroupSummary(true) // summarize group on phone not on wearable
+                // .setVibrate() has no effect on the phone itself, only on a wearable
                 .setVisibility(visibility)
-        if (interruptSettings != null && interruptSettings.isNotification) {
+        if (interruptSettings != null && interruptSettings.isNotificationOnWearables) {
             @Suppress("DEPRECATION") // getColor() deprecated now but not for older API levels < 23
             val wearableNotificationBuilder = NotificationCompat.Builder(context.applicationContext, INTERRUPT_NOTIFICATION_CHANNEL_ID) //
                     .setCategory(NotificationCompat.CATEGORY_ALARM) //
@@ -108,9 +109,6 @@ class Notifier private constructor(val context: Context, val prefs: Prefs) {
                 wearableNotificationBuilder.setVibrate(prefs.vibrationPattern)
             }
             NotificationManagerCompat.from(context).notify(WEARABLE_INTERRUPT_NOTIFICATION_ID, wearableNotificationBuilder.build())
-        }
-        if (interruptSettings != null && interruptSettings.isVibrate && !interruptSettings.isNotification) {
-            phoneNotificationBuilder.setVibrate(prefs.vibrationPattern)
         }
         return phoneNotificationBuilder.build()
     }

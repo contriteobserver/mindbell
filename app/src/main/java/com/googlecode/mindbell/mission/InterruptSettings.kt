@@ -34,7 +34,7 @@ interface InterruptSettings {
 
     val volume: Float
 
-    val isNotification: Boolean
+    val isNotificationOnWearables: Boolean
 
     val soundUri: Uri?
 

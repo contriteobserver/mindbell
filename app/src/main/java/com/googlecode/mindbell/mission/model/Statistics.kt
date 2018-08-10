@@ -97,7 +97,7 @@ class Statistics {
         override val volume: Float
             get() = 0.0F
 
-        override val isNotification: Boolean
+        override val isNotificationOnWearables: Boolean
             get() = false
 
         override val soundUri: Uri?

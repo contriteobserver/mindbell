@@ -86,7 +86,7 @@ class ActionsExecutor private constructor(val context: Context, val prefs: Prefs
         }
 
         // Explicitly start vibration if not already done by ring notification
-        if (interruptSettings.isVibrate && !interruptSettings.isNotification) {
+        if (interruptSettings.isVibrate && !interruptSettings.isNotificationOnWearables) {
             startVibration()
         }
 
