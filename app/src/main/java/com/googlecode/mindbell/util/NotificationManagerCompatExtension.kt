@@ -62,12 +62,13 @@ class NotificationManagerCompatExtension private constructor(val context: Contex
      * Returns the current interruption filter (do-not-disturb mode) for API level 23 or higher, otherwise
      * NotificationManager.INTERRUPTION_FILTER_NONE.
      */
-    fun currentInterruptionFilter(): Int {
+    @SuppressLint("InlinedApi")
+    fun isPhoneInDoNotDisturbMode(): Boolean {
         return if (Build.VERSION.SDK_INT >= 23) {
             val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            mNotificationManager.currentInterruptionFilter
+            mNotificationManager.currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_NONE
         } else {
-            NotificationManager.INTERRUPTION_FILTER_NONE
+            false
         }
     }
 

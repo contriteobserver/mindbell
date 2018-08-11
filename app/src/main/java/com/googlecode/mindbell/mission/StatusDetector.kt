@@ -19,7 +19,6 @@
 package com.googlecode.mindbell.mission
 
 import android.Manifest
-import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.media.AudioManager
@@ -66,7 +65,7 @@ class StatusDetector internal constructor(val context: Context, val prefs: Prefs
         get() = context.getText(R.string.reasonMutedWithAudioStream).toString()
 
     val isPhoneInDoNotDisturbMode: Boolean
-        get() = NotificationManagerCompatExtension.getInstance(context).currentInterruptionFilter() != NotificationManager.INTERRUPTION_FILTER_NONE
+        get() = NotificationManagerCompatExtension.getInstance(context).isPhoneInDoNotDisturbMode()
 
     val reasonMutedInDoNotDisturbMode: String
         get() = context.getText(R.string.reasonMutedInDoNotDisturbMode).toString()
