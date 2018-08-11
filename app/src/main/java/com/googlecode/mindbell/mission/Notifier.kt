@@ -21,7 +21,7 @@ package com.googlecode.mindbell.mission
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.Notification
-import android.app.NotificationManager.IMPORTANCE_LOW
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -68,7 +68,7 @@ class Notifier private constructor(val context: Context, val prefs: Prefs) {
         NotificationManagerCompatExtension.getInstance(context).createNotificationChannel(INTERRUPT_NOTIFICATION_CHANNEL_ID, context
                 .getText(R.string.prefsCategoryReminderNotification).toString(), context.getText(R.string.summaryNotificationOnWearables)
                 .toString(), //
-                IMPORTANCE_LOW) // no notification sound for API level >= 26
+                NotificationManager.IMPORTANCE_LOW) // no notification sound for API level >= 26
 
         // Derive visibility
         val visibility = if (prefs.isNotificationVisibilityPublic)
