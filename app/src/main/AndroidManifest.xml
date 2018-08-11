@@ -22,6 +22,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.googlecode.mindbell">
 
+    <!--
+            https://developer.android.com/guide/components/broadcast-exceptions
+
+            https://developer.android.com/about/versions/oreo/background#broadcasts
+
+            https://commonsware.com/blog/2017/04/11/android-o-implicit-broadcast-ban.html
+
+            https://stackoverflow.com/q/46121467
+    -->
+
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
@@ -37,8 +47,8 @@
             android:name=".activity.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" /> <!-- explicit, addresses activity -->
+                <category android:name="android.intent.category.LAUNCHER" /> <!-- explicit, addresses activity -->
             </intent-filter>
         </activity>
 
@@ -76,18 +86,18 @@
 
         <receiver android:name=".receiver.RestartReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" /> <!-- implicit but exempted from limitations -->
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" /> <!-- explicit, addresses application -->
             </intent-filter>
         </receiver>
 
         <receiver android:name=".receiver.RefreshReceiver">
             <intent-filter>
-                <action android:name="android.app.action.INTERRUPTION_FILTER_CHANGED"/>
-                <action android:name="android.intent.action.AIRPLANE_MODE"/>
-                <action android:name="android.intent.action.PHONE_STATE"/>
-                <action android:name="android.media.RINGER_MODE_CHANGED"/>
-                <action android:name="com.googlecode.mindbell.UPDATE_STATUS_NOTIFICATION"/>
+                <action android:name="android.app.action.INTERRUPTION_FILTER_CHANGED" /> <!-- TODO implicit, *not* exempted from limitations -->
+                <action android:name="android.intent.action.AIRPLANE_MODE" /> <!-- TODO implicit, *not* exempted from limitations -->
+                <action android:name="android.intent.action.PHONE_STATE" /> <!-- implicit but exempted from limitations -->
+                <action android:name="android.media.RINGER_MODE_CHANGED" /> <!-- TODO implicit, *not* exempted from limitations -->
+                <action android:name="com.googlecode.mindbell.UPDATE_STATUS_NOTIFICATION" /> <!-- TODO Really? explicit, addresses activity -->
             </intent-filter>
         </receiver>
 
