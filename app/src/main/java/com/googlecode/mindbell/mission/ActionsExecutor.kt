@@ -24,7 +24,6 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.media.AudioManager.*
-import android.media.MediaPlayer
 import android.os.Build
 import android.os.Vibrator
 import android.util.Log
@@ -34,6 +33,7 @@ import com.googlecode.mindbell.mission.Prefs.Companion.EXTRA_KEEP
 import com.googlecode.mindbell.mission.Prefs.Companion.TAG
 import com.googlecode.mindbell.mission.Prefs.Companion.WAITING_TIME
 import com.googlecode.mindbell.mission.model.Statistics.FinishedStatisticsEntry
+import com.googlecode.mindbell.util.MediaPlayerCompat
 import java.io.IOException
 
 /**
@@ -173,8 +173,8 @@ class ActionsExecutor private constructor(val context: Context, val prefs: Prefs
                 prefs.originalVolume = originalVolume
             }
         }
-        mediaPlayer = MediaPlayer()
-        mediaPlayer!!.setAudioStreamType(prefs.audioStream)
+        mediaPlayer = MediaPlayerCompat()
+        mediaPlayer!!.setAudioStream(prefs.audioStream)
         if (!prefs.isUseAudioStreamVolumeSetting) { // care about setting the volume
             val bellVolume = interruptSettings.volume
             mediaPlayer!!.setVolume(bellVolume, bellVolume)
@@ -304,7 +304,7 @@ class ActionsExecutor private constructor(val context: Context, val prefs: Prefs
     companion object {
 
         // Keep MediaPlayer to finish a started sound explicitly, reclaimed when app gets destroyed: http://stackoverflow.com/a/2476171
-        private var mediaPlayer: MediaPlayer? = null
+        private var mediaPlayer: MediaPlayerCompat? = null
         private var audioManager: AudioManager? = null
 
         /*

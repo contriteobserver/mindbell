@@ -23,7 +23,6 @@ package com.googlecode.mindbell.preference
 
 import android.content.Context
 import android.media.AudioManager
-import android.media.MediaPlayer
 import android.net.Uri
 import android.util.AttributeSet
 import android.util.Log
@@ -31,6 +30,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
+import com.googlecode.mindbell.util.MediaPlayerCompat
 import com.googlecode.mindbell.util.Utils
 import com.googlecode.mindbell.util.VolumeConverter
 import kotlinx.android.synthetic.main.seekbar_dialog.view.*
@@ -149,7 +149,7 @@ class MediaVolumePreference(context: Context, attrs: AttributeSet) : SeekBarPref
 
         var mOriginalStreamVolume: Int = 0
 
-        private var mPlayer: MediaPlayer? = null
+        private var mPlayer: MediaPlayerCompat? = null
 
         var volume: Float = 0.toFloat()
 
@@ -166,8 +166,8 @@ class MediaVolumePreference(context: Context, attrs: AttributeSet) : SeekBarPref
             seekBar.setOnSeekBarChangeListener(this)
 
             if (mSoundUri != null) {
-                mPlayer = MediaPlayer()
-                mPlayer!!.setAudioStreamType(mStreamType)
+                mPlayer = MediaPlayerCompat()
+                mPlayer!!.setAudioStream(mStreamType)
                 try {
                     mPlayer!!.setDataSource(mContext, mSoundUri!!)
                     mPlayer!!.prepare()
