@@ -87,6 +87,9 @@ class MainActivity : Activity() {
         viewFlipper.displayedChild = if (prefs.isMeditating) 1 else if (showIntro) 3 else 2
     }
 
+    /**
+     * Create UI items in the app bar.
+     */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Save some place and do not show an icon on action bar
         actionBar!!.setIcon(android.R.color.transparent)
@@ -105,8 +108,7 @@ class MainActivity : Activity() {
         meditatingItem.setOnMenuItemClickListener { onMenuItemClickMeditating() }
         val activeItem = menu.findItem(R.id.active)
         val activeSwitch = activeItem.actionView as Switch
-        activeSwitch.isChecked = prefs.isActive
-        activeSwitch.setOnCheckedChangeListener { _, isChecked -> onCheckedChangedActive(isChecked) }
+        activeSwitch.setOnClickListener { view -> onClickActive(view as Switch) }
         return true
     }
 
@@ -219,10 +221,11 @@ class MainActivity : Activity() {
     }
 
     /**
-     * Handles change in checked state of active switch.
+     * Toggle active/inactive and set UI switch to the resulting state.
      */
-    private fun onCheckedChangedActive(isChecked: Boolean): Boolean {
-        prefs.isActive = isChecked // toggle active/inactive
+    private fun onClickActive(activeSwitch: Switch): Boolean {
+        prefs.isActive = !prefs.isActive
+        activeSwitch.isChecked = prefs.isActive
         scheduler.updateBellScheduleForReminder(true)
         val feedback = getText(if (prefs.isActive) R.string.summaryActive else R.string.summaryNotActive)
         Toast.makeText(this, feedback, Toast.LENGTH_SHORT).show()
@@ -351,17 +354,27 @@ class MainActivity : Activity() {
         textView.setOnClickListener(onClickListener)
     }
 
+    /**
+     * Update UI items in the app bar according to inner state. This gets called because {@link onResume} calls {@link invalidateOptionsMenu}.
+     */
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+
+        // Sync active switch in UI with inner state
+        val activeItem = menu.findItem(R.id.active)
+        val activeSwitch = activeItem.actionView as Switch
+        activeSwitch.isChecked = prefs.isActive
+
+        // Sync meditation start/stop icon in UI with inner state and prohibit other actions but stopping meditation while meditating
         val isMeditating = prefs.isMeditating
         val meditatingItem = menu.findItem(R.id.meditating)
         meditatingItem.setIcon(if (isMeditating) R.drawable.ic_action_meditating_off else R.drawable.ic_action_meditating_on)
         meditatingItem.setTitle(if (isMeditating) R.string.prefsMeditatingOff else R.string.prefsMeditatingOn)
-        // Do not allow other actions than stopping meditation while meditating
         menu.findItem(R.id.active).isVisible = !isMeditating
         menu.findItem(R.id.settings).isVisible = !isMeditating
         menu.findItem(R.id.muteFor).isVisible = !isMeditating
         menu.findItem(R.id.about).isVisible = !isMeditating
         menu.findItem(R.id.help).isVisible = !isMeditating
+
         return true
     }
 
