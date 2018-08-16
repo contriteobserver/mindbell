@@ -35,11 +35,16 @@ class MuteActivity : Activity() {
         super.onCreate(savedInstanceState)
         val notifier = Notifier.getInstance(this)
         val prefs = Prefs.getInstance(this)
+        prefs.isActive = !prefs.isActive // FIXME Remove this ... it's only for testing onResume in MainActivity
         val numberPicker = NumberPicker(this)
         val hours = 24
         numberPicker.minValue = 0
         numberPicker.maxValue = hours
         numberPicker.displayedValues = createDisplayedHourValues(hours)
+        // TODO Add a layout like in MainActivity.showMeditationDialog()
+        // TODO Enrich layout with active/muted information as from notification before
+        // TODO Enrich layout with active/inactive switch
+        // TODO Set better defaults for the hours to mute
         AlertDialog.Builder(this) //
                 .setTitle(R.string.statusActionMuteFor) //
                 .setView(numberPicker) //
