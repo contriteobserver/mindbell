@@ -66,7 +66,8 @@ class NotificationManagerCompatExtension private constructor(val context: Contex
     fun isPhoneInDoNotDisturbMode(): Boolean {
         return if (Build.VERSION.SDK_INT >= 23) {
             val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            mNotificationManager.currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_NONE
+            val currentInterruptionFilter = mNotificationManager.currentInterruptionFilter
+            currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_ALL
         } else {
             false
         }
