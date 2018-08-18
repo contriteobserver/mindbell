@@ -67,9 +67,9 @@ class QuickSettingsService : TileService() {
      */
     override fun onClick() {
         if (isLocked) { // is phone on lock screen?
+            // TODO I not active or meditating then do nothing
             // TODO If active and manually muted then un-mute
             // TODO If active and not manually muted then mute for an hour (or a new default from prefs)
-            // TODO I not active then do nothing
         } else {
             // TODO Show status in MuteActivity and rename
             startActivityAndCollapse(Intent(applicationContext, MuteActivity::class.java))

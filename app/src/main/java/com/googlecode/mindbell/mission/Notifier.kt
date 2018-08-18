@@ -122,15 +122,8 @@ class Notifier private constructor(val context: Context, val prefs: Prefs) {
             removeStatusNotification()
             return
         }
-        // Choose material design or pre material design status icons
-        val bellActiveDrawable: Int
-        if (prefs.useStatusIconMaterialDesign()) {
-            bellActiveDrawable = R.drawable.ic_stat_active
-        } else {
-            bellActiveDrawable = R.drawable.golden_bell_status_active
-        }
         // Suppose bell is active and not muted and all settings can be satisfied
-        var statusDrawable = bellActiveDrawable
+        var statusDrawable = R.drawable.ic_stat_active
         var contentTitle = context.getText(R.string.statusTitleBellActive)
         val contentText: String
         val statusDetector = StatusDetector.getInstance(context)

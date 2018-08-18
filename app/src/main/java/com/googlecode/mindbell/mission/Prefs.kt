@@ -457,7 +457,6 @@ class Prefs private constructor(val context: Context) {
         addPreference(keyStartMeditationDirectly, false, BOOLEAN, false)
         addPreference(keyStatistics, dumpStatistics(Statistics()), STATISTICS_STRING, false)
         addPreference(keyStatus, false, BOOLEAN, true)
-        addPreference(keyStatusIconMaterialDesign, true, BOOLEAN, true)
         addPreference(keyStatusVisibilityPublic, true, BOOLEAN, true)
         addPreference(keyStopMeditationAutomatically, false, BOOLEAN, false)
         addPreference(keyUseWorkaroundBell, false, BOOLEAN, false)
@@ -782,10 +781,6 @@ class Prefs private constructor(val context: Context) {
 
     fun getBellSoundUri(key: String): Uri? {
         return getBellSoundUri(key, isUseWorkaroundBell)
-    }
-
-    fun useStatusIconMaterialDesign(): Boolean {
-        return getBooleanSetting(keyStatusIconMaterialDesign)
     }
 
     fun getDefaultReminderBellSoundUri(isUseWorkaroundBell: Boolean): Uri {

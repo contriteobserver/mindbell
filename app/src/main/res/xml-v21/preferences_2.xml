@@ -31,12 +31,6 @@
             android:title="@string/prefsStatus"/>
         <CheckBoxPreference
             android:dependency="@string/keyStatus"
-            android:key="@string/keyStatusIconMaterialDesign"
-            android:summaryOff="@string/summaryStatusIconPreMaterialDesign"
-            android:summaryOn="@string/summaryStatusIconMaterialDesign"
-            android:title="@string/prefsStatusIconMaterialDesign"/>
-        <CheckBoxPreference
-            android:dependency="@string/keyStatus"
             android:key="@string/keyStatusVisibilityPublic"
             android:summaryOff="@string/summaryStatusVisibilityPrivate"
             android:summaryOn="@string/summaryStatusVisibilityPublic"

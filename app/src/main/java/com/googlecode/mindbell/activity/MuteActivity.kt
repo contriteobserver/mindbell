@@ -35,7 +35,6 @@ class MuteActivity : Activity() {
         super.onCreate(savedInstanceState)
         val notifier = Notifier.getInstance(this)
         val prefs = Prefs.getInstance(this)
-        prefs.isActive = !prefs.isActive // FIXME Remove this ... it's only for testing onResume in MainActivity
         val numberPicker = NumberPicker(this)
         val hours = 24
         numberPicker.minValue = 0

@@ -109,9 +109,6 @@ class StatusDetector internal constructor(val context: Context, val prefs: Prefs
     fun getMuteRequestReason(shouldShowMessage: Boolean): MuteReason? {
         var reason: MuteReason? = null
 
-        // TODO Move meditating here (from Notifier *and* QuickSettingsService)
-        // TODO Move active message enrichment here (from Notifier *and* QuickSettingsService)
-
         if (System.currentTimeMillis() < prefs.mutedTill) { // Muted manually?
             reason = MuteReason(MUTED_TILL, reasonMutedTill)
 

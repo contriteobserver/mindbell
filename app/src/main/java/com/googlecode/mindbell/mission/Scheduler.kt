@@ -135,8 +135,6 @@ class Scheduler private constructor(val context: Context) {
             return Scheduler(context.applicationContext)
         }
 
-        // TODO Move methods out of companion object and use prefs as usual
-
         /**
          * Return next time to bell after the given "now".
          *

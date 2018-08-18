@@ -113,9 +113,6 @@
     <string name="prefsStatus">&constStatus;</string>
     <string name="summaryStatus">Show status notification during reminder</string>
     <string name="summaryNoStatus">No status notification, set and forget</string>
-    <string name="prefsStatusIconMaterialDesign">Status icon in Material Design</string>
-    <string name="summaryStatusIconMaterialDesign">Stylized white singing bowl</string>
-    <string name="summaryStatusIconPreMaterialDesign">Golden singing bowl (just a white splotch on some devices)</string>
     <string name="prefsStatusVisibilityPublic">Show status text on lock screen</string>
     <string name="summaryStatusVisibilityPublic">Show status text on lock screen</string>
     <string name="summaryStatusVisibilityPrivate">Hide status text on lock screen</string>
@@ -326,7 +323,6 @@
     <string name="keyStatistics" translatable="false">statistics</string>
     <string name="keyStatisticsIdOnly" translatable="false">statisticsIdOnly</string>
     <string name="keyStatus" translatable="false">status</string>
-    <string name="keyStatusIconMaterialDesign" translatable="false">statusIconMaterialDesign</string>
     <string name="keyStatusVisibilityPublic" translatable="false">statusVisibilityPublic</string>
     <string name="keyStopMeditationAutomatically" translatable="false">stopMeditationAutomatically</string>
     <string name="keyUseAudioStreamVolumeSetting" translatable="false">useAudioStreamVolumeSetting</string>
