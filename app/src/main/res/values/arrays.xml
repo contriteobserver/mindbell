@@ -224,9 +224,9 @@
 
     <!-- Filenames of icons for audio stream selection -->
     <string-array name="audioStreamEntryValues" translatable="false">
-        <item>ic_alarm_white_24dp</item>
-        <item>ic_notifications_white_24dp</item>
-        <item>ic_audiotrack_white_24dp</item>
+        <item>ic_alarm</item>
+        <item>ic_notifications</item>
+        <item>ic_audiotrack</item>
     </string-array>
 
     <!-- Indexes of filenames of icons for audio stream selection (number of entry values must match audioStreamEntryValues -->

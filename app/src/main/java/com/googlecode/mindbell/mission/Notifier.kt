@@ -86,7 +86,7 @@ class Notifier private constructor(val context: Context, val prefs: Prefs) {
                 .setContentText(prefs.notificationText) //
                 .setGroup(INTERRUPT_NOTIFICATION_CHANNEL_ID) // group phone and wearable notification
                 .setOngoing(false) // notifications bound to a foreground service are always ongoing
-                .setSmallIcon(R.drawable.ic_stat_bell_ring) //
+                .setSmallIcon(R.drawable.ic_stat_reminding) //
                 .setSound(null) // no notification sound for API level < 26
                 .setGroupSummary(true) // summarize group on phone not on wearable
                 // .setVibrate() has no effect on the phone itself, only on a wearable
@@ -101,7 +101,7 @@ class Notifier private constructor(val context: Context, val prefs: Prefs) {
                     .setContentText(prefs.notificationText) //
                     .setGroup(INTERRUPT_NOTIFICATION_CHANNEL_ID) // group phone and wearable notification
                     .setOngoing(false) // ongoing notification are not displayed on wearables
-                    .setSmallIcon(R.drawable.ic_stat_bell_ring) //
+                    .setSmallIcon(R.drawable.ic_stat_reminding) //
                     .setSound(null) // no notification sound for API level < 21, would play on default channel anyway
                     .setGroupSummary(false) // summarize group on phone not on wearable
                     .setVisibility(visibility)
@@ -124,13 +124,10 @@ class Notifier private constructor(val context: Context, val prefs: Prefs) {
         }
         // Choose material design or pre material design status icons
         val bellActiveDrawable: Int
-        val bellActiveButMutedDrawable: Int
         if (prefs.useStatusIconMaterialDesign()) {
-            bellActiveDrawable = R.drawable.ic_stat_bell_active
-            bellActiveButMutedDrawable = R.drawable.ic_stat_bell_active_but_muted
+            bellActiveDrawable = R.drawable.ic_stat_active
         } else {
             bellActiveDrawable = R.drawable.golden_bell_status_active
-            bellActiveButMutedDrawable = R.drawable.golden_bell_status_active_but_muted
         }
         // Suppose bell is active and not muted and all settings can be satisfied
         var statusDrawable = bellActiveDrawable
@@ -141,7 +138,7 @@ class Notifier private constructor(val context: Context, val prefs: Prefs) {
         var targetClass: Class<*> = MainActivity::class.java
         // Override icon and notification text if bell is muted or permissions are insufficient
         if (!statusDetector.canSettingsBeSatisfied()) { // Insufficient permissions => override icon/text, switch notifications off
-            statusDrawable = R.drawable.ic_warning_white_24dp
+            statusDrawable = R.drawable.ic_warning
             contentTitle = context.getText(R.string.statusTitleNotificationsDisabled)
             contentText = context.getText(R.string.statusTextNotificationsDisabled).toString()
             targetClass = SettingsActivity::class.java
@@ -151,14 +148,14 @@ class Notifier private constructor(val context: Context, val prefs: Prefs) {
             // RefreshReceiver.
             prefs.isStatus = false
         } else if (prefs.isMeditating) {// Bell meditation => override icon and notification text
-            statusDrawable = R.drawable.ic_stat_bell_meditating
+            statusDrawable = R.drawable.ic_stat_meditating
             contentTitle = context.getText(R.string.statusTitleBellMeditating)
             contentText = MessageFormat.format(context.getText(R.string.statusTextBellMeditating).toString(), //
                     prefs.meditationDuration.interval, //
                     TimeOfDay(prefs.meditationEndingTimeMillis).getDisplayString(context))
         } else if (muteRequestReason != null) { // Bell muted => override icon and notification text
-            statusDrawable = bellActiveButMutedDrawable
-            contentText = muteRequestReason
+            statusDrawable = muteRequestReason.muteReasonType.drawable
+            contentText = muteRequestReason.message
         } else { // enrich standard notification by times and days
             contentText = MessageFormat.format(context.getText(R.string.statusTextBellActive).toString(), //
                     prefs.daytimeStart.getDisplayString(context), //
@@ -184,13 +181,14 @@ class Notifier private constructor(val context: Context, val prefs: Prefs) {
                 .setContentIntent(openAppIntent) //
                 .setOngoing(true) // ongoing is *not* shown on wearable
                 .setSmallIcon(statusDrawable) //
+                .setSound(null) //
                 .setVisibility(visibility)
         if (!prefs.isMeditating) {
             // Do not allow other actions than stopping meditation while meditating
             notificationBuilder //
                     .addAction(R.drawable.ic_action_refresh_status, context.getText(R.string.statusActionRefreshStatus),
                             createRefreshBroadcastIntent(UPDATE_STATUS_NOTIFICATION_REQUEST_CODE)) //
-                    .addAction(R.drawable.ic_stat_bell_active_but_muted, context.getText(R.string.statusActionMuteFor), muteIntent)
+                    .addAction(R.drawable.ic_action_mute_for, context.getText(R.string.statusActionMuteFor), muteIntent)
         }
         val notification = notificationBuilder.build()
         NotificationManagerCompat.from(context).notify(STATUS_NOTIFICATION_ID, notification)

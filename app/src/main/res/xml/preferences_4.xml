@@ -62,13 +62,13 @@
     <PreferenceScreen android:title="@string/prefsCategoryProblemSolving">
 
         <Preference
-            android:icon="@drawable/ic_help_white_24dp"
+            android:icon="@drawable/ic_help"
             android:key="@string/keyFAQ"
             android:layout="@layout/preference"
             android:summary="@string/summaryFAQ"
             android:title="@string/prefsFAQ" />
         <Preference
-            android:icon="@drawable/ic_info_white_24dp"
+            android:icon="@drawable/ic_info"
             android:key="@string/keyBatterySettingsIdOnly"
             android:layout="@layout/preference"
             android:summary="@string/summaryBatterySettings"
@@ -79,13 +79,13 @@
             android:summaryOn="@string/summaryUseWorkaroundBell"
             android:title="@string/prefsUseWorkaroundBell" />
         <Preference
-            android:icon="@drawable/ic_info_white_24dp"
+            android:icon="@drawable/ic_info"
             android:key="@string/keyStatisticsIdOnly"
             android:layout="@layout/preference"
             android:summary="@string/summaryStatistics"
             android:title="@string/prefsStatistics" />
         <Preference
-            android:icon="@drawable/ic_mail_outline_white_24dp"
+            android:icon="@drawable/ic_mail_outline"
             android:key="@string/keySendMailIdOnly"
             android:layout="@layout/preference"
             android:summary="@string/summarySendMail"

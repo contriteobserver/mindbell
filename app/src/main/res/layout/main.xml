@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:background="@color/backgroundColorDark"
-                android:src="@drawable/ic_expand_less_white_24dp"/>
+                android:src="@drawable/ic_expand_less" />
 
             <TextView
                 android:id="@+id/textViewHowToMeditate"
@@ -106,7 +106,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:background="@color/backgroundColorDark"
-                android:src="@drawable/ic_expand_more_white_24dp"/>
+                android:src="@drawable/ic_expand_more" />
 
             <TextView
                 android:id="@+id/textViewHowToActivateCollapsed"
@@ -128,7 +128,7 @@
                 android:layout_above="@id/textViewHowToActivateCollapsed"
                 android:layout_centerHorizontal="true"
                 android:paddingBottom="5dp"
-                android:src="@drawable/ic_play_arrow_white_24dp"/>
+                android:src="@drawable/ic_play_arrow" />
 
             <ImageView
                 android:id="@+id/imageViewRingOnceBellCollapsed"

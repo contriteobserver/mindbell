@@ -86,7 +86,7 @@
 
         <service
             android:name=".service.QuickSettingsService"
-            android:icon="@drawable/ic_stat_bell_active"
+            android:icon="@drawable/ic_stat_active"
             android:label="@string/prefsActive"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
@@ -103,6 +103,10 @@
 
         <receiver android:name=".receiver.RefreshReceiver">
             <intent-filter>
+                <action android:name="android.app.action.INTERRUPTION_FILTER_CHANGED" /> <!-- implicit, *not* exempted from limitations -->
+                <action android:name="android.intent.action.AIRPLANE_MODE" /> <!-- implicit, *not* exempted from limitations -->
+                <action android:name="android.intent.action.PHONE_STATE" /> <!-- implicit but exempted from limitations -->
+                <action android:name="android.media.RINGER_MODE_CHANGED" /> <!-- implicit, *not* exempted from limitations -->
                 <action android:name="com.googlecode.mindbell.UPDATE_STATUS_NOTIFICATION" /> <!-- TODO Really? explicit, addresses activity -->
             </intent-filter>
         </receiver>

@@ -30,6 +30,7 @@ import android.telephony.TelephonyManager
 import android.util.Log
 import com.googlecode.mindbell.R
 import com.googlecode.mindbell.mission.Prefs.Companion.TAG
+import com.googlecode.mindbell.mission.StatusDetector.MuteReasonType.*
 import com.googlecode.mindbell.util.NotificationManagerCompatExtension
 import com.googlecode.mindbell.util.TimeOfDay
 import java.text.MessageFormat
@@ -105,27 +106,43 @@ class StatusDetector internal constructor(val context: Context, val prefs: Prefs
     /**
      * Check whether bell should be muted, show reason if requested, and return reason, null otherwise.
      */
-    fun getMuteRequestReason(shouldShowMessage: Boolean): String? {
-        var reason: String? = null
+    fun getMuteRequestReason(shouldShowMessage: Boolean): MuteReason? {
+        var reason: MuteReason? = null
+
+        // TODO Move meditating here (from Notifier *and* QuickSettingsService)
+        // TODO Move active message enrichment here (from Notifier *and* QuickSettingsService)
+
         if (System.currentTimeMillis() < prefs.mutedTill) { // Muted manually?
-            reason = reasonMutedTill
+            reason = MuteReason(MUTED_TILL, reasonMutedTill)
+
         } else if (prefs.isMuteWithPhone && isPhoneMuted) { // Mute bell with phone?
-            reason = reasonMutedWithPhone
+            reason = MuteReason(MUTED_WITH_PHONE, reasonMutedWithPhone)
+
         } else if (prefs.isMuteWithAudioStream && isAudioStreamMuted) { // Mute bell with audio stream?
-            reason = reasonMutedWithAudioStream
+            reason = MuteReason(MUTED_WITH_AUDIO_STREAM, reasonMutedWithAudioStream)
+
         } else if (prefs.isMuteInDoNotDisturbMode && isPhoneInDoNotDisturbMode) { // Mute bell in do-not-disturb mode?
-            reason = reasonMutedInDoNotDisturbMode
+            reason = MuteReason(MUTED_IN_DO_NOT_DISTURB_MODE, reasonMutedInDoNotDisturbMode)
+
         } else if (prefs.isMuteOffHook && isPhoneOffHook) { // Mute bell while phone is off hook (or ringing)?
-            reason = reasonMutedOffHook
+            reason = MuteReason(MUTED_OFF_HOOK, reasonMutedOffHook)
+
         } else if (prefs.isMuteInFlightMode && isPhoneInFlightMode) { // Mute bell while in flight mode?
-            reason = reasonMutedInFlightMode
+            reason = MuteReason(MUTED_IN_FLIGHT_MODE, reasonMutedInFlightMode)
+
         } else if (!TimeOfDay().isDaytime(prefs)) { // Always mute bell during nighttime
-            reason = reasonMutedDuringNighttime
+            reason = MuteReason(MUTED_DURING_NIGHTTIME, reasonMutedDuringNighttime)
         }
+
         if (reason != null && shouldShowMessage) {
             val notifier = Notifier.getInstance(context)
-            notifier.showMessage(reason)
+            notifier.showMessage(reason.message)
         }
+
+        if (reason != null) {
+            Log.d(TAG, "Mute request reason is ${reason.muteReasonType} ... ${reason.message}")
+        }
+
         return reason
     }
 
@@ -150,6 +167,28 @@ class StatusDetector internal constructor(val context: Context, val prefs: Prefs
         val result = !prefs.isMuteOffHook || ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
         Log.d(TAG, "Can settings be satisfied? -> $result")
         return result
+    }
+
+    /**
+     * Specifies the type of reason why MindBell is muted.
+     */
+    enum class MuteReasonType(val drawable: Int) {
+
+        MUTED_TILL(R.drawable.ic_stat_muted_till),
+        MUTED_WITH_PHONE(R.drawable.ic_stat_muted_with_phone),
+        MUTED_WITH_AUDIO_STREAM(R.drawable.ic_stat_muted_with_phone),
+        MUTED_IN_DO_NOT_DISTURB_MODE(R.drawable.ic_stat_muted_in_do_not_disturb_mode),
+        MUTED_OFF_HOOK(R.drawable.ic_stat_muted_off_hook),
+        MUTED_IN_FLIGHT_MODE(R.drawable.ic_stat_muted_in_flightmode),
+        MUTED_DURING_NIGHTTIME(R.drawable.ic_stat_muted_during_nighttime)
+
+    }
+
+    /**
+     * Specifies the reason why MindBell is muted.
+     */
+    class MuteReason(val muteReasonType: MuteReasonType, val message: String) {
+
     }
 
     companion object {

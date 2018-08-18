@@ -54,9 +54,9 @@ class StatisticsActivity : ListActivity() {
             itemView.now.text = statisticsEntry.now
             itemView.comment.text = statisticsEntry.comment
             when (statisticsEntry.judgment) {
-                Statistics.Judgment.ON_TIME -> setJudgmentImage(itemView, R.drawable.ic_check_green_24dp)
-                Statistics.Judgment.DELAYED -> setJudgmentImage(itemView, R.drawable.ic_priority_high_orange_24dp)
-                Statistics.Judgment.REFRESH -> setJudgmentImage(itemView, R.drawable.ic_refresh_yellow_24dp)
+                Statistics.Judgment.ON_TIME -> setJudgmentImage(itemView, R.drawable.ic_check)
+                Statistics.Judgment.DELAYED -> setJudgmentImage(itemView, R.drawable.ic_priority_high)
+                Statistics.Judgment.REFRESH -> setJudgmentImage(itemView, R.drawable.ic_refresh)
                 else -> unsetJudgmentImage(itemView)
             }
             return itemView

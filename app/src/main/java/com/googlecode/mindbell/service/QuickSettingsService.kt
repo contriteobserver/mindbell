@@ -89,32 +89,30 @@ class QuickSettingsService : TileService() {
      */
     private fun updateTile() {
 
-        val newIcon: Icon
-        val newLabel: String
-        val newState: Int
-
+        val tile = qsTile
         val prefs = Prefs.getInstance(applicationContext)
         val statusDetector = StatusDetector.getInstance(applicationContext)
+        val muteRequestReason = statusDetector.getMuteRequestReason(false)
 
-        if (statusDetector.isMuteRequested(false)) {
-            newIcon = Icon.createWithResource(applicationContext, R.drawable.ic_stat_bell_active_but_muted)
+        val drawable = if (prefs.isMeditating) {
+            R.drawable.ic_stat_meditating
+        } else if (prefs.isActive && muteRequestReason == null) {
+            R.drawable.ic_stat_active
+        } else if (prefs.isActive && muteRequestReason != null) {
+            muteRequestReason.muteReasonType.drawable
         } else {
-            newIcon = Icon.createWithResource(applicationContext, R.drawable.ic_stat_bell_active)
+            R.drawable.ic_stat_inactive
         }
+        tile.icon = Icon.createWithResource(applicationContext, drawable)
 
         if (prefs.isActive) {
-            newLabel = getString(R.string.summaryActive)
-            newState = Tile.STATE_ACTIVE
+            tile.label = if (muteRequestReason != null) muteRequestReason.message else getString(R.string.summaryActive)
+            tile.state = Tile.STATE_ACTIVE
         } else {
-            newLabel = getString(R.string.summaryNotActive)
-            newState = Tile.STATE_INACTIVE
+            tile.label = getString(R.string.summaryNotActive)
+            tile.state = Tile.STATE_INACTIVE
         }
 
-        // Change icon, label and state of the quick settings tile
-        val tile = qsTile
-        tile.icon = newIcon
-        tile.label = newLabel
-        tile.state = newState
         tile.updateTile() // let UI show the changes
     }
 

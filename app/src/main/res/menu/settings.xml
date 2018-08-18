@@ -31,17 +31,17 @@
         android:title=""/> <!-- title and icon to be set in MainActivity#onPrepareOptionsMenu() -->
     <item
         android:id="@+id/settings"
-        android:icon="@drawable/ic_settings_white_24dp"
+        android:icon="@drawable/ic_settings"
         android:showAsAction="always"
         android:title="@string/menuSettings"/>
     <item
         android:id="@+id/help"
-        android:icon="@drawable/ic_help_white_24dp"
+        android:icon="@drawable/ic_help"
         android:showAsAction="ifRoom"
         android:title="@string/menuHelp"/>
     <item
         android:id="@+id/about"
-        android:icon="@drawable/ic_info_white_24dp"
+        android:icon="@drawable/ic_info"
         android:showAsAction="ifRoom"
         android:title="@string/menuAbout"/>
     <item

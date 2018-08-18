@@ -27,7 +27,7 @@
     <PreferenceScreen android:title="@string/prefsCategorySoundOutput">
 
         <Preference
-            android:icon="@drawable/ic_info_white_24dp"
+            android:icon="@drawable/ic_info"
             android:layout="@layout/preference"
             android:summary="@string/summaryExplanationAudioStream"
             android:title="@string/prefsExplanationAudioStream"/>
