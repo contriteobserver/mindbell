@@ -29,6 +29,7 @@ import android.graphics.drawable.Icon
 import android.media.AudioManager
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
+import android.telephony.TelephonyManager
 import android.util.Log
 import com.googlecode.mindbell.R
 import com.googlecode.mindbell.activity.MuteActivity
@@ -56,7 +57,7 @@ class QuickSettingsService : TileService() {
         val intentFilter = IntentFilter()
         intentFilter.addAction(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED)
         intentFilter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED)
-        // no longer need to filter TelephonyManager.ACTION_PHONE_STATE_CHANGED as quick settings are close on calls
+        intentFilter.addAction(TelephonyManager.ACTION_PHONE_STATE_CHANGED)
         intentFilter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION)
         registerReceiver(broadcastReceiver, intentFilter)
         updateTile()
