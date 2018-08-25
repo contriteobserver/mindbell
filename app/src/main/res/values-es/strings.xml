@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+    MindBell - Aims to give you a support for staying mindful in a busy life -
+               for remembering what really counts
+   
+        Copyright (C) 2014-2018 Uwe Damken
+   
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+   
+        http://www.apache.org/licenses/LICENSE-2.0
+   
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ --><!-- Define referenced terms only once, following this idea: https://stackoverflow.com/a/39870268/2532583 --><!DOCTYPE resources [<!ENTITY constStatus "Mostrar un icono de notificación"><!ENTITY constPrefsMuteOffHook "No recordar durante las llamadas"><!ENTITY constProblemSolving "Resolución de problemas"><!ENTITY constFAQ "FAQ"><!ENTITY constSendMail "Enviar un email con el log">]>
+
+<resources>
+    <string name="app_name">MindBell</string>
+    <!-- MainActivity -->
+    <string name="howToActivate">Cuando el interruptor de la cabecera está encendido, MindBell nos recuerda la práctica del Mindfulness a lo largo del día mediante imagen, sonidos o vibración animándonos a parar y ser conscientes de lo que estamos haciendo y de nuestro estado (emociones, pensamientos, sensaciones &#8230;).</string>
+    <string name="howToMute">Los recordatorios de MindBell no se activan durante las llamadas de teléfono o si el audio está silenciado. Los recordatorios también pueden ser apagados temporalmente. Para saber cómo configurarlos ir a ajustes o la ayuda.</string>
+    <string name="howToMeditate">Junto al interruptor, está el botón para iniciar el Modo Meditación, en el cual, el cuenco se oye sólo al comenzar y al terminar la meditación (o periodos de meditación).</string>
+    <!-- Menu of MainActivity -->
+    <string name="menuSettings">Ajustes</string>
+    <string name="menuAbout">Acerca de MindBell</string>
+    <string name="menuHelp">Ayuda</string>
+    <!-- MainActivity Preferences -->
+    <string name="prefsMutedTillOff">Apagado</string>
+    <!-- Send log by e-mail -->
+    <string name="emailSubject">E-mail enviado por MindBell</string>
+    <string name="emailChooseApp">Enviar correo &#8230;</string>
+    <string name="mailInfo1">Por favor completa el texto del e-mail con tu pregunta o una descripción del problema, en caso contrario tu email no podrá ser atendido.</string>
+    <string name="mailInfo2">El texto del email contiene la versión de MindBell y de Android más alguna información de su dispositivo y un registro de todas las entradas generadas por MindBell, esto nos ayuda a solucionar los problemas.</string>
+    <string name="noEmailClients">No se encontraron aplicaciones de correo electrónico instaladas.</string>
+    <!-- SettingsActivity -->
+    <string name="preferencesTitle">MindBell Ajustes</string>
+    <string name="prefsCategorySoundOutput">Salida de sonido</string>
+    <string name="prefsExplanationAudioStream">Información del canal de audio</string>
+    <string name="summaryExplanationAudioStream">Elegir un canal de audio determina como MindBell reproduce los sonidos. Esto influye en qué control de  volumen usar, en que se silencie el sonido en los modos \"no molestar\" o \"silencio\" o por que altavoz se reproduce (auriculares, altavoz interno o bluetooth). Como este comportamiento depende de cada dispositivo, lo mejor es que lo pruebes en tu teléfono.</string>
+    <string name="prefsAudioStream">Canal de audio</string>
+    <string name="prefsUseAudioStreamVolumeSetting">Usar ajuste de volumen del canal de audio</string>
+    <string name="summaryUseAudioStreamVolumeSetting">Se utiliza el volumen configurado para ese canal de audio en el teléfono</string>
+    <string name="summaryDontUseAudioStreamVolumeSetting">Los ajustes de volumen de MindBell de la sección \"Acciones del recordatorio\" o \"Meditación\" se usan solo si se reproduce el sonido como alarma</string>
+    <string name="prefsCategoryActiveTimes">Tiempos de actividad y ritmos</string>
+    <string name="prefsActive">Recordatorio encendido/apagado</string>
+    <string name="summaryActive">Recordatorio está encendido</string>
+    <string name="summaryNotActive">Recordatorio está apagado</string>
+    <string name="prefsStart">Recordar cada día desde las &#8230;</string>
+    <string name="prefsEnd">Recordar cada día hasta las &#8230;</string>
+    <string name="prefsActiveOnDaysOfWeek">Días de la semana con recordatorio &#8230;</string>
+    <string name="prefsFrequency">Recordar cada hh:mm &#8230;</string>
+    <string name="prefsRandomize">Uso de intervalos variables</string>
+    <string name="prefsNormalize">Recordar unos minutos después &#8230;</string>
+    <string name="summaryRandomize">El intervalo del recordatorio es variable</string>
+    <string name="summaryDontRandomize">El intervalo del recordatorio es fijo</string>
+    <string name="prefsCategoryRingingActions">Acciones del recordatorio</string>
+    <string name="prefsCategoryDisplay">Visualización</string>
+    <string name="prefsShow">Ver la campana</string>
+    <string name="summaryShow">Muestra un cuenco como recordatorio</string>
+    <string name="summaryDontShow">No muestra un cuenco como recordatorio</string>
+    <string name="prefsCategorySound">Sonido</string>
+    <string name="prefsSound">Reproducir sonido</string>
+    <string name="summarySound">Reproduce un sonido como recordatorio</string>
+    <string name="summaryDontSound">No reproduce un sonido como recordatorio</string>
+    <string name="prefsReminderBell">Sonido de cuenco</string>
+    <string name="prefsRingtone">Sonidos del sistema</string>
+    <string name="summaryRingtoneNotSet">No has elegido un sonido del sistema, se usa un toque de cuenco</string>
+    <string name="prefsVolume">Volúmen</string>
+    <string name="prefsCategoryVibration">Vibración</string>
+    <string name="prefsVibrate">Vibra</string>
+    <string name="summaryVibrate">Vibra como recordatorio</string>
+    <string name="summaryNoVibrate">No vibra como recordatorio</string>
+    <string name="prefsPattern">Patrón de vibración</string>
+    <string name="prefsCategoryStatusNotification">Notificación de estado</string>
+    <string name="prefsStatus">&constStatus;</string>
+    <string name="summaryStatus">Muestra notificación de estado durante el recordatorio</string>
+    <string name="summaryNoStatus">Sin notificación de estado</string>
+    <string name="prefsStatusVisibilityPublic">Mostrar texto con pantalla bloqueada</string>
+    <string name="summaryStatusVisibilityPublic">Muestra el texto de estado en la pantalla de bloqueo</string>
+    <string name="summaryStatusVisibilityPrivate">Oculta el texto de estado en la pantalla de bloqueo</string>
+    <string name="prefsNotificationTitle">Titulo de la notificación</string>
+    <string name="prefsNotificationTitleDefault">MindBell &#8230;</string>
+    <string name="prefsNotificationText">Texto de la notificación</string>
+    <string name="prefsNotificationTextDefault">Respira y sonríe</string>
+    <string name="prefsNotificationVisibilityPublic">Mostrar texto de notificación en la pantalla de bloqueo</string>
+    <string name="summaryNotificationVisibilityPublic">Muestra texto de notificación en la pantalla de bloqueo</string>
+    <string name="summaryNotificationVisibilityPrivate">Oculta texto de notificación en la pantalla de bloqueo</string>
+    <string name="prefsCategoryMuteRules">Reglas de silenciado</string>
+    <string name="prefsMuteWithPhone">No recordar si el tono de llamada está silenciado</string>
+    <string name="summaryMuteWithPhone">No recuerda si el tono de llamada está silenciado</string>
+    <string name="summaryNoMuteWithPhone">Recuerda aunque el tono de llamada este silenciado</string>
+    <string name="prefsMuteWithAudioStream">No recordar si el audio está silenciado</string>
+    <string name="summaryMuteWithAudioStream">No recuerda si el audio está silenciado</string>
+    <string name="summaryNoMuteWithAudioStream">Recuerda aunque el canal de audio este silenciado</string>
+    <string name="prefsMuteOffHook">&constPrefsMuteOffHook;</string>
+    <string name="summaryMuted">No recuerda durante las llamadas</string>
+    <string name="summaryNotMuted">Recuerda incluso durante las llamadas</string>
+    <string name="prefsMuteInFlightMode">No recordar en modo avión</string>
+    <string name="summaryMutedInFlightMode">No recuerda en modo avión</string>
+    <string name="summaryNotMutedInFlightMode">Recuerda en modo avión</string>
+    <string name="prefsNoSoundOnMusic">Sin sonido si se reproduce música</string>
+    <string name="summaryNoSoundOnMusic">El sonido no se reproduce si hay música sonando</string>
+    <string name="summaryNotNoSoundOnMusic">El sonido se reproduce aunque haya música sonando</string>
+    <string name="prefsPauseAudioOnSound">Pausar audio durante el sonido</string>
+    <string name="summaryPauseAudioOnSound">Otros audios se detendrán durante el sonido del recordatorio o no se reproducirá</string>
+    <string name="summaryNotPauseAudioOnSound">Otros audios no se detendrán durante el sonido del recordatorio</string>
+    <string name="prefsCategoryMeditation">Meditación</string>
+    <string name="prefsMeditatingOn">Comenzar meditación</string>
+    <string name="prefsMeditatingOff">Terminar meditación</string>
+    <string name="summaryMeditating">Meditación en marcha</string>
+    <string name="summaryNotMeditating">Meditación parada</string>
+    <string name="prefsMeditationBeginningBell">Cuencos iniciales</string>
+    <string name="prefsMeditationInterruptingBell">Cuencos intermedios</string>
+    <string name="prefsMeditationEndingBell">Cuencos finales</string>
+    <string name="prefsMeditationVolume">Volumen</string>
+    <string name="prefsCategoryProblemSolving">&constProblemSolving;</string>
+    <string name="prefsFAQ">&constFAQ;</string>
+    <string name="summaryFAQ">Encuentra respuestas aquí para las preguntas frecuentes.</string>
+    <string name="prefsBatterySettings">Ajustes de bateria</string>
+    <string name="summaryBatterySettings">Si MindBell no recuerda periódicamente, por favor, revisa si está excluida de la \"optimización de batería\".</string>
+    <string name="summaryBatterySettingsWhitelisted">MindBell ya esta excluido de la optimización de batería.</string>
+    <string name="summaryBatterySettingsNotWhitelisted">MindBell no está excluido de la optimización de batería. Si Mindbell los recordatorios periódicos no funcionan, por favor, excluye Mindbell de la optimización de batería.</string>
+    <string name="summaryBatterySettingsUnknown">No se puede determinar si MindBell está o no excluido de la optimización de batería. Si no funcionan los recordatorios, excluye a MindBell de cualquier optimización de batería que puedas tener en tu teléfono. Por favor, revisa la documentación de las apps o de tu teléfono para descubrir cómo hacerlo.</string>
+    <string name="prefsUseWorkaroundBell">Silencio extra antes del cuenco</string>
+    <string name="summaryUseWorkaroundBell">3 segundos de silencio antes del sonido del cuenco para evitar la distorsión en teléfonos que aumentan progresivamente el volumen. Solo afecta a los sonidos de cuenco, no a los de sistema. Si tu teléfono necesita este silencio extra, lo tienes que añadir también en el fichero de sonido personalizado.</string>
+    <string name="summaryDontUseWorkaroundBell">Usar sonido de cuenco por defecto</string>
+    <string name="prefsSendMail">&constSendMail;</string>
+    <string name="summarySendMail">Para sugerencias o preguntas no contestadas en \'&constFAQ;\' me puedes enviar un correo con información de los logs. No olvides incluir tu pregunta o la descripción del problema.</string>
+    <!-- MeditationDialog Preferences -->
+    <string name="title_meditation_dialog">Comenzar a meditar</string>
+    <string name="prefsRampUpTime">Tiempo de preparación (mm:ss)</string>
+    <string name="prefsNumberOfPeriods">Numero de periodos</string>
+    <!-- to be stored in patternOfPeriods -->
+    <string name="explanationNumberOfPeriods">Para periodos de la misma duración, por favor selecciona el número de periodos.</string>
+    <string name="prefsPatternOfPeriods">Duración de los periodos (min)</string>
+    <string name="explanationPatternOfPeriods">Para periodos de distinta duración, por favor especifica los minutos de cada periodo o la letra x separados por comas. El tiempo sobrante se distribuirá entre los periodos x.\n\nPor ejemplo, si quieres meditar 15 minutos y quieres periodos de dos minutos al inicio y al final, especifica: 2, x, 2</string>
+    <string name="prefsMeditationDuration">Duración de la meditación (hh:mm)</string>
+    <string name="prefsKeepScreenOn">Mantener pantalla encendida</string>
+    <string name="prefsStopMeditationAutomatically">Detener automáticamente</string>
+    <string name="buttonStartMeditationDirectly">Inicio inmediato</string>
+    <string name="buttonStartMeditation">Inicio</string>
+    <!-- Validation messages -->
+    <string name="mustUseAudioStreamSetting">Solo se puede apagar para alarmas</string>
+    <string name="atLeastOneRingingActionNeeded">Especifica al menos una acción de recordatorio</string>
+    <string name="atLeastOneActiveDayNeeded">Especifica por lo menos un día</string>
+    <string name="frequencyDoesNotFitIntoAnHour">Recordar al minuto no es posible con el intervalo elegido</string>
+    <string name="ringtoneNotAccessible">No se tiene acceso al sonido elegido (¿problema con los permisos?)</string>
+    <string name="reminderSoundLength">La duración del sonido elegido es %s s. %s</string>
+    <string name="ringtoneDurationTooLong">La duración del sonido elegido (%s s) es más larga que 1/4 del intervalo (%d s)</string>
+    <string name="invalidPeriodSpecification">Por favor especifica periodos cómo minutos o x.</string>
+    <string name="variablePeriodMissing">Por favor especifica al menos una x.</string>
+    <string name="negativePeriod">Los intervalos deben coincidir con la duración: por favor aumenta la duración o reduce los intervalos.</string>
+    <string name="periodTooShort">Todos los intervalos deben durar al menos un minuto: por favor aumenta la duración o reduce los intervalos.</string>
+    <!--<string name="periodNotExisting">periodNotExisting</string>-->
+    <!-- AboutActivity -->
+    <string name="title_activity_about">Acerca de MindBell</string>
+    <!-- Status bar notification -->
+    <string name="statusTitleNotificationsDisabled">Por favor verifique los ajustes de notificaciones</string>
+    <string name="statusTextNotificationsDisabled">Recordatorios desactivados \'&constStatus;\'</string>
+    <string name="statusTitleBellActive">Recordatorios activos</string>
+    <string name="statusTextBellActive">{0} a {1} en el {2}</string>
+    <string name="statusTitleBellMeditating">MindBell medita</string>
+    <string name="statusTextBellMeditating">{0,choice,1#1 minuto||1&lt;{0} minutos} hasta {1}</string>
+    <string name="statusActionRefreshStatus">Actualizar</string>
+    <string name="statusActionMuteFor">No recordar durante &#8230;</string>
+    <!-- Reasons why bell is muted -->
+    <string name="reasonMutedDuringNighttime">Actualmente sin recordatorio hasta {0} {1}</string>
+    <string name="reasonMutedInFlightMode">Sin recordatorios en modo vuelo</string>
+    <string name="reasonMutedOffHook">No recordar durante llamadas</string>
+    <string name="reasonMutedTill">No recordar hasta {0}</string>
+    <string name="reasonMutedWithAudioStream">No recordar si el audio está silenciado</string>
+    <string name="reasonMutedWithPhone">No recordar si el tono de llamada está silenciado</string>
+    <!-- Reasons why permission READ_PHONE_STATE should be granted -->
+    <string name="reasonReadPhoneStateTitle">¿Por qué necesita este permiso?</string>
+    <string name="reasonReadPhoneStateText">\'&constStatus;\' y \'&constPrefsMuteOffHook;\' han sido seleccionadas. Por tanto, MindBell muestra el cuenco boca abajo en la barra de notificaciones cuando hay una llamada entrante o saliente. \n\n Para lograr esto, MindBell tiene que ser informado de las llamadas. Solo cuando se da el permiso READ_PHONE_STATE, MindBell puede ser informado.\n\nsi el permiso es denegado, las opciones \'&constStatus;\' o \'&constPrefsMuteOffHook;\' deben ser desactivadas.</string>
+    <!-- Permission READ_PHONE_STATE denied but user checked 'never ask again' -->
+    <string name="neverAskAgainReadPhoneStateTitle">Falta el permiso</string>
+    <string name="neverAskAgainReadPhoneStateText">Permiso READ_PHONE_STATE no está concedido. Por tanto,  \'&constStatus;\' y/o \'&constPrefsMuteOffHook;\' deben ser desactivadas.</string>
+    <!-- Reasons why permission READ_EXTERNAL_STORAGE should be granted -->
+    <string name="reasonReadExternalStorageTitle">¿Por qué necesita este permiso?</string>
+    <string name="reasonReadExternalStorageText">Ningún sonido de cuenco ha sido seleccionado. Solo cuando Mindbell tiene permisos para READ_EXTERNAL_STORAGE puede acceder a tus sonidos.\n\nSi se deniegan los permisos tienes que elegir un sonido de la aplicación.</string>
+    <!-- Permission READ_EXTERNAL_STORAGE denied but user checked 'never ask again' -->
+    <string name="neverAskAgainReadExternalStorageTitle">Falta permiso</string>
+    <string name="neverAskAgainReadExternalStorageText">El permiso READ_EXTERNAL_STORAGE no ha sido autorizado. Por tanto tienes que elegir un sonido de la aplicación.</string>
+    <!-- Help popup -->
+    <string name="main_message1_popup">¿Cómo funciona Mind Bell?\nhttp://dknapps.de/mindbell-intro</string>
+    <string name="main_message2_popup">¿Qué ha cambiado?\nhttp://dknapps.de/mindbell-changelog</string>
+    <string name="main_message3_popup">¿No funcionan los recordatorios periódicos?\nhttp://dknapps.de/mindbell-notringing</string>
+    <string name="main_message4_popup">Preguntas Frecuentes (FAQ)\nhttp://dknapps.de/mindbell</string>
+    <string name="main_message5_popup">Política de privacidad\nhttp://dknapps.de/mindbell-privacy</string>
+    <!-- Help for excluding MindBell from battery settings -->
+    <string name="battery_settings_guidance1">Elige \"todas\".</string>
+    <string name="battery_settings_guidance2">Haz click en \"Mindbell\".</string>
+    <string name="battery_settings_guidance3">Elige \"No optimizar\".</string>
+</resources>

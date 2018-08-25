@@ -25,8 +25,7 @@
     <!ENTITY constPrefsMuteOffHook "Don\'t remind during phone calls">
     <!ENTITY constProblemSolving "Problem solving">
     <!ENTITY constFAQ "FAQ">
-    <!ENTITY constSendMail "Send an e-mail with log">
-    ]>
+    <!ENTITY constSendMail "Send an e-mail with log">]>
 
 <resources>
 
@@ -110,7 +109,7 @@
     <string name="prefsPattern">Vibration pattern</string>
 
     <string name="prefsCategoryStatusNotification">Status notification</string>
-    <string name="prefsStatus">&constStatus;</string>
+    <string name="prefsStatus" translatable="false">&constStatus;</string>
     <string name="summaryStatus">Show status notification during reminder</string>
     <string name="summaryNoStatus">No status notification, set and forget</string>
     <string name="prefsStatusVisibilityPublic">Show status text on lock screen</string>
@@ -139,7 +138,7 @@
     <string name="prefsMuteInDoNotDisturbMode">Don\'t remind in do-not-disturb mode</string>
     <string name="summaryMuteInDoNotDisturbMode">Don\'t remind if in do-not-disturb mode</string>
     <string name="summaryNoMuteInDoNotDisturbMode">Remind even if in do-not-disturb mode</string>
-    <string name="prefsMuteOffHook">&constPrefsMuteOffHook;</string>
+    <string name="prefsMuteOffHook" translatable="false">&constPrefsMuteOffHook;</string>
     <string name="summaryMuted">Don\'t remind during phone calls</string>
     <string name="summaryNotMuted">Even remind during phone calls</string>
     <string name="prefsMuteInFlightMode">Don\'t remind in flight mode</string>
@@ -162,8 +161,8 @@
     <string name="prefsMeditationEndingBell">Ending bells</string>
     <string name="prefsMeditationVolume">Volume</string>
 
-    <string name="prefsCategoryProblemSolving">Problem solving</string>
-    <string name="prefsFAQ">&constFAQ;</string>
+    <string name="prefsCategoryProblemSolving" translatable="false">&constProblemSolving;</string>
+    <string name="prefsFAQ" translatable="false">&constFAQ;</string>
     <string name="summaryFAQ">Find answers to frequently asked questions here.</string>
     <string name="prefsBatterySettings">Battery settings</string>
     <string name="summaryBatterySettings">If MindBell does not remind you regularly please check here whether MindBell is excluded
@@ -181,7 +180,7 @@
     <string name="summaryDontUseWorkaroundBell">Use bell sound as it is</string>
     <string name="prefsStatistics">Internal Statistics</string>
     <string name="summaryStatistics">Show times of occurred or scheduled reminders and meditation bells.</string>
-    <string name="prefsSendMail">&constSendMail;</string>
+    <string name="prefsSendMail" translatable="false">&constSendMail;</string>
     <string name="summarySendMail">For suggestions or questions not answered in the \'&constFAQ;\' you can send an e-mail with
         log information. Please don\'t forget to add your question or a description of the problem.</string>
 
