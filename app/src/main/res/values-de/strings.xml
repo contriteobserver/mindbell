@@ -21,8 +21,6 @@
 
 <!-- Define referenced terms only once, following this idea: https://stackoverflow.com/a/39870268/2532583 -->
 <!DOCTYPE resources [
-    <!ENTITY constStatus "Status-Benachrichtigung anzeigen">
-    <!ENTITY constPrefsMuteOffHook "Kein Erinnern beim Telefonieren">
     <!ENTITY constProblemSolving "Problembehebung">
     <!ENTITY constFAQ "FAQ">
     <!ENTITY constSendMail "E-Mail mit Log senden">]>
@@ -110,6 +108,7 @@
     <string name="prefsPattern">Vibrationsmuster</string>
 
     <string name="prefsCategoryStatusNotification">Status-Benachrichtigung</string>
+    <string name="prefsStatus">Status-Benachrichtigung anzeigen</string>
     <string name="summaryStatus">Zeige Status-Benachrichtigung bei aktivem Erinnern</string>
     <string name="summaryNoStatus">Keine Status-Benachrichtigung</string>
     <string name="prefsStatusVisibilityPublic">Zeige Status-Text auf Sperrbildschirm</string>
@@ -138,8 +137,13 @@
     <string name="prefsMuteInDoNotDisturbMode">Kein Erinnern im Bitte-nicht-stören-Modus</string>
     <string name="summaryMuteInDoNotDisturbMode">Im Bitte-nicht-stören-Modus nicht erinnern</string>
     <string name="summaryNoMuteInDoNotDisturbMode">Auch im Bitte-nicht-stören-Modus erinnern</string>
+    <string name="prefsMuteOffHook">Kein Erinnern beim Telefonieren</string>
     <string name="summaryMuted">Während Telefongesprächen nicht erinnern</string>
     <string name="summaryNotMuted">Auch während Telefongesprächen erinnern</string>
+    <string name="prefsReadPhoneState">Erteile Berechtigung READ_PHONE_STATE</string>
+    <string name="summaryReadPhoneState">Um die Status-Glocke während Telefongesprächen umzudrehen, benötigt MindBell die Berechtigung READ_PHONE_STATE.</string>
+    <string name="summaryReadPhoneStateGranted">MindBell hat bereits die Berechtigung READ_PHONE_STATE.</string>
+    <string name="summaryReadPhoneStateDenied">MindBell hat noch *nicht* die Berechtigung READ_PHONE_STATE.</string>
     <string name="prefsMuteInFlightMode">Kein Erinnern im Flugmodus</string>
     <string name="summaryMutedInFlightMode">Im Flugmodus nicht erinnern</string>
     <string name="summaryNotMutedInFlightMode">Auch im Flugmodus erinnern</string>
@@ -221,8 +225,6 @@
     <string name="title_activity_internal_statistics">Interne Statistik</string>
 
     <!-- Status bar notification -->
-    <string name="statusTitleNotificationsDisabled">Bitte Benachrichtigungseinstellungen prüfen</string>
-    <string name="statusTextNotificationsDisabled">MindBell hat \'&constStatus;\' ausgeschaltet</string>
     <string name="statusTitleBellActive">Erinnern ist aktiv</string>
     <string name="statusTextBellActive">{0} bis {1} am {2}</string>
     <string name="statusTitleBellMeditating">MindBell meditiert</string>
@@ -241,17 +243,15 @@
 
     <!-- Reasons why permission READ_PHONE_STATE should be granted -->
     <string name="reasonReadPhoneStateTitle">Wozu diese Berechtigung?</string>
-    <string name="reasonReadPhoneStateText">\'&constStatus;\' und \'&constPrefsMuteOffHook;\' wurden
-        ausgewählt. Das bedeutet, dass MindBell die Glocke in der Benachrichtigungsleiste umdreht, wenn
-        ein Anruf ein- oder ausgeht.\n\nUm das zu erreichen, muss MindBell über Anrufe informiert werden.
-        Nur mit der Berechtigung READ_PHONE_STATE kann MindBell darüber auf dem Laufenden gehalten
-        werden.\n\nWenn die Berechtigung abgelehnt wird, muss daher entweder \'&constStatus;\' oder
-        \'&constPrefsMuteOffHook;\' abgeschaltet sein.</string>
+    <string name="reasonReadPhoneStateText">MindBell dreht die Glocke in der Benachrichtigungsleiste und/oder den Schnelleinstellungen um, wenn
+        ein Anruf ein- oder ausgeht.\n\nUm das zu erreichen, muss MindBell über Anrufe informiert werden. Nur mit der Berechtigung READ_PHONE_STATE
+        kann MindBell darüber auf dem Laufenden gehalten werden.\n\nWenn die Berechtigung abgelehnt wird, wird die Glocke in der Benachrichtigungsleiste
+        und/oder den Schnelleinstellungen nicht immer korrekt angezeigt.</string>
 
     <!-- Permission READ_PHONE_STATE denied but user checked 'never ask again' -->
     <string name="neverAskAgainReadPhoneStateTitle">Fehlende Berechtigung</string>
-    <string name="neverAskAgainReadPhoneStateText">Die Berechtigung READ_PHONE_STATE wurde nicht erteilt.
-        Daher muss entweder \'&constStatus;\' oder \'&constPrefsMuteOffHook;\' abgeschaltet sein.</string>
+    <string name="neverAskAgainReadPhoneStateText">Die Berechtigung READ_PHONE_STATE wurde nicht erteilt. Die Glocke in der Benachrichtigungsleiste
+        und/oder den Schnelleinstellungen wird nicht immer korrekt angezeigt.</string>
 
     <!-- Reasons why permission READ_EXTERNAL_STORAGE should be granted -->
     <string name="reasonReadExternalStorageTitle">Wozu diese Berechtigung?</string>

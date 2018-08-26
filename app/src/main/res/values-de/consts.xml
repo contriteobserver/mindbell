@@ -21,8 +21,6 @@
 <!-- Define referenced terms only once, following this idea: https://stackoverflow.com/a/39870268/2532583 -->
 <resources>
 
-    <string name="constStatus">Status-Benachrichtigung anzeigen</string>
-    <string name="constPrefsMuteOffHook">Kein Erinnern beim Telefonieren</string>
     <string name="constProblemSolving">Problembehebung</string>
     <string name="constFAQ">FAQ</string>
     <string name="constSendMail">E-Mail mit Log senden</string>

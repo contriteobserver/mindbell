@@ -1090,9 +1090,8 @@ class Prefs private constructor(val context: Context) {
         const val UPDATE_STATUS_NOTIFICATION_REQUEST_CODE = 1
         const val UPDATE_STATUS_NOTIFICATION_MUTED_TILL_REQUEST_CODE = 2
         const val UPDATE_STATUS_NOTIFICATION_DAY_NIGHT_REQUEST_CODE = 3
-        const val REQUEST_CODE_STATUS = 10
-        const val REQUEST_CODE_MUTE_OFF_HOOK = 11
-        const val REQUEST_CODE_RINGTONE = 12
+        const val REQUEST_READ_PHONE_STATE = 10
+        const val REQUEST_CODE_RINGTONE = 11
 
         /**
          * Maximum number of statistics entries to be stored in preferences.

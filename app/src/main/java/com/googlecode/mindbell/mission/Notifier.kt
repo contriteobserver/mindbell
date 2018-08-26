@@ -32,7 +32,6 @@ import android.widget.Toast
 import com.googlecode.mindbell.R
 import com.googlecode.mindbell.activity.MainActivity
 import com.googlecode.mindbell.activity.MuteActivity
-import com.googlecode.mindbell.activity.SettingsActivity
 import com.googlecode.mindbell.mission.Prefs.Companion.INTERRUPT_NOTIFICATION_CHANNEL_ID
 import com.googlecode.mindbell.mission.Prefs.Companion.STATUS_NOTIFICATION_CHANNEL_ID
 import com.googlecode.mindbell.mission.Prefs.Companion.STATUS_NOTIFICATION_ID
@@ -130,17 +129,7 @@ class Notifier private constructor(val context: Context, val prefs: Prefs) {
         val muteRequestReason = statusDetector.getMuteRequestReason(false)
         var targetClass: Class<*> = MainActivity::class.java
         // Override icon and notification text if bell is muted or permissions are insufficient
-        if (!statusDetector.canSettingsBeSatisfied()) { // Insufficient permissions => override icon/text, switch notifications off
-            statusDrawable = R.drawable.ic_warning
-            contentTitle = context.getText(R.string.statusTitleNotificationsDisabled)
-            contentText = context.getText(R.string.statusTextNotificationsDisabled).toString()
-            targetClass = SettingsActivity::class.java
-            // Status Notification would not be correct during incoming or outgoing calls because of the missing permission to
-            // listen to phone state changes. Therefore we switch off notification and ask user for permission when he tries
-            // to enable notification again. In this very moment we cannot ask for permission to avoid an ANR in receiver
-            // RefreshReceiver.
-            prefs.isStatus = false
-        } else if (prefs.isMeditating) {// Bell meditation => override icon and notification text
+        if (prefs.isMeditating) {// Bell meditation => override icon and notification text
             statusDrawable = R.drawable.ic_stat_meditating
             contentTitle = context.getText(R.string.statusTitleBellMeditating)
             contentText = MessageFormat.format(context.getText(R.string.statusTextBellMeditating).toString(), //

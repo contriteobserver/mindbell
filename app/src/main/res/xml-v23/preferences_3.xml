@@ -43,6 +43,13 @@
             android:summaryOff="@string/summaryNotMuted"
             android:summaryOn="@string/summaryMuted"
             android:title="@string/prefsMuteOffHook" />
+        <Preference
+            android:dependency="@string/keyMuteOffHook"
+            android:icon="@drawable/ic_info"
+            android:key="@string/keyReadPhoneStateIdOnly"
+            android:layout="@layout/preference"
+            android:summary="@string/summaryReadPhoneState"
+            android:title="@string/prefsReadPhoneState" />
         <CheckBoxPreference
             android:key="@string/keyMuteInFlightMode"
             android:summaryOff="@string/summaryNotMutedInFlightMode"

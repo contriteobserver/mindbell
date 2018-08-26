@@ -21,8 +21,6 @@
 
 <!-- Define referenced terms only once, following this idea: https://stackoverflow.com/a/39870268/2532583 -->
 <!DOCTYPE resources [
-    <!ENTITY constStatus "Show status icon">
-    <!ENTITY constPrefsMuteOffHook "Don\'t remind during phone calls">
     <!ENTITY constProblemSolving "Problem solving">
     <!ENTITY constFAQ "FAQ">
     <!ENTITY constSendMail "Send an e-mail with log">]>
@@ -109,7 +107,7 @@
     <string name="prefsPattern">Vibration pattern</string>
 
     <string name="prefsCategoryStatusNotification">Status notification</string>
-    <string name="prefsStatus" translatable="false">&constStatus;</string>
+    <string name="prefsStatus">Show status icon</string>
     <string name="summaryStatus">Show status notification during reminder</string>
     <string name="summaryNoStatus">No status notification, set and forget</string>
     <string name="prefsStatusVisibilityPublic">Show status text on lock screen</string>
@@ -138,9 +136,13 @@
     <string name="prefsMuteInDoNotDisturbMode">Don\'t remind in do-not-disturb mode</string>
     <string name="summaryMuteInDoNotDisturbMode">Don\'t remind if in do-not-disturb mode</string>
     <string name="summaryNoMuteInDoNotDisturbMode">Remind even if in do-not-disturb mode</string>
-    <string name="prefsMuteOffHook" translatable="false">&constPrefsMuteOffHook;</string>
+    <string name="prefsMuteOffHook">Don\'t remind during phone calls</string>
     <string name="summaryMuted">Don\'t remind during phone calls</string>
     <string name="summaryNotMuted">Even remind during phone calls</string>
+    <string name="prefsReadPhoneState">Grant permission READ_PHONE_STATE</string>
+    <string name="summaryReadPhoneState">To show the bell status icon upside own according to incoming or outgoing calls MindBell needs the permission READ_PHONE_STATE.</string>
+    <string name="summaryReadPhoneStateGranted">MindBell has already been granted the permission READ_PHONE_STATE.</string>
+    <string name="summaryReadPhoneStateDenied">MindBell has *not* yet been granted the permission READ_PHONE_STATE.</string>
     <string name="prefsMuteInFlightMode">Don\'t remind in flight mode</string>
     <string name="summaryMutedInFlightMode">Don\'t remind in flight mode</string>
     <string name="summaryNotMutedInFlightMode">Even remind in flight mode</string>
@@ -221,8 +223,6 @@
     <string name="title_activity_internal_statistics">Internal Statistics</string>
 
     <!-- Status bar notifications -->
-    <string name="statusTitleNotificationsDisabled">Please check notification settings</string>
-    <string name="statusTextNotificationsDisabled">Reminder turned off \'&constStatus;\'</string>
     <string name="statusTitleBellActive">Reminder is active</string>
     <string name="statusTextBellActive">{0} to {1} on {2}</string>
     <string name="statusTitleBellMeditating">MindBell is meditating</string>
@@ -241,16 +241,15 @@
 
     <!-- Reasons why permission READ_PHONE_STATE should be granted -->
     <string name="reasonReadPhoneStateTitle">Why this permission?</string>
-    <string name="reasonReadPhoneStateText">\'&constStatus;\' and \'&constPrefsMuteOffHook;\' has been
-        selected. So MindBell turns the bell in the notification bar to be shown upside down when a
-        phone call is incoming or outgoing.\n\nTo achieve this, MindBell has to be informed of
-        calls. Only when permission READ_PHONE_STATE is granted MindBell can be kept informed.\n\nIf the
-        permission is denied either \'&constStatus;\' or \'&constPrefsMuteOffHook;\' must be switched off.</string>
+    <string name="reasonReadPhoneStateText">MindBell turns the bell in the notification bar and/or in the quick settings
+        to be shown upside down when a phone call is incoming or outgoing.\n\nTo achieve this, MindBell has to be informed of
+        calls. Only when the permission READ_PHONE_STATE has been granted MindBell can be kept informed.\n\nIf the
+        permission is denied the bell will not always be shown correctly.</string>
 
     <!-- Permission READ_PHONE_STATE denied but user checked 'never ask again' -->
     <string name="neverAskAgainReadPhoneStateTitle">Missing permission</string>
-    <string name="neverAskAgainReadPhoneStateText">Permission READ_PHONE_STATE is not granted. Therefore
-        either \'&constStatus;\' or \'&constPrefsMuteOffHook;\' must be switched off.</string>
+    <string name="neverAskAgainReadPhoneStateText">Permission READ_PHONE_STATE has not been granted. Therefore
+        the bell in the notification bar and/or in the quick settings will not always be shown correctly.</string>
 
     <!-- Reasons why permission READ_EXTERNAL_STORAGE should be granted -->
     <string name="reasonReadExternalStorageTitle">Why this permission?</string>
@@ -310,6 +309,7 @@
     <string name="keyPopup" translatable="false">popup</string>
     <string name="keyRampUpStartingTimeMillis" translatable="false">rampUpStartingTimeMillis</string>
     <string name="keyRampUpTime" translatable="false">rampUpTime</string>
+    <string name="keyReadPhoneStateIdOnly" translatable="false">readPhoneStateIdOnly</string>
     <string name="keyReminderBell" translatable="false">reminderBell</string>
     <string name="keyReminderSoundLengthIdOnly" translatable="false">reminderSoundLengthIdOnly</string>
     <string name="keyRandomize" translatable="false">randomize</string>

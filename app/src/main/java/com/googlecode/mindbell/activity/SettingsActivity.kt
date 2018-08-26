@@ -40,9 +40,8 @@ import android.util.Log
 import android.widget.Toast
 import com.googlecode.mindbell.R
 import com.googlecode.mindbell.mission.Prefs
-import com.googlecode.mindbell.mission.Prefs.Companion.REQUEST_CODE_MUTE_OFF_HOOK
 import com.googlecode.mindbell.mission.Prefs.Companion.REQUEST_CODE_RINGTONE
-import com.googlecode.mindbell.mission.Prefs.Companion.REQUEST_CODE_STATUS
+import com.googlecode.mindbell.mission.Prefs.Companion.REQUEST_READ_PHONE_STATE
 import com.googlecode.mindbell.mission.Prefs.Companion.TAG
 import com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
 import com.googlecode.mindbell.preference.MediaVolumePreference
@@ -97,7 +96,6 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
         addPreferencesFromResource(R.xml.preferences_4)
 
         val preferenceUseAudioStreamVolumeSetting = preferenceScreen.findPreference(getText(R.string.keyUseAudioStreamVolumeSetting)) as CheckBoxPreference
-        val preferenceStatus = preferenceScreen.findPreference(getText(R.string.keyStatus)) as CheckBoxPreference
         val preferenceShow = preferenceScreen.findPreference(getText(R.string.keyShow)) as CheckBoxPreference
         val preferenceSound = preferenceScreen.findPreference(getText(R.string.keySound)) as CheckBoxPreference
         val preferenceReminderBell = preferenceScreen.findPreference(getText(R.string.keyReminderBell)) as ListPreferenceWithSummaryFix
@@ -105,7 +103,7 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
         val preferenceRingtone = preferenceScreen.findPreference(getText(R.string.keyRingtone)) as RingtonePreference
         val preferenceVibrate = preferenceScreen.findPreference(getText(R.string.keyVibrate)) as CheckBoxPreference
         val preferencePattern = preferenceScreen.findPreference(getText(R.string.keyPattern)) as ListPreferenceWithSummaryFix
-        val preferenceMuteOffHook = preferenceScreen.findPreference(getText(R.string.keyMuteOffHook)) as CheckBoxPreference
+        val preferenceReadPhoneState = preferenceScreen.findPreference(getText(R.string.keyReadPhoneStateIdOnly)) as Preference
         val preferenceFrequency = preferenceScreen.findPreference(getText(R.string.keyFrequency)) as MinutesIntervalPickerPreference
         val preferenceRandomize = preferenceScreen.findPreference(getText(R.string.keyRandomize)) as CheckBoxPreference
         val preferenceNormalize = preferenceScreen.findPreference(getText(R.string.keyNormalize)) as ListPreferenceWithSummaryFix
@@ -129,8 +127,6 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
                 true
             }
         }
-
-        preferenceStatus.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue -> mediateMuteOffHookAndStatus(preferenceMuteOffHook, newValue, REQUEST_CODE_STATUS) }
 
         preferenceShow.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue -> mediateShowAndSoundAndVibrate(preferenceSound, preferenceVibrate, newValue) }
 
@@ -193,7 +189,10 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
             true
         }
 
-        preferenceMuteOffHook.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue -> mediateMuteOffHookAndStatus(preferenceStatus, newValue, REQUEST_CODE_MUTE_OFF_HOOK) }
+        preferenceReadPhoneState.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+            onPreferenceClickReadPhoneState()
+            true
+        }
 
         preferenceRandomize.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
             if (newValue as Boolean) {
@@ -306,16 +305,22 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
      * Ensures that the CheckBoxPreferences checkBoxPreferenceMuteOffHook and checkBoxPreferenceStatus cannot be both "on" without
      * having READ_PHONE_STATE permission by returning false when this rule is violated.
      */
-    private fun mediateMuteOffHookAndStatus(other: CheckBoxPreference, newValue: Any, requestCode: Int): Boolean {
-        return if (!other.isChecked || !(newValue as Boolean) ||
-                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-            // Allow setting this option to "on" if other option is "off" or permission is granted
-            true
+    private fun onPreferenceClickReadPhoneState() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+            AlertDialog.Builder(this) //
+                    .setTitle(R.string.prefsReadPhoneState) //
+                    .setMessage(R.string.summaryReadPhoneStateGranted) //
+                    .setPositiveButton(android.R.string.ok, null) //
+                    .show()
         } else {
-            // Ask for permission if other option is "on" and this option shall be set to "on" but permission is missing
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_PHONE_STATE), requestCode)
-            // As the permission request is asynchronous we have to deny setting this option (to "on")
-            false
+            AlertDialog.Builder(this) //
+                    .setTitle(R.string.prefsReadPhoneState) //
+                    .setMessage(R.string.summaryReadPhoneStateDenied) //
+                    .setNegativeButton(android.R.string.cancel, null) //
+                    .setPositiveButton(android.R.string.ok) { _, _ ->
+                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_PHONE_STATE), REQUEST_READ_PHONE_STATE) //
+                    } //
+                    .show()
         }
     }
 
@@ -561,28 +566,18 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
     override
     fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
-            REQUEST_CODE_STATUS -> {
-                val checkBoxPreferenceStatus = preferenceScreen.findPreference(getText(R.string.keyStatus)) as CheckBoxPreference
-                handleMuteHookOffAndStatusPermissionRequestResult(checkBoxPreferenceStatus, grantResults)
-            }
-            REQUEST_CODE_MUTE_OFF_HOOK -> {
-                val checkBoxPreferenceMuteOffHook = preferenceScreen.findPreference(getText(R.string.keyMuteOffHook)) as CheckBoxPreference
-                handleMuteHookOffAndStatusPermissionRequestResult(checkBoxPreferenceMuteOffHook, grantResults)
-            }
+            REQUEST_READ_PHONE_STATE -> handleReadPhoneStatePermissionRequestResult(grantResults)
             REQUEST_CODE_RINGTONE -> handleRingtonePermissionRequestResult(grantResults)
             else -> {
             }
         }
     }
 
-    private fun handleMuteHookOffAndStatusPermissionRequestResult(one: CheckBoxPreference, grantResults: IntArray) {
+    private fun handleReadPhoneStatePermissionRequestResult(grantResults: IntArray) {
         if (grantResults.isEmpty()) {
-            // if request is cancelled, the result arrays are empty, so leave this option "off" and don't explain it
+            // if request is cancelled, the result arrays are empty, so nothing to do here, even don't explain it
         } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            // User granted the needed permission therefore this option is set to "on"
-            if (one.onPreferenceChangeListener.onPreferenceChange(one, java.lang.Boolean.TRUE)) {
-                one.isChecked = true // WARNING: This does NOT call the onPreferenceValueChangeListener
-            }
+            // User granted the needed permission therefore it's no more to do here
         } else if (ActivityCompat.shouldShowRequestPermissionRationale(this@SettingsActivity,
                         Manifest.permission.READ_PHONE_STATE)) {
             // User denied the needed permission and can be given an explanation, so we show an explanation

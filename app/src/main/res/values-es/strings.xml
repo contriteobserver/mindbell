@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?><!--
     MindBell - Aims to give you a support for staying mindful in a busy life -
                for remembering what really counts
-   
+
+        Copyright (C) 2010-2014 Marc Schroeder
         Copyright (C) 2014-2018 Uwe Damken
-   
+
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
-   
+
         http://www.apache.org/licenses/LICENSE-2.0
-   
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
- --><!-- Define referenced terms only once, following this idea: https://stackoverflow.com/a/39870268/2532583 --><!DOCTYPE resources [<!ENTITY constStatus "Mostrar un icono de notificación"><!ENTITY constPrefsMuteOffHook "No recordar durante las llamadas"><!ENTITY constProblemSolving "Resolución de problemas"><!ENTITY constFAQ "FAQ"><!ENTITY constSendMail "Enviar un email con el log">]>
+ -->
+
+<!-- Define referenced terms only once, following this idea: https://stackoverflow.com/a/39870268/2532583 --><!DOCTYPE resources [<!ENTITY constProblemSolving "Resolución de problemas"><!ENTITY constFAQ "FAQ"><!ENTITY constSendMail "Enviar un email con el log">]>
 
 <resources>
     <string name="app_name">MindBell</string>
@@ -75,7 +78,7 @@
     <string name="summaryNoVibrate">No vibra como recordatorio</string>
     <string name="prefsPattern">Patrón de vibración</string>
     <string name="prefsCategoryStatusNotification">Notificación de estado</string>
-    <string name="prefsStatus">&constStatus;</string>
+    <string name="prefsStatus">Mostrar un icono de notificación</string>
     <string name="summaryStatus">Muestra notificación de estado durante el recordatorio</string>
     <string name="summaryNoStatus">Sin notificación de estado</string>
     <string name="prefsStatusVisibilityPublic">Mostrar texto con pantalla bloqueada</string>
@@ -95,7 +98,7 @@
     <string name="prefsMuteWithAudioStream">No recordar si el audio está silenciado</string>
     <string name="summaryMuteWithAudioStream">No recuerda si el audio está silenciado</string>
     <string name="summaryNoMuteWithAudioStream">Recuerda aunque el canal de audio este silenciado</string>
-    <string name="prefsMuteOffHook">&constPrefsMuteOffHook;</string>
+    <string name="prefsMuteOffHook">No recordar durante las llamadas</string>
     <string name="summaryMuted">No recuerda durante las llamadas</string>
     <string name="summaryNotMuted">Recuerda incluso durante las llamadas</string>
     <string name="prefsMuteInFlightMode">No recordar en modo avión</string>
@@ -158,8 +161,6 @@
     <!-- AboutActivity -->
     <string name="title_activity_about">Acerca de MindBell</string>
     <!-- Status bar notification -->
-    <string name="statusTitleNotificationsDisabled">Por favor verifique los ajustes de notificaciones</string>
-    <string name="statusTextNotificationsDisabled">Recordatorios desactivados \'&constStatus;\'</string>
     <string name="statusTitleBellActive">Recordatorios activos</string>
     <string name="statusTextBellActive">{0} a {1} en el {2}</string>
     <string name="statusTitleBellMeditating">MindBell medita</string>
@@ -175,10 +176,8 @@
     <string name="reasonMutedWithPhone">No recordar si el tono de llamada está silenciado</string>
     <!-- Reasons why permission READ_PHONE_STATE should be granted -->
     <string name="reasonReadPhoneStateTitle">¿Por qué necesita este permiso?</string>
-    <string name="reasonReadPhoneStateText">\'&constStatus;\' y \'&constPrefsMuteOffHook;\' han sido seleccionadas. Por tanto, MindBell muestra el cuenco boca abajo en la barra de notificaciones cuando hay una llamada entrante o saliente. \n\n Para lograr esto, MindBell tiene que ser informado de las llamadas. Solo cuando se da el permiso READ_PHONE_STATE, MindBell puede ser informado.\n\nsi el permiso es denegado, las opciones \'&constStatus;\' o \'&constPrefsMuteOffHook;\' deben ser desactivadas.</string>
     <!-- Permission READ_PHONE_STATE denied but user checked 'never ask again' -->
     <string name="neverAskAgainReadPhoneStateTitle">Falta el permiso</string>
-    <string name="neverAskAgainReadPhoneStateText">Permiso READ_PHONE_STATE no está concedido. Por tanto,  \'&constStatus;\' y/o \'&constPrefsMuteOffHook;\' deben ser desactivadas.</string>
     <!-- Reasons why permission READ_EXTERNAL_STORAGE should be granted -->
     <string name="reasonReadExternalStorageTitle">¿Por qué necesita este permiso?</string>
     <string name="reasonReadExternalStorageText">Ningún sonido de cuenco ha sido seleccionado. Solo cuando Mindbell tiene permisos para READ_EXTERNAL_STORAGE puede acceder a tus sonidos.\n\nSi se deniegan los permisos tienes que elegir un sonido de la aplicación.</string>
