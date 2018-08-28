@@ -40,6 +40,7 @@ import com.googlecode.mindbell.mission.Prefs.Companion.UPDATE_STATUS_NOTIFICATIO
 import com.googlecode.mindbell.mission.Prefs.Companion.UPDATE_STATUS_NOTIFICATION_MUTED_TILL_REQUEST_CODE
 import com.googlecode.mindbell.mission.Prefs.Companion.UPDATE_STATUS_NOTIFICATION_REQUEST_CODE
 import com.googlecode.mindbell.mission.Prefs.Companion.WEARABLE_INTERRUPT_NOTIFICATION_ID
+import com.googlecode.mindbell.receiver.RefreshReceiver
 import com.googlecode.mindbell.util.AlarmManagerCompat
 import com.googlecode.mindbell.util.NotificationManagerCompatExtension
 import com.googlecode.mindbell.util.TimeOfDay
@@ -213,7 +214,9 @@ class Notifier private constructor(val context: Context, val prefs: Prefs) {
      * Create an intent to be send to RefreshReceiver to update status notification.
      */
     private fun createRefreshBroadcastIntent(requestCode: Int): PendingIntent {
-        return PendingIntent.getBroadcast(context, requestCode, Intent("com.googlecode.mindbell.UPDATE_STATUS_NOTIFICATION"),
+        val intent = Intent(context, RefreshReceiver::class.java)
+        intent.setAction("com.googlecode.mindbell.UPDATE_STATUS_NOTIFICATION") // just for documentation and logging
+        return PendingIntent.getBroadcast(context, requestCode, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT)
     }
 

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
     MindBell - Aims to give you a support for staying mindful in a busy life -
                for remembering what really counts
    
@@ -24,17 +23,11 @@
 
     <PreferenceScreen android:title="@string/prefsCategoryStatusNotification">
 
-        <CheckBoxPreference
-            android:key="@string/keyStatus"
-            android:summaryOff="@string/summaryNoStatus"
-            android:summaryOn="@string/summaryStatus"
-            android:title="@string/prefsStatus"/>
-        <CheckBoxPreference
-            android:dependency="@string/keyStatus"
-            android:key="@string/keyStatusVisibilityPublic"
-            android:summaryOff="@string/summaryStatusVisibilityPrivate"
-            android:summaryOn="@string/summaryStatusVisibilityPublic"
-            android:title="@string/prefsStatusVisibilityPublic"/>
+        <Preference
+            android:icon="@drawable/ic_info"
+            android:layout="@layout/preference"
+            android:summary="@string/summaryExplanationQuickSettings"
+            android:title="@string/prefsExplanationQuickSettings" />
 
     </PreferenceScreen>
 

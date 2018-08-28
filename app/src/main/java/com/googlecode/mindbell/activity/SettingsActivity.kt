@@ -91,9 +91,10 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences_1)
-        addPreferencesFromResource(R.xml.preferences_2) // notifications depend on SDK
-        addPreferencesFromResource(R.xml.preferences_3) // mute rules depend on SDK
-        addPreferencesFromResource(R.xml.preferences_4)
+        addPreferencesFromResource(R.xml.preferences_2) // status notification and quick settings depends on SDK
+        addPreferencesFromResource(R.xml.preferences_3) // reminder notification depends on SDK
+        addPreferencesFromResource(R.xml.preferences_4) // mute rules depend on SDK
+        addPreferencesFromResource(R.xml.preferences_5)
 
         val preferenceUseAudioStreamVolumeSetting = preferenceScreen.findPreference(getText(R.string.keyUseAudioStreamVolumeSetting)) as CheckBoxPreference
         val preferenceShow = preferenceScreen.findPreference(getText(R.string.keyShow)) as CheckBoxPreference

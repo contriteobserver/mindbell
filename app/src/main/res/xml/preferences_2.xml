@@ -32,24 +32,4 @@
 
     </PreferenceScreen>
 
-    <PreferenceScreen android:title="@string/prefsCategoryReminderNotification">
-
-        <CheckBoxPreference
-            android:key="@string/keyNotificationOnWearables"
-            android:summaryOff="@string/summaryNoNotificationOnWearables"
-            android:summaryOn="@string/summaryNotificationOnWearables"
-            android:title="@string/prefsNotificationOnWearables" />
-        <com.googlecode.mindbell.preference.EditTextPreferenceWithSummary
-            android:defaultValue="@string/prefsNotificationTitleDefault"
-            android:key="@string/keyNotificationTitle"
-            android:summary="%s"
-            android:title="@string/prefsNotificationTitle"/>
-        <com.googlecode.mindbell.preference.EditTextPreferenceWithSummary
-            android:defaultValue="@string/prefsNotificationTextDefault"
-            android:key="@string/keyNotificationText"
-            android:summary="%s"
-            android:title="@string/prefsNotificationText"/>
-
-    </PreferenceScreen>
-
 </PreferenceScreen>

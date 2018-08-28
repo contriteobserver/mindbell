@@ -113,6 +113,11 @@
     <string name="prefsStatusVisibilityPublic">Show status text on lock screen</string>
     <string name="summaryStatusVisibilityPublic">Show status text on lock screen</string>
     <string name="summaryStatusVisibilityPrivate">Hide status text on lock screen</string>
+    <string name="prefsExplanationQuickSettings">Quick Settings information</string>
+    <string name="summaryExplanationQuickSettings">As of Android Oreo it\'s no longer possible to
+        keep the status notification up-to-date, so it\'s gone with Android Oreo. MindBell now offers a
+        Quick Settings tile which shows the current status of MindBell. Be aware that you have to
+        edit your Quick Settings to add the tile to your selection of Quick Settings.</string>
 
     <string name="prefsCategoryReminderNotification">Reminder notification</string>
     <string name="prefsNotificationOnWearables">Notification on wearables</string>
@@ -163,8 +168,8 @@
     <string name="prefsMeditationEndingBell">Ending bells</string>
     <string name="prefsMeditationVolume">Volume</string>
 
-    <string name="prefsCategoryProblemSolving" translatable="false">&constProblemSolving;</string>
-    <string name="prefsFAQ" translatable="false">&constFAQ;</string>
+    <string name="prefsCategoryProblemSolving">&constProblemSolving;</string>
+    <string name="prefsFAQ">&constFAQ;</string>
     <string name="summaryFAQ">Find answers to frequently asked questions here.</string>
     <string name="prefsBatterySettings">Battery settings</string>
     <string name="summaryBatterySettings">If MindBell does not remind you regularly please check here whether MindBell is excluded
@@ -182,7 +187,7 @@
     <string name="summaryDontUseWorkaroundBell">Use bell sound as it is</string>
     <string name="prefsStatistics">Internal Statistics</string>
     <string name="summaryStatistics">Show times of occurred or scheduled reminders and meditation bells.</string>
-    <string name="prefsSendMail" translatable="false">&constSendMail;</string>
+    <string name="prefsSendMail">&constSendMail;</string>
     <string name="summarySendMail">For suggestions or questions not answered in the \'&constFAQ;\' you can send an e-mail with
         log information. Please don\'t forget to add your question or a description of the problem.</string>
 

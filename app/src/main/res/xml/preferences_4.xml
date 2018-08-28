@@ -19,77 +19,47 @@
  -->
 
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:mindful="http://dknapps.de/ns">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceScreen android:title="@string/prefsCategoryMeditation">
+    <PreferenceScreen android:title="@string/prefsCategoryMuteRules">
 
-        <!-- keyMeditating can only be toggled by the meditation button -->
-
-        <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
-            android:defaultValue="3"
-            android:entries="@array/meditationBellEntries"
-            android:entryValues="@array/meditationBellEntryValues"
-            android:key="@string/keyMeditationBeginningBell"
-            android:summary="%s"
-            android:title="@string/prefsMeditationBeginningBell" />
-
-        <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
-            android:defaultValue="1"
-            android:entries="@array/meditationBellEntries"
-            android:entryValues="@array/meditationBellEntryValues"
-            android:key="@string/keyMeditationInterruptingBell"
-            android:summary="%s"
-            android:title="@string/prefsMeditationInterruptingBell" />
-
-        <com.googlecode.mindbell.preference.ListPreferenceWithSummaryFix
-            android:defaultValue="2"
-            android:entries="@array/meditationBellEntries"
-            android:entryValues="@array/meditationBellEntryValues"
-            android:key="@string/keyMeditationEndingBell"
-            android:summary="%s"
-            android:title="@string/prefsMeditationEndingBell" />
-
-        <com.googlecode.mindbell.preference.MediaVolumePreference
-            android:dialogTitle="@string/prefsMeditationVolume"
-            android:key="@string/keyMeditationVolume"
-            android:title="@string/prefsMeditationVolume"
-            mindful:ringtone="@raw/mindbell_b"
-            mindful:streamType="4" />
-
-    </PreferenceScreen>
-
-    <PreferenceScreen android:title="@string/prefsCategoryProblemSolving">
-
-        <Preference
-            android:icon="@drawable/ic_help"
-            android:key="@string/keyFAQ"
-            android:layout="@layout/preference"
-            android:summary="@string/summaryFAQ"
-            android:title="@string/prefsFAQ" />
-        <Preference
-            android:icon="@drawable/ic_info"
-            android:key="@string/keyBatterySettingsIdOnly"
-            android:layout="@layout/preference"
-            android:summary="@string/summaryBatterySettings"
-            android:title="@string/prefsBatterySettings" />
         <CheckBoxPreference
-            android:key="@string/keyUseWorkaroundBell"
-            android:summaryOff="@string/summaryDontUseWorkaroundBell"
-            android:summaryOn="@string/summaryUseWorkaroundBell"
-            android:title="@string/prefsUseWorkaroundBell" />
+            android:key="@string/keyMuteWithPhone"
+            android:summaryOff="@string/summaryNoMuteWithPhone"
+            android:summaryOn="@string/summaryMuteWithPhone"
+            android:title="@string/prefsMuteWithPhone" />
+        <CheckBoxPreference
+            android:key="@string/keyMuteWithAudioStream"
+            android:summaryOff="@string/summaryNoMuteWithAudioStream"
+            android:summaryOn="@string/summaryMuteWithAudioStream"
+            android:title="@string/prefsMuteWithAudioStream" />
+        <CheckBoxPreference
+            android:key="@string/keyMuteOffHook"
+            android:summaryOff="@string/summaryNotMuted"
+            android:summaryOn="@string/summaryMuted"
+            android:title="@string/prefsMuteOffHook" />
         <Preference
+            android:dependency="@string/keyMuteOffHook"
             android:icon="@drawable/ic_info"
-            android:key="@string/keyStatisticsIdOnly"
+            android:key="@string/keyReadPhoneStateIdOnly"
             android:layout="@layout/preference"
-            android:summary="@string/summaryStatistics"
-            android:title="@string/prefsStatistics" />
-        <Preference
-            android:icon="@drawable/ic_mail_outline"
-            android:key="@string/keySendMailIdOnly"
-            android:layout="@layout/preference"
-            android:summary="@string/summarySendMail"
-            android:title="@string/prefsSendMail" />
+            android:summary="@string/summaryReadPhoneState"
+            android:title="@string/prefsReadPhoneState" />
+        <CheckBoxPreference
+            android:key="@string/keyMuteInFlightMode"
+            android:summaryOff="@string/summaryNotMutedInFlightMode"
+            android:summaryOn="@string/summaryMutedInFlightMode"
+            android:title="@string/prefsMuteInFlightMode" />
+        <CheckBoxPreference
+            android:key="@string/keyNoSoundOnMusic"
+            android:summaryOff="@string/summaryNotNoSoundOnMusic"
+            android:summaryOn="@string/summaryNoSoundOnMusic"
+            android:title="@string/prefsNoSoundOnMusic" />
+        <CheckBoxPreference
+            android:key="@string/keyPauseAudioOnSound"
+            android:summaryOff="@string/summaryNotPauseAudioOnSound"
+            android:summaryOn="@string/summaryPauseAudioOnSound"
+            android:title="@string/prefsPauseAudioOnSound" />
 
     </PreferenceScreen>
 

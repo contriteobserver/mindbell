@@ -114,6 +114,12 @@
     <string name="prefsStatusVisibilityPublic">Zeige Status-Text auf Sperrbildschirm</string>
     <string name="summaryStatusVisibilityPublic">Status-Text auf Sperrbildschirm anzeigen</string>
     <string name="summaryStatusVisibilityPrivate">Status-Text auf Sperrbildschirm ausblenden</string>
+    <string name="prefsExplanationQuickSettings">Hinweis zu Schnelleinstellungen</string>
+    <string name="summaryExplanationQuickSettings">Ab Android Oreo ist es nicht länger möglich, die
+        Status-Benachrichtung aktuell zu halten, sie entfällt daher ab Android Oreo. MindBell bietet
+        nun eine Schnelleinstellungskachel, um den aktuellen Status von MindBell anzuzeigen. Bitte
+        beachten Sie, dass Sie Ihre Schnelleinstellungen erst bearbeiten müssen, um die Kachel zu
+        Ihrer Auswahl hinzuzufügen.</string>
 
     <string name="prefsCategoryReminderNotification">Erinnerungsbenachrichtigung</string>
     <string name="prefsNotificationOnWearables">Benachrichtigung auf Wearables</string>
@@ -164,6 +170,8 @@
     <string name="prefsMeditationEndingBell">Abschlussglocken</string>
     <string name="prefsMeditationVolume">Lautstärke</string>
 
+    <string name="prefsCategoryProblemSolving">&constProblemSolving;</string>
+    <string name="prefsFAQ">&constFAQ;</string>
     <string name="summaryFAQ">Hier finden Sie Antworten zu häufig gestellten Fragen.</string>
     <string name="prefsBatterySettings">Akku-Einstellungen</string>
     <string name="summaryBatterySettings">Wenn MindBell Sie nicht regelmäßig erinnert, prüfen Sie bitte hier, ob MindBell von der
@@ -182,6 +190,7 @@
     <string name="prefsStatistics">Interne Statistik</string>
     <string name="summaryStatistics">Zeiten vergangener oder geplanter Erinnerungen und Meditationsglocken anzeigen
         .</string>
+    <string name="prefsSendMail">&constSendMail;</string>
     <string name="summarySendMail">Für Vorschläge oder Fragen, die in den \'&constFAQ;\' nicht beantwortet werden, können Sie
         eine E-Mail mit Log-Informationen senden. Bitte vergessen Sie nicht, Ihre Frage oder eine Beschreibung des Problems zu
         ergänzen.</string>

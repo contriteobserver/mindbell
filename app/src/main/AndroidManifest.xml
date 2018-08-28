@@ -107,7 +107,7 @@
                 <action android:name="android.intent.action.AIRPLANE_MODE" /> <!-- implicit, *not* exempted from limitations -->
                 <action android:name="android.intent.action.PHONE_STATE" /> <!-- implicit but exempted from limitations -->
                 <action android:name="android.media.RINGER_MODE_CHANGED" /> <!-- implicit, *not* exempted from limitations -->
-                <action android:name="com.googlecode.mindbell.UPDATE_STATUS_NOTIFICATION" /> <!-- TODO Really? explicit, addresses activity -->
+                <action android:name="com.googlecode.mindbell.UPDATE_STATUS_NOTIFICATION" /> <!-- for documentation and logging, is now explicit -->
             </intent-filter>
         </receiver>
 

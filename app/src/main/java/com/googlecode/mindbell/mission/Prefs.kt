@@ -23,6 +23,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.media.AudioManager
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.PropertyAccessor
@@ -99,9 +100,11 @@ class Prefs private constructor(val context: Context) {
     val isSound: Boolean
         get() = getBooleanSetting(keySound)
 
-    var isStatus: Boolean
-        get() = getBooleanSetting(keyStatus)
-        set(statusNotification) = setSetting(keyStatus, statusNotification)
+    var isStatus: Boolean // status notification cannot be kept up-to-date for API level >= 26 because implicit broadcast cannot be received
+        get() = if (Build.VERSION.SDK_INT < 26) getBooleanSetting(keyStatus) else false
+        set(statusNotification) {
+            if (Build.VERSION.SDK_INT < 26) setSetting(keyStatus, statusNotification)
+        }
 
     val isNotificationOnWearables: Boolean
         get() = getBooleanSetting(keyNotificationOnWearables)
@@ -599,6 +602,7 @@ class Prefs private constructor(val context: Context) {
             settings.edit().remove(keyDismissNotification).apply()
             Log.w(TAG, "Removed old setting for '$keyDismissNotification'")
         }
+        // status and statusVisibilityPublic are ignored for API level >= 26 (isStatus returns always false in that case)
     }
 
     /**
