@@ -41,6 +41,9 @@ import java.util.*
  */
 class StatusDetector internal constructor(val context: Context, val prefs: Prefs) {
 
+    val isMutedTill: Boolean
+        get() = System.currentTimeMillis() < prefs.mutedTill
+
     val reasonMutedTill: String
         get() {
             val mutedTill = TimeOfDay(prefs.mutedTill)
@@ -109,7 +112,7 @@ class StatusDetector internal constructor(val context: Context, val prefs: Prefs
     fun getMuteRequestReason(shouldShowMessage: Boolean): MuteReason? {
         var reason: MuteReason? = null
 
-        if (System.currentTimeMillis() < prefs.mutedTill) { // Muted manually?
+        if (isMutedTill) { // Muted manually?
             reason = MuteReason(MUTED_TILL, reasonMutedTill)
 
         } else if (prefs.isMuteWithPhone && isPhoneMuted) { // Mute bell with phone?

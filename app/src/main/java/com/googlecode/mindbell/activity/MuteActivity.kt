@@ -25,6 +25,7 @@ import android.widget.NumberPicker
 import com.googlecode.mindbell.R
 import com.googlecode.mindbell.mission.Notifier
 import com.googlecode.mindbell.mission.Prefs
+import com.googlecode.mindbell.mission.StatusDetector
 
 /**
  * Activity to ask for the time period to mute the bell for.
@@ -33,17 +34,15 @@ class MuteActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val statusDetector = StatusDetector.getInstance(this)
         val notifier = Notifier.getInstance(this)
         val prefs = Prefs.getInstance(this)
         val numberPicker = NumberPicker(this)
         val hours = 24
         numberPicker.minValue = 0
         numberPicker.maxValue = hours
+        numberPicker.value = if (statusDetector.isMutedTill) 0 else 1
         numberPicker.displayedValues = createDisplayedHourValues(hours)
-        // TODO Add a layout like in MainActivity.showMeditationDialog()
-        // TODO Enrich layout with active/muted information as from notification before
-        // TODO Enrich layout with active/inactive switch
-        // TODO Set better defaults for the hours to mute
         AlertDialog.Builder(this) //
                 .setTitle(R.string.statusActionMuteFor) //
                 .setView(numberPicker) //
