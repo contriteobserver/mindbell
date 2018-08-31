@@ -20,6 +20,7 @@ package com.googlecode.mindbell.activity
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import android.widget.NumberPicker
 import com.googlecode.mindbell.R
@@ -34,24 +35,21 @@ class MuteActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val statusDetector = StatusDetector.getInstance(this)
-        val notifier = Notifier.getInstance(this)
-        val prefs = Prefs.getInstance(this)
         val numberPicker = NumberPicker(this)
-        val hours = 24
         numberPicker.minValue = 0
-        numberPicker.maxValue = hours
-        numberPicker.value = if (statusDetector.isMutedTill) 0 else 1
-        numberPicker.displayedValues = createDisplayedHourValues(hours)
+        numberPicker.maxValue = 24
+        numberPicker.value = deriveMuteForDefaultHoursDependingOnStatus(this)
+        numberPicker.displayedValues = createDisplayedHourValues(numberPicker.maxValue)
         AlertDialog.Builder(this) //
                 .setTitle(R.string.statusActionMuteFor) //
                 .setView(numberPicker) //
                 .setPositiveButton(android.R.string.ok) { _, _ ->
-                    val newValue = numberPicker.value
-                    val nextTargetTimeMillis = System.currentTimeMillis() + newValue * 3600000L
-                    prefs.mutedTill = nextTargetTimeMillis
-                    notifier.updateStatusNotification()
-                    notifier.scheduleRefreshMutedTill(nextTargetTimeMillis)
+                    val muteForHours = numberPicker.value
+                    val prefs = Prefs.getInstance(this)
+                    if (muteForHours > 0) { // if not off remember choice for the next time
+                        prefs.isMuteForDefaultHours = muteForHours
+                    }
+                    muteTill(this, muteForHours)
                     this@MuteActivity.finish()
                 } //
                 .setNegativeButton(android.R.string.cancel) { _, _ -> this@MuteActivity.finish() } //
@@ -59,7 +57,26 @@ class MuteActivity : Activity() {
     }
 
     private fun createDisplayedHourValues(hours: Int): Array<String> {
-        return Array(hours + 1, { i -> i.toString() + " h" })
+        return Array(hours + 1) { i -> if (i == 0) getText((R.string.prefsMutedTillOff)).toString() else i.toString() + " h" }
+    }
+
+    companion object {
+
+        fun deriveMuteForDefaultHoursDependingOnStatus(context: Context): Int {
+            val prefs = Prefs.getInstance(context)
+            val statusDetector = StatusDetector.getInstance(context)
+            return if (statusDetector.isMutedTill) 0 else prefs.isMuteForDefaultHours
+        }
+
+        fun muteTill(context: Context, hours: Int) {
+            val notifier = Notifier.getInstance(context)
+            val prefs = Prefs.getInstance(context)
+            val nextTargetTimeMillis = System.currentTimeMillis() + hours * 3600000L
+            prefs.mutedTill = nextTargetTimeMillis
+            notifier.updateStatusNotification()
+            notifier.scheduleRefreshMutedTill(nextTargetTimeMillis)
+        }
+
     }
 
 }

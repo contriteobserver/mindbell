@@ -112,7 +112,7 @@ class StatusDetector internal constructor(val context: Context, val prefs: Prefs
     fun getMuteRequestReason(shouldShowMessage: Boolean): MuteReason? {
         var reason: MuteReason? = null
 
-        if (isMutedTill) { // Muted manually?
+        if (System.currentTimeMillis() < prefs.mutedTill) { // Muted manually?
             reason = MuteReason(MUTED_TILL, reasonMutedTill)
 
         } else if (prefs.isMuteWithPhone && isPhoneMuted) { // Mute bell with phone?

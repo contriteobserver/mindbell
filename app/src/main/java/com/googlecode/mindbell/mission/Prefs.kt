@@ -177,6 +177,10 @@ class Prefs private constructor(val context: Context) {
     val isRandomize: Boolean
         get() = getBooleanSetting(keyRandomize)
 
+    var isMuteForDefaultHours: Int
+        get() = getIntSetting(keyMuteForDefaultHours)
+        set(hours) = setSetting(keyMuteForDefaultHours, hours)
+
     val isMuteInDoNotDisturbMode: Boolean
         get() = getBooleanSetting(keyMuteInDoNotDisturbMode)
 
@@ -432,6 +436,7 @@ class Prefs private constructor(val context: Context) {
         addPreference(keyMeditationEndingTimeMillis, -1L, LONG, false)
         addPreference(keyMeditationInterruptingBell, "1", STRING, false)
         addPreference(keyMeditationStartingTimeMillis, -1L, LONG, false)
+        addPreference(keyMuteForDefaultHours, 2, INTEGER, false)
         addPreference(keyMuteInDoNotDisturbMode, true, BOOLEAN, false)
         addPreference(keyMuteInFlightMode, false, BOOLEAN, false)
         addPreference(keyMuteOffHook, true, BOOLEAN, false)

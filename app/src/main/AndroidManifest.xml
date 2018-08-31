@@ -87,7 +87,7 @@
         <service
             android:name=".service.QuickSettingsService"
             android:icon="@drawable/ic_stat_active"
-            android:label="@string/prefsActive"
+            android:label="@string/statusActionMuteFor"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />

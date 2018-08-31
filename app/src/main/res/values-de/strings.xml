@@ -235,17 +235,17 @@
 
     <!-- Status bar notification -->
     <string name="statusTitleBellActive">Erinnern ist aktiv</string>
-    <string name="statusTextBellActive">{0} bis {1} am {2}</string>
+    <string name="statusTextBellActive">{0} bis {1} am {2}</string> <!-- MessageFormat needs single quotes to be doubled -->
     <string name="statusTitleBellMeditating">MindBell meditiert</string>
-    <string name="statusTextBellMeditating">{0,choice,1#1 Minute|1&lt;{0} Minuten} bis {1}</string>
+    <string name="statusTextBellMeditating">{0,choice,1#1 Minute|1&lt;{0} Minuten} bis {1}</string> <!-- MessageFormat needs single quotes to be doubled -->
     <string name="statusActionRefreshStatus">Aktualisieren</string>
     <string name="statusActionMuteFor">Nicht erinnern für &#8230;</string>
 
     <!-- Reasons why bell is muted -->
-    <string name="reasonMutedDuringNighttime">Zurzeit kein Erinnern bis {0} {1}</string>
+    <string name="reasonMutedDuringNighttime">Zurzeit kein Erinnern bis {0} {1}</string> <!-- MessageFormat needs single quotes to be doubled -->
     <string name="reasonMutedInFlightMode">Kein Erinnern im Flugmodus</string>
     <string name="reasonMutedOffHook">Kein Erinnern während Telefonaten</string>
-    <string name="reasonMutedTill">Nicht erinnern bis {0}</string>
+    <string name="reasonMutedTill">Nicht erinnern bis {0}</string> <!-- MessageFormat needs single quotes to be doubled -->
     <string name="reasonMutedWithAudioStream">Kein Erinnern bei stillgestelltem Audiokanal</string>
     <string name="reasonMutedInDoNotDisturbMode">Kein Erinnern im Bitte-nicht-stören-Modus</string>
     <string name="reasonMutedWithPhone">Kein Erinnern bei stillgestelltem Klingelton</string>

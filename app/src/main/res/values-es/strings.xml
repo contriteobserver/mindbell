@@ -162,16 +162,16 @@
     <string name="title_activity_about">Acerca de MindBell</string>
     <!-- Status bar notification -->
     <string name="statusTitleBellActive">Recordatorios activos</string>
-    <string name="statusTextBellActive">{0} a {1} en el {2}</string>
+    <string name="statusTextBellActive">{0} a {1} en el {2}</string> <!-- MessageFormat needs single quotes to be doubled -->
     <string name="statusTitleBellMeditating">MindBell medita</string>
-    <string name="statusTextBellMeditating">{0,choice,1#1 minuto||1&lt;{0} minutos} hasta {1}</string>
+    <string name="statusTextBellMeditating">{0,choice,1#1 minuto||1&lt;{0} minutos} hasta {1}</string> <!-- MessageFormat needs single quotes to be doubled -->
     <string name="statusActionRefreshStatus">Actualizar</string>
     <string name="statusActionMuteFor">No recordar durante &#8230;</string>
     <!-- Reasons why bell is muted -->
-    <string name="reasonMutedDuringNighttime">Actualmente sin recordatorio hasta {0} {1}</string>
+    <string name="reasonMutedDuringNighttime">Actualmente sin recordatorio hasta {0} {1}</string> <!-- MessageFormat needs single quotes to be doubled -->
     <string name="reasonMutedInFlightMode">Sin recordatorios en modo vuelo</string>
     <string name="reasonMutedOffHook">No recordar durante llamadas</string>
-    <string name="reasonMutedTill">No recordar hasta {0}</string>
+    <string name="reasonMutedTill">No recordar hasta {0}</string> <!-- MessageFormat needs single quotes to be doubled -->
     <string name="reasonMutedWithAudioStream">No recordar si el audio está silenciado</string>
     <string name="reasonMutedWithPhone">No recordar si el tono de llamada está silenciado</string>
     <!-- Reasons why permission READ_PHONE_STATE should be granted -->

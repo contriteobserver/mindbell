@@ -229,17 +229,17 @@
 
     <!-- Status bar notifications -->
     <string name="statusTitleBellActive">Reminder is active</string>
-    <string name="statusTextBellActive">{0} to {1} on {2}</string>
+    <string name="statusTextBellActive">{0} to {1} on {2}</string> <!-- MessageFormat needs single quotes to be doubled -->
     <string name="statusTitleBellMeditating">MindBell is meditating</string>
-    <string name="statusTextBellMeditating">{0,choice,1#1 minute|1&lt;{0} minutes} till {1}</string>
+    <string name="statusTextBellMeditating">{0,choice,1#1 minute|1&lt;{0} minutes} till {1}</string> <!-- MessageFormat needs single quotes to be doubled -->
     <string name="statusActionRefreshStatus">Refresh</string>
     <string name="statusActionMuteFor">Don\'t remind for &#8230;</string>
 
     <!-- Reasons why bell is muted -->
-    <string name="reasonMutedDuringNighttime">Currently no reminder till {0} {1}</string>
+    <string name="reasonMutedDuringNighttime">Currently no reminder till {0} {1}</string> <!-- MessageFormat needs single quotes to be doubled -->
     <string name="reasonMutedInFlightMode">No reminder in flight mode</string>
     <string name="reasonMutedOffHook">No reminder during calls</string>
-    <string name="reasonMutedTill">Don\'t remind till {0}</string>
+    <string name="reasonMutedTill">Don\'\'t remind till {0}</string> <!-- MessageFormat needs single quotes to be doubled -->
     <string name="reasonMutedWithAudioStream">No reminder if audio channel is muted</string>
     <string name="reasonMutedInDoNotDisturbMode">No reminder in do-not-disturb mode</string>
     <string name="reasonMutedWithPhone">No reminder if ringtone is muted</string>
@@ -295,6 +295,7 @@
     <string name="keyMeditationInterruptingBell" translatable="false">meditationInterruptingBell</string>
     <string name="keyMeditationStartingTimeMillis" translatable="false">meditationStartingTimeMillis</string>
     <string name="keyMeditationVolume" translatable="false">meditationVolume</string>
+    <string name="keyMuteForDefaultHours" translatable="false">muteForDefaultHours</string>
     <string name="keyMuteInDoNotDisturbMode" translatable="false">muteInDoNotDisturbMode</string>
     <string name="keyMuteInFlightMode" translatable="false">muteInFlightMode</string>
     <string name="keyMuteOffHook" translatable="false">muteOffHook</string>
