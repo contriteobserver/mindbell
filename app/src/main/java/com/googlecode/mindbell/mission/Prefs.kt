@@ -1002,6 +1002,11 @@ class Prefs private constructor(val context: Context) {
         const val ONE_MINUTE_MILLIS = 60000L
 
         /**
+         * Milliseconds from that on a scheduled event is judged to be delayed.
+         */
+        const val JUDGE_AS_DELAYED_MILLIS = ONE_MINUTE_MILLIS
+
+        /**
          * One minute in milliseconds plus an error indicator millisecond value.
          */
         const val ONE_MINUTE_MILLIS_INVALID_PERIOD_SPECIFICATION = ONE_MINUTE_MILLIS + 1L

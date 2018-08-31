@@ -22,6 +22,7 @@ import android.net.Uri
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.googlecode.mindbell.mission.InterruptSettings
 import com.googlecode.mindbell.mission.Prefs
+import com.googlecode.mindbell.mission.Prefs.Companion.JUDGE_AS_DELAYED_MILLIS
 import com.googlecode.mindbell.mission.model.NoActionsReason.NONE
 import com.googlecode.mindbell.util.TimeOfDay
 import java.util.*
@@ -60,14 +61,14 @@ class Statistics {
                 now = TimeOfDay(nowTimeMillis).logString
                 comment = deriveComment()
                 if (entry is NoActionsStatisticsEntry) {
-                    judgment = Judgment.REFRESH
+                    judgment = Judgment.REFRESHED
                 } else if (entry is ScheduledActionsStatisticsEntry) {
                     // enrich comment with data from last rescheduling entry before this one
                     val originEntry = findOriginEntry(entryList.subList(0, index))
                     if (originEntry != null) {
                         val next = TimeOfDay(originEntry.nextTargetTimeMillis).logString
                         val delayTimeMillis = entry.nowTimeMillis - originEntry.nextTargetTimeMillis
-                        judgment = if (delayTimeMillis < 60000L) Judgment.ON_TIME else Judgment.DELAYED
+                        judgment = if (delayTimeMillis < JUDGE_AS_DELAYED_MILLIS) Judgment.ON_TIME else Judgment.DELAYED
                         comment = "$comment, scheduled at ${originEntry.now} for $next (+$delayTimeMillis ms)"
                     }
                 }
@@ -106,7 +107,7 @@ class Statistics {
     }
 
     enum class Judgment {
-        NOT_APPLICABLE, ON_TIME, DELAYED, REFRESH
+        UNJUGDED, ON_TIME, DELAYED, REFRESHED
     }
 
     abstract class StatisticsEntry {
@@ -123,7 +124,7 @@ class Statistics {
         var comment = ""
 
         @JsonIgnore
-        var judgment = Judgment.NOT_APPLICABLE
+        var judgment = Judgment.UNJUGDED
 
         override fun toString(): String {
             return "$now $comment $judgment"
