@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?><!--
     MindBell - Aims to give you a support for staying mindful in a busy life -
                for remembering what really counts
-
+   
         Copyright (C) 2010-2014 Marc Schroeder
         Copyright (C) 2014-2018 Uwe Damken
-
+   
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
-
+   
         http://www.apache.org/licenses/LICENSE-2.0
-
+   
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
- -->
+-->
 
 <!-- Define referenced terms only once, following this idea: https://stackoverflow.com/a/39870268/2532583 --><!DOCTYPE resources [<!ENTITY constProblemSolving "Resolución de problemas"><!ENTITY constFAQ "FAQ"><!ENTITY constSendMail "Enviar un email con el log">]>
 
@@ -84,6 +84,13 @@
     <string name="prefsStatusVisibilityPublic">Mostrar texto con pantalla bloqueada</string>
     <string name="summaryStatusVisibilityPublic">Muestra el texto de estado en la pantalla de bloqueo</string>
     <string name="summaryStatusVisibilityPrivate">Oculta el texto de estado en la pantalla de bloqueo</string>
+    <string name="prefsExplanationQuickSettings">Información de ajustes rápidos</string>
+    <string name="summaryExplanationQuickSettings">Ahora en Android Oreo ya no es posible actualizar el estado de una notificación, se fue.
+Para solventarlo, Mindbell ofrece una \"baldosa de ajustes rápidos\" en la cual se muestra el estado actual de Mindbell. Ten en cuenta que tienes que editar tus \"ajustes rápidos\" para añadir la baldosa a tu selección de \"ajustes rápidos\".</string>
+    <string name="prefsCategoryReminderNotification">Notificación de recordatorio</string>
+    <string name="prefsNotificationOnWearables">Notificación en wearables</string>
+    <string name="summaryNotificationOnWearables">Mostrar notificación de recordatorio en wearables</string>
+    <string name="summaryNoNotificationOnWearables">No mostrar notificación de recordatorio en wearables</string>
     <string name="prefsNotificationTitle">Titulo de la notificación</string>
     <string name="prefsNotificationTitleDefault">MindBell &#8230;</string>
     <string name="prefsNotificationText">Texto de la notificación</string>
@@ -98,9 +105,16 @@
     <string name="prefsMuteWithAudioStream">No recordar si el audio está silenciado</string>
     <string name="summaryMuteWithAudioStream">No recuerda si el audio está silenciado</string>
     <string name="summaryNoMuteWithAudioStream">Recuerda aunque el canal de audio este silenciado</string>
+    <string name="prefsMuteInDoNotDisturbMode">No recordar in modo \"no molestar\"</string>
+    <string name="summaryMuteInDoNotDisturbMode">No muestra recordatorios si estás en modo \"no molestar\"</string>
+    <string name="summaryNoMuteInDoNotDisturbMode">Muestra recordatorios aunque estes en modo \"no molestar\"</string>
     <string name="prefsMuteOffHook">No recordar durante las llamadas</string>
     <string name="summaryMuted">No recuerda durante las llamadas</string>
     <string name="summaryNotMuted">Recuerda incluso durante las llamadas</string>
+    <string name="prefsReadPhoneState">Dar permiso para ver el estado del teléfono READ_PHONE_STATE</string>
+    <string name="summaryReadPhoneState">Para mostrar el icono de estado de Mindbell boca abajo en las llamadas entrantes o salientes, Mindbell necesita tener acceso a ver el estado del teléfono READ_PHONE_STATE.</string>
+    <string name="summaryReadPhoneStateGranted">Mindbell ya tiene permiso para ver el estado del teléfono.</string>
+    <string name="summaryReadPhoneStateDenied">Mindbell no tiene permiso para ver el estado del teléfono.</string>
     <string name="prefsMuteInFlightMode">No recordar en modo avión</string>
     <string name="summaryMutedInFlightMode">No recuerda en modo avión</string>
     <string name="summaryNotMutedInFlightMode">Recuerda en modo avión</string>
@@ -130,8 +144,10 @@
     <string name="prefsUseWorkaroundBell">Silencio extra antes del cuenco</string>
     <string name="summaryUseWorkaroundBell">3 segundos de silencio antes del sonido del cuenco para evitar la distorsión en teléfonos que aumentan progresivamente el volumen. Solo afecta a los sonidos de cuenco, no a los de sistema. Si tu teléfono necesita este silencio extra, lo tienes que añadir también en el fichero de sonido personalizado.</string>
     <string name="summaryDontUseWorkaroundBell">Usar sonido de cuenco por defecto</string>
+    <string name="prefsStatistics">Estadísticas internas</string>
+    <string name="summaryStatistics">Numero de veces que se han mostrado recordatorios (incluyendo planificados) o cuencos de meditación.</string>
     <string name="prefsSendMail">&constSendMail;</string>
-    <string name="summarySendMail">Para sugerencias o preguntas no contestadas en \'&constFAQ;\' me puedes enviar un correo con información de los logs. No olvides incluir tu pregunta o la descripción del problema.</string>
+    <string name="summarySendMail">Para sugerencias o preguntas no contestadas en &constFAQ; me puedes enviar un correo con información de los logs. No olvides incluir tu pregunta o la descripción del problema.</string>
     <!-- MeditationDialog Preferences -->
     <string name="title_meditation_dialog">Comenzar a meditar</string>
     <string name="prefsRampUpTime">Tiempo de preparación (mm:ss)</string>
@@ -160,11 +176,13 @@
     <!--<string name="periodNotExisting">periodNotExisting</string>-->
     <!-- AboutActivity -->
     <string name="title_activity_about">Acerca de MindBell</string>
-    <!-- Status bar notification -->
+    <!-- StatisticsActivity -->
+    <string name="title_activity_internal_statistics">Estadísticas internas</string>
+    <!-- Status bar notifications -->
     <string name="statusTitleBellActive">Recordatorios activos</string>
     <string name="statusTextBellActive">{0} a {1} en el {2}</string> <!-- MessageFormat needs single quotes to be doubled -->
     <string name="statusTitleBellMeditating">MindBell medita</string>
-    <string name="statusTextBellMeditating">{0,choice,1#1 minuto||1&lt;{0} minutos} hasta {1}</string> <!-- MessageFormat needs single quotes to be doubled -->
+    <string name="statusTextBellMeditating">{0,choice,1#1 minuto|1&lt;{0} minutos} hasta {1}</string> <!-- MessageFormat needs single quotes to be doubled -->
     <string name="statusActionRefreshStatus">Actualizar</string>
     <string name="statusActionMuteFor">No recordar durante &#8230;</string>
     <!-- Reasons why bell is muted -->
@@ -173,11 +191,14 @@
     <string name="reasonMutedOffHook">No recordar durante llamadas</string>
     <string name="reasonMutedTill">No recordar hasta {0}</string> <!-- MessageFormat needs single quotes to be doubled -->
     <string name="reasonMutedWithAudioStream">No recordar si el audio está silenciado</string>
+    <string name="reasonMutedInDoNotDisturbMode">Recordatorio deshabilitado en modo \"no molestar\"</string>
     <string name="reasonMutedWithPhone">No recordar si el tono de llamada está silenciado</string>
     <!-- Reasons why permission READ_PHONE_STATE should be granted -->
     <string name="reasonReadPhoneStateTitle">¿Por qué necesita este permiso?</string>
+    <string name="reasonReadPhoneStateText">MindBell muestra el cuenco boca abajo en la barra de notificaciones y/o en los ajustes rápidos cuando hay una llamada entrante o saliente. \n\n Para lograr esto, MindBell tiene que ser informado de las llamadas. Solo cuando se da el permiso READ_PHONE_STATE, MindBell puede ser informado.\n\nSi el permiso es denegado, las opciones el cuenco no se mostrará siempre correctamente.</string>
     <!-- Permission READ_PHONE_STATE denied but user checked 'never ask again' -->
     <string name="neverAskAgainReadPhoneStateTitle">Falta el permiso</string>
+    <string name="neverAskAgainReadPhoneStateText">El permiso READ_PHONE_STATE no está concedido. Por tanto el cuenco en las notificaciones y/o en los ajustes rápidos no se mostrará siempre de forma correcta.</string>
     <!-- Reasons why permission READ_EXTERNAL_STORAGE should be granted -->
     <string name="reasonReadExternalStorageTitle">¿Por qué necesita este permiso?</string>
     <string name="reasonReadExternalStorageText">Ningún sonido de cuenco ha sido seleccionado. Solo cuando Mindbell tiene permisos para READ_EXTERNAL_STORAGE puede acceder a tus sonidos.\n\nSi se deniegan los permisos tienes que elegir un sonido de la aplicación.</string>
@@ -194,4 +215,8 @@
     <string name="battery_settings_guidance1">Elige \"todas\".</string>
     <string name="battery_settings_guidance2">Haz click en \"Mindbell\".</string>
     <string name="battery_settings_guidance3">Elige \"No optimizar\".</string>
+    <!-- Preference keys (don't localize) -->
+    <!-- Mail address for send log by e-mail (don't localize) -->
+    <!-- About page url (don't localize) -->
+    <!-- FAQ page url (don't localize) -->
 </resources>
