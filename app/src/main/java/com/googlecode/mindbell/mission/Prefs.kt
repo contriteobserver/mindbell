@@ -97,8 +97,9 @@ class Prefs private constructor(val context: Context) {
     val isShow: Boolean
         get() = getBooleanSetting(keyShow)
 
-    val isSound: Boolean
+    var isSound: Boolean
         get() = getBooleanSetting(keySound)
+        internal set(newValue) = setSetting(keySound, newValue) // for JUnit tests
 
     var isStatus: Boolean // status notification cannot be kept up-to-date for API level >= 26 because implicit broadcast cannot be received
         get() = if (Build.VERSION.SDK_INT < 26) getBooleanSetting(keyStatus) else false
@@ -119,8 +120,9 @@ class Prefs private constructor(val context: Context) {
             return integers
         }
 
-    val audioStream: Int
+    var audioStream: Int
         get() = getAudioStream(getStringSetting(keyAudioStream))
+        internal set(newValue) = setSetting(keyAudioStream, getAudioStreamSetting(newValue)) // for JUnit tests
 
     val activeOnDaysOfWeekString: String
         get() {
@@ -139,8 +141,9 @@ class Prefs private constructor(val context: Context) {
             return sb.toString()
         }
 
-    val isUseAudioStreamVolumeSetting: Boolean
+    var isUseAudioStreamVolumeSetting: Boolean
         get() = getBooleanSetting(keyUseAudioStreamVolumeSetting)
+        internal set(newValue) = setSetting(keyUseAudioStreamVolumeSetting, newValue) // for JUnit tests
 
     val meditationVolume: Float
         get() = getFloatSetting(keyMeditationVolume)
@@ -193,8 +196,9 @@ class Prefs private constructor(val context: Context) {
     val isNoSoundOnMusic: Boolean
         get() = getBooleanSetting(keyNoSoundOnMusic)
 
-    val isPauseAudioOnSound: Boolean
+    var isPauseAudioOnSound: Boolean
         get() = getBooleanSetting(keyPauseAudioOnSound)
+        internal set(newValue) = setSetting(keyPauseAudioOnSound, newValue) // for JUnit tests
 
     val isMuteWithPhone: Boolean
         get() = getBooleanSetting(keyMuteWithPhone)
@@ -1214,6 +1218,17 @@ class Prefs private constructor(val context: Context) {
                 else -> AudioManager.STREAM_ALARM
             }
         }
+
+        fun getAudioStreamSetting(audioStream: Int): String {
+            return when (audioStream) {
+                AudioManager.STREAM_NOTIFICATION -> "1"
+                AudioManager.STREAM_MUSIC -> "2"
+                AudioManager.STREAM_ALARM -> "0"
+                // fall-thru to use "0" as default
+                else -> "0"
+            }
+        }
+
     }
 
 }

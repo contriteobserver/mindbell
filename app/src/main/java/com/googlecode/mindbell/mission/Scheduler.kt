@@ -147,9 +147,12 @@ class Scheduler private constructor(val context: Context) {
             val isRandomize = prefs.isRandomize
             val isNormalize = prefs.isNormalize
             val randomizedInterval = if (isRandomize) getRandomInterval(meanInterval) else meanInterval
-            var targetTimeMillis = nowTimeMillis + randomizedInterval
             val normalizeMillis = prefs.normalize * Prefs.ONE_MINUTE_MILLIS
-            targetTimeMillis = normalize(targetTimeMillis, meanInterval, isNormalize, normalizeMillis)
+            var targetTimeMillis = nowTimeMillis
+            if (TimeOfDay(targetTimeMillis).isDaytime(prefs)) { // add an interval only if "now" is in active time
+                targetTimeMillis += randomizedInterval
+                targetTimeMillis = normalize(targetTimeMillis, meanInterval, isNormalize, normalizeMillis)
+            }
             if (!TimeOfDay(targetTimeMillis).isDaytime(prefs)) { // inactive time?
                 targetTimeMillis = (getNextDaytimeStartInMillis(targetTimeMillis, prefs.daytimeStart, prefs.activeOnDaysOfWeek)
                         // start of next day time millis

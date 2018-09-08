@@ -18,6 +18,7 @@
  */
 package com.googlecode.mindbell.mission
 
+import android.media.AudioManager
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
 import org.junit.Assert
@@ -36,18 +37,16 @@ class ActionsExecutorTest {
     fun setUp() {
         actionsExecutor = ActionsExecutor.getInstance(InstrumentationRegistry.getTargetContext())
         prefs = Prefs.getInstance(InstrumentationRegistry.getTargetContext())
+        prefs.resetSettings()
+        prefs.isSound = true
+        prefs.isPauseAudioOnSound = false
+        prefs.isUseAudioStreamVolumeSetting = false
+        prefs.audioStream = AudioManager.STREAM_ALARM
     }
 
     @Test
     fun testBellVolume() {
-        // setup
-        prefs.resetOriginalVolume()
-        // exercise
         actionsExecutor.startInterruptActions(prefs.forRegularOperation(), null)
-        // verify ... be sure to have sound checked as an activityTestRule on your emulated device
-        // verify ... be sure to have pause audio unchecked on your emulated device
-        // verify ... be sure to have audio stream set to alarm on your emulated device
-        // verify ... be sure to have use audio stream volume disable on your emulated device
         Assert.assertEquals(actionsExecutor.alarmMaxVolume, actionsExecutor.alarmVolume)
     }
 
@@ -57,36 +56,25 @@ class ActionsExecutorTest {
 
     @Test
     fun testFinish() {
-        // setup
-        prefs.resetOriginalVolume()
         actionsExecutor.alarmVolume = actionsExecutor.alarmMaxVolume / 2
         val alarmVolume = actionsExecutor.alarmVolume
-        // exercise
         actionsExecutor.startInterruptActions(prefs.forRegularOperation(), null)
         actionsExecutor.finishBellSound()
-        // verify
         Assert.assertFalse(actionsExecutor.isBellSoundPlaying)
         Assert.assertEquals(alarmVolume, actionsExecutor.alarmVolume)
     }
 
     @Test
     fun testOriginalVolume() {
-        // setup
-        prefs.resetOriginalVolume()
         val originalVolume = actionsExecutor.alarmVolume
-        // exercise
         actionsExecutor.startInterruptActions(prefs.forRegularOperation(), null)
         actionsExecutor.finishBellSound()
-        // verify
         Assert.assertEquals(originalVolume, actionsExecutor.alarmVolume)
     }
 
     @Test
     fun testPlay() {
-        // setup
-        // exercise
         actionsExecutor.startInterruptActions(prefs.forRegularOperation(), null)
-        // verify ... be sure to have sound checked as an activityTestRule on your emulated device
         Assert.assertTrue(actionsExecutor.isBellSoundPlaying)
     }
 

@@ -36,6 +36,7 @@ import com.googlecode.mindbell.R.array.audioStreamEntries
 import com.googlecode.mindbell.R.id.iconText
 import com.googlecode.mindbell.R.id.textViewSummary
 import com.googlecode.mindbell.R.string.*
+import com.googlecode.mindbell.ToastMatcher.Companion.checkDisplayedAndDisappearedOnToast
 import com.googlecode.mindbell.ToastMatcher.Companion.onToast
 import com.googlecode.mindbell.mission.Prefs
 import junit.framework.Assert.*
@@ -66,9 +67,13 @@ class SettingsActivityTest {
 
     @Test
     fun testActivityIsDisplayed() {
+        onView(withText(preferencesTitle)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun testSoundOutputPreferencesPage() {
 
         // Navigate to sound output preferences page
-        onView(withText(preferencesTitle)).check(matches(isDisplayed()))
         onView(allOf(withId(title), withText(prefsCategorySoundOutput))).perform(click())
         onView(allOf(withText(prefsCategorySoundOutput), not(withText(preferencesTitle)))).check(matches(isDisplayed()))
 
@@ -76,40 +81,60 @@ class SettingsActivityTest {
         val textViewUseAudioStreamVolumeSetting = onView(allOf(withId(summary), hasSibling(withText(prefsUseAudioStreamVolumeSetting))))
         val textViewAudioStream = onView(allOf(withId(textViewSummary), hasSibling(withText(prefsAudioStream))))
 
-        // Check default settings in Prefs and UI
-        assertTrue(prefs.isUseAudioStreamVolumeSetting)
+        // Check default settings in UI and Prefs
         textViewUseAudioStreamVolumeSetting.check(matches(withText(summaryUseAudioStreamVolumeSetting)))
+        assertTrue(prefs.isUseAudioStreamVolumeSetting)
 
-        assertEquals(AudioManager.STREAM_ALARM, prefs.audioStream)
         textViewAudioStream.check(matches(withText(resources.getStringArray(audioStreamEntries)[0])))
+        assertEquals(AudioManager.STREAM_ALARM, prefs.audioStream)
 
-        // Switch OFF isUseAudioStreamVolumeSetting and check in Prefs and UI
-        textViewUseAudioStreamVolumeSetting.perform(click())
+        // Switch OFF isUseAudioStreamVolumeSetting and check in UI and Prefs
+        textViewUseAudioStreamVolumeSetting.perform(click()).check(matches(withText(summaryDontUseAudioStreamVolumeSetting)))
         assertFalse(prefs.isUseAudioStreamVolumeSetting)
-        textViewUseAudioStreamVolumeSetting.check(matches(withText(summaryDontUseAudioStreamVolumeSetting)))
 
-        // isUseAudioStreamVolumeSetting false => audio stream must remain to be ALARM
         textViewAudioStream.check(matches(not(isEnabled())))
 
-        // Switch ON isUseAudioStreamVolumeSetting and check in Prefs and UI
-        textViewUseAudioStreamVolumeSetting.perform(click())
-
+        // Switch ON isUseAudioStreamVolumeSetting and check in UI and Prefs
+        textViewUseAudioStreamVolumeSetting.perform(click()).check(matches(withText(summaryUseAudioStreamVolumeSetting)))
         assertTrue(prefs.isUseAudioStreamVolumeSetting)
-        textViewUseAudioStreamVolumeSetting.check(matches(withText(summaryUseAudioStreamVolumeSetting)))
 
-        // Choose audio stream NOTIFICATION and check in Prefs and UI
+        textViewAudioStream.check(matches(isEnabled()))
+
+        // Choose audio stream NOTIFICATION and check in UI and Prefs
         textViewAudioStream.perform(click())
         onView(allOf(withId(iconText), withText(resources.getStringArray(audioStreamEntries)[1]))).perform(click())
-
-        assertEquals(AudioManager.STREAM_NOTIFICATION, prefs.audioStream)
         textViewAudioStream.check(matches(withText(resources.getStringArray(audioStreamEntries)[1])))
+        assertEquals(AudioManager.STREAM_NOTIFICATION, prefs.audioStream)
 
         onToast(mustUseAudioStreamSetting).check(doesNotExist())
 
         // Audio stream != ALARM => isUseAudioStreamVolumeSetting must remain to be ON
         textViewUseAudioStreamVolumeSetting.perform(click())
 
-        onToast(mustUseAudioStreamSetting).check(matches(isDisplayed()))
+        checkDisplayedAndDisappearedOnToast(mustUseAudioStreamSetting)
+
+        // Choose audio stream MUSIC and check in UI and Prefs
+        textViewAudioStream.perform(click())
+        onView(allOf(withId(iconText), withText(resources.getStringArray(audioStreamEntries)[2]))).perform(click())
+        textViewAudioStream.check(matches(withText(resources.getStringArray(audioStreamEntries)[2])))
+        assertEquals(AudioManager.STREAM_MUSIC, prefs.audioStream)
+
+        onToast(mustUseAudioStreamSetting).check(doesNotExist())
+
+        // Audio stream != ALARM => isUseAudioStreamVolumeSetting must remain to be ON
+        textViewUseAudioStreamVolumeSetting.perform(click())
+
+        checkDisplayedAndDisappearedOnToast(mustUseAudioStreamSetting)
+
+        // Choose audio stream ALARM and check in UI and Prefs
+        textViewAudioStream.perform(click())
+        onView(allOf(withId(iconText), withText(resources.getStringArray(audioStreamEntries)[0]))).perform(click())
+        textViewAudioStream.check(matches(withText(resources.getStringArray(audioStreamEntries)[0])))
+        assertEquals(AudioManager.STREAM_ALARM, prefs.audioStream)
+
+        // Switch OFF isUseAudioStreamVolumeSetting and check in UI and Prefs
+        textViewUseAudioStreamVolumeSetting.perform(click()).check(matches(withText(summaryDontUseAudioStreamVolumeSetting)))
+        assertFalse(prefs.isUseAudioStreamVolumeSetting)
 
     }
 

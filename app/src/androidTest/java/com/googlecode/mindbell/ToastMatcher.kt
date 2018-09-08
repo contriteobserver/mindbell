@@ -20,7 +20,10 @@
 package com.googlecode.mindbell
 
 import android.support.test.espresso.Espresso.onView
+import android.support.test.espresso.NoMatchingViewException
 import android.support.test.espresso.Root
+import android.support.test.espresso.assertion.ViewAssertions.matches
+import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
 import android.support.test.espresso.matcher.ViewMatchers.withText
 import android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
 import android.view.WindowManager.LayoutParams.TYPE_TOAST
@@ -82,9 +85,34 @@ class ToastMatcher(private val maxFailures: Int = DEFAULT_MAX_FAILURES) : TypeSa
 
         fun onToast(textId: Int, maxRetries: Int = DEFAULT_MAX_FAILURES) = onView(withText(textId)).inRoot(isToast(maxRetries))!!
 
-        fun isToast(maxRetries: Int = DEFAULT_MAX_FAILURES): Matcher<Root> {
+        private fun isToast(maxRetries: Int = DEFAULT_MAX_FAILURES): Matcher<Root> {
             return ToastMatcher(maxRetries)
         }
+
+        fun checkDisplayedAndDisappearedOnToast(text: String) {
+            onToast(text).check(matches(isDisplayed()))
+            try {
+                while (true) {
+                    Thread.sleep(500L)
+                    onToast(text).check(matches(isDisplayed()))
+                }
+            } catch (e: NoMatchingViewException) {
+                // This exception occurs when the toast has been taken off the screen
+            }
+        }
+
+        fun checkDisplayedAndDisappearedOnToast(textId: Int) {
+            onToast(textId).check(matches(isDisplayed()))
+            try {
+                while (true) {
+                    Thread.sleep(500L)
+                    onToast(textId).check(matches(isDisplayed()))
+                }
+            } catch (e: NoMatchingViewException) {
+                // This exception occurs when the toast has been taken off the screen
+            }
+        }
+
     }
 
 }
