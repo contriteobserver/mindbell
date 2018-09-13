@@ -34,6 +34,9 @@ import com.googlecode.mindbell.R.id.*
 import com.googlecode.mindbell.R.string.*
 import com.googlecode.mindbell.mission.Prefs
 import com.googlecode.mindbell.mission.Prefs.Companion.ONE_MINUTE_MILLIS
+import com.googlecode.mindbell.mission.model.Statistics
+import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertTrue
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
 import org.junit.Before
@@ -100,10 +103,28 @@ class MainActivityTest {
             Thread.sleep(ONE_MINUTE_MILLIS)
         } while (prefs.isMeditating)
 
+        // Check meditation has stopped automatically
         onView(allOf(withId(meditating), withContentDescription(prefsMeditatingOn))).perform(click())
 
         // Check statistics for success
+        val entryList = prefs.getStatisticsEntryList().filter { entry -> entry is Statistics.ActionsStatisticsEntry }
+        assertEquals(4, entryList.size)
 
+        val beginning = entryList[0]
+        assertTrue(beginning is Statistics.MeditationBeginningActionsStatisticsEntry)
+        assertEquals(Statistics.Judgment.ON_TIME, beginning.judgment)
+
+        val interrupting1 = entryList[1]
+        assertTrue(interrupting1 is Statistics.MeditationInterruptingActionsStatisticsEntry)
+        assertEquals(Statistics.Judgment.ON_TIME, interrupting1.judgment)
+
+        val interrupting2 = entryList[2]
+        assertTrue(interrupting2 is Statistics.MeditationInterruptingActionsStatisticsEntry)
+        assertEquals(Statistics.Judgment.ON_TIME, interrupting2.judgment)
+
+        val ending = entryList[3]
+        assertTrue(ending is Statistics.MeditationEndingActionsStatisticsEntry)
+        assertEquals(Statistics.Judgment.ON_TIME, ending.judgment)
 
     }
 
