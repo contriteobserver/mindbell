@@ -39,7 +39,7 @@ class SchedulerTest {
             val prefs = mockk<Prefs>()
             every { prefs.daytimeStart } returns TimeOfDay(9, 0)
             every { prefs.daytimeEnd } returns TimeOfDay(21, 0)
-            every { prefs.activeOnDaysOfWeek } returns HashSet(Arrays.asList(2, 3, 4, 5, 6))
+            every { prefs.activeOnDaysOfWeek } returns HashSet(Arrays.asList("2", "3", "4", "5", "6"))
             every { prefs.isRandomize } returns true
             every { prefs.normalize } returns -1
             every { prefs.isNormalize } returns false
@@ -52,7 +52,7 @@ class SchedulerTest {
             val prefs = mockk<Prefs>()
             every { prefs.daytimeStart } returns TimeOfDay(13, 0)
             every { prefs.daytimeEnd } returns TimeOfDay(2, 0)
-            every { prefs.activeOnDaysOfWeek } returns HashSet(Arrays.asList(2, 3, 4, 5, 6))
+            every { prefs.activeOnDaysOfWeek } returns HashSet(Arrays.asList("2", "3", "4", "5", "6"))
             every { prefs.isRandomize } returns true
             every { prefs.normalize } returns -1
             every { prefs.isNormalize } returns false

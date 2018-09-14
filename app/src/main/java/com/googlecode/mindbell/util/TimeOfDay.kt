@@ -139,7 +139,7 @@ class TimeOfDay {
      * The time of day, as provided by the given String with the format "hour[:minute]" without a weekday.
      */
     constructor(time: String) {
-        val parts = time.split(":".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
+        val parts = time.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         when (parts.size) {
             2 -> init(Integer.valueOf(parts[0])!!, Integer.valueOf(parts[1])!!, null, null, null)
             1 -> init(Integer.valueOf(parts[0])!!, 0, null, null, null)
@@ -237,7 +237,7 @@ class TimeOfDay {
      *
      * @return whether bell should ring
      */
-    fun isDaytime(start: TimeOfDay, end: TimeOfDay, activeOnDaysOfWeek: Set<Int>): Boolean {
+    fun isDaytime(start: TimeOfDay, end: TimeOfDay, activeOnDaysOfWeek: Set<String>): Boolean {
         if (!isInInterval(start, end)) {
             return false // time is before or after active time range
         }
@@ -287,7 +287,7 @@ class TimeOfDay {
      * @param activeOnDaysOfWeek
      * @return
      */
-    fun isActiveOnThatDay(activeOnDaysOfWeek: Set<Int>): Boolean {
+    fun isActiveOnThatDay(activeOnDaysOfWeek: Set<String>): Boolean {
         return isActiveOnThatDay(weekday!!, activeOnDaysOfWeek)
     }
 
@@ -334,8 +334,8 @@ class TimeOfDay {
          * @param activeOnDaysOfWeek
          * @return
          */
-        fun isActiveOnThatDay(weekday: Int, activeOnDaysOfWeek: Set<Int>): Boolean {
-            return activeOnDaysOfWeek.contains(Integer.valueOf(weekday))
+        fun isActiveOnThatDay(weekday: Int, activeOnDaysOfWeek: Set<String>): Boolean {
+            return activeOnDaysOfWeek.contains("$weekday")
         }
     }
 

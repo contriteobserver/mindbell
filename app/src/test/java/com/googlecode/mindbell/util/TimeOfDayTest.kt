@@ -510,7 +510,7 @@ class TimeOfDayTest {
         val start = TimeOfDay(22, 59, null)
         val end = TimeOfDay(5, 0, null)
         val t = TimeOfDay(22, 59, Calendar.FRIDAY)
-        assertTrue(t.isDaytime(start, end, HashSet(Arrays.asList(Calendar.FRIDAY))))
+        assertTrue(t.isDaytime(start, end, HashSet(Arrays.asList(Calendar.FRIDAY.toString()))))
     }
 
     @Test
@@ -518,7 +518,7 @@ class TimeOfDayTest {
         val start = TimeOfDay(22, 59, null)
         val end = TimeOfDay(5, 0, null)
         val t = TimeOfDay(23, 59, Calendar.FRIDAY)
-        assertTrue(t.isDaytime(start, end, HashSet(Arrays.asList(Calendar.FRIDAY))))
+        assertTrue(t.isDaytime(start, end, HashSet(Arrays.asList(Calendar.FRIDAY.toString()))))
     }
 
     @Test
@@ -526,7 +526,7 @@ class TimeOfDayTest {
         val start = TimeOfDay(22, 59, null)
         val end = TimeOfDay(5, 0, null)
         val t = TimeOfDay(0, 0, Calendar.SATURDAY)
-        assertTrue(t.isDaytime(start, end, HashSet(Arrays.asList(Calendar.FRIDAY))))
+        assertTrue(t.isDaytime(start, end, HashSet(Arrays.asList(Calendar.FRIDAY.toString()))))
     }
 
     @Test
@@ -534,7 +534,7 @@ class TimeOfDayTest {
         val start = TimeOfDay(22, 59, null)
         val end = TimeOfDay(5, 0, null)
         val t = TimeOfDay(4, 59, Calendar.SATURDAY)
-        assertTrue(t.isDaytime(start, end, HashSet(Arrays.asList(Calendar.FRIDAY))))
+        assertTrue(t.isDaytime(start, end, HashSet(Arrays.asList(Calendar.FRIDAY.toString()))))
     }
 
     @Test
@@ -542,7 +542,7 @@ class TimeOfDayTest {
         val start = TimeOfDay(22, 59, null)
         val end = TimeOfDay(5, 0, null)
         val t = TimeOfDay(5, 0, Calendar.SATURDAY)
-        assertFalse(t.isDaytime(start, end, HashSet(Arrays.asList(Calendar.FRIDAY))))
+        assertFalse(t.isDaytime(start, end, HashSet(Arrays.asList(Calendar.FRIDAY.toString()))))
     }
 
     @Test

@@ -235,4 +235,38 @@ object Utils {
         inputManager.hideSoftInputFromWindow(textView.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
     }
 
+    /**
+     * Returns an array of strings as an array of char sequences.
+     */
+    fun asCharSequenceArray(stringArray: Array<String>): Array<CharSequence> {
+        // Kotlin does not seem to offer a more convenient way to convert these types of arrays.
+        val stringList = ArrayList<String>()
+        stringList.addAll(stringArray)
+        return stringList.toArray(arrayOfNulls<CharSequence>(stringArray.size))
+    }
+
+    /**
+     * Returns a summary containing a list of comma separated entries. The content of the list depends on the given selected
+     * values. The order of the list depends on the entry values, an ordered list of indices into the entries array.
+     */
+    fun deriveOrderedEntrySummary(values: Set<String>, entries: Array<CharSequence>, entryValues: Array<CharSequence>): String {
+        val sb = StringBuilder()
+        for (i in entryValues.indices) { // walk through entries, as they are ordered when presented to the user
+            if (values.contains(entryValues[i])) { // is internal representation value in the set of selected values?
+                if (sb.isNotEmpty()) {
+                    sb.append(", ")
+                }
+                sb.append(entries[i])
+            }
+        }
+        return sb.toString()
+    }
+
+    /**
+     * Convenience method to call deriveOrderedEntrySummary() with arrays of character sequences.
+     */
+    fun deriveOrderedEntrySummary(values: Set<String>, entries: Array<String>, entryValues: Array<String>): String {
+        return deriveOrderedEntrySummary(values, asCharSequenceArray(entries), asCharSequenceArray(entryValues))
+    }
+
 }

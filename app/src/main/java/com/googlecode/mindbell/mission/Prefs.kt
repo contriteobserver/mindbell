@@ -110,15 +110,8 @@ class Prefs private constructor(val context: Context) {
     val isNotificationOnWearables: Boolean
         get() = getBooleanSetting(keyNotificationOnWearables)
 
-    val activeOnDaysOfWeek: Set<Int>
-        get() {
-            val strings = getStringSetSetting(keyActiveOnDaysOfWeek)
-            val integers = HashSet<Int>()
-            for (string in strings) {
-                integers.add(Integer.valueOf(string))
-            }
-            return integers
-        }
+    val activeOnDaysOfWeek: Set<String>
+        get() = getStringSetSetting(keyActiveOnDaysOfWeek)
 
     var audioStream: Int
         get() = getAudioStream(getStringSetting(keyAudioStream))
@@ -130,12 +123,11 @@ class Prefs private constructor(val context: Context) {
             val activeOnDaysOfWeek = activeOnDaysOfWeek
             val sb = StringBuilder()
             for (dayOfWeekValue in weekdayEntryValues) {
-                val dayOfWeekValueAsInteger = Integer.valueOf(dayOfWeekValue) // internal weekday value in locale oriented order
-                if (activeOnDaysOfWeek.contains(dayOfWeekValueAsInteger)) { // active on this day?
+                if (activeOnDaysOfWeek.contains(dayOfWeekValue)) { // active on this day?
                     if (sb.isNotEmpty()) {
                         sb.append(", ")
                     }
-                    sb.append(getWeekdayAbbreviation(dayOfWeekValueAsInteger!!)) // add day to the list of active days
+                    sb.append(getWeekdayAbbreviation(dayOfWeekValue)) // add day to the list of active days
                 }
             }
             return sb.toString()
@@ -735,8 +727,8 @@ class Prefs private constructor(val context: Context) {
         }
     }
 
-    fun getWeekdayAbbreviation(dayOfWeek: Int): String {
-        return weekdayAbbreviationEntries[dayOfWeek - 1]
+    fun getWeekdayAbbreviation(dayOfWeek: String): String {
+        return weekdayAbbreviationEntries[dayOfWeek.toInt() - 1]
     }
 
     /**

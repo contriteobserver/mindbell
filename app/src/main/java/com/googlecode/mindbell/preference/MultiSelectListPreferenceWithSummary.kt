@@ -5,6 +5,8 @@ import android.content.Context
 import android.os.Build
 import android.preference.MultiSelectListPreference
 import android.util.AttributeSet
+import com.googlecode.mindbell.util.Utils
+
 
 /**
  * Adds a summary to MultiSelectListPreference by showing all selected entries.
@@ -32,16 +34,7 @@ class MultiSelectListPreferenceWithSummary : MultiSelectListPreference {
         val entries = entries // entries as shown to the user
         val entryValues = entryValues // values internally representing the entries
         val values = values // selected values
-        val sb = StringBuilder()
-        for (i in entryValues.indices) { // walk through entries, as they are ordered as presented to the user
-            if (values.contains(entryValues[i])) { // internal represention value in the set of selected values?
-                if (sb.length > 0) {
-                    sb.append(", ")
-                }
-                sb.append(entries[i])
-            }
-        }
-        return sb.toString()
+        return Utils.deriveOrderedEntrySummary(values, entries, entryValues)
     }
 
 }

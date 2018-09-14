@@ -94,7 +94,7 @@ class StatusDetector internal constructor(val context: Context, val prefs: Prefs
             val nextStartTime = TimeOfDay(
                     Scheduler.getNextDaytimeStartInMillis(Calendar.getInstance().timeInMillis, prefs.daytimeStart,
                             prefs.activeOnDaysOfWeek))
-            val weekdayAbbreviation = prefs.getWeekdayAbbreviation(nextStartTime.weekday!!)
+            val weekdayAbbreviation = prefs.getWeekdayAbbreviation(nextStartTime.weekday!!.toString())
             return MessageFormat.format(context.getText(R.string.reasonMutedDuringNighttime).toString(), weekdayAbbreviation,
                     nextStartTime.getDisplayString(context))
         }

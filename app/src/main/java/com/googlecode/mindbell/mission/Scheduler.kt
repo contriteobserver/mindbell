@@ -204,7 +204,7 @@ class Scheduler private constructor(val context: Context) {
         /**
          * Return time millis of next time when an active daytime start is gets reached after referenceTimeMillis.
          */
-        fun getNextDaytimeStartInMillis(referenceTimeMillis: Long, start: TimeOfDay, activeOnDaysOfWeek: Set<Int>): Long {
+        fun getNextDaytimeStartInMillis(referenceTimeMillis: Long, start: TimeOfDay, activeOnDaysOfWeek: Set<String>): Long {
             if (activeOnDaysOfWeek.isEmpty()) {
                 throw IllegalArgumentException("Empty activeOnDaysOfWeek would result in an endless loop, prefs checks bypassed?")
             }

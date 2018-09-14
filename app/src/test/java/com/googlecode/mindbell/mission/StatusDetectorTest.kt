@@ -51,7 +51,7 @@ class StatusDetectorTest {
         every { prefs.isMuteWithAudioStream } returns false
         every { prefs.daytimeStart } returns TimeOfDay(0, 0)
         every { prefs.daytimeEnd } returns TimeOfDay(0, 0)
-        every { prefs.activeOnDaysOfWeek } returns HashSet(Arrays.asList(*arrayOf(1, 2, 3, 4, 5, 6, 7)))
+        every { prefs.activeOnDaysOfWeek } returns HashSet(Arrays.asList(*arrayOf("1", "2", "3", "4", "5", "6", "7")))
         every { statusDetector.isPhoneMuted } returns false
         every { statusDetector.isAudioStreamMuted } returns false
         every { statusDetector.isPhoneOffHook } returns false

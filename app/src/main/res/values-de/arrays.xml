@@ -77,13 +77,13 @@
 
     <!-- Abbreviations for weekdays ordered by their internal value -->
     <string-array name="weekdayAbbreviationEntries">
-        <item>SO</item>
         <item>MO</item>
         <item>DI</item>
         <item>MI</item>
         <item>DO</item>
         <item>FR</item>
         <item>SA</item>
+        <item>SO</item>
     </string-array>
 
     <!-- Texts to be shown next to the icons for audio stream selection -->

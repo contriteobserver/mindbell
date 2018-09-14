@@ -54,11 +54,11 @@
         <!-- keyActive can only be toggled by the meditation button -->
 
         <com.googlecode.mindbell.preference.TimePickerPreference
-            android:dialogTitle=""
+            android:dialogTitle="@string/prefsStart"
             android:key="@string/keyStart"
             android:title="@string/prefsStart"/>
         <com.googlecode.mindbell.preference.TimePickerPreference
-            android:dialogTitle=""
+            android:dialogTitle="@string/prefsEnd"
             android:key="@string/keyEnd"
             android:title="@string/prefsEnd"/>
         <com.googlecode.mindbell.preference.MultiSelectListPreferenceWithSummary
