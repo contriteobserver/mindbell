@@ -30,6 +30,8 @@ import android.support.v4.app.NotificationManagerCompat
 import android.util.Log
 import android.widget.Toast
 import com.googlecode.mindbell.R
+import com.googlecode.mindbell.R.array.weekdayAbbreviationEntries
+import com.googlecode.mindbell.R.array.weekdayEntryValues
 import com.googlecode.mindbell.activity.MainActivity
 import com.googlecode.mindbell.activity.MuteActivity
 import com.googlecode.mindbell.mission.Prefs.Companion.INTERRUPT_NOTIFICATION_CHANNEL_ID
@@ -44,6 +46,7 @@ import com.googlecode.mindbell.receiver.RefreshReceiver
 import com.googlecode.mindbell.util.AlarmManagerCompat
 import com.googlecode.mindbell.util.NotificationManagerCompatExtension
 import com.googlecode.mindbell.util.TimeOfDay
+import com.googlecode.mindbell.util.Utils
 import java.text.MessageFormat
 import java.util.*
 
@@ -143,7 +146,7 @@ class Notifier private constructor(val context: Context, val prefs: Prefs) {
             contentText = MessageFormat.format(context.getText(R.string.statusTextBellActive).toString(), //
                     prefs.daytimeStart.getDisplayString(context), //
                     prefs.daytimeEnd.getDisplayString(context), //
-                    prefs.activeOnDaysOfWeekString)
+                    Utils.deriveOrderedEntrySummary(prefs.activeOnDaysOfWeek, context.resources.getStringArray(weekdayAbbreviationEntries), context.resources.getStringArray(weekdayEntryValues)))
         }
 
         // Create notification channel

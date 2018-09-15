@@ -117,22 +117,6 @@ class Prefs private constructor(val context: Context) {
         get() = getAudioStream(getStringSetting(keyAudioStream))
         internal set(newValue) = setSetting(keyAudioStream, getAudioStreamSetting(newValue)) // for JUnit tests
 
-    val activeOnDaysOfWeekString: String
-        get() {
-            // Warning: Similar code in SettingsActivity#setMultiSelectListPreferenceSummary()
-            val activeOnDaysOfWeek = activeOnDaysOfWeek
-            val sb = StringBuilder()
-            for (dayOfWeekValue in weekdayEntryValues) {
-                if (activeOnDaysOfWeek.contains(dayOfWeekValue)) { // active on this day?
-                    if (sb.isNotEmpty()) {
-                        sb.append(", ")
-                    }
-                    sb.append(getWeekdayAbbreviation(dayOfWeekValue)) // add day to the list of active days
-                }
-            }
-            return sb.toString()
-        }
-
     var isUseAudioStreamVolumeSetting: Boolean
         get() = getBooleanSetting(keyUseAudioStreamVolumeSetting)
         internal set(newValue) = setSetting(keyUseAudioStreamVolumeSetting, newValue) // for JUnit tests
