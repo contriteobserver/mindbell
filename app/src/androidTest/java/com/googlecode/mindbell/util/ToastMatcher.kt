@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package com.googlecode.mindbell
+package com.googlecode.mindbell.util
 
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.NoMatchingViewException
@@ -40,7 +40,7 @@ import org.hamcrest.TypeSafeMatcher
  *
  * Usage in test class:
  *
- * import com.googlecode.mindbell.ToastMatcher.Companion.onToast
+ * import com.googlecode.mindbell.util.ToastMatcher.Companion.onToast
  *
  * // To assert a toast does *not* pop up:
  * onToast("text").check(doesNotExist())

@@ -28,13 +28,16 @@ import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import android.widget.EditText
+import android.widget.NumberPicker
 import android.widget.TimePicker
-import com.googlecode.mindbell.R
 import com.googlecode.mindbell.R.id.*
 import com.googlecode.mindbell.R.string.*
 import com.googlecode.mindbell.mission.Prefs
 import com.googlecode.mindbell.mission.Prefs.Companion.ONE_MINUTE_MILLIS
 import com.googlecode.mindbell.mission.model.Statistics
+import com.googlecode.mindbell.util.MorePickerActions
+import com.googlecode.mindbell.util.MoreViewMatchers.Companion.isDialogTitle
+import com.googlecode.mindbell.util.MoreViewMatchers.Companion.textViewHasErrorText
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertTrue
 import org.hamcrest.Matchers
@@ -73,26 +76,57 @@ class MainActivityTest {
         onView(allOf(withId(meditating), withContentDescription(prefsMeditatingOn))).perform(click())
         onView(withText(title_meditation_dialog)).check(matches(isDisplayed()))
 
+        // Check default settings in UI
+        onView(withId(textViewRampUpTime)).check(matches(withText("00:30 (30 s)")))
+        onView(withId(textViewMeditationDuration)).check(matches(withText("00:25 (25 min)")))
+        onView(withId(textViewNumberOfPeriods)).check(matches(withText("1")))
+        onView(withId(textViewPatternOfPeriods)).check(matches(withText("x")))
+        onView(withId(checkBoxKeepScreenOn)).check(matches(isChecked()))
+        onView(withId(checkBoxStopMeditationAutomatically)).check(matches(isNotChecked()))
+
         // Change ramp up time
-        onView(withId(textViewRampUpTime)).perform(scrollTo(), click())
-        onView(withText(prefsRampUpTime)).check(matches(isDisplayed()))
+        onView(withId(textViewRampUpTimeLabel)).perform(scrollTo(), click())
+        onView(allOf(isDialogTitle(), withText(prefsRampUpTime))).check(matches(isDisplayed()))
         onView(withClassName(Matchers.equalTo(TimePicker::class.java.name))).perform(PickerActions.setTime(0, 10))
         onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(scrollTo(), click())
+        onView(withId(textViewRampUpTime)).check(matches(withText("00:10 (10 s)")))
 
         // Change meditation duration
-        onView(withId(textViewMeditationDuration)).perform(scrollTo(), click())
-        onView(withText(prefsMeditationDuration)).check(matches(isDisplayed()))
+        onView(withId(textViewMeditationDurationLabel)).perform(scrollTo(), click())
+        onView(allOf(isDialogTitle(), withText(prefsMeditationDuration))).check(matches(isDisplayed()))
         onView(withClassName(Matchers.equalTo(TimePicker::class.java.name))).perform(PickerActions.setTime(0, 4))
         onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(scrollTo(), click())
+        onView(withId(textViewMeditationDuration)).check(matches(withText("00:04 (4 min)")))
+
+        // Change number of periods
+        onView(withId(textViewNumberOfPeriodsLabel)).perform(scrollTo(), click())
+        onView(allOf(isDialogTitle(), withText(prefsNumberOfPeriods))).check(matches(isDisplayed()))
+        onView(withClassName(Matchers.equalTo(NumberPicker::class.java.name))).perform(MorePickerActions.setNumber(2))
+        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(scrollTo(), click())
+        onView(withId(textViewNumberOfPeriods)).check(matches(withText("2")))
+        onView(withId(textViewPatternOfPeriods)).check(matches(withText("x, x")))
+
+        // Try to change pattern of periods to one fixed period only
+        onView(withId(textViewPatternOfPeriodsLabel)).perform(scrollTo(), click())
+        onView(allOf(isDialogTitle(), withText(prefsPatternOfPeriods))).check(matches(isDisplayed()))
+        onView(withClassName(Matchers.equalTo(EditText::class.java.name))).perform(replaceText("1"), closeSoftKeyboard())
+        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(scrollTo(), click())
+        onView(withId(textViewPatternOfPeriods)).check(matches(textViewHasErrorText(resources.getString(variablePeriodMissing))))
 
         // Change pattern of periods
-        onView(withId(R.id.textViewPatternOfPeriodsLabel)).perform(scrollTo(), click())
-        onView(withText(prefsPatternOfPeriods)).check(matches(isDisplayed()))
+        onView(withId(textViewPatternOfPeriodsLabel)).perform(scrollTo(), click())
+        onView(allOf(isDialogTitle(), withText(prefsPatternOfPeriods))).check(matches(isDisplayed()))
         onView(withClassName(Matchers.equalTo(EditText::class.java.name))).perform(replaceText("1,x,1"), closeSoftKeyboard())
         onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(scrollTo(), click())
+        onView(withId(textViewNumberOfPeriods)).check(matches(withText("3")))
+        onView(withId(textViewPatternOfPeriods)).check(matches(withText("1, x, 1")))
+
+        // Enable option (after disabling) to leave screen on
+        onView(withId(checkBoxKeepScreenOn)).perform(scrollTo(), click()).check(matches(isNotChecked()))
+        onView(withId(checkBoxKeepScreenOn)).perform(scrollTo(), click()).check(matches(isChecked()))
 
         // Enable option to stop meditation automatically
-        onView(withId(R.id.checkBoxStopMeditationAutomatically)).perform(scrollTo(), click())
+        onView(withId(checkBoxStopMeditationAutomatically)).perform(scrollTo(), click())
 
         // Start meditation
         onView(withText(buttonStartMeditation)).perform(scrollTo(), click())
