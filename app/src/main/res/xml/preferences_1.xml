@@ -89,7 +89,7 @@
 
     </PreferenceScreen>
 
-    <PreferenceScreen android:title="@string/prefsCategoryRingingActions">
+    <PreferenceScreen android:title="@string/prefsCategoryReminderActions">
 
         <PreferenceCategory android:title="@string/prefsCategoryDisplay">
 

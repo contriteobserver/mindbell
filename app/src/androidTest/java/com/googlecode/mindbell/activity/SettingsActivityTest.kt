@@ -41,6 +41,7 @@ import com.googlecode.mindbell.R.id.iconText
 import com.googlecode.mindbell.R.id.textViewSummary
 import com.googlecode.mindbell.R.string.*
 import com.googlecode.mindbell.mission.Prefs
+import com.googlecode.mindbell.mission.Prefs.Companion.DEFAULT_VOLUME
 import com.googlecode.mindbell.mission.Prefs.Companion.ONE_MINUTE_MILLIS
 import com.googlecode.mindbell.util.MoreViewMatchers.Companion.isDialogTitle
 import com.googlecode.mindbell.util.TimeOfDay
@@ -297,6 +298,63 @@ class SettingsActivityTest {
         textViewRandomize.perform(ViewActions.scrollTo(), click()).check(matches(withText(summaryRandomize)))
         assertTrue(prefs.isRandomize)
         assertFalse(prefs.isNormalize) // here we check whether de-randomize does de-normalize
+
+    }
+
+    @Test
+    fun testReminderActionsPreferencesPage() {
+
+        // Navigate to sound output preferences page
+        onView(allOf(withId(title), withText(prefsCategoryReminderActions))).perform(click())
+        onView(allOf(withText(prefsCategoryReminderActions), not(withText(preferencesTitle)))).check(matches(isDisplayed()))
+
+        // Fetch text views of active times preferences page
+        val textViewShow = onView(allOf(withId(summary), hasSibling(withText(prefsShow))))
+        val textViewSound = onView(allOf(withId(summary), hasSibling(withText(prefsSound))))
+        val textViewReminderBell = onView(allOf(withId(summary), hasSibling(withText(prefsReminderBell))))
+        val textViewRingtone = onView(allOf(withId(summary), hasSibling(withText(prefsRingtone))))
+        val textViewVolume = onView(allOf(withId(title), hasSibling(withText(prefsVolume))))
+        val textViewVibrate = onView(allOf(withId(summary), hasSibling(withText(prefsVibrate))))
+        val textViewPattern = onView(allOf(withId(summary), hasSibling(withText(prefsPattern))))
+
+        // Check default settings in UI and Prefs
+        textViewShow.check(matches(withText(summaryShow)))
+        assertTrue(prefs.isShow)
+
+        textViewSound.check(matches(withText(summarySound)))
+        assertTrue(prefs.isSound)
+
+        textViewReminderBell.check(matches(withText(resources.getStringArray(reminderBellEntries)[1])))
+        assertEquals(prefs.getDefaultReminderBellSoundUri(), prefs.getReminderSoundUri())
+
+        textViewRingtone.check(matches(withText(summaryRingtoneNotSet)))
+        assertEquals("", prefs.ringtone)
+
+        textViewVolume.check(matches(withText(prefsVolume))) // textViewVolume has no summary
+        assertEquals(DEFAULT_VOLUME, prefs.volume)
+
+        textViewVibrate.check(matches(withText(summaryNoVibrate)))
+        assertFalse(prefs.isVibrate)
+
+        textViewPattern.check(matches(withText(resources.getStringArray(patternEntries)[2])))
+        assertEquals(arrayOf(100L, 200L, 100L, 600L).asList(), prefs.vibrationPattern.asList())
+
+        // Disable show
+        textViewShow.perform(ViewActions.scrollTo(), click())
+        textViewShow.check(matches(withText(summaryDontShow)))
+        assertFalse(prefs.isShow)
+
+        // Try to disable sound
+        textViewSound.perform(ViewActions.scrollTo(), click())
+        checkDisplayedAndDisappearedOnToast(atLeastOneReminderActionNeeded)
+
+        // Choose reminder bell double bell
+        textViewReminderBell.perform(ViewActions.scrollTo(), click())
+        onView(allOf(isDialogTitle(), withText(prefsReminderBell))).check(matches(isDisplayed()))
+        onData(Matchers.`is`(resources.getStringArray(reminderBellEntries)[2])).perform(ViewActions.scrollTo(), click())
+        textViewReminderBell.check(matches(withText(resources.getStringArray(reminderBellEntries)[2])))
+        assertEquals(prefs.getBellSoundUri("2"), prefs.getReminderSoundUri())
+
 
     }
 

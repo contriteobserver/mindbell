@@ -84,7 +84,7 @@
     <string name="summaryRandomize">Reminder interval will vary</string>
     <string name="summaryDontRandomize">Reminder interval is constant</string>
 
-    <string name="prefsCategoryRingingActions">Reminder actions</string>
+    <string name="prefsCategoryReminderActions">Reminder actions</string>
 
     <string name="prefsCategoryDisplay">Display</string>
     <string name="prefsShow">Show bell</string>
@@ -208,7 +208,7 @@
 
     <!-- Validation messages -->
     <string name="mustUseAudioStreamSetting">Can only be switched off for alarms</string>
-    <string name="atLeastOneRingingActionNeeded">Specify at least one reminder action</string>
+    <string name="atLeastOneReminderActionNeeded">Specify at least one reminder action</string>
     <string name="atLeastOneActiveDayNeeded">Specify at least one day</string>
     <string name="frequencyDoesNotFitIntoAnHour">Reminder to the minute not possible with chosen interval</string>
     <string name="ringtoneNotAccessible">Chosen sound cannot be accessed (missing permissions?)</string>

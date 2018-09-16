@@ -85,7 +85,7 @@
     <string name="summaryRandomize">Erinnerungsinterall variiert</string>
     <string name="summaryDontRandomize">Erinnerungsintervall ist konstant</string>
 
-    <string name="prefsCategoryRingingActions">Erinnerungsaktionen</string>
+    <string name="prefsCategoryReminderActions">Erinnerungsaktionen</string>
 
     <string name="prefsCategoryDisplay">Anzeige</string>
     <string name="prefsShow">Glocke anzeigen</string>
@@ -213,7 +213,7 @@
 
     <!-- Validation messages -->
     <string name="mustUseAudioStreamSetting">Kann nur für Weckrufe abgeschaltet werden</string>
-    <string name="atLeastOneRingingActionNeeded">Mindestens eine Aktion beim Erinnern auswählen</string>
+    <string name="atLeastOneReminderActionNeeded">Mindestens eine Aktion beim Erinnern auswählen</string>
     <string name="atLeastOneActiveDayNeeded">Mindestens einen Tag angeben</string>
     <string name="frequencyDoesNotFitIntoAnHour">Erinnern auf die Minute beim gewählten Intervall nicht möglich</string>
     <string name="ringtoneNotAccessible">Ausgewählter Klang nicht zugreifbar (fehlende Rechte?)</string>

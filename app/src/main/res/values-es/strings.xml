@@ -59,7 +59,7 @@
     <string name="prefsNormalize">Recordar unos minutos después &#8230;</string>
     <string name="summaryRandomize">El intervalo del recordatorio es variable</string>
     <string name="summaryDontRandomize">El intervalo del recordatorio es fijo</string>
-    <string name="prefsCategoryRingingActions">Acciones del recordatorio</string>
+    <string name="prefsCategoryReminderActions">Acciones del recordatorio</string>
     <string name="prefsCategoryDisplay">Visualización</string>
     <string name="prefsShow">Ver la campana</string>
     <string name="summaryShow">Muestra un cuenco como recordatorio</string>
@@ -163,7 +163,7 @@ Para solventarlo, Mindbell ofrece una \"baldosa de ajustes rápidos\" en la cual
     <string name="buttonStartMeditation">Inicio</string>
     <!-- Validation messages -->
     <string name="mustUseAudioStreamSetting">Solo se puede apagar para alarmas</string>
-    <string name="atLeastOneRingingActionNeeded">Especifica al menos una acción de recordatorio</string>
+    <string name="atLeastOneReminderActionNeeded">Especifica al menos una acción de recordatorio</string>
     <string name="atLeastOneActiveDayNeeded">Especifica por lo menos un día</string>
     <string name="frequencyDoesNotFitIntoAnHour">Recordar al minuto no es posible con el intervalo elegido</string>
     <string name="ringtoneNotAccessible">No se tiene acceso al sonido elegido (¿problema con los permisos?)</string>

@@ -331,7 +331,7 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
      */
     private fun mediateShowAndSoundAndVibrate(firstOther: CheckBoxPreference, secondOther: CheckBoxPreference, newValue: Any): Boolean {
         if (!firstOther.isChecked && !secondOther.isChecked && !(newValue as Boolean)) {
-            Toast.makeText(this, R.string.atLeastOneRingingActionNeeded, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.atLeastOneReminderActionNeeded, Toast.LENGTH_SHORT).show()
             return false
         }
         return true

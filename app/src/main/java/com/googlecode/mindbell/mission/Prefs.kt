@@ -1170,7 +1170,7 @@ class Prefs private constructor(val context: Context) {
          * Returns the given pattern string as an array of long values.
          */
         fun getVibrationPattern(pattern: String): LongArray {
-            val msAsString = pattern.split(":".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
+            val msAsString = pattern.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             val ms = LongArray(msAsString.size)
             for (i in ms.indices) {
                 ms[i] = java.lang.Long.valueOf(msAsString[i])!!
