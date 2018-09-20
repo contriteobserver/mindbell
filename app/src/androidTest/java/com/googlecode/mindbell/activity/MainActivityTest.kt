@@ -70,7 +70,7 @@ class MainActivityTest {
     fun mainActivityTest() {
 
         // Close help dialog at startup
-        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(scrollTo(), click())
+        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(click())
 
         // Open meditation dialog
         onView(allOf(withId(meditating), withContentDescription(prefsMeditatingOn))).perform(click())
@@ -88,21 +88,21 @@ class MainActivityTest {
         onView(withId(textViewRampUpTimeLabel)).perform(scrollTo(), click())
         onView(allOf(isDialogTitle(), withText(prefsRampUpTime))).check(matches(isDisplayed()))
         onView(withClassName(Matchers.equalTo(TimePicker::class.java.name))).perform(PickerActions.setTime(0, 10))
-        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(scrollTo(), click())
+        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(click())
         onView(withId(textViewRampUpTime)).check(matches(withText("00:10 (10 s)")))
 
         // Change meditation duration
         onView(withId(textViewMeditationDurationLabel)).perform(scrollTo(), click())
         onView(allOf(isDialogTitle(), withText(prefsMeditationDuration))).check(matches(isDisplayed()))
         onView(withClassName(Matchers.equalTo(TimePicker::class.java.name))).perform(PickerActions.setTime(0, 4))
-        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(scrollTo(), click())
+        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(click())
         onView(withId(textViewMeditationDuration)).check(matches(withText("00:04 (4 min)")))
 
         // Change number of periods
         onView(withId(textViewNumberOfPeriodsLabel)).perform(scrollTo(), click())
         onView(allOf(isDialogTitle(), withText(prefsNumberOfPeriods))).check(matches(isDisplayed()))
         onView(withClassName(Matchers.equalTo(NumberPicker::class.java.name))).perform(MorePickerActions.setNumber(2))
-        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(scrollTo(), click())
+        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(click())
         onView(withId(textViewNumberOfPeriods)).check(matches(withText("2")))
         onView(withId(textViewPatternOfPeriods)).check(matches(withText("x, x")))
 
@@ -110,14 +110,14 @@ class MainActivityTest {
         onView(withId(textViewPatternOfPeriodsLabel)).perform(scrollTo(), click())
         onView(allOf(isDialogTitle(), withText(prefsPatternOfPeriods))).check(matches(isDisplayed()))
         onView(withClassName(Matchers.equalTo(EditText::class.java.name))).perform(replaceText("1"), closeSoftKeyboard())
-        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(scrollTo(), click())
+        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(click())
         onView(withId(textViewPatternOfPeriods)).check(matches(textViewHasErrorText(resources.getString(variablePeriodMissing))))
 
         // Change pattern of periods
         onView(withId(textViewPatternOfPeriodsLabel)).perform(scrollTo(), click())
         onView(allOf(isDialogTitle(), withText(prefsPatternOfPeriods))).check(matches(isDisplayed()))
         onView(withClassName(Matchers.equalTo(EditText::class.java.name))).perform(replaceText("1,x,1"), closeSoftKeyboard())
-        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(scrollTo(), click())
+        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(click())
         onView(withId(textViewNumberOfPeriods)).check(matches(withText("3")))
         onView(withId(textViewPatternOfPeriods)).check(matches(withText("1, x, 1")))
 
@@ -129,7 +129,7 @@ class MainActivityTest {
         onView(withId(checkBoxStopMeditationAutomatically)).perform(scrollTo(), click())
 
         // Start meditation
-        onView(withText(buttonStartMeditation)).perform(scrollTo(), click())
+        onView(withText(buttonStartMeditation)).perform(click())
         onView(allOf(withId(meditating), withContentDescription(prefsMeditatingOff))).check(matches(isDisplayed()))
 
         // Wait for meditation to come to an end

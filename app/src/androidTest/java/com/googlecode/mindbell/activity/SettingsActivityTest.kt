@@ -32,6 +32,7 @@ import android.support.test.espresso.action.ViewActions.click
 import android.support.test.espresso.assertion.ViewAssertions.doesNotExist
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.contrib.PickerActions
+import android.support.test.espresso.matcher.PreferenceMatchers
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
@@ -92,62 +93,62 @@ class SettingsActivityTest {
         onView(allOf(withText(prefsCategorySoundOutput), not(withText(preferencesTitle)))).check(matches(isDisplayed()))
 
         // Fetch text views of sound output preferences page
-        val textViewUseAudioStreamVolumeSetting = onView(allOf(withId(summary), hasSibling(withText(prefsUseAudioStreamVolumeSetting))))
-        val textViewAudioStream = onView(allOf(withId(textViewSummary), hasSibling(withText(prefsAudioStream))))
+        val preferenceUseAudioStreamVolumeSetting = onData(PreferenceMatchers.withKey(resources.getString(keyUseAudioStreamVolumeSetting)))
+        val preferenceAudioStream = onData(PreferenceMatchers.withKey(resources.getString(keyAudioStream)))
 
         // Check default settings in UI and Prefs
-        textViewUseAudioStreamVolumeSetting.check(matches(withText(summaryUseAudioStreamVolumeSetting)))
+        preferenceUseAudioStreamVolumeSetting.onChildView(withId(summary)).check(matches(withText(summaryUseAudioStreamVolumeSetting)))
         assertTrue(prefs.isUseAudioStreamVolumeSetting)
 
-        textViewAudioStream.check(matches(withText(resources.getStringArray(audioStreamEntries)[0])))
+        preferenceAudioStream.onChildView(withId(textViewSummary)).check(matches(withText(resources.getStringArray(audioStreamEntries)[0])))
         assertEquals(AudioManager.STREAM_ALARM, prefs.audioStream)
 
         // Switch OFF isUseAudioStreamVolumeSetting and check in UI and Prefs
-        textViewUseAudioStreamVolumeSetting.perform(click()).check(matches(withText(summaryDontUseAudioStreamVolumeSetting)))
+        preferenceUseAudioStreamVolumeSetting.perform(click()).check(matches(withText(summaryDontUseAudioStreamVolumeSetting)))
         assertFalse(prefs.isUseAudioStreamVolumeSetting)
 
-        textViewAudioStream.check(matches(not(isEnabled())))
+        preferenceAudioStream.check(matches(not(isEnabled())))
 
         // Switch ON isUseAudioStreamVolumeSetting and check in UI and Prefs
-        textViewUseAudioStreamVolumeSetting.perform(click()).check(matches(withText(summaryUseAudioStreamVolumeSetting)))
+        preferenceUseAudioStreamVolumeSetting.perform(click()).check(matches(withText(summaryUseAudioStreamVolumeSetting)))
         assertTrue(prefs.isUseAudioStreamVolumeSetting)
 
-        textViewAudioStream.check(matches(isEnabled()))
+        preferenceAudioStream.check(matches(isEnabled()))
 
         // Choose audio stream NOTIFICATION and check in UI and Prefs
-        textViewAudioStream.perform(click())
+        preferenceAudioStream.perform(click())
         onView(allOf(withId(iconText), withText(resources.getStringArray(audioStreamEntries)[1]))).perform(click())
-        textViewAudioStream.check(matches(withText(resources.getStringArray(audioStreamEntries)[1])))
+        preferenceAudioStream.onChildView(withId(textViewSummary)).check(matches(withText(resources.getStringArray(audioStreamEntries)[1])))
         assertEquals(AudioManager.STREAM_NOTIFICATION, prefs.audioStream)
 
         onToast(mustUseAudioStreamSetting).check(doesNotExist())
 
         // Audio stream != ALARM => isUseAudioStreamVolumeSetting must remain to be ON
-        textViewUseAudioStreamVolumeSetting.perform(click())
+        preferenceUseAudioStreamVolumeSetting.perform(click())
 
         checkDisplayedAndDisappearedOnToast(mustUseAudioStreamSetting)
 
         // Choose audio stream MUSIC and check in UI and Prefs
-        textViewAudioStream.perform(click())
+        preferenceAudioStream.perform(click())
         onView(allOf(withId(iconText), withText(resources.getStringArray(audioStreamEntries)[2]))).perform(click())
-        textViewAudioStream.check(matches(withText(resources.getStringArray(audioStreamEntries)[2])))
+        preferenceAudioStream.onChildView(withId(textViewSummary)).check(matches(withText(resources.getStringArray(audioStreamEntries)[2])))
         assertEquals(AudioManager.STREAM_MUSIC, prefs.audioStream)
 
         onToast(mustUseAudioStreamSetting).check(doesNotExist())
 
         // Audio stream != ALARM => isUseAudioStreamVolumeSetting must remain to be ON
-        textViewUseAudioStreamVolumeSetting.perform(click())
+        preferenceUseAudioStreamVolumeSetting.perform(click())
 
         checkDisplayedAndDisappearedOnToast(mustUseAudioStreamSetting)
 
         // Choose audio stream ALARM and check in UI and Prefs
-        textViewAudioStream.perform(click())
+        preferenceAudioStream.perform(click())
         onView(allOf(withId(iconText), withText(resources.getStringArray(audioStreamEntries)[0]))).perform(click())
-        textViewAudioStream.check(matches(withText(resources.getStringArray(audioStreamEntries)[0])))
+        preferenceAudioStream.onChildView(withId(textViewSummary)).check(matches(withText(resources.getStringArray(audioStreamEntries)[0])))
         assertEquals(AudioManager.STREAM_ALARM, prefs.audioStream)
 
         // Switch OFF isUseAudioStreamVolumeSetting and check in UI and Prefs
-        textViewUseAudioStreamVolumeSetting.perform(click()).check(matches(withText(summaryDontUseAudioStreamVolumeSetting)))
+        preferenceUseAudioStreamVolumeSetting.perform(click()).check(matches(withText(summaryDontUseAudioStreamVolumeSetting)))
         assertFalse(prefs.isUseAudioStreamVolumeSetting)
 
     }
@@ -160,51 +161,51 @@ class SettingsActivityTest {
         onView(allOf(withText(prefsCategoryActiveTimes), not(withText(preferencesTitle)))).check(matches(isDisplayed()))
 
         // Fetch text views of active times preferences page
-        val textViewStart = onView(allOf(withId(summary), hasSibling(withText(prefsStart))))
-        val textViewEnd = onView(allOf(withId(summary), hasSibling(withText(prefsEnd))))
-        val textViewActiveOnDaysOfWeek = onView(allOf(withId(summary), hasSibling(withText(prefsActiveOnDaysOfWeek))))
-        val textViewFrequency = onView(allOf(withId(summary), hasSibling(withText(prefsFrequency))))
-        val textViewRandomize = onView(allOf(withId(summary), hasSibling(withText(prefsRandomize))))
-        val textViewNormalize = onView(allOf(withId(summary), hasSibling(withText(prefsNormalize))))
+        val preferenceStart = onData(PreferenceMatchers.withKey(resources.getString(keyStart)))
+        val preferenceEnd = onData(PreferenceMatchers.withKey(resources.getString(keyEnd)))
+        val preferenceActiveOnDaysOfWeek = onData(PreferenceMatchers.withKey(resources.getString(keyActiveOnDaysOfWeek)))
+        val preferenceFrequency = onData(PreferenceMatchers.withKey(resources.getString(keyFrequency)))
+        val preferenceRandomize = onData(PreferenceMatchers.withKey(resources.getString(keyRandomize)))
+        val preferenceNormalize = onData(PreferenceMatchers.withKey(resources.getString(keyNormalize)))
 
         // Check default settings in UI and Prefs
-        textViewStart.check(matches(withText(TimeOfDay(9, 0).getDisplayString(context))))
+        preferenceStart.onChildView(withId(summary)).check(matches(withText(TimeOfDay(9, 0).getDisplayString(context))))
         assertEquals(TimeOfDay(9, 0), prefs.daytimeStart)
 
-        textViewEnd.check(matches(withText(TimeOfDay(21, 0).getDisplayString(context))))
+        preferenceEnd.onChildView(withId(summary)).check(matches(withText(TimeOfDay(21, 0).getDisplayString(context))))
         assertEquals(TimeOfDay(21, 0), prefs.daytimeEnd)
 
         val wholeWeekSet = HashSet(Arrays.asList("1", "2", "3", "4", "5", "6", "7"))
         val wholeWeekSummary = Utils.deriveOrderedEntrySummary(wholeWeekSet, resources.getStringArray(weekdayEntries), resources.getStringArray(weekdayEntryValues))
-        textViewActiveOnDaysOfWeek.check(matches(withText(wholeWeekSummary)))
+        preferenceActiveOnDaysOfWeek.onChildView(withId(summary)).check(matches(withText(wholeWeekSummary)))
 
-        textViewFrequency.check(matches(withText("00:15 (15 min)")))
+        preferenceFrequency.onChildView(withId(summary)).check(matches(withText("00:15 (15 min)")))
         assertEquals(15 * ONE_MINUTE_MILLIS, prefs.interval)
 
-        textViewRandomize.check(matches(withText(summaryRandomize)))
+        preferenceRandomize.onChildView(withId(summary)).check(matches(withText(summaryRandomize)))
         assertTrue(prefs.isRandomize)
 
-        textViewNormalize.check(matches(withText(resources.getStringArray(normalizeEntries)[0])))
+        preferenceNormalize.onChildView(withId(summary)).check(matches(withText(resources.getStringArray(normalizeEntries)[0])))
         assertFalse(prefs.isNormalize)
 
         // Choose start at 11:12
-        textViewStart.perform(ViewActions.scrollTo(), click())
+        preferenceStart.perform(ViewActions.scrollTo(), click())
         onView(allOf(isDialogTitle(), withText(prefsStart))).check(matches(isDisplayed()))
         onView(withClassName(Matchers.equalTo(TimePicker::class.java.name))).perform(PickerActions.setTime(11, 12))
-        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(ViewActions.scrollTo(), click())
-        textViewStart.check(matches(withText(TimeOfDay(11, 12).getDisplayString(context))))
+        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(click())
+        preferenceStart.onChildView(withId(summary)).check(matches(withText(TimeOfDay(11, 12).getDisplayString(context))))
         assertEquals(TimeOfDay(11, 12), prefs.daytimeStart)
 
         // Choose end at 23:24
-        textViewEnd.perform(ViewActions.scrollTo(), click())
+        preferenceEnd.perform(ViewActions.scrollTo(), click())
         onView(allOf(isDialogTitle(), withText(prefsEnd))).check(matches(isDisplayed()))
         onView(withClassName(Matchers.equalTo(TimePicker::class.java.name))).perform(PickerActions.setTime(23, 24))
-        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(ViewActions.scrollTo(), click())
-        textViewEnd.check(matches(withText(TimeOfDay(23, 24).getDisplayString(context))))
+        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(click())
+        preferenceEnd.onChildView(withId(summary)).check(matches(withText(TimeOfDay(23, 24).getDisplayString(context))))
         assertEquals(TimeOfDay(23, 24), prefs.daytimeEnd)
 
         // Choose only Monday
-        textViewActiveOnDaysOfWeek.perform(click())  // open selection
+        preferenceActiveOnDaysOfWeek.perform(click())  // open selection
         onView(allOf(isDialogTitle(), withText(prefsActiveOnDaysOfWeek))).check(matches(isDisplayed()))
         for (i in 0..6) {
             onView(withText(resources.getStringArray(weekdayEntries)[i])).perform(ViewActions.scrollTo(), click()) // un-choose all days
@@ -212,90 +213,90 @@ class SettingsActivityTest {
         val mondaySet = HashSet(Arrays.asList("2"))
         val mondayWeekSummary = Utils.deriveOrderedEntrySummary(mondaySet, resources.getStringArray(weekdayEntries), resources.getStringArray(weekdayEntryValues))
         onView(withText(mondayWeekSummary)).perform(click()) // choose only Monday
-        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(ViewActions.scrollTo(), click())
-        textViewActiveOnDaysOfWeek.check(matches(withText(mondayWeekSummary)))
+        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(click())
+        preferenceActiveOnDaysOfWeek.onChildView(withId(summary)).check(matches(withText(mondayWeekSummary)))
         assertEquals(mondaySet.toString(), prefs.activeOnDaysOfWeek.toString())
         onToast(atLeastOneActiveDayNeeded).check(doesNotExist())
 
         // Try to choose no day at all
-        textViewActiveOnDaysOfWeek.perform(click())  // open selection
+        preferenceActiveOnDaysOfWeek.perform(click())  // open selection
         onView(allOf(isDialogTitle(), withText(prefsActiveOnDaysOfWeek))).check(matches(isDisplayed()))
         onView(withText(mondayWeekSummary)).perform(click()) // de-choose also Monday
-        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(ViewActions.scrollTo(), click())
+        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(click())
         checkDisplayedAndDisappearedOnToast(atLeastOneActiveDayNeeded)
-        textViewActiveOnDaysOfWeek.check(matches(withText(mondayWeekSummary)))
+        preferenceActiveOnDaysOfWeek.onChildView(withId(summary)).check(matches(withText(mondayWeekSummary)))
         assertEquals(mondaySet.toString(), prefs.activeOnDaysOfWeek.toString())
 
         // Choose frequency 20 minutes
-        textViewFrequency.perform(ViewActions.scrollTo(), click())
+        preferenceFrequency.perform(ViewActions.scrollTo(), click())
         onView(allOf(isDialogTitle(), withText(prefsFrequency))).check(matches(isDisplayed()))
         onView(withClassName(Matchers.equalTo(TimePicker::class.java.name))).perform(PickerActions.setTime(0, 20))
-        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(ViewActions.scrollTo(), click())
-        textViewFrequency.check(matches(withText("00:20 (20 min)")))
+        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(click())
+        preferenceFrequency.onChildView(withId(summary)).check(matches(withText("00:20 (20 min)")))
         assertEquals(20 * ONE_MINUTE_MILLIS, prefs.interval)
 
         // Try to choose normalize
-        textViewNormalize.perform(ViewActions.scrollTo(), click())
+        preferenceNormalize.perform(ViewActions.scrollTo(), click())
         onView(allOf(isDialogTitle(), withText(prefsNormalize))).check(doesNotExist())
 
         // Disable randomize
-        textViewRandomize.perform(ViewActions.scrollTo(), click()).check(matches(withText(summaryDontRandomize)))
+        preferenceRandomize.perform(ViewActions.scrollTo(), click()).check(matches(withText(summaryDontRandomize)))
         assertFalse(prefs.isRandomize)
 
         // Choose normalize hh:05
-        textViewNormalize.perform(ViewActions.scrollTo(), click())
+        preferenceNormalize.perform(ViewActions.scrollTo(), click())
         onView(allOf(isDialogTitle(), withText(prefsNormalize))).check(matches(isDisplayed()))
-        onView(withText(resources.getStringArray(normalizeEntries)[2])).perform(ViewActions.scrollTo(), click())
-        textViewNormalize.check(matches(withText(resources.getStringArray(normalizeEntries)[2])))
+        onView(withText(resources.getStringArray(normalizeEntries)[2])).perform(click())
+        preferenceNormalize.onChildView(withId(summary)).check(matches(withText(resources.getStringArray(normalizeEntries)[2])))
         assertTrue(prefs.isNormalize)
         assertEquals(5, prefs.normalize)
 
         // Try to choose frequency 67 minutes
-        textViewFrequency.perform(ViewActions.scrollTo(), click())
+        preferenceFrequency.perform(ViewActions.scrollTo(), click())
         onView(allOf(isDialogTitle(), withText(prefsFrequency))).check(matches(isDisplayed()))
         onView(withClassName(Matchers.equalTo(TimePicker::class.java.name))).perform(PickerActions.setTime(1, 7))
-        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(ViewActions.scrollTo(), click())
+        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(click())
         checkDisplayedAndDisappearedOnToast(frequencyDoesNotFitIntoAnHour)
-        textViewFrequency.check(matches(withText("00:20 (20 min)")))
+        preferenceFrequency.onChildView(withId(summary)).check(matches(withText("00:20 (20 min)")))
         assertEquals(20 * ONE_MINUTE_MILLIS, prefs.interval)
 
         // Choose normalize no
-        textViewNormalize.perform(ViewActions.scrollTo(), click())
+        preferenceNormalize.perform(ViewActions.scrollTo(), click())
         onView(allOf(isDialogTitle(), withText(prefsNormalize))).check(matches(isDisplayed()))
         onData(Matchers.`is`(resources.getStringArray(normalizeEntries)[0])).perform(ViewActions.scrollTo(), click())
-        textViewNormalize.check(matches(withText(resources.getStringArray(normalizeEntries)[0])))
+        preferenceNormalize.onChildView(withId(summary)).check(matches(withText(resources.getStringArray(normalizeEntries)[0])))
         assertFalse(prefs.isNormalize)
 
         // Choose frequency 67 minutes
-        textViewFrequency.perform(ViewActions.scrollTo(), click())
+        preferenceFrequency.perform(ViewActions.scrollTo(), click())
         onView(allOf(isDialogTitle(), withText(prefsFrequency))).check(matches(isDisplayed()))
         onView(withClassName(Matchers.equalTo(TimePicker::class.java.name))).perform(PickerActions.setTime(1, 7))
-        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(ViewActions.scrollTo(), click())
-        textViewFrequency.check(matches(withText("01:07 (67 min)")))
+        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(click())
+        preferenceFrequency.onChildView(withId(summary)).check(matches(withText("01:07 (67 min)")))
         assertEquals(67 * ONE_MINUTE_MILLIS, prefs.interval)
 
         // Try to choose normalize
-        textViewNormalize.perform(ViewActions.scrollTo(), click())
+        preferenceNormalize.perform(ViewActions.scrollTo(), click())
         onView(allOf(isDialogTitle(), withText(prefsNormalize))).check(doesNotExist())
 
         // Choose frequency 20 minutes ... to check later whether de-randomize does de-normalize
-        textViewFrequency.perform(ViewActions.scrollTo(), click())
+        preferenceFrequency.perform(ViewActions.scrollTo(), click())
         onView(allOf(isDialogTitle(), withText(prefsFrequency))).check(matches(isDisplayed()))
         onView(withClassName(Matchers.equalTo(TimePicker::class.java.name))).perform(PickerActions.setTime(0, 20))
-        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(ViewActions.scrollTo(), click())
-        textViewFrequency.check(matches(withText("00:20 (20 min)")))
+        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(click())
+        preferenceFrequency.onChildView(withId(summary)).check(matches(withText("00:20 (20 min)")))
         assertEquals(20 * ONE_MINUTE_MILLIS, prefs.interval)
 
         // Choose normalize hh:05 ... to check later whether de-randomize does de-normalize
-        textViewNormalize.perform(ViewActions.scrollTo(), click())
+        preferenceNormalize.perform(ViewActions.scrollTo(), click())
         onView(allOf(isDialogTitle(), withText(prefsNormalize))).check(matches(isDisplayed()))
         onView(withText(resources.getStringArray(normalizeEntries)[2])).perform(ViewActions.scrollTo(), click())
-        textViewNormalize.check(matches(withText(resources.getStringArray(normalizeEntries)[2])))
+        preferenceNormalize.onChildView(withId(summary)).check(matches(withText(resources.getStringArray(normalizeEntries)[2])))
         assertTrue(prefs.isNormalize)
         assertEquals(5, prefs.normalize)
 
         // Enable randomize ... to check later whether de-randomize does de-normalize
-        textViewRandomize.perform(ViewActions.scrollTo(), click()).check(matches(withText(summaryRandomize)))
+        preferenceRandomize.perform(ViewActions.scrollTo(), click()).check(matches(withText(summaryRandomize)))
         assertTrue(prefs.isRandomize)
         assertFalse(prefs.isNormalize) // here we check whether de-randomize does de-normalize
 
@@ -309,52 +310,50 @@ class SettingsActivityTest {
         onView(allOf(withText(prefsCategoryReminderActions), not(withText(preferencesTitle)))).check(matches(isDisplayed()))
 
         // Fetch text views of active times preferences page
-        val textViewShow = onView(allOf(withId(summary), hasSibling(withText(prefsShow))))
-        val textViewSound = onView(allOf(withId(summary), hasSibling(withText(prefsSound))))
-        val textViewReminderBell = onView(allOf(withId(summary), hasSibling(withText(prefsReminderBell))))
-        val textViewRingtone = onView(allOf(withId(summary), hasSibling(withText(prefsRingtone))))
-        val textViewVolume = onView(allOf(withId(title), hasSibling(withText(prefsVolume))))
-        val textViewVibrate = onView(allOf(withId(summary), hasSibling(withText(prefsVibrate))))
-        val textViewPattern = onView(allOf(withId(summary), hasSibling(withText(prefsPattern))))
+        val preferenceShow = onData(PreferenceMatchers.withKey(resources.getString(keyShow)))
+        val preferenceSound = onData(PreferenceMatchers.withKey(resources.getString(keySound)))
+        val preferenceReminderBell = onData(PreferenceMatchers.withKey(resources.getString(keyReminderBell)))
+        val preferenceRingtone = onData(PreferenceMatchers.withKey(resources.getString(keyRingtone)))
+        val preferenceVolume = onData(PreferenceMatchers.withKey(resources.getString(keyVolume)))
+        val preferenceVibrate = onData(PreferenceMatchers.withKey(resources.getString(keyVibrate)))
+        val preferencePattern = onData(PreferenceMatchers.withKey(resources.getString(keyPattern)))
 
         // Check default settings in UI and Prefs
-        textViewShow.check(matches(withText(summaryShow)))
+        preferenceShow.onChildView(withId(summary)).check(matches(withText(summaryShow)))
         assertTrue(prefs.isShow)
 
-        textViewSound.check(matches(withText(summarySound)))
+        preferenceSound.onChildView(withId(summary)).check(matches(withText(summarySound)))
         assertTrue(prefs.isSound)
 
-        textViewReminderBell.check(matches(withText(resources.getStringArray(reminderBellEntries)[1])))
+        preferenceReminderBell.onChildView(withId(summary)).check(matches(withText(resources.getStringArray(reminderBellEntries)[1])))
         assertEquals(prefs.getDefaultReminderBellSoundUri(), prefs.getReminderSoundUri())
 
-        textViewRingtone.check(matches(withText(summaryRingtoneNotSet)))
+        preferenceRingtone.onChildView(withId(summary)).check(matches(withText(summaryRingtoneNotSet)))
         assertEquals("", prefs.ringtone)
 
-        textViewVolume.check(matches(withText(prefsVolume))) // textViewVolume has no summary
-        assertEquals(DEFAULT_VOLUME, prefs.volume)
+        assertEquals(DEFAULT_VOLUME, prefs.volume) // preferenceVolume has no summary
 
-        textViewVibrate.check(matches(withText(summaryNoVibrate)))
+        preferenceVibrate.onChildView(withId(summary)).check(matches(withText(summaryNoVibrate)))
         assertFalse(prefs.isVibrate)
 
-        textViewPattern.check(matches(withText(resources.getStringArray(patternEntries)[2])))
+        preferencePattern.onChildView(withId(summary)).check(matches(withText(resources.getStringArray(patternEntries)[2])))
         assertEquals(arrayOf(100L, 200L, 100L, 600L).asList(), prefs.vibrationPattern.asList())
 
         // Disable show
-        textViewShow.perform(ViewActions.scrollTo(), click())
-        textViewShow.check(matches(withText(summaryDontShow)))
+        preferenceShow.perform(ViewActions.scrollTo(), click())
+        preferenceShow.onChildView(withId(summary)).check(matches(withText(summaryDontShow)))
         assertFalse(prefs.isShow)
 
         // Try to disable sound
-        textViewSound.perform(ViewActions.scrollTo(), click())
+        preferenceSound.perform(ViewActions.scrollTo(), click())
         checkDisplayedAndDisappearedOnToast(atLeastOneReminderActionNeeded)
 
         // Choose reminder bell double bell
-        textViewReminderBell.perform(ViewActions.scrollTo(), click())
+        preferenceReminderBell.perform(ViewActions.scrollTo(), click())
         onView(allOf(isDialogTitle(), withText(prefsReminderBell))).check(matches(isDisplayed()))
         onData(Matchers.`is`(resources.getStringArray(reminderBellEntries)[2])).perform(ViewActions.scrollTo(), click())
-        textViewReminderBell.check(matches(withText(resources.getStringArray(reminderBellEntries)[2])))
+        preferenceReminderBell.check(matches(withText(resources.getStringArray(reminderBellEntries)[2])))
         assertEquals(prefs.getBellSoundUri("2"), prefs.getReminderSoundUri())
-
 
     }
 
