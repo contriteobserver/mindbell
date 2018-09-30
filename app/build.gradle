@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.googlecode.mindbell"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 27
         versionCode 35000
         versionName "3.5.0"
@@ -35,18 +35,38 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.android.support:support-v4:27.1.0'
-    implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
+
+    // Kotlin: see also dependencies in projects build.gradle
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.71"
+    testImplementation "org.jetbrains.kotlin:kotlin-stdlib:1.2.71"
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:1.2.71"
+
+    // Jackson
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.9.5"
+
+    // MockK
+    testImplementation "io.mockk:mockk:1.8.5"
+    androidTestImplementation "io.mockk:mockk:1.8.5"
+
+    // Support Libraries
+    implementation 'com.android.support:support-v4:27.1.1'
+    androidTestImplementation 'com.android.support:support-annotations:27.1.1'
+
+    // JUnit
     testImplementation 'junit:junit:4.12'
-    testImplementation "io.mockk:mockk:$mockk_version"
-    testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
-    androidTestImplementation "io.mockk:mockk:$mockk_version"
-    androidTestImplementation 'com.android.support:support-annotations:27.1.0'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:3.0.1'
+
+    // Android testing
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+
+    // Espresso
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:3.0.2'
+
+    // UiAutomator
+    androidTestImplementation 'com.android.support.test.uiautomator:uiautomator-v18:2.1.3'
+
+    // Enable Kotlin Extensions
     apply plugin: 'kotlin-android-extensions'
 }
 repositories {
