@@ -1,4 +1,4 @@
-(1)
+(1) 
 Glocke aktivieren, damit sie regelmäßig "läutet". Welche Aktionen beim "Läuten" ausgelöst werden (Anzeige, Klang, Vibration), wird in den Einstellungen angegeben.
 
 (2)
