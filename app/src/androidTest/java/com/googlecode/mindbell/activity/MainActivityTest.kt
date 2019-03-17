@@ -38,8 +38,7 @@ import com.googlecode.mindbell.mission.model.Statistics
 import com.googlecode.mindbell.util.MorePickerActions
 import com.googlecode.mindbell.util.MoreViewMatchers.Companion.isDialogTitle
 import com.googlecode.mindbell.util.MoreViewMatchers.Companion.textViewHasErrorText
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertTrue
+import junit.framework.Assert.*
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
 import org.junit.Before
@@ -67,7 +66,30 @@ class MainActivityTest {
     }
 
     @Test
-    fun mainActivityTest() {
+    fun testActivation() {
+
+        // Close help dialog at startup
+        onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(click())
+
+        // Check default preference setting
+        assertFalse(prefs.isActive)
+
+        // Activate reminders
+        onView(allOf(withId(active))).perform(click())
+
+        // Check resulting preference setting to be active
+        assertTrue(prefs.isActive)
+
+        // Deactivate reminders
+        onView(allOf(withId(active))).perform(click())
+
+        // Check resulting preference setting to be inactive
+        assertFalse(prefs.isActive)
+
+    }
+
+    @Test
+    fun testMeditation() {
 
         // Close help dialog at startup
         onView(allOf(withId(android.R.id.button1), withText(android.R.string.ok))).perform(click())
