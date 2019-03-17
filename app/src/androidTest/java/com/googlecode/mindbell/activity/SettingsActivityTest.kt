@@ -88,7 +88,9 @@ class SettingsActivityTest {
 
     @After
     fun tearDown() {
-        InstrumentationRegistry.getInstrumentation().uiAutomation.executeShellCommand("pm revoke ${InstrumentationRegistry.getTargetContext().packageName} android.permission.READ_EXTERNAL_STORAGE")
+        // Revoking of permissions does no longer work this way ... it crashes the process.
+        // But as long as only testReminderActionsPreferencesPage() requires this it's given by default :-(.
+        // InstrumentationRegistry.getInstrumentation().uiAutomation.executeShellCommand("pm revoke ${InstrumentationRegistry.getTargetContext().packageName} android.permission.READ_EXTERNAL_STORAGE")
     }
 
     @Test
