@@ -37,9 +37,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Kotlin: see also dependencies in projects build.gradle
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.71"
-    testImplementation "org.jetbrains.kotlin:kotlin-stdlib:1.2.71"
-    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:1.2.71"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.21"
+    testImplementation "org.jetbrains.kotlin:kotlin-stdlib:1.3.21"
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:1.3.21"
 
     // Jackson
     implementation "com.fasterxml.jackson.core:jackson-databind:2.9.5"
