@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "763629780297",
+    "firebase_url": "https://mindbell-7fdd1.firebaseio.com",
+    "project_id": "mindbell-7fdd1",
+    "storage_bucket": "mindbell-7fdd1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:763629780297:android:3238a5e38341bc5b",
+        "android_client_info": {
+          "package_name": "com.googlecode.mindbell"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "763629780297-00ke72qve71egj4c955cdofaopt8h7vb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.googlecode.mindbell",
+            "certificate_hash": "174919c2a856abfc8644443563b49cbb0ca84b42"
+          }
+        },
+        {
+          "client_id": "763629780297-3f69t8t5id4c9s5jdu9gks6h12h3ejbf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2t4x3-Xc3SGwXWFuQ1kZ6mGNY1MsBpPw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "763629780297-3f69t8t5id4c9s5jdu9gks6h12h3ejbf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
