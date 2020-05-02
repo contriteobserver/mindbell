@@ -3,7 +3,7 @@
                for remembering what really counts
    
         Copyright (C) 2010-2014 Marc Schroeder
-        Copyright (C) 2014-2018 Uwe Damken
+        Copyright (C) 2014-2020 Uwe Damken
    
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@
     <string name="prefsActiveOnDaysOfWeek">Días de la semana con recordatorio &#8230;</string>
     <string name="prefsFrequency">Recordar cada hh:mm &#8230;</string>
     <string name="prefsRandomize">Uso de intervalos variables</string>
-    <string name="prefsNormalize">Recordar unos minutos después &#8230;</string>
+    <string name="prefsNormalize">Recordar al minuto …</string>
     <string name="summaryRandomize">El intervalo del recordatorio es variable</string>
     <string name="summaryDontRandomize">El intervalo del recordatorio es fijo</string>
     <string name="prefsCategoryReminderActions">Acciones del recordatorio</string>
@@ -77,16 +77,6 @@
     <string name="summaryVibrate">Vibra como recordatorio</string>
     <string name="summaryNoVibrate">No vibra como recordatorio</string>
     <string name="prefsPattern">Patrón de vibración</string>
-    <string name="prefsCategoryStatusNotification">Notificación de estado</string>
-    <string name="prefsStatus">Mostrar un icono de notificación</string>
-    <string name="summaryStatus">Muestra notificación de estado durante el recordatorio</string>
-    <string name="summaryNoStatus">Sin notificación de estado</string>
-    <string name="prefsStatusVisibilityPublic">Mostrar texto con pantalla bloqueada</string>
-    <string name="summaryStatusVisibilityPublic">Muestra el texto de estado en la pantalla de bloqueo</string>
-    <string name="summaryStatusVisibilityPrivate">Oculta el texto de estado en la pantalla de bloqueo</string>
-    <string name="prefsExplanationQuickSettings">Información de ajustes rápidos</string>
-    <string name="summaryExplanationQuickSettings">Ahora en Android Oreo ya no es posible actualizar el estado de una notificación, se fue.
-Para solventarlo, Mindbell ofrece una \"baldosa de ajustes rápidos\" en la cual se muestra el estado actual de Mindbell. Ten en cuenta que tienes que editar tus \"ajustes rápidos\" para añadir la baldosa a tu selección de \"ajustes rápidos\".</string>
     <string name="prefsCategoryReminderNotification">Notificación de recordatorio</string>
     <string name="prefsNotificationOnWearables">Notificación en wearables</string>
     <string name="summaryNotificationOnWearables">Mostrar notificación de recordatorio en wearables</string>
@@ -215,6 +205,10 @@ Para solventarlo, Mindbell ofrece una \"baldosa de ajustes rápidos\" en la cual
     <string name="battery_settings_guidance1">Elige \"todas\".</string>
     <string name="battery_settings_guidance2">Haz click en \"Mindbell\".</string>
     <string name="battery_settings_guidance3">Elige \"No optimizar\".</string>
+    <string name="keepAliveNotificationTitle">MindBell …</string>
+    <string name="keepAliveNotificationText">… presta atención al tiempo</string>
+    <string name="keepAliveDescription">Asegúrate de que MindBell se despierte para hacer su trabajo</string>
+    <string name="keepAliveNotification">Notificación de \"keep-alive\"</string>
     <!-- Preference keys (don't localize) -->
     <!-- Mail address for send log by e-mail (don't localize) -->
     <!-- About page url (don't localize) -->

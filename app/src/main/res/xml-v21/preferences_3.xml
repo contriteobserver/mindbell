@@ -3,7 +3,7 @@
                for remembering what really counts
    
         Copyright (C) 2010-2014 Marc Schroeder
-        Copyright (C) 2014-2017 Uwe Damken
+        Copyright (C) 2014-2020 Uwe Damken
    
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -30,16 +30,19 @@
             android:title="@string/prefsNotificationOnWearables" />
         <com.googlecode.mindbell.preference.EditTextPreferenceWithSummary
             android:defaultValue="@string/prefsNotificationTitleDefault"
+            android:dependency="@string/keyNotificationOnWearables"
             android:key="@string/keyNotificationTitle"
             android:summary="%s"
             android:title="@string/prefsNotificationTitle" />
         <com.googlecode.mindbell.preference.EditTextPreferenceWithSummary
             android:defaultValue="@string/prefsNotificationTextDefault"
+            android:dependency="@string/keyNotificationOnWearables"
             android:key="@string/keyNotificationText"
             android:summary="%s"
             android:title="@string/prefsNotificationText" />
         <CheckBoxPreference
             android:key="@string/keyNotificationVisibilityPublic"
+            android:dependency="@string/keyNotificationOnWearables"
             android:summaryOff="@string/summaryNotificationVisibilityPrivate"
             android:summaryOn="@string/summaryNotificationVisibilityPublic"
             android:title="@string/prefsNotificationVisibilityPublic" />

@@ -4,7 +4,7 @@
                for remembering what really counts
    
         Copyright (C) 2010-2014 Marc Schroeder
-        Copyright (C) 2014-2018 Uwe Damken
+        Copyright (C) 2014-2020 Uwe Damken
    
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -81,7 +81,7 @@
     <string name="prefsActiveOnDaysOfWeek">Tage an denen Erinnern aktiv ist &#8230;</string>
     <string name="prefsFrequency">Erinnern (etwa) alle hh:mm &#8230;</string>
     <string name="prefsRandomize">Nutze Intervallabweichungen</string>
-    <string name="prefsNormalize">Erinnere auf die Minute &#8230;</string>
+    <string name="prefsNormalize">Erinnere auf die Minute genau …</string>
     <string name="summaryRandomize">Erinnerungsinterall variiert</string>
     <string name="summaryDontRandomize">Erinnerungsintervall ist konstant</string>
 
@@ -106,20 +106,6 @@
     <string name="summaryVibrate">Vibrieren beim Erinnern</string>
     <string name="summaryNoVibrate">Beim Erinnern nicht vibrieren</string>
     <string name="prefsPattern">Vibrationsmuster</string>
-
-    <string name="prefsCategoryStatusNotification">Status-Benachrichtigung</string>
-    <string name="prefsStatus">Status-Benachrichtigung anzeigen</string>
-    <string name="summaryStatus">Zeige Status-Benachrichtigung bei aktivem Erinnern</string>
-    <string name="summaryNoStatus">Keine Status-Benachrichtigung</string>
-    <string name="prefsStatusVisibilityPublic">Zeige Status-Text auf Sperrbildschirm</string>
-    <string name="summaryStatusVisibilityPublic">Status-Text auf Sperrbildschirm anzeigen</string>
-    <string name="summaryStatusVisibilityPrivate">Status-Text auf Sperrbildschirm ausblenden</string>
-    <string name="prefsExplanationQuickSettings">Hinweis zu Schnelleinstellungen</string>
-    <string name="summaryExplanationQuickSettings">Ab Android Oreo ist es nicht länger möglich, die
-        Status-Benachrichtung aktuell zu halten, sie entfällt daher ab Android Oreo. MindBell bietet
-        nun eine Schnelleinstellungskachel, um den aktuellen Status von MindBell anzuzeigen. Bitte
-        beachten Sie, dass Sie Ihre Schnelleinstellungen erst bearbeiten müssen, um die Kachel zu
-        Ihrer Auswahl hinzuzufügen.</string>
 
     <string name="prefsCategoryReminderNotification">Erinnerungsbenachrichtigung</string>
     <string name="prefsNotificationOnWearables">Benachrichtigung auf Wearables</string>
@@ -284,5 +270,9 @@
     <string name="battery_settings_guidance1">Wählen Sie \'Alle apps\'.</string>
     <string name="battery_settings_guidance2">Klicken Sie auf \'MindBell\'.</string>
     <string name="battery_settings_guidance3">Wählen Sie \'Nicht optimieren\'.</string>
+    <string name="keepAliveNotificationTitle">MindBell …</string>
+    <string name="keepAliveNotificationText">… achtet auf die Zeit</string>
+    <string name="keepAliveDescription">Sicherstellen, dass MindBell aufgeweckt wird, um seine Arbeit zu tun</string>
+    <string name="keepAliveNotification">Keep-alive-Benachrichtigung</string>
 
 </resources>

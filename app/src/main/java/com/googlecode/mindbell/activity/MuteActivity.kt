@@ -2,7 +2,7 @@
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
- *     Copyright (C) 2014-2018 Uwe Damken
+ *     Copyright (C) 2014-2020 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,6 @@ class MuteActivity : Activity() {
             val prefs = Prefs.getInstance(context)
             val nextTargetTimeMillis = System.currentTimeMillis() + hours * 3600000L
             prefs.mutedTill = nextTargetTimeMillis
-            notifier.updateStatusNotification()
             notifier.scheduleRefreshMutedTill(nextTargetTimeMillis)
         }
 

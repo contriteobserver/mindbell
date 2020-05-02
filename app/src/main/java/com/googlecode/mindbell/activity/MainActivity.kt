@@ -2,7 +2,7 @@
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
- *     Copyright (C) 2014-2018 Uwe Damken
+ *     Copyright (C) 2014-2020 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,7 @@ import com.googlecode.mindbell.mission.Prefs.Companion.TAG
 import com.googlecode.mindbell.mission.Scheduler
 import com.googlecode.mindbell.mission.model.Statistics
 import com.googlecode.mindbell.preference.MinutesIntervalPickerPreference
+import com.googlecode.mindbell.service.InterruptService
 import com.googlecode.mindbell.util.TimeOfDay
 import com.googlecode.mindbell.util.Utils
 import kotlinx.android.synthetic.main.countdown.*
@@ -68,7 +69,6 @@ class MainActivity : Activity() {
         val ringOnceOnClickListener = View.OnClickListener {
             Log.d(TAG, "Ring once")
             val notifier = Notifier.getInstance(this)
-            notifier.updateStatusNotification()
             val interruptSettings = prefs.forRingingOnce()
             prefs.addStatisticsEntry(Statistics.RingOnceActionsStatisticsEntry(interruptSettings))
             val actionsExecutor = ActionsExecutor.getInstance(this)
@@ -228,6 +228,9 @@ class MainActivity : Activity() {
         activeSwitch.isChecked = prefs.isActive
         scheduler.updateBellScheduleForReminder(true)
         val feedback = getText(if (prefs.isActive) R.string.summaryActive else R.string.summaryNotActive)
+        if (!prefs.isActive && !prefs.isMeditating) {
+            stopKeepAliveService()
+        }
         Toast.makeText(this, feedback, Toast.LENGTH_SHORT).show()
         return true
     }
@@ -429,6 +432,9 @@ class MainActivity : Activity() {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 Log.d(TAG, "Keep screen on deactivated")
             }
+            if (!prefs.isActive) {
+                stopKeepAliveService()
+            }
         }
         flipToAppropriateView(false)
         invalidateOptionsMenu() // re-call onPrepareOptionsMenu()
@@ -483,6 +489,10 @@ class MainActivity : Activity() {
                 .setPositiveButton(android.R.string.ok, null)
         builder.show()
         return true
+    }
+
+    private fun stopKeepAliveService() {
+        this.stopService(Intent(this, InterruptService::class.java))
     }
 
     /**

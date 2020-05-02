@@ -4,7 +4,7 @@
                for remembering what really counts
    
         Copyright (C) 2010-2014 Marc Schroeder
-        Copyright (C) 2014-2018 Uwe Damken
+        Copyright (C) 2014-2020 Uwe Damken
    
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -105,19 +105,6 @@
     <string name="summaryVibrate">Vibrate as reminder</string>
     <string name="summaryNoVibrate">Don\'t vibrate as reminder</string>
     <string name="prefsPattern">Vibration pattern</string>
-
-    <string name="prefsCategoryStatusNotification">Status notification</string>
-    <string name="prefsStatus">Show status icon</string>
-    <string name="summaryStatus">Show status notification during reminder</string>
-    <string name="summaryNoStatus">No status notification, set and forget</string>
-    <string name="prefsStatusVisibilityPublic">Show status text on lock screen</string>
-    <string name="summaryStatusVisibilityPublic">Show status text on lock screen</string>
-    <string name="summaryStatusVisibilityPrivate">Hide status text on lock screen</string>
-    <string name="prefsExplanationQuickSettings">Quick Settings information</string>
-    <string name="summaryExplanationQuickSettings">As of Android Oreo it\'s no longer possible to
-        keep the status notification up-to-date, so it\'s gone with Android Oreo. MindBell now offers a
-        Quick Settings tile which shows the current status of MindBell. Be aware that you have to
-        edit your Quick Settings to add the tile to your selection of Quick Settings.</string>
 
     <string name="prefsCategoryReminderNotification">Reminder notification</string>
     <string name="prefsNotificationOnWearables">Notification on wearables</string>
@@ -235,6 +222,12 @@
     <string name="statusActionRefreshStatus">Refresh</string>
     <string name="statusActionMuteFor">Don\'t remind for &#8230;</string>
 
+    <!-- Keep alive notification -->
+    <string name="keepAliveNotification">Keep-alive notification</string>
+    <string name="keepAliveDescription">Ensure MindBell gets waken up to do its work</string>
+    <string name="keepAliveNotificationTitle">MindBell &#8230;</string>
+    <string name="keepAliveNotificationText">… is keeping an eye on the time</string>
+
     <!-- Reasons why bell is muted -->
     <string name="reasonMutedDuringNighttime">Currently no reminder till {0} {1}</string> <!-- MessageFormat needs single quotes to be doubled -->
     <string name="reasonMutedInFlightMode">No reminder in flight mode</string>
@@ -327,8 +320,6 @@
     <string name="keyStartMeditationDirectly" translatable="false">startMeditationDirectly</string>
     <string name="keyStatistics" translatable="false">statistics</string>
     <string name="keyStatisticsIdOnly" translatable="false">statisticsIdOnly</string>
-    <string name="keyStatus" translatable="false">status</string>
-    <string name="keyStatusVisibilityPublic" translatable="false">statusVisibilityPublic</string>
     <string name="keyStopMeditationAutomatically" translatable="false">stopMeditationAutomatically</string>
     <string name="keyUseAudioStreamVolumeSetting" translatable="false">useAudioStreamVolumeSetting</string>
     <string name="keyUseWorkaroundBell" translatable="false">useWorkaroundBell</string>

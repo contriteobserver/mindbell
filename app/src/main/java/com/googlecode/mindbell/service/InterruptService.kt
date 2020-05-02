@@ -2,7 +2,7 @@
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
- *     Copyright (C) 2014-2018 Uwe Damken
+ *     Copyright (C) 2014-2020 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import com.googlecode.mindbell.mission.*
 import com.googlecode.mindbell.mission.Prefs.Companion.EXTRA_IS_RESCHEDULING
 import com.googlecode.mindbell.mission.Prefs.Companion.EXTRA_MEDITATION_PERIOD
 import com.googlecode.mindbell.mission.Prefs.Companion.EXTRA_NOW_TIME_MILLIS
-import com.googlecode.mindbell.mission.Prefs.Companion.INTERRUPT_NOTIFICATION_ID
+import com.googlecode.mindbell.mission.Prefs.Companion.KEEP_ALIVE_NOTIFICATION_ID
 import com.googlecode.mindbell.mission.Prefs.Companion.TAG
 import com.googlecode.mindbell.mission.model.NoActionsReason.*
 import com.googlecode.mindbell.mission.model.Statistics.*
@@ -52,6 +52,13 @@ class InterruptService : Service() {
         Log
                 .d(TAG, "InterruptService received intent: isRescheduling=$isRescheduling, nowTimeMillis=$nowTimeMillis, meditationPeriod=$meditationPeriod")
 
+        val notifier = Notifier.getInstance(applicationContext)
+
+        // Ensure this service may do its work (binding it to a foreground notification let's survive longer executions, too)
+        if (!isRescheduling) {
+            startForeground(KEEP_ALIVE_NOTIFICATION_ID, notifier.createKeepAliveNotification())
+        }
+
         // Create working environment
         val prefs = Prefs.getInstance(applicationContext)
 
@@ -65,9 +72,7 @@ class InterruptService : Service() {
             else -> HandlerResult(null, null, NoActionsStatisticsEntry(INACTIVE), null)
         }
 
-        // Ensure this service may do its work (binding it to a foreground notification let's survive longer executions, too)
-        val notifier = Notifier.getInstance(applicationContext)
-        startForeground(INTERRUPT_NOTIFICATION_ID, notifier.createInterruptNotification(handlerResult.interruptSettings))
+        notifier.showReminderNotificationOnWearables(handlerResult.interruptSettings)
 
         prefs.addStatisticsEntry(handlerResult.statisticsEntry)
 
@@ -76,12 +81,8 @@ class InterruptService : Service() {
             scheduler.reschedule(handlerResult.reschedule.nextTargetTimeMillis, handlerResult.reschedule.nextMeditationPeriod)
         }
 
-        // Update notification just in case state has changed or MindBell missed a muting
-        notifier.updateStatusNotification()
-
         if (handlerResult.interruptSettings == null) {
             prefs.addStatisticsEntry(FinishedStatisticsEntry())
-            stopSelf()
         } else {
             val actionsExecutor = ActionsExecutor.getInstance(applicationContext)
             actionsExecutor.startInterruptActions(handlerResult.interruptSettings!!, handlerResult.meditationStopper, this)
@@ -168,6 +169,11 @@ class InterruptService : Service() {
 
             return HandlerResult(interruptSettings, null, ReminderActionsStatisticsEntry(interruptSettings), reschedule)
         }
+    }
+
+    override fun onDestroy() {
+        Log.d(TAG, "InterruptService is being destroyed")
+        super.onDestroy()
     }
 
     class HandlerResult(val interruptSettings: InterruptSettings?, val meditationStopper: Runnable?, val statisticsEntry:

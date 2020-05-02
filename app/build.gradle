@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 29
 
     defaultConfig {
         applicationId "com.googlecode.mindbell"
         minSdkVersion 21
-        targetSdkVersion 27
-        versionCode 35000
-        versionName "3.5.0"
+        targetSdkVersion 29
+        versionCode 36000
+        versionName "3.6.0"
     }
     buildTypes {
         release {

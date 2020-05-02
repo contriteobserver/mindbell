@@ -2,7 +2,7 @@
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
- *     Copyright (C) 2014-2018 Uwe Damken
+ *     Copyright (C) 2014-2020 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ class RefreshReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         Log.d(TAG, "Refresh intent received ${intent.action!!}")
         val notifier = Notifier.getInstance(context)
-        notifier.updateStatusNotification()
         notifier.scheduleRefreshDayNight()
     }
 

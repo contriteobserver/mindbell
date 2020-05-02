@@ -2,7 +2,7 @@
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
- *     Copyright (C) 2014-2018 Uwe Damken
+ *     Copyright (C) 2014-2020 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ class ActionsExecutor private constructor(val context: Context, val prefs: Prefs
 
         // Runnable that finishes all reminder actions and stops the meditation if requested. It is either executed after the
         // sound has been played or after a timer has expired.
-        val reminderActionsFinisher = Runnable { finishInterruptActions(interruptSettings, meditationStopper, callingService) }
+        val reminderActionsFinisher = Runnable { finishInterruptActions(interruptSettings, meditationStopper) }
 
         // Show bell if wanted
         if (interruptSettings.isShow) {
@@ -203,7 +203,7 @@ class ActionsExecutor private constructor(val context: Context, val prefs: Prefs
     /**
      * Finishes interrupt actions (show/sound/vibrate) after sound or timer has ended.
      */
-    private fun finishInterruptActions(interruptSettings: InterruptSettings, runWhenDone: Runnable?, callingService: Service?) {
+    private fun finishInterruptActions(interruptSettings: InterruptSettings, runWhenDone: Runnable?) {
         // nothing to do to finish vibration
         finishBellSound()
         // interrupt notfication is cancelled automatically because foreground service is attached to it
@@ -212,7 +212,6 @@ class ActionsExecutor private constructor(val context: Context, val prefs: Prefs
         }
         runWhenDone?.run()
         prefs.addStatisticsEntry(FinishedStatisticsEntry())
-        callingService?.stopSelf()
     }
 
     /**

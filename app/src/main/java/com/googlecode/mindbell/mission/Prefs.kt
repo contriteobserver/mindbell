@@ -2,7 +2,7 @@
  * MindBell - Aims to give you a support for staying mindful in a busy life -
  *            for remembering what really counts
  *
- *     Copyright (C) 2014-2018 Uwe Damken
+ *     Copyright (C) 2014-2020 Uwe Damken
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.media.AudioManager
 import android.net.Uri
-import android.os.Build
 import android.util.Log
 import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.PropertyAccessor
@@ -100,12 +99,6 @@ class Prefs private constructor(val context: Context) {
     var isSound: Boolean
         get() = getBooleanSetting(keySound)
         internal set(newValue) = setSetting(keySound, newValue) // for JUnit tests
-
-    var isStatus: Boolean // status notification cannot be kept up-to-date for API level >= 26 because implicit broadcast cannot be received
-        get() = if (Build.VERSION.SDK_INT < 26) getBooleanSetting(keyStatus) else false
-        set(statusNotification) {
-            if (Build.VERSION.SDK_INT < 26) setSetting(keyStatus, statusNotification)
-        }
 
     val isNotificationOnWearables: Boolean
         get() = getBooleanSetting(keyNotificationOnWearables)
@@ -196,9 +189,6 @@ class Prefs private constructor(val context: Context) {
     var isStopMeditationAutomatically: Boolean
         get() = getBooleanSetting(keyStopMeditationAutomatically)
         set(stopMeditationAutomatically) = setSetting(keyStopMeditationAutomatically, stopMeditationAutomatically)
-
-    val isStatusVisibilityPublic: Boolean
-        get() = getBooleanSetting(keyStatusVisibilityPublic)
 
     val isNotificationVisibilityPublic: Boolean
         get() = getBooleanSetting(keyNotificationVisibilityPublic)
@@ -327,14 +317,13 @@ class Prefs private constructor(val context: Context) {
      * @return
      */
     private fun getSetting(preference: Preference): Any {
-        @Suppress("UNCHECKED_CAST") // it's sure a string set
         return when (preference.type) {
             BOOLEAN -> settings.getBoolean(preference.key, preference.defaultValue as Boolean)
             FLOAT -> settings.getFloat(preference.key, preference.defaultValue as Float)
             INTEGER -> settings.getInt(preference.key, preference.defaultValue as Int)
             LONG -> settings.getLong(preference.key, preference.defaultValue as Long)
-            STRING, STATISTICS_STRING, TIME_STRING -> settings.getString(preference.key, preference.defaultValue as String)
-            STRING_SET -> settings.getStringSet(preference.key, preference.defaultValue as Set<String>)
+            STRING, STATISTICS_STRING, TIME_STRING -> settings.getString(preference.key, preference.defaultValue as String)!!
+            STRING_SET -> settings.getStringSet(preference.key, preference.defaultValue as Set<String>)!!
         }
     }
 
@@ -444,8 +433,6 @@ class Prefs private constructor(val context: Context) {
         addPreference(keyStart, "09:00", TIME_STRING, true)
         addPreference(keyStartMeditationDirectly, false, BOOLEAN, false)
         addPreference(keyStatistics, dumpStatistics(Statistics()), STATISTICS_STRING, false)
-        addPreference(keyStatus, false, BOOLEAN, true)
-        addPreference(keyStatusVisibilityPublic, true, BOOLEAN, true)
         addPreference(keyStopMeditationAutomatically, false, BOOLEAN, false)
         addPreference(keyUseWorkaroundBell, false, BOOLEAN, false)
         addPreference(keyUseAudioStreamVolumeSetting, true, BOOLEAN, false)
@@ -539,14 +526,11 @@ class Prefs private constructor(val context: Context) {
             // preference has already been converted
         }
 
-        // Version 3.2.5 renamed statusVisiblityPublic to statusVisibilityPublic
+        // Version 3.2.5 renamed statusVisiblityPublic to statusVisibilityPublic which got removed by version 3.6.0
         val keyStatusVisiblityPublic = "statusVisiblityPublic"
         if (settings.contains(keyStatusVisiblityPublic)) {
-            val statusVisibilityPublic = settings.getBoolean(keyStatusVisiblityPublic,
-                    preferenceMap[R.string.keyStatusVisibilityPublic]!!.defaultValue as Boolean)
-            setSetting(R.string.keyStatusVisibilityPublic, statusVisibilityPublic)
             settings.edit().remove(keyStatusVisiblityPublic).apply()
-            Log.w(TAG, "Converted old setting for '$keyStatusVisiblityPublic' ($statusVisibilityPublic) to '${context.getText(R.string.keyStatusVisibilityPublic)}' ($statusVisibilityPublic)")
+            Log.w(TAG, "Removed old setting for '$keyStatusVisiblityPublic'")
         }
         // Version 3.2.5 introduced keyUseAudioStreamVolumeSetting (default true) but should be false for users of older versions
         if (!settings.contains(context.getText(keyUseAudioStreamVolumeSetting).toString()) && settings.contains(context.getText(keyActive).toString())) {
@@ -587,11 +571,22 @@ class Prefs private constructor(val context: Context) {
             settings.edit().remove(keyDismissNotification).apply()
             Log.w(TAG, "Removed old setting for '$keyDismissNotification'")
         }
-        // status and statusVisibilityPublic are ignored for API level >= 26 (isStatus returns always false in that case)
+        // Version 3.6.0 removed status
+        val keyStatus = "status"
+        if (settings.contains(keyStatus)) {
+            settings.edit().remove(keyStatus).apply()
+            Log.w(TAG, "Removed old setting for '$keyStatus'")
+        }
+        // Version 3.6.0 removed statusVisibilityPublic
+        val keyStatusVisibilityPublic = "statusVisibilityPublic"
+        if (settings.contains(keyStatusVisibilityPublic)) {
+            settings.edit().remove(keyStatusVisibilityPublic).apply()
+            Log.w(TAG, "Removed old setting for '$keyStatusVisibilityPublic'")
+        }
     }
 
     /**
-     * Removes a preference setting if it is not of the expected type or has an invalid valid and in that case returns true.
+     * Removes a preference setting if it is not of the expected type or has an invalid value and in that case returns true.
      *
      * @param preference
      * @return
@@ -1067,15 +1062,14 @@ class Prefs private constructor(val context: Context) {
         /**
          * IDs for notification channels created by MindBell.
          */
-        const val STATUS_NOTIFICATION_CHANNEL_ID = "${BuildConfig.APPLICATION_ID}.status"
         const val INTERRUPT_NOTIFICATION_CHANNEL_ID = "${BuildConfig.APPLICATION_ID}.interrupt"
+        const val KEEP_ALIVE_NOTIFICATION_CHANNEL_ID = "${BuildConfig.APPLICATION_ID}.keepalive"
 
         /**
          * IDs for notifications created by MindBell.
          */
-        const val STATUS_NOTIFICATION_ID = 0x7f030001 // historically, has been R.layout.bell for a long time
-        const val INTERRUPT_NOTIFICATION_ID = STATUS_NOTIFICATION_ID + 1
-        const val WEARABLE_INTERRUPT_NOTIFICATION_ID = INTERRUPT_NOTIFICATION_ID + 1
+        const val KEEP_ALIVE_NOTIFICATION_ID = 0x7f030001 // historically, has been R.layout.bell for a long time
+        const val WEARABLE_INTERRUPT_NOTIFICATION_ID = KEEP_ALIVE_NOTIFICATION_ID + 1
 
         /**
          * Request codes for intents created by MindBell.
