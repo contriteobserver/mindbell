@@ -37,7 +37,9 @@ class RestartReceiver : BroadcastReceiver() {
         val scheduler = Scheduler.getInstance(context)
         val prefs = Prefs.getInstance(context)
         prefs.isMeditating = false // do not continue meditation after rebooting during meditation (probably rare)
-        scheduler.updateBellScheduleForReminder(true)
+        if (prefs.isActive) {
+            scheduler.updateBellScheduleForReminder(true)
+        }
     }
 
 }

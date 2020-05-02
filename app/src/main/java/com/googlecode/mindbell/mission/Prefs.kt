@@ -264,7 +264,7 @@ class Prefs private constructor(val context: Context) {
         sharedPreferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
             run {
                 val preference = getPreference(key)
-                if (preference.isUpdateBellScheduleForReminderOnChange) {
+                if (preference.isUpdateBellScheduleForReminderOnChange && isActive) {
                     Log.d(TAG, "Setting for '${preference.key}' has been changed to '${getSetting(preference)}'")
                     Scheduler.getInstance(context).updateBellScheduleForReminder(true)
                 }

@@ -226,7 +226,9 @@ class MainActivity : Activity() {
     private fun onClickActive(activeSwitch: Switch): Boolean {
         prefs.isActive = !prefs.isActive
         activeSwitch.isChecked = prefs.isActive
-        scheduler.updateBellScheduleForReminder(true)
+        if (prefs.isActive) {
+            scheduler.updateBellScheduleForReminder(true)
+        }
         val feedback = getText(if (prefs.isActive) R.string.summaryActive else R.string.summaryNotActive)
         if (!prefs.isActive && !prefs.isMeditating) {
             stopKeepAliveService()
