@@ -225,8 +225,7 @@
     <!-- Keep alive notification -->
     <string name="keepAliveNotification">Keep-alive notification</string>
     <string name="keepAliveDescription">Ensure MindBell gets waken up to do its work</string>
-    <string name="keepAliveNotificationTitle">MindBell &#8230;</string>
-    <string name="keepAliveNotificationText">… is keeping an eye on the time</string>
+    <string name="keepAliveNotificationTitle">MindBell is keeping an eye on the time</string>
 
     <!-- Reasons why bell is muted -->
     <string name="reasonMutedDuringNighttime">Currently no reminder till {0} {1}</string> <!-- MessageFormat needs single quotes to be doubled -->

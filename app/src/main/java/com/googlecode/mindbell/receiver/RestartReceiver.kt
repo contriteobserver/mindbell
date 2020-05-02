@@ -33,7 +33,7 @@ import com.googlecode.mindbell.mission.Scheduler
 class RestartReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        Log.d(TAG, "RestartReceiver received intent with action ${intent.action} ")
+        Log.d(TAG, "RestartReceiver received intent with action ${intent.action}")
         val scheduler = Scheduler.getInstance(context)
         val prefs = Prefs.getInstance(context)
         prefs.isMeditating = false // do not continue meditation after rebooting during meditation (probably rare)

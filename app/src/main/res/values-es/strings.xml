@@ -205,8 +205,7 @@
     <string name="battery_settings_guidance1">Elige \"todas\".</string>
     <string name="battery_settings_guidance2">Haz click en \"Mindbell\".</string>
     <string name="battery_settings_guidance3">Elige \"No optimizar\".</string>
-    <string name="keepAliveNotificationTitle">MindBell …</string>
-    <string name="keepAliveNotificationText">… presta atención al tiempo</string>
+    <string name="keepAliveNotificationTitle">MindBell presta atención al tiempo</string>
     <string name="keepAliveDescription">Asegúrate de que MindBell se despierte para hacer su trabajo</string>
     <string name="keepAliveNotification">Notificación de \"keep-alive\"</string>
     <!-- Preference keys (don't localize) -->

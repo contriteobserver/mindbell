@@ -270,8 +270,7 @@
     <string name="battery_settings_guidance1">Wählen Sie \'Alle apps\'.</string>
     <string name="battery_settings_guidance2">Klicken Sie auf \'MindBell\'.</string>
     <string name="battery_settings_guidance3">Wählen Sie \'Nicht optimieren\'.</string>
-    <string name="keepAliveNotificationTitle">MindBell …</string>
-    <string name="keepAliveNotificationText">… achtet auf die Zeit</string>
+    <string name="keepAliveNotificationTitle">MindBell achtet auf die Zeit</string>
     <string name="keepAliveDescription">Sicherstellen, dass MindBell aufgeweckt wird, um seine Arbeit zu tun</string>
     <string name="keepAliveNotification">Keep-alive-Benachrichtigung</string>
 

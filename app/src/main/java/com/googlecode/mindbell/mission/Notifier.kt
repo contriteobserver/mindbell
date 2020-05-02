@@ -72,7 +72,6 @@ class Notifier private constructor(val context: Context, val prefs: Prefs) {
                 .setAutoCancel(true) // cancel notification on touch
                 .setColor(context.resources.getColor(R.color.backgroundColor)) //
                 .setContentTitle(context.getText(R.string.keepAliveNotificationTitle)) //
-                .setContentText(context.getText(R.string.keepAliveNotificationText)) //
                 .setGroup(KEEP_ALIVE_NOTIFICATION_CHANNEL_ID) // group phone and wearable notification
                 .setOngoing(true) // notifications bound to a foreground service are always ongoing
                 .setSmallIcon(R.drawable.ic_keepalive) //
