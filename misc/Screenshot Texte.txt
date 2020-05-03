@@ -1,60 +1,38 @@
-(1) 
-Glocke aktivieren, damit sie regelmäßig "läutet". Welche Aktionen beim "Läuten" ausgelöst werden (Anzeige, Klang, Vibration), wird in den Einstellungen angegeben.
-
-(2)
-Glocke ist aktiv
-Glocke deaktivieren
-Meditation starten
-Einstellungen
-Weitere Menüpunkte
-
-(3)
-Glocke ist still
-
-(4)
-Vorgaben anpassen
-Ohne Vorbereitungszeit und Eingangsglocken starten
-Meditation starten
-Erläuterung der Vorgaben für die Abschnitte
-
-(5)
-Meditation läuft
-Meditation beenden
-Sekunden der Vorbereitungszeit werden runtergezählt
-
-(6)
-Minuten der Meditationsdauer werden runtergezählt
-
-(7)
-Minuten nach Ende der Meditation werden raufgezählt (ggf. nur bis zum Ende der Abschlussglocken)
-
+KSnip, Nummerierungspunkte in Größe 36
 
 (1)
-Activate bell to ring "regularly". What actions (display, sound, vibration) are to be taken when "ringing" is specified in the settings.
+1. Schalter
 
 (2)
-Bell is active
-Deactivate bell
-Start meditation
-Settings
-More menu entries
+1. Keep-Alive-Benachrichtigung
+2. Schalter
+3. Meditationsknopf
+4. Einstellungsknopf
+5. Drei-Punkte-Menüknopf
 
 (3)
-Bell is muted
+1. Bearbeitungsbleistift
 
 (4)
-Specify parameters
-Start without ramp-up time and beginning bells
-Start meditation
-Explanation of period parameters
+1. Schnelleinstellungskachel von MindBell
+Pfeil von der MindBell-Kachel zu den aktiven Kacheln
 
 (5)
-Meditation ongoing
-Finish meditation
-Count down of ramp-up time seconds
+1. Schnelleinstellungskachel von MindBell
 
 (6)
-Count down of meditation duration minutes
+1. Direktstart
+2. Start
+3. Hilfeknöpfe
 
 (7)
-Count of minutes after end of meditation (when chosen only till the ending bells stop)
+1. Meditationsknopf
+2. Zahl
+
+(8)
+1. Zahl
+
+(9)
+1. Zahl
+
+(10)
