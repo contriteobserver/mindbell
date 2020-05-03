@@ -8,7 +8,7 @@ android {
         applicationId "com.googlecode.mindbell"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 36000
+        versionCode 36001
         versionName "3.6.0"
     }
     buildTypes {
