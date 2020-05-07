@@ -75,7 +75,9 @@ class QuickSettingsService : TileService() {
                     updateTile()
                 }
             } else {
-                startActivityAndCollapse(Intent(applicationContext, MuteActivity::class.java))
+                val intent = Intent(applicationContext, MuteActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivityAndCollapse(intent)
             }
         }
     }
