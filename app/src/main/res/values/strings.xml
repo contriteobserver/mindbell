@@ -264,6 +264,7 @@
     <string name="main_message3_popup">MindBell does not remind (periodically)?\nhttp://dknapps.de/mindbell-notringing</string>
     <string name="main_message4_popup">Frequently asked questions (FAQ)?\nhttp://dknapps.de/mindbell</string>
     <string name="main_message5_popup">Privacy Policy?\nhttp://dknapps.de/mindbell-privacy</string>
+    <string name="main_message6_popup">New maintainer wanted!\nhttp://dknapps.de/mindbell-maintainer</string>
 
     <!-- Help for excluding MindBell from battery settings -->
     <string name="battery_settings_guidance1">Choose \'All apps\'.</string>

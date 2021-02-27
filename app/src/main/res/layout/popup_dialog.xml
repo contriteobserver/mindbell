@@ -4,7 +4,7 @@
                for remembering what really counts
    
         Copyright (C) 2010-2014 Marc Schroeder
-        Copyright (C) 2014-2018 Uwe Damken
+        Copyright (C) 2014-2021 Uwe Damken
    
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -79,6 +79,16 @@
             android:paddingRight="10dp"
             android:paddingTop="10dp"
             android:text="@string/main_message5_popup"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autoLink="web"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp"
+            android:text="@string/main_message6_popup" />
 
     </LinearLayout>
 

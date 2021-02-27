@@ -3,7 +3,7 @@
                for remembering what really counts
    
         Copyright (C) 2010-2014 Marc Schroeder
-        Copyright (C) 2014-2018 Uwe Damken
+        Copyright (C) 2014-2021 Uwe Damken
    
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -89,6 +89,7 @@
             android:key="@string/keySendMailIdOnly"
             android:layout="@layout/preference"
             android:summary="@string/summarySendMail"
+            android:enabled="false"
             android:title="@string/prefsSendMail" />
 
     </PreferenceScreen>
