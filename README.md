@@ -1,3 +1,8 @@
+
+# New maintainer wanted!
+
+Do you want to become the maintainer of MindBell? Check [this](https://dknapps.de/mindbell-maintainer) out.
+
 # [MindBell](https://github.com/udamken/mindbell/wiki)
 
 MindBell rings periodically during the day as a mindfulness bell, to give you the opportunity to hold on for a moment and consider what you are currently doing, and in what state of mind you are while you are doing it. According to the Zen Buddhist teacher Thich Nhat Hanh, this is an effective means of developing mindfulness. Additionally MindBell can be used as a meditation timer.
