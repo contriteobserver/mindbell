@@ -28,9 +28,9 @@ import android.view.Menu
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
+import androidx.annotation.StringRes
 import com.googlecode.mindbell.R
 import com.googlecode.mindbell.mission.ActionsExecutor
-import com.googlecode.mindbell.mission.Notifier
 import com.googlecode.mindbell.mission.Prefs
 import com.googlecode.mindbell.mission.Prefs.Companion.MIN_MEDITATION_DURATION
 import com.googlecode.mindbell.mission.Prefs.Companion.MIN_RAMP_UP_TIME
@@ -68,7 +68,6 @@ class MainActivity : Activity() {
         imageViewHideIntro.setOnClickListener { flipToAppropriateView(false) }
         val ringOnceOnClickListener = View.OnClickListener {
             Log.d(TAG, "Ring once")
-            val notifier = Notifier.getInstance(this)
             val interruptSettings = prefs.forRingingOnce()
             prefs.addStatisticsEntry(Statistics.RingOnceActionsStatisticsEntry(interruptSettings))
             val actionsExecutor = ActionsExecutor.getInstance(this)
@@ -143,7 +142,7 @@ class MainActivity : Activity() {
         attachNumberPickerDialog(view.textViewNumberOfPeriodsLabel, view.textViewNumberOfPeriods, R.string.prefsNumberOfPeriods, 1, 99,
                 object : OnPickListener {
                     override fun onPick(): Boolean {
-                        val numberOfPeriods = Integer.valueOf(view.textViewNumberOfPeriods.text.toString())!!
+                        val numberOfPeriods = Integer.valueOf(view.textViewNumberOfPeriods.text.toString())
                         view.textViewPatternOfPeriods.text = Prefs.derivePatternOfPeriods(numberOfPeriods)
                         return isValidMeditationSetup(view.textViewNumberOfPeriods, view.textViewMeditationDuration, view.textViewNumberOfPeriods,
                                 view.textViewPatternOfPeriods)
@@ -240,7 +239,7 @@ class MainActivity : Activity() {
     /**
      * Sets an OnClickListener upon the text view to open a time picker dialog when it is clicked.
      */
-    private fun attachIntervalPickerDialog(textViewLabel: TextView, textView: TextView, residTitle: Int,
+    private fun attachIntervalPickerDialog(textViewLabel: TextView, textView: TextView, @StringRes titleId: Int,
                                            min: TimeOfDay, isMinutesInterval: Boolean,
                                            onPickListener: OnPickListener?) {
         val onClickListener = View.OnClickListener {
@@ -252,7 +251,7 @@ class MainActivity : Activity() {
             @Suppress("DEPRECATION") // setCurrent*() deprecated now but not for older API levels < 23
             timePicker.currentMinute = time.minute
             AlertDialog.Builder(this@MainActivity) //
-                    .setTitle(residTitle) //
+                    .setTitle(titleId) //
                     .setView(timePicker) //
                     .setPositiveButton(android.R.string.ok) { _, _ ->
                         @Suppress("DEPRECATION") // getCurrent*() deprecated now but not for older API levels < 23
@@ -283,7 +282,7 @@ class MainActivity : Activity() {
         val meditationDuration = MinutesIntervalPickerPreference
                 .parseTimeOfDayFromSummary(textViewMeditationDuration.text.toString())
                 .interval
-        val numberOfPeriods = Integer.valueOf(textViewNumberOfPeriods.text.toString())!!
+        val numberOfPeriods = Integer.valueOf(textViewNumberOfPeriods.text.toString())
         val patternOfPeriods = textViewPatternOfPeriods.text.toString()
         // validate by validating every period, this is not very efficient but all is reduced to a single implementation
         for (i in 1..numberOfPeriods) {
@@ -310,15 +309,16 @@ class MainActivity : Activity() {
     /**
      * Sets an OnClickListener upon the text view to open a number picker dialog when it is clicked.
      */
-    private fun attachNumberPickerDialog(textViewLabel: TextView, textView: TextView, residTitle: Int,
+    @Suppress("SameParameterValue", "SameParameterValue")
+    private fun attachNumberPickerDialog(textViewLabel: TextView, textView: TextView, @StringRes titleId: Int,
                                          min: Int, max: Int, onPickListener: OnPickListener?) {
         val onClickListener = View.OnClickListener {
             val numberPicker = NumberPicker(this@MainActivity)
             numberPicker.minValue = min
             numberPicker.maxValue = max
-            numberPicker.value = Integer.valueOf(textView.text.toString())!!
+            numberPicker.value = Integer.valueOf(textView.text.toString())
             AlertDialog.Builder(this@MainActivity) //
-                    .setTitle(residTitle) //
+                    .setTitle(titleId) //
                     .setView(numberPicker) //
                     .setPositiveButton(android.R.string.ok) { _, _ ->
                         val newValue = numberPicker.value
@@ -335,13 +335,14 @@ class MainActivity : Activity() {
     /**
      * Sets an OnClickListener upon the text view to open a edit text dialog when it is clicked.
      */
-    private fun attachEditTextDialog(textViewLabel: TextView, textView: TextView, residTitle: Int,
+    @Suppress("SameParameterValue", "SameParameterValue")
+    private fun attachEditTextDialog(textViewLabel: TextView, textView: TextView, @StringRes titleId: Int,
                                      normalizer: Normalizer?, onEnterListener: OnEnterListener?) {
         val onClickListener = View.OnClickListener {
             val editText = EditText(this@MainActivity)
             editText.setText(textView.text)
             AlertDialog.Builder(this@MainActivity) //
-                    .setTitle(residTitle) //
+                    .setTitle(titleId) //
                     .setView(editText) //
                     .setPositiveButton(android.R.string.ok) { _, _ ->
                         Utils.hideKeyboard(this@MainActivity, editText)
@@ -388,7 +389,7 @@ class MainActivity : Activity() {
             Log.d(TAG, "MainActivity received stop meditation intent")
             // If the activity has once been opened from the InterruptService by automatically stopping meditation further screen
             // rotations will stop meditation, too, because getIntent() always returns the intent that initially opened the
-            // activity. Hence the extra information must be removed to avoid stopping medtiation in these other cases.
+            // activity. Hence the extra information must be removed to avoid stopping meditation in these other cases.
             intent.removeExtra(Prefs.EXTRA_STOP_MEDITATION)
             // InterruptService detected meditation to be over and sent intent to leave meditation mode. To be sure user has not stopped
             // meditation in the meantime (between sending and receiving intent) we check that meditation is still running.
@@ -472,6 +473,7 @@ class MainActivity : Activity() {
         return versionCode == versionCodePopupShownFor
     }
 
+    @Suppress("SameParameterValue", "SameParameterValue")
     private fun setPopupShown(shown: Boolean) {
         if (shown) {
             val versionCode = Utils.getApplicationVersionCode(packageManager, packageName)
@@ -485,7 +487,7 @@ class MainActivity : Activity() {
         val popupView = LayoutInflater.from(this).inflate(R.layout.popup_dialog, null)
         val versionName = Utils.getApplicationVersionName(packageManager, packageName)
         val builder = AlertDialog.Builder(this) //
-                .setTitle("${getText(R.string.app_name).toString()} $versionName") //
+                .setTitle("${getText(R.string.app_name)} $versionName") //
                 .setIcon(R.mipmap.ic_launcher) //
                 .setView(popupView) //
                 .setPositiveButton(android.R.string.ok, null)
