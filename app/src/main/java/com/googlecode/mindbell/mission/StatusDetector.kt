@@ -25,7 +25,7 @@ import android.media.AudioManager
 import android.os.Build
 import android.provider.Settings
 import android.provider.Settings.Global
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.telephony.TelephonyManager
 import android.util.Log
 import com.googlecode.mindbell.R

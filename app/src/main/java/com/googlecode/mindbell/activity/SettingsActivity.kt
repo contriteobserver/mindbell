@@ -34,8 +34,8 @@ import android.preference.Preference.OnPreferenceChangeListener
 import android.preference.PreferenceActivity
 import android.preference.RingtonePreference
 import android.provider.Settings
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import android.util.Log
 import android.widget.Toast
 import com.googlecode.mindbell.R

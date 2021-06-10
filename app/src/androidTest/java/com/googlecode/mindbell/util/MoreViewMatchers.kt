@@ -19,8 +19,8 @@
 
 package com.googlecode.mindbell.util
 
-import android.support.test.espresso.matcher.BoundedMatcher
-import android.support.test.espresso.matcher.ViewMatchers.withClassName
+import androidx.test.espresso.matcher.BoundedMatcher
+import androidx.test.espresso.matcher.ViewMatchers.withClassName
 import android.view.View
 import android.widget.TextView
 import org.hamcrest.Description

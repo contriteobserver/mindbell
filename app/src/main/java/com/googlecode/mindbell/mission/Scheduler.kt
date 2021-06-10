@@ -22,7 +22,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.util.Log
 import com.googlecode.mindbell.mission.Prefs.Companion.EXTRA_IS_RESCHEDULING
 import com.googlecode.mindbell.mission.Prefs.Companion.EXTRA_MEDITATION_PERIOD
