@@ -51,9 +51,9 @@ class StatisticsActivity : ListActivity() {
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             val itemView = convertView ?: LayoutInflater.from(context).inflate(resource, parent, false)
             val statisticsEntry = getItem(position)
-            itemView.now.text = statisticsEntry.now
-            itemView.comment.text = statisticsEntry.comment
-            when (statisticsEntry.judgment) {
+            itemView.now.text = statisticsEntry?.now
+            itemView.comment.text = statisticsEntry?.comment
+            when (statisticsEntry?.judgment) {
                 Statistics.Judgment.ON_TIME -> setJudgmentImage(itemView, R.drawable.ic_check)
                 Statistics.Judgment.DELAYED -> setJudgmentImage(itemView, R.drawable.ic_priority_high)
                 Statistics.Judgment.REFRESHED -> setJudgmentImage(itemView, R.drawable.ic_refresh)
