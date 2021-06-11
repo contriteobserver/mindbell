@@ -25,12 +25,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.ImageView
+import android.widget.ListView
+import android.widget.TextView
 import com.googlecode.mindbell.R
 import com.googlecode.mindbell.mission.Prefs
 import com.googlecode.mindbell.mission.model.Statistics
 import com.googlecode.mindbell.mission.model.Statistics.StatisticsEntry
-import kotlinx.android.synthetic.main.activity_statistics.*
-import kotlinx.android.synthetic.main.activity_statistics_item.view.*
 
 /**
  * Show about dialog to display e.g. the license.
@@ -41,7 +42,7 @@ class StatisticsActivity : ListActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_statistics)
         val prefs = Prefs.getInstance(applicationContext)
-        list.adapter = StatisticsEntryListAdapter(applicationContext, R.layout.activity_statistics_item, prefs
+        findViewById<ListView>(android.R.id.list).adapter = StatisticsEntryListAdapter(applicationContext, R.layout.activity_statistics_item, prefs
                 .getStatisticsEntryList())
     }
 
@@ -51,8 +52,8 @@ class StatisticsActivity : ListActivity() {
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             val itemView = convertView ?: LayoutInflater.from(context).inflate(resource, parent, false)
             val statisticsEntry = getItem(position)
-            itemView.now.text = statisticsEntry?.now
-            itemView.comment.text = statisticsEntry?.comment
+            itemView.findViewById<TextView>(R.id.now).text = statisticsEntry?.now
+            itemView.findViewById<TextView>(R.id.comment).text = statisticsEntry?.comment
             when (statisticsEntry?.judgment) {
                 Statistics.Judgment.ON_TIME -> setJudgmentImage(itemView, R.drawable.ic_check)
                 Statistics.Judgment.DELAYED -> setJudgmentImage(itemView, R.drawable.ic_priority_high)
@@ -63,13 +64,13 @@ class StatisticsActivity : ListActivity() {
         }
 
         private fun setJudgmentImage(itemView: View, resid: Int) {
-            itemView.judgment.setImageResource(resid)
-            itemView.judgment.imageAlpha = 255 // revert showing the background of unsetJudgmentImage()
+            itemView.findViewById<ImageView>(R.id.judgment).setImageResource(resid)
+            itemView.findViewById<ImageView>(R.id.judgment).imageAlpha = 255 // revert showing the background of unsetJudgmentImage()
         }
 
         private fun unsetJudgmentImage(itemView: View) {
             // setImageResource not needed because it's intended to be completely transparent anyway
-            itemView.judgment.imageAlpha = 0 // just show the background
+            itemView.findViewById<ImageView>(R.id.judgment).imageAlpha = 0 // just show the background
         }
 
     }

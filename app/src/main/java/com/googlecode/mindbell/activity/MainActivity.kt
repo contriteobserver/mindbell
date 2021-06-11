@@ -46,9 +46,7 @@ import com.googlecode.mindbell.preference.MinutesIntervalPickerPreference
 import com.googlecode.mindbell.service.InterruptService
 import com.googlecode.mindbell.util.TimeOfDay
 import com.googlecode.mindbell.util.Utils
-import kotlinx.android.synthetic.main.countdown.*
-import kotlinx.android.synthetic.main.main.*
-import kotlinx.android.synthetic.main.meditation_dialog.view.*
+import com.googlecode.mindbell.view.CountdownView
 
 class MainActivity : Activity() {
 
@@ -64,8 +62,8 @@ class MainActivity : Activity() {
         // Use the following line to show popup dialog on every start
         // setPopupShown(false);
         setContentView(R.layout.main)
-        imageViewShowIntro.setOnClickListener { flipToAppropriateView(true) }
-        imageViewHideIntro.setOnClickListener { flipToAppropriateView(false) }
+        findViewById<ImageView>(R.id.imageViewShowIntro).setOnClickListener { flipToAppropriateView(true) }
+        findViewById<ImageView>(R.id.imageViewHideIntro).setOnClickListener { flipToAppropriateView(false) }
         val ringOnceOnClickListener = View.OnClickListener {
             Log.d(TAG, "Ring once")
             val interruptSettings = prefs.forRingingOnce()
@@ -73,17 +71,17 @@ class MainActivity : Activity() {
             val actionsExecutor = ActionsExecutor.getInstance(this)
             actionsExecutor.startInterruptActions(interruptSettings, null, null)
         }
-        imageViewRingOncePlayCollapsed.setOnClickListener(ringOnceOnClickListener)
-        imageViewRingOnceBellCollapsed.setOnClickListener(ringOnceOnClickListener)
-        imageViewRingOnceBellExpanded.setOnClickListener(ringOnceOnClickListener)
-        countdownView.setOnClickListener(ringOnceOnClickListener)
+        findViewById<ImageView>(R.id.imageViewRingOncePlayCollapsed).setOnClickListener(ringOnceOnClickListener)
+        findViewById<ImageView>(R.id.imageViewRingOnceBellCollapsed).setOnClickListener(ringOnceOnClickListener)
+        findViewById<ImageView>(R.id.imageViewRingOnceBellExpanded).setOnClickListener(ringOnceOnClickListener)
+        findViewById<CountdownView>(R.id.countdownView).setOnClickListener(ringOnceOnClickListener)
     }
 
     /**
      * Flip to meditation view if isMeditating is true, to bell view otherwise.
      */
     private fun flipToAppropriateView(showIntro: Boolean) {
-        viewFlipper.displayedChild = if (prefs.isMeditating) 1 else if (showIntro) 3 else 2
+        findViewById<ViewFlipper>(R.id.viewFlipper).displayedChild = if (prefs.isMeditating) 1 else if (showIntro) 3 else 2
     }
 
     /**
@@ -128,35 +126,35 @@ class MainActivity : Activity() {
      */
     private fun showMeditationDialog() {
         val view = layoutInflater.inflate(R.layout.meditation_dialog, null)
-        view.textViewRampUpTime.text = MinutesIntervalPickerPreference.deriveSummary(prefs.rampUpTime, false)
-        attachIntervalPickerDialog(view.textViewRampUpTimeLabel, view.textViewRampUpTime, R.string.prefsRampUpTime, MIN_RAMP_UP_TIME, false, null)
-        view.textViewMeditationDuration.text = MinutesIntervalPickerPreference.deriveSummary(prefs.meditationDuration, true)
-        attachIntervalPickerDialog(view.textViewMeditationDurationLabel, view.textViewMeditationDuration, R.string.prefsMeditationDuration,
+        view.findViewById<TextView>(R.id.textViewRampUpTime).text = MinutesIntervalPickerPreference.deriveSummary(prefs.rampUpTime, false)
+        attachIntervalPickerDialog(view.findViewById<TextView>(R.id.textViewRampUpTimeLabel), view.findViewById<TextView>(R.id.textViewRampUpTime), R.string.prefsRampUpTime, MIN_RAMP_UP_TIME, false, null)
+        view.findViewById<TextView>(R.id.textViewMeditationDuration).text = MinutesIntervalPickerPreference.deriveSummary(prefs.meditationDuration, true)
+        attachIntervalPickerDialog(view.findViewById<TextView>(R.id.textViewMeditationDurationLabel), view.findViewById<TextView>(R.id.textViewMeditationDuration), R.string.prefsMeditationDuration,
                 MIN_MEDITATION_DURATION, true, object : OnPickListener {
             override fun onPick(): Boolean {
-                return isValidMeditationSetup(view.textViewMeditationDuration, view.textViewMeditationDuration,
-                        view.textViewNumberOfPeriods, view.textViewPatternOfPeriods)
+                return isValidMeditationSetup(view.findViewById<TextView>(R.id.textViewMeditationDuration), view.findViewById<TextView>(R.id.textViewMeditationDuration),
+                        view.findViewById<TextView>(R.id.textViewNumberOfPeriods), view.findViewById<TextView>(R.id.textViewPatternOfPeriods))
             }
         })
-        view.textViewNumberOfPeriods.text = prefs.numberOfPeriods.toString()
-        attachNumberPickerDialog(view.textViewNumberOfPeriodsLabel, view.textViewNumberOfPeriods, R.string.prefsNumberOfPeriods, 1, 99,
+        view.findViewById<TextView>(R.id.textViewNumberOfPeriods).text = prefs.numberOfPeriods.toString()
+        attachNumberPickerDialog(view.findViewById(R.id.textViewNumberOfPeriodsLabel), view.findViewById(R.id.textViewNumberOfPeriods), R.string.prefsNumberOfPeriods, 1, 99,
                 object : OnPickListener {
                     override fun onPick(): Boolean {
-                        val numberOfPeriods = Integer.valueOf(view.textViewNumberOfPeriods.text.toString())
-                        view.textViewPatternOfPeriods.text = Prefs.derivePatternOfPeriods(numberOfPeriods)
-                        return isValidMeditationSetup(view.textViewNumberOfPeriods, view.textViewMeditationDuration, view.textViewNumberOfPeriods,
-                                view.textViewPatternOfPeriods)
+                        val numberOfPeriods = Integer.valueOf(view.findViewById<TextView>(R.id.textViewNumberOfPeriods).text.toString())
+                        view.findViewById<TextView>(R.id.textViewPatternOfPeriods).text = Prefs.derivePatternOfPeriods(numberOfPeriods)
+                        return isValidMeditationSetup(view.findViewById(R.id.textViewNumberOfPeriods), view.findViewById(R.id.textViewMeditationDuration), view.findViewById(R.id.textViewNumberOfPeriods),
+                                view.findViewById(R.id.textViewPatternOfPeriods))
                     }
                 })
-        view.imageViewExplanationNumberOfPeriods.setOnClickListener {
+        view.findViewById<ImageView>(R.id.imageViewExplanationNumberOfPeriods).setOnClickListener {
             AlertDialog.Builder(this@MainActivity) //
                     .setTitle(R.string.prefsNumberOfPeriods) //
                     .setMessage(R.string.explanationNumberOfPeriods) //
                     .setPositiveButton(android.R.string.ok, null) //
                     .show()
         }
-        view.textViewPatternOfPeriods.text = prefs.patternOfPeriods
-        attachEditTextDialog(view.textViewPatternOfPeriodsLabel, view.textViewPatternOfPeriods, R.string.prefsPatternOfPeriods,
+        view.findViewById<TextView>(R.id.textViewPatternOfPeriods).text = prefs.patternOfPeriods
+        attachEditTextDialog(view.findViewById(R.id.textViewPatternOfPeriodsLabel), view.findViewById(R.id.textViewPatternOfPeriods), R.string.prefsPatternOfPeriods,
                 object : Normalizer {
                     override fun normalize(value: String): String {
                         return value
@@ -165,20 +163,20 @@ class MainActivity : Activity() {
                     }
                 }, object : OnEnterListener {
             override fun onEnter(value: String): Boolean {
-                view.textViewNumberOfPeriods.text = Prefs.deriveNumberOfPeriods(value).toString()
-                return isValidMeditationSetup(view.textViewPatternOfPeriods, view.textViewMeditationDuration, view.textViewNumberOfPeriods,
-                        view.textViewPatternOfPeriods)
+                view.findViewById<TextView>(R.id.textViewNumberOfPeriods).text = Prefs.deriveNumberOfPeriods(value).toString()
+                return isValidMeditationSetup(view.findViewById(R.id.textViewPatternOfPeriods), view.findViewById(R.id.textViewMeditationDuration), view.findViewById(R.id.textViewNumberOfPeriods),
+                        view.findViewById<TextView>(R.id.textViewPatternOfPeriods))
             }
         })
-        view.imageViewExplanationPatternOfPeriods.setOnClickListener {
+        view.findViewById<ImageView>(R.id.imageViewExplanationNumberOfPeriods).setOnClickListener {
             AlertDialog.Builder(this@MainActivity) //
                     .setTitle(R.string.prefsPatternOfPeriods) //
                     .setMessage(R.string.explanationPatternOfPeriods) //
                     .setPositiveButton(android.R.string.ok, null) //
                     .show()
         }
-        view.checkBoxKeepScreenOn.isChecked = prefs.isKeepScreenOn
-        view.checkBoxStopMeditationAutomatically.isChecked = prefs.isStopMeditationAutomatically
+        view.findViewById<CheckBox>(R.id.checkBoxKeepScreenOn).isChecked = prefs.isKeepScreenOn
+        view.findViewById<CheckBox>(R.id.checkBoxStopMeditationAutomatically).isChecked = prefs.isStopMeditationAutomatically
         val meditationDialog = AlertDialog.Builder(this) //
                 .setTitle(R.string.title_meditation_dialog) //
                 .setView(view) //
@@ -188,13 +186,13 @@ class MainActivity : Activity() {
                 .show()
         // Ensure dialog is dismissed if input has been successfully validated
         meditationDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-            onClickStartMeditation(prefs, meditationDialog, view.textViewPatternOfPeriods, view.textViewMeditationDuration,
-                    view.textViewNumberOfPeriods, view.textViewRampUpTime, view.checkBoxKeepScreenOn, view.checkBoxStopMeditationAutomatically,
+            onClickStartMeditation(prefs, meditationDialog, view.findViewById(R.id.textViewPatternOfPeriods), view.findViewById(R.id.textViewMeditationDuration),
+                    view.findViewById(R.id.textViewNumberOfPeriods), view.findViewById(R.id.textViewRampUpTime), view.findViewById(R.id.checkBoxKeepScreenOn), view.findViewById(R.id.checkBoxStopMeditationAutomatically),
                     false)
         }
         meditationDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
-            onClickStartMeditation(prefs, meditationDialog, view.textViewPatternOfPeriods, view.textViewMeditationDuration,
-                    view.textViewNumberOfPeriods, view.textViewRampUpTime, view.checkBoxKeepScreenOn, view.checkBoxStopMeditationAutomatically,
+            onClickStartMeditation(prefs, meditationDialog, view.findViewById(R.id.textViewPatternOfPeriods), view.findViewById(R.id.textViewMeditationDuration),
+                    view.findViewById(R.id.textViewNumberOfPeriods), view.findViewById(R.id.textViewRampUpTime), view.findViewById(R.id.checkBoxKeepScreenOn), view.findViewById(R.id.checkBoxStopMeditationAutomatically),
                     true)
         }
     }
@@ -399,7 +397,7 @@ class MainActivity : Activity() {
         } else {
             flipToAppropriateView(false)
             if (prefs.isMeditating) {
-                countdownView.startDisplayUpdateTimer()
+                findViewById<CountdownView>(R.id.countdownView).startDisplayUpdateTimer()
             }
             invalidateOptionsMenu() // re-call onPrepareOptionsMenu(), maybe active setting has been changed via preferences
         }
@@ -421,13 +419,13 @@ class MainActivity : Activity() {
             prefs.meditationStartingTimeMillis = meditationStartingTimeMillis
             prefs.meditationEndingTimeMillis = meditationEndingTimeMillis
             scheduler.updateBellScheduleForMeditation(rampUpStartingTimeMillis, if (prefs.isStartMeditationDirectly) 1 else 0)
-            countdownView.startDisplayUpdateTimer()
+            findViewById<CountdownView>(R.id.countdownView).startDisplayUpdateTimer()
             if (prefs.isKeepScreenOn) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 Log.d(TAG, "Keep screen on activated")
             }
         } else {
-            countdownView.stopDisplayUpdateTimer()
+            findViewById<CountdownView>(R.id.countdownView).stopDisplayUpdateTimer()
             val actionsExecutor = ActionsExecutor.getInstance(this)
             actionsExecutor.finishBellSound()
             scheduler.updateBellScheduleForReminder(false)
@@ -448,7 +446,7 @@ class MainActivity : Activity() {
     override fun onPause() {
         // Stop meditation when screen is rotated, otherwise timer states had to be saved
         if (prefs.isMeditating) {
-            countdownView.stopDisplayUpdateTimer()
+            findViewById<CountdownView>(R.id.countdownView).stopDisplayUpdateTimer()
         }
         super.onPause()
     }

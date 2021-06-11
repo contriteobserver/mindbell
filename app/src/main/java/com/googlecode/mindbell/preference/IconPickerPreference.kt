@@ -26,9 +26,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.ImageView
+import android.widget.RadioButton
+import android.widget.TextView
 import com.googlecode.mindbell.R
-import kotlinx.android.synthetic.main.icon_picker_preference.view.*
-import kotlinx.android.synthetic.main.icon_picker_preference_item.view.*
 import java.util.*
 
 /**
@@ -79,8 +80,8 @@ class IconPickerPreference(context: Context, attrs: AttributeSet) : ListPreferen
     private fun updateSummary() {
         val selectedIconItem = iconItemList[currentIndex]
         val identifier = context.resources.getIdentifier(selectedIconItem.iconFilename, "drawable", context.packageName)
-        view.imageViewSelectedIcon.setImageResource(identifier)
-        view.textViewSummary.text = selectedIconItem.iconText
+        view.findViewById<ImageView>(R.id.imageViewSelectedIcon).setImageResource(identifier)
+        view.findViewById<TextView>(R.id.textViewSummary).text = selectedIconItem.iconText
     }
 
     override fun onDialogClosed(positiveResult: Boolean) {
@@ -121,10 +122,10 @@ class IconPickerPreference(context: Context, attrs: AttributeSet) : ListPreferen
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             val itemView = convertView ?: LayoutInflater.from(context).inflate(resource, parent, false)
             val iconItem = getItem(position)
-            itemView.iconText.text = iconItem!!.iconText
+            itemView.findViewById<TextView>(R.id.iconText).text = iconItem!!.iconText
             val identifier = context.resources.getIdentifier(iconItem.iconFilename, "drawable", context.packageName)
-            itemView.iconImage.setImageResource(identifier)
-            itemView.iconRadio.isChecked = iconItem.isChecked
+            itemView.findViewById<ImageView>(R.id.iconImage).setImageResource(identifier)
+            itemView.findViewById<RadioButton>(R.id.iconRadio).isChecked = iconItem.isChecked
 
             itemView.setOnClickListener {
                 for (i in 0 until count) {

@@ -30,10 +30,10 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
+import com.googlecode.mindbell.R
 import com.googlecode.mindbell.util.MediaPlayerCompat
 import com.googlecode.mindbell.util.Utils
 import com.googlecode.mindbell.util.VolumeConverter
-import kotlinx.android.synthetic.main.seekbar_dialog.view.*
 import java.io.IOException
 
 /**
@@ -58,7 +58,7 @@ class MediaVolumePreference(context: Context, attrs: AttributeSet) : SeekBarPref
     override fun onBindDialogView(view: View) {
         super.onBindDialogView(view)
 
-        mSeekBarVolumizer = SeekBarVolumizer(context, view.seekBarVolume, mStreamType)
+        mSeekBarVolumizer = SeekBarVolumizer(context, view.findViewById(R.id.seekBarVolume), mStreamType)
 
         // grab focus and key events so that pressing the volume buttons in the
         // dialog doesn't also show the normal volume adjust toast.
@@ -94,8 +94,8 @@ class MediaVolumePreference(context: Context, attrs: AttributeSet) : SeekBarPref
         if (mSeekBarVolumizer != null) {
             val dialog = dialog
             if (dialog != null && dialog.isShowing) {
-                val view = dialog.window!!.decorView.seekBarVolume
-                view?.setOnKeyListener(null)
+                val view = dialog.window!!.decorView.findViewById<SeekBar>(R.id.seekBarVolume)
+                view.setOnKeyListener(null)
                 // Stopped while dialog was showing, revert changes
                 mSeekBarVolumizer!!.revertVolume()
             }

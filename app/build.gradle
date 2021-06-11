@@ -60,9 +60,6 @@ dependencies {
 
     // UiAutomator
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
-
-    // Enable Kotlin Extensions
-    apply plugin: 'kotlin-android-extensions'
 }
 repositories {
     mavenCentral()
