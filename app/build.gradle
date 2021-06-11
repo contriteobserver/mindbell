@@ -14,8 +14,6 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            useProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     // https://stackoverflow.com/a/37888400/2532583 looks like what I want but messes with en arrays.xml?!
