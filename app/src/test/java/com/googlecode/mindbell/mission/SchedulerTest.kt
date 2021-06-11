@@ -23,7 +23,6 @@ import com.googlecode.mindbell.util.TimeOfDay
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.mockk
-import junit.framework.Assert.assertEquals
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -39,7 +38,7 @@ class SchedulerTest {
             val prefs = mockk<Prefs>()
             every { prefs.daytimeStart } returns TimeOfDay(9, 0)
             every { prefs.daytimeEnd } returns TimeOfDay(21, 0)
-            every { prefs.activeOnDaysOfWeek } returns HashSet(Arrays.asList("2", "3", "4", "5", "6"))
+            every { prefs.activeOnDaysOfWeek } returns HashSet(listOf("2", "3", "4", "5", "6"))
             every { prefs.isRandomize } returns true
             every { prefs.normalize } returns -1
             every { prefs.isNormalize } returns false
@@ -52,7 +51,7 @@ class SchedulerTest {
             val prefs = mockk<Prefs>()
             every { prefs.daytimeStart } returns TimeOfDay(13, 0)
             every { prefs.daytimeEnd } returns TimeOfDay(2, 0)
-            every { prefs.activeOnDaysOfWeek } returns HashSet(Arrays.asList("2", "3", "4", "5", "6"))
+            every { prefs.activeOnDaysOfWeek } returns HashSet(listOf("2", "3", "4", "5", "6"))
             every { prefs.isRandomize } returns true
             every { prefs.normalize } returns -1
             every { prefs.isNormalize } returns false
@@ -89,8 +88,8 @@ class SchedulerTest {
         every { prefs.daytimeEnd } returns TimeOfDay(11, 30)
         every { prefs.isRandomize } returns false
         // Current time setting short before the alarm should go off
-        var nowTimeMillis = getTimeMillis(10, 0, Calendar.FRIDAY)
-        var targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
+        val nowTimeMillis = getTimeMillis(10, 0, Calendar.FRIDAY)
+        val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
         // First reschedule from nighttime (10:00, before 11:11) to beginning of daytime (11:11)
         println("${TimeOfDay(nowTimeMillis)} -> ${TimeOfDay(targetTimeMillis)}")
         Assert.assertEquals(getTimeMillis(11, 11, Calendar.FRIDAY), targetTimeMillis)
@@ -103,8 +102,8 @@ class SchedulerTest {
         every { prefs.daytimeEnd } returns TimeOfDay(11, 30)
         every { prefs.isRandomize } returns false
         // Current time setting *very* short before the alarm should go off
-        var nowTimeMillis = getTimeMillis(11, 0, Calendar.FRIDAY)
-        var targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
+        val nowTimeMillis = getTimeMillis(11, 0, Calendar.FRIDAY)
+        val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
         // First reschedule from nighttime (11:00, before 11:11) to beginning of daytime (11:11)
         println("${TimeOfDay(nowTimeMillis)} -> ${TimeOfDay(targetTimeMillis)}")
         Assert.assertEquals(getTimeMillis(11, 11, Calendar.FRIDAY), targetTimeMillis)
@@ -126,44 +125,44 @@ class SchedulerTest {
         run {
             val now = getTimeMillis(0, 0, Calendar.FRIDAY)
             val nextDaytimeStart = TimeOfDay(Scheduler.getNextDayNightChangeInMillis(now, prefs))
-            assertEquals(9, nextDaytimeStart.hour)
-            assertEquals(0, nextDaytimeStart.minute)
-            assertEquals(Calendar.FRIDAY, nextDaytimeStart.weekday!!.toInt())
+            Assert.assertEquals(9, nextDaytimeStart.hour)
+            Assert.assertEquals(0, nextDaytimeStart.minute)
+            Assert.assertEquals(Calendar.FRIDAY, nextDaytimeStart.weekday!!.toInt())
         }
         run {
             val now = getTimeMillis(8, 59, Calendar.FRIDAY)
             val nextDaytimeStart = TimeOfDay(Scheduler.getNextDayNightChangeInMillis(now, prefs))
-            assertEquals(9, nextDaytimeStart.hour)
-            assertEquals(0, nextDaytimeStart.minute)
-            assertEquals(Calendar.FRIDAY, nextDaytimeStart.weekday!!.toInt())
+            Assert.assertEquals(9, nextDaytimeStart.hour)
+            Assert.assertEquals(0, nextDaytimeStart.minute)
+            Assert.assertEquals(Calendar.FRIDAY, nextDaytimeStart.weekday!!.toInt())
         }
         run {
             val now = getTimeMillis(9, 0, Calendar.FRIDAY)
             val nextDaytimeStart = TimeOfDay(Scheduler.getNextDayNightChangeInMillis(now, prefs))
-            assertEquals(21, nextDaytimeStart.hour)
-            assertEquals(0, nextDaytimeStart.minute)
-            assertEquals(Calendar.FRIDAY, nextDaytimeStart.weekday!!.toInt())
+            Assert.assertEquals(21, nextDaytimeStart.hour)
+            Assert.assertEquals(0, nextDaytimeStart.minute)
+            Assert.assertEquals(Calendar.FRIDAY, nextDaytimeStart.weekday!!.toInt())
         }
         run {
             val now = getTimeMillis(20, 59, Calendar.FRIDAY)
             val nextDaytimeStart = TimeOfDay(Scheduler.getNextDayNightChangeInMillis(now, prefs))
-            assertEquals(21, nextDaytimeStart.hour)
-            assertEquals(0, nextDaytimeStart.minute)
-            assertEquals(Calendar.FRIDAY, nextDaytimeStart.weekday!!.toInt())
+            Assert.assertEquals(21, nextDaytimeStart.hour)
+            Assert.assertEquals(0, nextDaytimeStart.minute)
+            Assert.assertEquals(Calendar.FRIDAY, nextDaytimeStart.weekday!!.toInt())
         }
         run {
             val now = getTimeMillis(21, 0, Calendar.FRIDAY)
             val nextDaytimeStart = TimeOfDay(Scheduler.getNextDayNightChangeInMillis(now, prefs))
-            assertEquals(9, nextDaytimeStart.hour)
-            assertEquals(0, nextDaytimeStart.minute)
-            assertEquals(Calendar.SATURDAY, nextDaytimeStart.weekday!!.toInt())
+            Assert.assertEquals(9, nextDaytimeStart.hour)
+            Assert.assertEquals(0, nextDaytimeStart.minute)
+            Assert.assertEquals(Calendar.SATURDAY, nextDaytimeStart.weekday!!.toInt())
         }
         run {
             val now = getTimeMillis(23, 59, Calendar.FRIDAY)
             val nextDaytimeStart = TimeOfDay(Scheduler.getNextDayNightChangeInMillis(now, prefs))
-            assertEquals(9, nextDaytimeStart.hour)
-            assertEquals(0, nextDaytimeStart.minute)
-            assertEquals(Calendar.SATURDAY, nextDaytimeStart.weekday!!.toInt())
+            Assert.assertEquals(9, nextDaytimeStart.hour)
+            Assert.assertEquals(0, nextDaytimeStart.minute)
+            Assert.assertEquals(Calendar.SATURDAY, nextDaytimeStart.weekday!!.toInt())
         }
     }
 
@@ -173,44 +172,44 @@ class SchedulerTest {
         run {
             val now = getTimeMillis(0, 0, Calendar.FRIDAY)
             val nextDaytimeStart = TimeOfDay(Scheduler.getNextDayNightChangeInMillis(now, prefs))
-            assertEquals(2, nextDaytimeStart.hour)
-            assertEquals(0, nextDaytimeStart.minute)
-            assertEquals(Calendar.FRIDAY, nextDaytimeStart.weekday!!.toInt())
+            Assert.assertEquals(2, nextDaytimeStart.hour)
+            Assert.assertEquals(0, nextDaytimeStart.minute)
+            Assert.assertEquals(Calendar.FRIDAY, nextDaytimeStart.weekday!!.toInt())
         }
         run {
             val now = getTimeMillis(1, 59, Calendar.FRIDAY)
             val nextDaytimeStart = TimeOfDay(Scheduler.getNextDayNightChangeInMillis(now, prefs))
-            assertEquals(2, nextDaytimeStart.hour)
-            assertEquals(0, nextDaytimeStart.minute)
-            assertEquals(Calendar.FRIDAY, nextDaytimeStart.weekday!!.toInt())
+            Assert.assertEquals(2, nextDaytimeStart.hour)
+            Assert.assertEquals(0, nextDaytimeStart.minute)
+            Assert.assertEquals(Calendar.FRIDAY, nextDaytimeStart.weekday!!.toInt())
         }
         run {
             val now = getTimeMillis(2, 0, Calendar.FRIDAY)
             val nextDaytimeStart = TimeOfDay(Scheduler.getNextDayNightChangeInMillis(now, prefs))
-            assertEquals(13, nextDaytimeStart.hour)
-            assertEquals(0, nextDaytimeStart.minute)
-            assertEquals(Calendar.FRIDAY, nextDaytimeStart.weekday!!.toInt())
+            Assert.assertEquals(13, nextDaytimeStart.hour)
+            Assert.assertEquals(0, nextDaytimeStart.minute)
+            Assert.assertEquals(Calendar.FRIDAY, nextDaytimeStart.weekday!!.toInt())
         }
         run {
             val now = getTimeMillis(12, 59, Calendar.FRIDAY)
             val nextDaytimeStart = TimeOfDay(Scheduler.getNextDayNightChangeInMillis(now, prefs))
-            assertEquals(13, nextDaytimeStart.hour)
-            assertEquals(0, nextDaytimeStart.minute)
-            assertEquals(Calendar.FRIDAY, nextDaytimeStart.weekday!!.toInt())
+            Assert.assertEquals(13, nextDaytimeStart.hour)
+            Assert.assertEquals(0, nextDaytimeStart.minute)
+            Assert.assertEquals(Calendar.FRIDAY, nextDaytimeStart.weekday!!.toInt())
         }
         run {
             val now = getTimeMillis(13, 0, Calendar.FRIDAY)
             val nextDaytimeStart = TimeOfDay(Scheduler.getNextDayNightChangeInMillis(now, prefs))
-            assertEquals(2, nextDaytimeStart.hour)
-            assertEquals(0, nextDaytimeStart.minute)
-            assertEquals(Calendar.SATURDAY, nextDaytimeStart.weekday!!.toInt())
+            Assert.assertEquals(2, nextDaytimeStart.hour)
+            Assert.assertEquals(0, nextDaytimeStart.minute)
+            Assert.assertEquals(Calendar.SATURDAY, nextDaytimeStart.weekday!!.toInt())
         }
         run {
             val now = getTimeMillis(23, 59, Calendar.FRIDAY)
             val nextDaytimeStart = TimeOfDay(Scheduler.getNextDayNightChangeInMillis(now, prefs))
-            assertEquals(2, nextDaytimeStart.hour)
-            assertEquals(0, nextDaytimeStart.minute)
-            assertEquals(Calendar.SATURDAY, nextDaytimeStart.weekday!!.toInt())
+            Assert.assertEquals(2, nextDaytimeStart.hour)
+            Assert.assertEquals(0, nextDaytimeStart.minute)
+            Assert.assertEquals(Calendar.SATURDAY, nextDaytimeStart.weekday!!.toInt())
         }
     }
 
@@ -501,8 +500,8 @@ class SchedulerTest {
     @Test
     fun testRescheduleYieldsDayFriday1() {
         val prefs = dayPrefs
-        val nowTimeMillis = getTimeMillis(12, 0, Calendar.FRIDAY)
-        val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, prefs)
+        val nowTimeMillis =  getTimeMillis(12, 0, Calendar.FRIDAY)
+        val targetTimeMillis = Scheduler.getNextTargetTimeMillis(nowTimeMillis, dayPrefs)
         println("${TimeOfDay(nowTimeMillis)} -> ${TimeOfDay(targetTimeMillis)}")
         Assert.assertTrue(targetTimeMillis > nowTimeMillis)
         Assert.assertEquals(Calendar.FRIDAY.toLong(), getWeekday(targetTimeMillis).toLong())
