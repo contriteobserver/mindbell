@@ -22,15 +22,20 @@ import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import com.googlecode.mindbell.R
+import com.googlecode.mindbell.databinding.ActivityAboutBinding
+import com.googlecode.mindbell.databinding.BellBinding
 import com.googlecode.mindbell.mission.Prefs.Companion.EXTRA_KEEP
 import com.googlecode.mindbell.mission.Prefs.Companion.TAG
 
 
 class ReminderShowActivity : Activity() {
+    private lateinit var binding: BellBinding
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.bell)
+        binding = BellBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
     }
 
     override fun onStart() {

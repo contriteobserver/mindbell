@@ -18,7 +18,6 @@
  */
 package com.googlecode.mindbell.util
 
-import android.media.AudioAttributes
 import android.media.AudioAttributes.*
 import android.media.AudioManager
 import android.media.MediaPlayer

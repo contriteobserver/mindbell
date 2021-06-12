@@ -20,17 +20,20 @@ package com.googlecode.mindbell.activity
 
 import android.app.Activity
 import android.os.Bundle
-import android.webkit.WebView
 import com.googlecode.mindbell.R
+import com.googlecode.mindbell.databinding.ActivityAboutBinding
 
 /**
  * Show about dialog to display e.g. the license.
  */
 class AboutActivity : Activity() {
+    private lateinit var binding: ActivityAboutBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_about)
-        findViewById<WebView>(R.id.webViewAboutHtmlText).loadUrl(getString(R.string.about_html_text_url))
+        binding = ActivityAboutBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+        binding.webViewAboutHtmlText.loadUrl(getString(R.string.about_html_text_url))
     }
 }

@@ -16,6 +16,9 @@ android {
             minifyEnabled false
         }
     }
+    buildFeatures {
+        viewBinding = true
+    }
     // https://stackoverflow.com/a/37888400/2532583 looks like what I want but messes with en arrays.xml?!
     // https://stackoverflow.com/a/32676398 is the bypass for not having all translations
     lintOptions{

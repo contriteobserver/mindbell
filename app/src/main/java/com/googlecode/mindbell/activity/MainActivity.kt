@@ -30,6 +30,7 @@ import android.view.WindowManager
 import android.widget.*
 import androidx.annotation.StringRes
 import com.googlecode.mindbell.R
+import com.googlecode.mindbell.databinding.MainBinding
 import com.googlecode.mindbell.mission.ActionsExecutor
 import com.googlecode.mindbell.mission.Prefs
 import com.googlecode.mindbell.mission.Prefs.Companion.MIN_MEDITATION_DURATION
@@ -54,6 +55,8 @@ class MainActivity : Activity() {
 
     private lateinit var scheduler: Scheduler
 
+    private lateinit var binding: MainBinding
+
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "Main activity is being created")
@@ -61,9 +64,11 @@ class MainActivity : Activity() {
         scheduler = Scheduler.getInstance(this)
         // Use the following line to show popup dialog on every start
         // setPopupShown(false);
-        setContentView(R.layout.main)
-        findViewById<ImageView>(R.id.imageViewShowIntro).setOnClickListener { flipToAppropriateView(true) }
-        findViewById<ImageView>(R.id.imageViewHideIntro).setOnClickListener { flipToAppropriateView(false) }
+        binding = MainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+        binding.imageViewShowIntro.setOnClickListener { flipToAppropriateView(true) }
+        binding.imageViewHideIntro.setOnClickListener { flipToAppropriateView(false) }
         val ringOnceOnClickListener = View.OnClickListener {
             Log.d(TAG, "Ring once")
             val interruptSettings = prefs.forRingingOnce()
@@ -71,9 +76,9 @@ class MainActivity : Activity() {
             val actionsExecutor = ActionsExecutor.getInstance(this)
             actionsExecutor.startInterruptActions(interruptSettings, null)
         }
-        findViewById<ImageView>(R.id.imageViewRingOncePlayCollapsed).setOnClickListener(ringOnceOnClickListener)
-        findViewById<ImageView>(R.id.imageViewRingOnceBellCollapsed).setOnClickListener(ringOnceOnClickListener)
-        findViewById<ImageView>(R.id.imageViewRingOnceBellExpanded).setOnClickListener(ringOnceOnClickListener)
+        binding.imageViewRingOncePlayCollapsed.setOnClickListener(ringOnceOnClickListener)
+        binding.imageViewRingOnceBellCollapsed.setOnClickListener(ringOnceOnClickListener)
+        binding.imageViewRingOnceBellExpanded.setOnClickListener(ringOnceOnClickListener)
         findViewById<CountdownView>(R.id.countdownView).setOnClickListener(ringOnceOnClickListener)
     }
 
@@ -81,7 +86,7 @@ class MainActivity : Activity() {
      * Flip to meditation view if isMeditating is true, to bell view otherwise.
      */
     private fun flipToAppropriateView(showIntro: Boolean) {
-        findViewById<ViewFlipper>(R.id.viewFlipper).displayedChild = if (prefs.isMeditating) 1 else if (showIntro) 3 else 2
+        binding.viewFlipper.displayedChild = if (prefs.isMeditating) 1 else if (showIntro) 3 else 2
     }
 
     /**

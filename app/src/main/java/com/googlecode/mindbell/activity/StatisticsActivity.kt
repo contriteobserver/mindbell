@@ -26,9 +26,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
-import android.widget.ListView
 import android.widget.TextView
 import com.googlecode.mindbell.R
+import com.googlecode.mindbell.databinding.ActivityStatisticsBinding
 import com.googlecode.mindbell.mission.Prefs
 import com.googlecode.mindbell.mission.model.Statistics
 import com.googlecode.mindbell.mission.model.Statistics.StatisticsEntry
@@ -37,12 +37,15 @@ import com.googlecode.mindbell.mission.model.Statistics.StatisticsEntry
  * Show about dialog to display e.g. the license.
  */
 class StatisticsActivity : ListActivity() {
+    private lateinit var binding: ActivityStatisticsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_statistics)
+        binding = ActivityStatisticsBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
         val prefs = Prefs.getInstance(applicationContext)
-        findViewById<ListView>(android.R.id.list).adapter = StatisticsEntryListAdapter(applicationContext, R.layout.activity_statistics_item, prefs
+        binding.list.adapter = StatisticsEntryListAdapter(applicationContext, R.layout.activity_statistics_item, prefs
                 .getStatisticsEntryList())
     }
 
