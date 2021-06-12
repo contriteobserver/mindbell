@@ -156,29 +156,6 @@ object Utils {
 
     }
 
-    @Throws(NotFoundException::class)
-    fun getResourceAsString(context: Context, resid: Int): String? {
-        val resources = context.resources
-        val `is` = resources.openRawResource(resid)
-        try {
-            if (`is` != null && `is`.available() > 0) {
-                val data = ByteArray(`is`.available())
-                `is`.read(data)
-                return String(data)
-            }
-        } catch (ioe: IOException) {
-            throw RuntimeException(ioe)
-        } finally {
-            try {
-                `is`!!.close()
-            } catch (ioe: IOException) {
-                // ignore
-            }
-
-        }
-        return null
-    }
-
     /**
      * Returns the duration (in milliseconds) of the sound specified by the soundUri or null if the sound is not accessible,
      * probably because permissions have been withdrawn from behind.

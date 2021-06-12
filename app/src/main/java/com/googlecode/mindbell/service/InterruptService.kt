@@ -101,41 +101,45 @@ class InterruptService : Service() {
 
         val numberOfPeriods = prefs.numberOfPeriods
 
-        if (meditationPeriod == 0) { // beginning of ramp-up period?
+        when {
+            meditationPeriod == 0 -> { // beginning of ramp-up period?
 
-            val nextTargetTimeMillis = nowTimeMillis + prefs.rampUpTimeMillis
-            val reschedule = Reschedule(nextTargetTimeMillis, meditationPeriod + 1)
-            return HandlerResult(null, null, NoActionsStatisticsEntry(MEDITATION_RAMP_UP), reschedule)
+                val nextTargetTimeMillis = nowTimeMillis + prefs.rampUpTimeMillis
+                val reschedule = Reschedule(nextTargetTimeMillis, meditationPeriod + 1)
+                return HandlerResult(null, null, NoActionsStatisticsEntry(MEDITATION_RAMP_UP), reschedule)
 
-        } else if (meditationPeriod == 1) { // beginning of meditation period 1
-
-            val nextTargetTimeMillis = nowTimeMillis + prefs.getMeditationPeriodMillis(meditationPeriod)
-            val reschedule = Reschedule(nextTargetTimeMillis, meditationPeriod + 1)
-            val interruptSettings = prefs.forMeditationBeginning()
-            val statisticsEntry = MeditationBeginningActionsStatisticsEntry(interruptSettings, numberOfPeriods)
-            return HandlerResult(interruptSettings, null, statisticsEntry, reschedule)
-
-        } else if (meditationPeriod <= numberOfPeriods) { // beginning of meditation period 2..n
-
-            val nextTargetTimeMillis = nowTimeMillis + prefs.getMeditationPeriodMillis(meditationPeriod)
-            val reschedule = Reschedule(nextTargetTimeMillis, meditationPeriod + 1)
-            val interruptSettings = prefs.forMeditationInterrupting()
-            val statisticsEntry = MeditationInterruptingActionsStatisticsEntry(interruptSettings, meditationPeriod, numberOfPeriods)
-            return HandlerResult(interruptSettings, null, statisticsEntry, reschedule)
-
-        } else { // end of last meditation period
-
-            val meditationStopper: Runnable?
-            if (prefs.isStopMeditationAutomatically) {
-                val actionsExecutor = ActionsExecutor.getInstance(applicationContext)
-                meditationStopper = Runnable { actionsExecutor.stopMeditation() }
-            } else {
-                meditationStopper = null
             }
-            val interruptSettings = prefs.forMeditationEnding()
-            val statisticsEntry = MeditationEndingActionsStatisticsEntry(interruptSettings, meditationStopper != null)
-            return HandlerResult(interruptSettings, meditationStopper, statisticsEntry, null)
+            meditationPeriod == 1 -> { // beginning of meditation period 1
 
+                val nextTargetTimeMillis = nowTimeMillis + prefs.getMeditationPeriodMillis(meditationPeriod)
+                val reschedule = Reschedule(nextTargetTimeMillis, meditationPeriod + 1)
+                val interruptSettings = prefs.forMeditationBeginning()
+                val statisticsEntry = MeditationBeginningActionsStatisticsEntry(interruptSettings, numberOfPeriods)
+                return HandlerResult(interruptSettings, null, statisticsEntry, reschedule)
+
+            }
+            meditationPeriod <= numberOfPeriods -> { // beginning of meditation period 2..n
+
+                val nextTargetTimeMillis = nowTimeMillis + prefs.getMeditationPeriodMillis(meditationPeriod)
+                val reschedule = Reschedule(nextTargetTimeMillis, meditationPeriod + 1)
+                val interruptSettings = prefs.forMeditationInterrupting()
+                val statisticsEntry = MeditationInterruptingActionsStatisticsEntry(interruptSettings, meditationPeriod, numberOfPeriods)
+                return HandlerResult(interruptSettings, null, statisticsEntry, reschedule)
+
+            }
+            else -> { // end of last meditation period
+
+                val meditationStopper: Runnable? = if (prefs.isStopMeditationAutomatically) {
+                    val actionsExecutor = ActionsExecutor.getInstance(applicationContext)
+                    Runnable { actionsExecutor.stopMeditation() }
+                } else {
+                    null
+                }
+                val interruptSettings = prefs.forMeditationEnding()
+                val statisticsEntry = MeditationEndingActionsStatisticsEntry(interruptSettings, meditationStopper != null)
+                return HandlerResult(interruptSettings, meditationStopper, statisticsEntry, null)
+
+            }
         }
     }
 

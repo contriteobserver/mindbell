@@ -34,6 +34,7 @@ import com.googlecode.mindbell.service.InterruptService
 import com.googlecode.mindbell.util.AlarmManagerCompat
 import com.googlecode.mindbell.util.TimeOfDay
 import java.util.*
+import kotlin.math.roundToInt
 
 /**
  * This class manages the schedule of interrupt actions.
@@ -197,7 +198,7 @@ class Scheduler private constructor(val context: Context) {
             }
             val hourMillis = timeMillis / 3600000L * 3600000L // milliseconds of all whole hours
             var minuteMillis = timeMillis - hourMillis // milliseconds of remaining minutes
-            minuteMillis = Math.round(((minuteMillis - normalizeMillis) / interval).toFloat()) * interval + normalizeMillis
+            minuteMillis = ((minuteMillis - normalizeMillis) / interval).toFloat().roundToInt() * interval + normalizeMillis
             return hourMillis + minuteMillis
         }
 
@@ -239,7 +240,7 @@ class Scheduler private constructor(val context: Context) {
         fun getNextDayNightChangeInMillis(referenceTimeMillis: Long, prefs: Prefs): Long {
             val nextStart = getNextCalendarAtTimeOfDay(referenceTimeMillis, prefs.daytimeStart).timeInMillis
             val nextEnd = getNextCalendarAtTimeOfDay(referenceTimeMillis, prefs.daytimeEnd).timeInMillis
-            return Math.min(nextStart, nextEnd)
+            return nextStart.coerceAtMost(nextEnd)
         }
 
     }

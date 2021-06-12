@@ -28,6 +28,8 @@ import com.googlecode.mindbell.R
 import com.googlecode.mindbell.mission.Prefs
 import com.googlecode.mindbell.mission.Prefs.Companion.TAG
 import java.util.*
+import kotlin.math.ceil
+import kotlin.math.floor
 
 /**
  * Regularly show current state of meditation by updating a time slice drawing regularly.
@@ -35,7 +37,7 @@ import java.util.*
 class CountdownView : View {
 
     // Bound of the text to be displayed
-    internal var textBounds = Rect()
+    private var textBounds = Rect()
 
     private var rampUpStartingTimeMillis: Long = 0
 
@@ -162,18 +164,22 @@ class CountdownView : View {
         var contentHeight = height - paddingTop - paddingBottom
 
         // Derive inner square dimensions for the rectangular view
-        if (contentHeight == contentWidth) {
-            // nothing to correct for a square canvas
-        } else if (contentHeight > contentWidth) {
-            val difference = contentHeight - contentWidth
-            paddingTop += difference / 2
-            paddingBottom += difference - difference / 2
-            contentHeight = height - paddingTop - paddingBottom
-        } else {
-            val difference = contentWidth - contentHeight
-            paddingLeft += difference / 2
-            paddingRight += difference - difference / 2
-            contentWidth = width - paddingLeft - paddingRight
+        when {
+            contentHeight == contentWidth -> {
+                // nothing to correct for a square canvas
+            }
+            contentHeight > contentWidth -> {
+                val difference = contentHeight - contentWidth
+                paddingTop += difference / 2
+                paddingBottom += difference - difference / 2
+                contentHeight = height - paddingTop - paddingBottom
+            }
+            else -> {
+                val difference = contentWidth - contentHeight
+                paddingLeft += difference / 2
+                paddingRight += difference - difference / 2
+                contentWidth = width - paddingLeft - paddingRight
+            }
         }
 
         // Calculate effective outer bounds of the square to be drawn into
@@ -187,7 +193,7 @@ class CountdownView : View {
         centerY = paddedTop + contentHeight / 2
 
         // Calculate insets for the gap and time slice circle
-        val gapInset = Math.min(paddingLeft, paddingTop) * 1.2f
+        val gapInset = paddingLeft.coerceAtMost(paddingTop) * 1.2f
         val timeSliceInset = gapInset * 1.7f
 
         // Calculate dimensions for the bowl, gap and time slice circle plus the crop rectangle
@@ -212,24 +218,29 @@ class CountdownView : View {
         val currentTimeMillis = System.currentTimeMillis()
         var meditationSeconds = (meditationEndingTimeMillis - meditationStartingTimeMillis) / ONE_SECOND
         val displaySeconds: Long
-        if (currentTimeMillis < meditationStartingTimeMillis) { // ramp up
-            rampUp = true
-            beyond = false
-            meditationSeconds = (meditationStartingTimeMillis - rampUpStartingTimeMillis) / ONE_SECOND
-            displaySeconds = (currentTimeMillis - rampUpStartingTimeMillis) / ONE_SECOND
-        } else if (currentTimeMillis < meditationEndingTimeMillis) { // meditation
-            rampUp = false
-            beyond = false
-            displaySeconds = (currentTimeMillis - meditationStartingTimeMillis) / ONE_SECOND
-        } else if (currentTimeMillis < meditationEndingTimeMillis + meditationSeconds * ONE_SECOND) { // beyond
-            rampUp = false
-            beyond = true
-            displaySeconds = (currentTimeMillis - meditationEndingTimeMillis) / ONE_SECOND
-        } else { // meditation time twice over
-            stopDisplayUpdateTimer()
-            rampUp = false
-            beyond = true
-            displaySeconds = meditationSeconds
+        when {
+            currentTimeMillis < meditationStartingTimeMillis -> { // ramp up
+                rampUp = true
+                beyond = false
+                meditationSeconds = (meditationStartingTimeMillis - rampUpStartingTimeMillis) / ONE_SECOND
+                displaySeconds = (currentTimeMillis - rampUpStartingTimeMillis) / ONE_SECOND
+            }
+            currentTimeMillis < meditationEndingTimeMillis -> { // meditation
+                rampUp = false
+                beyond = false
+                displaySeconds = (currentTimeMillis - meditationStartingTimeMillis) / ONE_SECOND
+            }
+            currentTimeMillis < meditationEndingTimeMillis + meditationSeconds * ONE_SECOND -> { // beyond
+                rampUp = false
+                beyond = true
+                displaySeconds = (currentTimeMillis - meditationEndingTimeMillis) / ONE_SECOND
+            }
+            else -> { // meditation time twice over
+                stopDisplayUpdateTimer()
+                rampUp = false
+                beyond = true
+                displaySeconds = meditationSeconds
+            }
         }
 
         // Draw bowl by drawing a bowl circle, a gap circle and a rectangle to crop the top
@@ -285,17 +296,16 @@ class CountdownView : View {
         if (rampUp) {
             sb.append(seconds - displaySeconds)
         } else if (!beyond) { // meditation
-            sb.append(Math.ceil((seconds - displaySeconds) / 60.0).toInt())
+            sb.append(ceil((seconds - displaySeconds) / 60.0).toInt())
         } else { // beyond
             sb.append("-")
-            sb.append(Math.floor(displaySeconds / 60.0).toInt())
+            sb.append(floor(displaySeconds / 60.0).toInt())
             sb.append("-")
         }
         return sb.toString()
     }
 
     companion object {
-
         const val ONE_SECOND: Long = 1000
     }
 

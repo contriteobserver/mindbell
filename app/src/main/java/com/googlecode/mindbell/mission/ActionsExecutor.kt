@@ -19,7 +19,6 @@
 package com.googlecode.mindbell.mission
 
 import android.annotation.SuppressLint
-import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
@@ -226,7 +225,7 @@ class ActionsExecutor private constructor(val context: Context, val prefs: Prefs
      * Start waiting for a specific time period and call runWhenDone when time is over.
      */
     private fun startWaiting(reminderActionsFinisher: Runnable) {
-        Thread({
+        Thread {
             try {
                 Thread.sleep(WAITING_TIME)
             } catch (e: InterruptedException) {
@@ -234,7 +233,7 @@ class ActionsExecutor private constructor(val context: Context, val prefs: Prefs
             }
 
             reminderActionsFinisher.run()
-        }).start()
+        }.start()
     }
 
     /**

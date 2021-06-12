@@ -112,7 +112,7 @@ class QuickSettingsService : TileService() {
         tile.icon = Icon.createWithResource(applicationContext, drawable)
 
         if (prefs.isActive) {
-            tile.label = if (muteRequestReason != null) muteRequestReason.message else getString(R.string.summaryActive)
+            (muteRequestReason?.message ?: getString(R.string.summaryActive)).also { tile.label = it }
             tile.state = Tile.STATE_ACTIVE
         } else {
             tile.label = getString(R.string.summaryNotActive)

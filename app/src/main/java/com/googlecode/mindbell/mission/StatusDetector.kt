@@ -68,10 +68,10 @@ class StatusDetector internal constructor(val context: Context, val prefs: Prefs
     val reasonMutedWithAudioStream: String
         get() = context.getText(R.string.reasonMutedWithAudioStream).toString()
 
-    val isPhoneInDoNotDisturbMode: Boolean
+    private val isPhoneInDoNotDisturbMode: Boolean
         get() = NotificationManagerCompatExtension.getInstance(context).isPhoneInDoNotDisturbMode()
 
-    val reasonMutedInDoNotDisturbMode: String
+    private val reasonMutedInDoNotDisturbMode: String
         get() = context.getText(R.string.reasonMutedInDoNotDisturbMode).toString()
 
     val isPhoneOffHook: Boolean

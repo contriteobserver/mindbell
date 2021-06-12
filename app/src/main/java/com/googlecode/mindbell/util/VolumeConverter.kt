@@ -19,29 +19,33 @@
  */
 package com.googlecode.mindbell.util
 
+import kotlin.math.log10
+import kotlin.math.pow
+import kotlin.math.roundToInt
+
 /**
  * Converts volume setting from linear to decibel and vice versa.
  */
-class VolumeConverter(val mDynamicRangeDB: Int, val mMaxProgress: Int) {
+class VolumeConverter(private val mDynamicRangeDB: Int, val mMaxProgress: Int) {
 
     fun progress2volume(progress: Int): Float {
         if (progress == 0) {
             return 0f
         }
         val minusDB = (mMaxProgress - progress).toFloat() / mMaxProgress * mDynamicRangeDB
-        return Math.pow(10.0, -minusDB / 20.0).toFloat()
+        return 10.0.pow(-minusDB / 20.0).toFloat()
     }
 
     fun volume2progress(aVolume: Float): Int {
         if (aVolume < 0.0001) {
             return 0
         }
-        var minusDB = 20 * Math.log10(aVolume / 1.0).toFloat()
+        var minusDB = 20 * log10(aVolume / 1.0).toFloat()
         // limit our resolution to the dynamic range
         if (minusDB < -mDynamicRangeDB) {
             minusDB = (-mDynamicRangeDB).toFloat()
         }
-        return Math.round((mDynamicRangeDB + minusDB) / mDynamicRangeDB * mMaxProgress)
+        return ((mDynamicRangeDB + minusDB) / mDynamicRangeDB * mMaxProgress).roundToInt()
     }
 
 }

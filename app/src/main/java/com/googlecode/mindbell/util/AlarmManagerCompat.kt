@@ -40,12 +40,16 @@ class AlarmManagerCompat private constructor(context: Context) {
      * basic idea of MindBell to get interrupted.
      */
     fun setExactAndAllowWhileIdle(type: Int, triggerAtMillis: Long, operation: PendingIntent) {
-        if (Build.VERSION.SDK_INT >= 23) {
-            alarmManager.setExactAndAllowWhileIdle(type, triggerAtMillis, operation)
-        } else if (Build.VERSION.SDK_INT >= 19) {
-            alarmManager.setExact(type, triggerAtMillis, operation)
-        } else {
-            alarmManager.set(type, triggerAtMillis, operation)
+        when {
+            Build.VERSION.SDK_INT >= 23 -> {
+                alarmManager.setExactAndAllowWhileIdle(type, triggerAtMillis, operation)
+            }
+            Build.VERSION.SDK_INT >= 19 -> {
+                alarmManager.setExact(type, triggerAtMillis, operation)
+            }
+            else -> {
+                alarmManager.set(type, triggerAtMillis, operation)
+            }
         }
     }
 

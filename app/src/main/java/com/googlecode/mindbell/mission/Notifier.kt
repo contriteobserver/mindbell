@@ -141,7 +141,7 @@ class Notifier private constructor(val context: Context, val prefs: Prefs) {
      */
     private fun createRefreshBroadcastIntent(requestCode: Int): PendingIntent {
         val intent = Intent(context, RefreshReceiver::class.java)
-        intent.setAction("com.googlecode.mindbell.UPDATE_STATUS_NOTIFICATION") // just for documentation and logging
+        intent.action = "com.googlecode.mindbell.UPDATE_STATUS_NOTIFICATION" // just for documentation and logging
         return PendingIntent.getBroadcast(context, requestCode, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT)
     }
