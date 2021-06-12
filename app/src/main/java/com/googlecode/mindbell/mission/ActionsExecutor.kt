@@ -39,7 +39,7 @@ import java.io.IOException
 /**
  * This singleton class executes all actions which in fact is everything around interrupt actions.
  */
-class ActionsExecutor private constructor(val context: Context, val prefs: Prefs) : AudioManager.OnAudioFocusChangeListener {
+class ActionsExecutor private constructor(val context: Context, val prefs: Prefs) : OnAudioFocusChangeListener {
 
     val isBellSoundPlaying: Boolean
         get() = mediaPlayer != null // if we hold a reference we haven't finished bell sound completely
@@ -47,24 +47,24 @@ class ActionsExecutor private constructor(val context: Context, val prefs: Prefs
     val alarmMaxVolume: Int
         get() {
             val audioMan = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            return audioMan.getStreamMaxVolume(AudioManager.STREAM_ALARM)
+            return audioMan.getStreamMaxVolume(STREAM_ALARM)
         }
 
     var alarmVolume: Int
         get() {
             val audioMan = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            return audioMan.getStreamVolume(AudioManager.STREAM_ALARM)
+            return audioMan.getStreamVolume(STREAM_ALARM)
         }
         set(volume) {
             val audioMan = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            audioMan.setStreamVolume(AudioManager.STREAM_ALARM, volume, 0)
+            audioMan.setStreamVolume(STREAM_ALARM, volume, 0)
 
         }
 
     /**
      * Start interrupt actions (show/sound/vibrate) and setup handler to finish the actions after sound or timer ends.
      */
-    fun startInterruptActions(interruptSettings: InterruptSettings, meditationStopper: Runnable?, callingService: Service? = null) {
+    fun startInterruptActions(interruptSettings: InterruptSettings, meditationStopper: Runnable?) {
 
         // Stop an already ongoing sound, this isn't wrong when phone and bell are muted, too
         finishBellSound()
@@ -226,7 +226,7 @@ class ActionsExecutor private constructor(val context: Context, val prefs: Prefs
      * Start waiting for a specific time period and call runWhenDone when time is over.
      */
     private fun startWaiting(reminderActionsFinisher: Runnable) {
-        Thread(Runnable {
+        Thread({
             try {
                 Thread.sleep(WAITING_TIME)
             } catch (e: InterruptedException) {

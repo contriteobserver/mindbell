@@ -69,7 +69,7 @@ class MainActivity : Activity() {
             val interruptSettings = prefs.forRingingOnce()
             prefs.addStatisticsEntry(Statistics.RingOnceActionsStatisticsEntry(interruptSettings))
             val actionsExecutor = ActionsExecutor.getInstance(this)
-            actionsExecutor.startInterruptActions(interruptSettings, null, null)
+            actionsExecutor.startInterruptActions(interruptSettings, null)
         }
         findViewById<ImageView>(R.id.imageViewRingOncePlayCollapsed).setOnClickListener(ringOnceOnClickListener)
         findViewById<ImageView>(R.id.imageViewRingOnceBellCollapsed).setOnClickListener(ringOnceOnClickListener)
@@ -127,13 +127,13 @@ class MainActivity : Activity() {
     private fun showMeditationDialog() {
         val view = layoutInflater.inflate(R.layout.meditation_dialog, null)
         view.findViewById<TextView>(R.id.textViewRampUpTime).text = MinutesIntervalPickerPreference.deriveSummary(prefs.rampUpTime, false)
-        attachIntervalPickerDialog(view.findViewById<TextView>(R.id.textViewRampUpTimeLabel), view.findViewById<TextView>(R.id.textViewRampUpTime), R.string.prefsRampUpTime, MIN_RAMP_UP_TIME, false, null)
+        attachIntervalPickerDialog(view.findViewById(R.id.textViewRampUpTimeLabel), view.findViewById(R.id.textViewRampUpTime), R.string.prefsRampUpTime, MIN_RAMP_UP_TIME, false, null)
         view.findViewById<TextView>(R.id.textViewMeditationDuration).text = MinutesIntervalPickerPreference.deriveSummary(prefs.meditationDuration, true)
-        attachIntervalPickerDialog(view.findViewById<TextView>(R.id.textViewMeditationDurationLabel), view.findViewById<TextView>(R.id.textViewMeditationDuration), R.string.prefsMeditationDuration,
+        attachIntervalPickerDialog(view.findViewById(R.id.textViewMeditationDurationLabel), view.findViewById(R.id.textViewMeditationDuration), R.string.prefsMeditationDuration,
                 MIN_MEDITATION_DURATION, true, object : OnPickListener {
             override fun onPick(): Boolean {
-                return isValidMeditationSetup(view.findViewById<TextView>(R.id.textViewMeditationDuration), view.findViewById<TextView>(R.id.textViewMeditationDuration),
-                        view.findViewById<TextView>(R.id.textViewNumberOfPeriods), view.findViewById<TextView>(R.id.textViewPatternOfPeriods))
+                return isValidMeditationSetup(view.findViewById(R.id.textViewMeditationDuration), view.findViewById(R.id.textViewMeditationDuration),
+                        view.findViewById(R.id.textViewNumberOfPeriods), view.findViewById(R.id.textViewPatternOfPeriods))
             }
         })
         view.findViewById<TextView>(R.id.textViewNumberOfPeriods).text = prefs.numberOfPeriods.toString()
@@ -165,7 +165,7 @@ class MainActivity : Activity() {
             override fun onEnter(value: String): Boolean {
                 view.findViewById<TextView>(R.id.textViewNumberOfPeriods).text = Prefs.deriveNumberOfPeriods(value).toString()
                 return isValidMeditationSetup(view.findViewById(R.id.textViewPatternOfPeriods), view.findViewById(R.id.textViewMeditationDuration), view.findViewById(R.id.textViewNumberOfPeriods),
-                        view.findViewById<TextView>(R.id.textViewPatternOfPeriods))
+                        view.findViewById(R.id.textViewPatternOfPeriods))
             }
         })
         view.findViewById<ImageView>(R.id.imageViewExplanationNumberOfPeriods).setOnClickListener {

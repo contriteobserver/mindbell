@@ -55,14 +55,14 @@ class MoreViewMatchers {
          * textViewHasErrorText(nullValue(String.class)`
          */
         fun textViewHasErrorText(stringMatcher: Matcher<String>): Matcher<View> {
-            return TextViewHasErrorTextMatcher(checkNotNull(stringMatcher))
+            return TextViewHasErrorTextMatcher(stringMatcher)
         }
 
         /**
          * Returns a matcher that matches [TextView] based on text view error string value.
          */
         fun textViewHasErrorText(expectedError: String): Matcher<View> {
-            return textViewHasErrorText(`is`<String>(expectedError))
+            return textViewHasErrorText(`is`(expectedError))
         }
 
         /**

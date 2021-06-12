@@ -85,7 +85,7 @@ class InterruptService : Service() {
             prefs.addStatisticsEntry(FinishedStatisticsEntry())
         } else {
             val actionsExecutor = ActionsExecutor.getInstance(applicationContext)
-            actionsExecutor.startInterruptActions(handlerResult.interruptSettings!!, handlerResult.meditationStopper, this)
+            actionsExecutor.startInterruptActions(handlerResult.interruptSettings, handlerResult.meditationStopper)
         }
 
         return START_STICKY
@@ -177,12 +177,8 @@ class InterruptService : Service() {
     }
 
     class HandlerResult(val interruptSettings: InterruptSettings?, val meditationStopper: Runnable?, val statisticsEntry:
-    StatisticsEntry, val reschedule: Reschedule?) {
+    StatisticsEntry, val reschedule: Reschedule?)
 
-    }
-
-    class Reschedule(val nextTargetTimeMillis: Long, val nextMeditationPeriod: Int?) {
-
-    }
+    class Reschedule(val nextTargetTimeMillis: Long, val nextMeditationPeriod: Int?)
 
 }

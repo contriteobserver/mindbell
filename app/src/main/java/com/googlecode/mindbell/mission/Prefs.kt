@@ -48,8 +48,6 @@ class Prefs private constructor(val context: Context) {
 
     private var sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener
 
-    private val weekdayEntryValues = context.resources.getStringArray(R.array.weekdayEntryValues)
-
     private val weekdayAbbreviationEntries = context.resources.getStringArray(R.array.weekdayAbbreviationEntries)
 
     // Map of all used preferences - with type and default value - by resid
@@ -78,7 +76,7 @@ class Prefs private constructor(val context: Context) {
         get() = normalize >= 0
 
     val normalize: Int
-        get() = Integer.valueOf(getStringSetting(keyNormalize))!!
+        get() = Integer.valueOf(getStringSetting(keyNormalize))
 
     /**
      * Returns the number of meditation periods derived from the pattern of periods lengths.
@@ -249,7 +247,7 @@ class Prefs private constructor(val context: Context) {
     init {
 
         xmlMapper.enableDefaultTyping()
-        xmlMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY); // dump private fields, too
+        xmlMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY) // dump private fields, too
 
         // Define all preference keys and their default values
         fillPreferenceMap()
@@ -551,19 +549,19 @@ class Prefs private constructor(val context: Context) {
         val keyMuteOffInFlightMode = "muteOffInFlightMode"
         if (settings.contains(keyMuteOffInFlightMode)) {
             val muteInFlightMode = settings.getBoolean(keyMuteOffInFlightMode,
-                    preferenceMap[R.string.keyMuteInFlightMode]!!.defaultValue as Boolean)
-            setSetting(R.string.keyMuteInFlightMode, muteInFlightMode)
+                    preferenceMap[keyMuteInFlightMode]!!.defaultValue as Boolean)
+            setSetting(keyMuteInFlightMode, muteInFlightMode)
             settings.edit().remove(keyMuteOffInFlightMode).apply()
-            Log.w(TAG, "Converted old setting for '$keyMuteOffInFlightMode' ($muteInFlightMode) to '${context.getText(R.string.keyMuteInFlightMode)}' ($muteInFlightMode)")
+            Log.w(TAG, "Converted old setting for '$keyMuteOffInFlightMode' ($muteInFlightMode) to '${context.getText(keyMuteInFlightMode)}' ($muteInFlightMode)")
         }
         // Version 3.5.0 renamed notification to notificationOnWearables
         val keyNotification = "notification"
         if (settings.contains(keyNotification)) {
             val notificationOnWearables = settings.getBoolean(keyNotification,
-                    preferenceMap[R.string.keyNotificationOnWearables]!!.defaultValue as Boolean)
-            setSetting(R.string.keyNotificationOnWearables, notificationOnWearables)
+                    preferenceMap[keyNotificationOnWearables]!!.defaultValue as Boolean)
+            setSetting(keyNotificationOnWearables, notificationOnWearables)
             settings.edit().remove(keyNotification).apply()
-            Log.w(TAG, "Converted old setting for '$keyNotification' ($notificationOnWearables) to '${context.getText(R.string.keyNotificationOnWearables)}' ($notificationOnWearables)")
+            Log.w(TAG, "Converted old setting for '$keyNotification' ($notificationOnWearables) to '${context.getText(keyNotificationOnWearables)}' ($notificationOnWearables)")
         }
         // Version 3.5.0 removed dismissNotification
         val keyDismissNotification = "dismissNotification"
@@ -774,7 +772,7 @@ class Prefs private constructor(val context: Context) {
     fun getBellSoundUri(key: String, isUseWorkaroundBell: Boolean): Uri? {
         val arrayIdentifier = if (isUseWorkaroundBell) R.array.bellWorkaroundFilenameEntries else R.array.bellFilenameEntries
         val bellFilenameArray = context.resources.getStringArray(arrayIdentifier)
-        val index = Integer.valueOf(key)!!
+        val index = Integer.valueOf(key)
         if (index == BELL_ENTRY_VALUE_INDEX_NO_SOUND) {
             return null
         }
@@ -838,7 +836,7 @@ class Prefs private constructor(val context: Context) {
     private fun parseStatistics(statisticsString: String): Statistics? {
         try {
             // Log.d(TAG, "parseStatistics : $statisticsString")
-            return xmlMapper.readValue<Statistics>(statisticsString, Statistics::class.java)
+            return xmlMapper.readValue(statisticsString, Statistics::class.java)
         } catch (e: JsonProcessingException) {
             Log.d(TAG, "Parsing $statisticsString failed", e)
             return null
@@ -846,9 +844,8 @@ class Prefs private constructor(val context: Context) {
     }
 
     private fun dumpStatistics(newStatistics: Statistics): String {
-        val statisticsString = xmlMapper.writeValueAsString(newStatistics)
         // Log.d(TAG, "dumpStatistics : $statisticsString")
-        return statisticsString
+        return xmlMapper.writeValueAsString(newStatistics)
     }
 
     fun forRegularOperation(): InterruptSettings {
@@ -1075,7 +1072,6 @@ class Prefs private constructor(val context: Context) {
          * Request codes for intents created by MindBell.
          */
         const val SCHEDULER_REQUEST_CODE = 0
-        const val UPDATE_STATUS_NOTIFICATION_REQUEST_CODE = 1
         const val UPDATE_STATUS_NOTIFICATION_MUTED_TILL_REQUEST_CODE = 2
         const val UPDATE_STATUS_NOTIFICATION_DAY_NIGHT_REQUEST_CODE = 3
         const val REQUEST_READ_PHONE_STATE = 10
@@ -1154,7 +1150,7 @@ class Prefs private constructor(val context: Context) {
             return if (periodIndex < 0 || periodIndex >= periods.size) {
                 ONE_MINUTE_MILLIS_PERIOD_NOT_EXISTING // avoid IndexOutOfBoundsException
             } else if (periods[periodIndex].matches(STATIC_PERIOD_REGEX.toRegex())) {
-                Integer.valueOf(periods[periodIndex])!! * ONE_MINUTE_MILLIS
+                Integer.valueOf(periods[periodIndex]) * ONE_MINUTE_MILLIS
             } else {
                 millisOfVariablePeriods
             }
@@ -1167,7 +1163,7 @@ class Prefs private constructor(val context: Context) {
             val msAsString = pattern.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             val ms = LongArray(msAsString.size)
             for (i in ms.indices) {
-                ms[i] = java.lang.Long.valueOf(msAsString[i])!!
+                ms[i] = java.lang.Long.valueOf(msAsString[i])
             }
             return ms
         }

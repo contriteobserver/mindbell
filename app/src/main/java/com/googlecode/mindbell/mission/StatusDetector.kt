@@ -187,9 +187,7 @@ class StatusDetector internal constructor(val context: Context, val prefs: Prefs
     /**
      * Specifies the reason why MindBell is muted.
      */
-    class MuteReason(val muteReasonType: MuteReasonType, val message: String) {
-
-    }
+    class MuteReason(val muteReasonType: MuteReasonType, val message: String)
 
     companion object {
 

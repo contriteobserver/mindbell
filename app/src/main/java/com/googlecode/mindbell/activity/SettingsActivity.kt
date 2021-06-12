@@ -551,7 +551,7 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
         if (soundDuration > maxDuration) {
             val msg = String.format(getText(R.string.ringtoneDurationTooLong).toString(), soundDuration, maxDuration,
                     frequency.interval * 60L)
-            Log.w(TAG, "$msg (${soundUri.toString()})")
+            Log.w(TAG, "$msg ($soundUri)")
             Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
             return false
         }

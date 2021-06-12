@@ -50,7 +50,7 @@ class Statistics {
         val sb = StringBuilder()
         sb.append("Statistics:")
         for (entry in entryList) {
-            sb.append("\n  ${entry.toString()}")
+            sb.append("\n  $entry")
         }
         return sb.toString()
     }
@@ -131,7 +131,7 @@ class Statistics {
         }
 
         open fun deriveComment(): String {
-            return "${type()}"
+            return type()
         }
 
         abstract fun type(): String
@@ -203,9 +203,7 @@ class Statistics {
     }
 
     abstract class ScheduledActionsStatisticsEntry(interruptSettings: InterruptSettings) :
-            ActionsStatisticsEntry(interruptSettings) {
-
-    }
+            ActionsStatisticsEntry(interruptSettings)
 
     class MeditationBeginningActionsStatisticsEntry(interruptSettings: InterruptSettings = NO_INTERRUPT_SETTING, private val
     numberOfPeriods: Int = 0) :

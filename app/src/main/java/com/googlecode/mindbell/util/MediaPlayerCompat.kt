@@ -42,7 +42,7 @@ class MediaPlayerCompat : MediaPlayer() {
                 AudioManager.STREAM_MUSIC -> USAGE_MEDIA
                 else -> USAGE_ALARM
             }
-            val audioAttributes = AudioAttributes.Builder() //
+            val audioAttributes = Builder() //
                     .setContentType(CONTENT_TYPE_UNKNOWN) // it's neither MOVIE nor MUSIC nor SONIFICATION nor SPEECH
                     .setUsage(usage) //
                     .build()

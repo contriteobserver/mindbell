@@ -33,7 +33,7 @@ import org.junit.runner.RunWith
 class ReminderShowActivityTest {
 
     @get:Rule
-    val activity = ActivityTestRule<ReminderShowActivity>(ReminderShowActivity::class.java)
+    val activity = ActivityTestRule(ReminderShowActivity::class.java)
 
     @Test
     fun testActivityIsDisplayed() {

@@ -60,7 +60,6 @@ open class SeekBarPreference(context: Context, attrs: AttributeSet) : DialogPref
     }
 
     companion object {
-        private val TAG = "SeekBarPreference"
 
         protected fun getSeekBar(dialogView: View): SeekBar {
             return dialogView.findViewById(R.id.seekBarVolume) as SeekBar

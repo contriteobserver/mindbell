@@ -50,10 +50,6 @@ class ActionsExecutorTest {
         Assert.assertEquals(actionsExecutor.alarmMaxVolume, actionsExecutor.alarmVolume)
     }
 
-    private fun createContextAccessor(): Scheduler {
-        return Scheduler.getInstance(InstrumentationRegistry.getTargetContext())
-    }
-
     @Test
     fun testFinish() {
         actionsExecutor.alarmVolume = actionsExecutor.alarmMaxVolume / 2

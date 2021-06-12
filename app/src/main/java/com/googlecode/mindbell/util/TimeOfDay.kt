@@ -141,8 +141,8 @@ class TimeOfDay {
     constructor(time: String) {
         val parts = time.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         when (parts.size) {
-            2 -> init(Integer.valueOf(parts[0])!!, Integer.valueOf(parts[1])!!, null, null, null)
-            1 -> init(Integer.valueOf(parts[0])!!, 0, null, null, null)
+            2 -> init(Integer.valueOf(parts[0]), Integer.valueOf(parts[1]), null, null, null)
+            1 -> init(Integer.valueOf(parts[0]), 0, null, null, null)
             else -> throw IllegalArgumentException("Time <$time> not formatted as hh[:mm]")
         }
     }
