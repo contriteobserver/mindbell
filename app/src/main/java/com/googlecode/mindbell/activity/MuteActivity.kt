@@ -57,7 +57,7 @@ class MuteActivity : Activity() {
     }
 
     private fun createDisplayedHourValues(hours: Int): Array<String> {
-        return Array(hours + 1) { i -> if (i == 0) getText((R.string.prefsMutedTillOff)).toString() else i.toString() + " h" }
+        return Array(hours + 1) { i -> if (i == 0) getText((R.string.prefsMutedTillOff)).toString() else "$i h" }
     }
 
     companion object {

@@ -18,7 +18,7 @@
  */
 package com.googlecode.mindbell.activity
 
-import android.app.ListActivity
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -27,6 +27,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.DrawableRes
 import com.googlecode.mindbell.R
 import com.googlecode.mindbell.databinding.ActivityStatisticsBinding
 import com.googlecode.mindbell.mission.Prefs
@@ -36,7 +37,7 @@ import com.googlecode.mindbell.mission.model.Statistics.StatisticsEntry
 /**
  * Show about dialog to display e.g. the license.
  */
-class StatisticsActivity : ListActivity() {
+class StatisticsActivity : Activity() {
     private lateinit var binding: ActivityStatisticsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,8 +67,8 @@ class StatisticsActivity : ListActivity() {
             return itemView
         }
 
-        private fun setJudgmentImage(itemView: View, resid: Int) {
-            itemView.findViewById<ImageView>(R.id.judgment).setImageResource(resid)
+        private fun setJudgmentImage(itemView: View, @DrawableRes resId: Int) {
+            itemView.findViewById<ImageView>(R.id.judgment).setImageResource(resId)
             itemView.findViewById<ImageView>(R.id.judgment).imageAlpha = 255 // revert showing the background of unsetJudgmentImage()
         }
 
@@ -77,5 +78,4 @@ class StatisticsActivity : ListActivity() {
         }
 
     }
-
 }

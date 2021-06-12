@@ -21,8 +21,6 @@ package com.googlecode.mindbell.activity
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
-import com.googlecode.mindbell.R
-import com.googlecode.mindbell.databinding.ActivityAboutBinding
 import com.googlecode.mindbell.databinding.BellBinding
 import com.googlecode.mindbell.mission.Prefs.Companion.EXTRA_KEEP
 import com.googlecode.mindbell.mission.Prefs.Companion.TAG

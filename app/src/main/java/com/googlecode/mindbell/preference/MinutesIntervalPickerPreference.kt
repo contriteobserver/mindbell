@@ -56,7 +56,7 @@ class MinutesIntervalPickerPreference(ctxt: Context, attrs: AttributeSet) : Time
         private val MIN_INTERVAL = TimeOfDay(0, 1)
 
         fun parseTimeOfDayFromSummary(summary: String): TimeOfDay {
-            return TimeOfDay(summary.split(" ".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()[0])
+            return TimeOfDay(summary.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0])
         }
 
         fun deriveSummary(time: TimeOfDay, isMinutesInterval: Boolean): String {

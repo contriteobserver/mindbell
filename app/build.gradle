@@ -39,6 +39,7 @@ dependencies {
 
     // Kotlin: see also dependencies in projects build.gradle
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.5.10"
+    implementation 'androidx.appcompat:appcompat:1.3.0'
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib:1.5.10"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:1.3.21"
 

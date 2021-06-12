@@ -389,7 +389,7 @@ class Prefs private constructor(val context: Context) {
      */
     private fun fillPreferenceMap() {
         addPreference(keyActive, false, BOOLEAN, false) // schedule updated by direct call
-        addPreference(keyActiveOnDaysOfWeek, HashSet(Arrays.asList("1", "2", "3", "4", "5", "6", "7")),
+        addPreference(keyActiveOnDaysOfWeek, HashSet(listOf("1", "2", "3", "4", "5", "6", "7")),
                 STRING_SET,
                 true)
         addPreference(keyAudioStream, "0", STRING, false)
@@ -598,8 +598,8 @@ class Prefs private constructor(val context: Context) {
                 STRING -> {
                     val stringValue = value as String?
                     if (stringValue != null) {
-                        val entryValues = Arrays.asList(*entryValuesMap[preference.resid]!!)
-                        if (entryValues != null && !entryValues.isEmpty() && !entryValues.contains(stringValue)) {
+                        val entryValues = listOf(*entryValuesMap[preference.resid]!!)
+                        if (entryValues.isNotEmpty() && !entryValues.contains(stringValue)) {
                             settings.edit().remove(preference.key).apply()
                             Log.w(TAG, "Removed setting '$preference' since it had wrong value '$stringValue'")
                             return true
@@ -611,7 +611,7 @@ class Prefs private constructor(val context: Context) {
                     val stringSetValue = value as Set<String>?
                     if (stringSetValue != null) {
                         for (aStringInSet in stringSetValue) {
-                            val entryValues = Arrays.asList(*entryValuesMap[preference.resid]!!)
+                            val entryValues = listOf(*entryValuesMap[preference.resid]!!)
                             if (!entryValues.contains(aStringInSet)) {
                                 settings.edit().remove(preference.key).apply()
                                 Log.w(TAG, "Removed setting '$preference' since it had (at least one) wrong value '$aStringInSet'")
@@ -711,12 +711,12 @@ class Prefs private constructor(val context: Context) {
     /**
      * Returns the current string set setting of the preference with the given resid.
      *
-     * @param resid
+     * @param resId
      * @return
      */
-    private fun getStringSetSetting(resid: Int): Set<String> {
+    private fun getStringSetSetting(resId: Int): Set<String> {
         @Suppress("UNCHECKED_CAST") // it's sure a string set
-        return getSetting(resid) as Set<String>
+        return getSetting(resId) as Set<String>
     }
 
     /**
@@ -834,12 +834,12 @@ class Prefs private constructor(val context: Context) {
     }
 
     private fun parseStatistics(statisticsString: String): Statistics? {
-        try {
+        return try {
             // Log.d(TAG, "parseStatistics : $statisticsString")
-            return xmlMapper.readValue(statisticsString, Statistics::class.java)
+            xmlMapper.readValue(statisticsString, Statistics::class.java)
         } catch (e: JsonProcessingException) {
             Log.d(TAG, "Parsing $statisticsString failed", e)
-            return null
+            null
         }
     }
 
@@ -1125,12 +1125,12 @@ class Prefs private constructor(val context: Context) {
          */
         fun derivePeriodMillis(patternOfPeriods: String, meditationDuration: Int, meditationPeriod: Int): Long {
             val periodIndex = meditationPeriod - 1
-            val periods = patternOfPeriods.split(PERIOD_SEPARATOR_REGEX.toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
+            val periods = patternOfPeriods.split(PERIOD_SEPARATOR_REGEX.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             // Verify the patternOfPeriods string and calculate the length of a variable period
             var numberOfVariablePeriods = 0
             var sumOfPeriodsLengths = 0
             for (i in periods.indices) {
-                periods[i] = periods[i].trim({ it <= ' ' })
+                periods[i] = periods[i].trim { it <= ' ' }
                 val period = periods[i]
                 when {
                     period.matches(STATIC_PERIOD_REGEX.toRegex()) -> sumOfPeriodsLengths += Integer.valueOf(period)
@@ -1172,7 +1172,7 @@ class Prefs private constructor(val context: Context) {
          * Returns a numberOfPeriods string that corresponds with the patternOfPeriods: "x" -> 1, "3, x" -> 2, ...
          */
         fun deriveNumberOfPeriods(patternOfPeriods: String): Int {
-            return patternOfPeriods.split(PERIOD_SEPARATOR_REGEX.toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray().size
+            return patternOfPeriods.split(PERIOD_SEPARATOR_REGEX.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray().size
         }
 
         fun getAudioStream(audioStreamSetting: String): Int {

@@ -31,9 +31,7 @@ import android.util.AttributeSet
  * level 19. I have taken this approach (http://stackoverflow.com/a/7018053) and reduced it to call notifyChanged() in every call of
  * setValue(), but only for API level < 19 as it might produce some overhead to call value changed events if value has not changed.
  */
-open class ListPreferenceWithSummaryFix : ListPreference {
-
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+open class ListPreferenceWithSummaryFix(context: Context, attrs: AttributeSet) : ListPreference(context, attrs) {
 
     override fun setValue(value: String) {
         super.setValue(value)
