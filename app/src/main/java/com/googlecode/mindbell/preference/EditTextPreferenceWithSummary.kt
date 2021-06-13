@@ -41,7 +41,7 @@ class EditTextPreferenceWithSummary : EditTextPreference {
             if ("defaultValue" == attrs.getAttributeName(i)) {
                 defaultValue = attrs.getAttributeValue(i)
                 if (defaultValue.startsWith("@")) { // resource id?
-                    defaultValue = context.getText(Integer.valueOf(defaultValue.substring(1))!!).toString()
+                    defaultValue = context.getText(Integer.valueOf(defaultValue.substring(1))).toString()
                 }
                 break
             }
