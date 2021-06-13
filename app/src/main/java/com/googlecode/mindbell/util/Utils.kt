@@ -132,12 +132,12 @@ object Utils {
      * Return name of the applications version.
      */
     fun getApplicationVersionName(packageManager: PackageManager, packageName: String): String {
-        try {
+        return try {
             val packageInfo = packageManager.getPackageInfo(packageName, 0)
-            return packageInfo.versionName
+            packageInfo.versionName
         } catch (e: NameNotFoundException) {
             Log.e(TAG, "Could not retrieve package information", e)
-            return "N/A"
+            "N/A"
         }
 
     }
@@ -146,12 +146,12 @@ object Utils {
      * Return code of the applications version.
      */
     fun getApplicationVersionCode(packageManager: PackageManager, packageName: String): Int {
-        try {
+        return try {
             val packageInfo = packageManager.getPackageInfo(packageName, 0)
-            return packageInfo.versionCode
+            packageInfo.versionCode
         } catch (e: NameNotFoundException) {
             Log.e(TAG, "Could not retrieve package information", e)
-            return 0
+            0
         }
 
     }
@@ -165,14 +165,14 @@ object Utils {
      * @return
      */
     fun getSoundDuration(context: Context, soundUri: Uri): Long? {
-        try {
+        return try {
             val mmr = MediaMetadataRetriever()
             mmr.setDataSource(context, soundUri)
             val durationString = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-            return if (durationString == null) null else java.lang.Long.parseLong(durationString)
+            if (durationString == null) null else java.lang.Long.parseLong(durationString)
         } catch (e: Exception) {
             Log.w(TAG, "Sound <$soundUri> not accessible", e)
-            return null
+            null
         }
 
     }
@@ -215,7 +215,7 @@ object Utils {
     /**
      * Returns an array of strings as an array of char sequences.
      */
-    fun asCharSequenceArray(stringArray: Array<String>): Array<CharSequence> {
+    private fun asCharSequenceArray(stringArray: Array<String>): Array<CharSequence> {
         // Kotlin does not seem to offer a more convenient way to convert these types of arrays.
         val stringList = ArrayList<String>()
         stringList.addAll(stringArray)

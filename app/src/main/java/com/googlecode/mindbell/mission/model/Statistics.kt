@@ -29,7 +29,7 @@ import java.util.*
 
 class Statistics {
 
-    var entryList: MutableList<StatisticsEntry> = ArrayList()
+    private var entryList: MutableList<StatisticsEntry> = ArrayList()
 
     fun addStatisticsEntry(newEntry: StatisticsEntry) {
         while (entryList.size >= Prefs.MAX_STATISTICS_ENTRY_COUNT) {

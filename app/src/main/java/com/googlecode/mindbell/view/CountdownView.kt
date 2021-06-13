@@ -112,6 +112,9 @@ class CountdownView : View {
         textPaintBeyond!!.flags = Paint.ANTI_ALIAS_FLAG
         textPaintBeyond!!.color = app.getColor(R.styleable.CountdownView_beyondColor, Color.GREEN)
         textPaintBeyond!!.textSize = app.getDimension(R.styleable.CountdownView_beyondSize, 50f)
+
+        app.recycle()
+        sys.recycle()
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
