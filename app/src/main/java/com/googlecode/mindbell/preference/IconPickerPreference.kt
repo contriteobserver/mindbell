@@ -41,7 +41,7 @@ import java.util.*
 class IconPickerPreference(context: Context, attrs: AttributeSet) : ListPreferenceWithSummaryFix(context, attrs) {
 
     // The view bound to this preference in onBindView()
-    private lateinit var view: View
+    private var view: View? = null
 
     private var iconItemList: MutableList<IconItem>
 
@@ -79,8 +79,8 @@ class IconPickerPreference(context: Context, attrs: AttributeSet) : ListPreferen
     private fun updateSummary() {
         val selectedIconItem = iconItemList[currentIndex]
         val identifier = context.resources.getIdentifier(selectedIconItem.iconFilename, "drawable", context.packageName)
-        view.imageViewSelectedIcon.setImageResource(identifier)
-        view.textViewSummary.text = selectedIconItem.iconText
+        view?.imageViewSelectedIcon?.setImageResource(identifier)
+        view?.textViewSummary?.text = selectedIconItem.iconText
     }
 
     override fun onDialogClosed(positiveResult: Boolean) {
