@@ -18,15 +18,14 @@
  */
 package com.googlecode.mindbell.activity
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentActivity
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.View
-import android.view.WindowManager
+import android.view.*
+import android.webkit.WebView
 import android.widget.*
 import com.googlecode.mindbell.R
 import com.googlecode.mindbell.mission.ActionsExecutor
@@ -50,7 +49,7 @@ import kotlinx.android.synthetic.main.countdown.*
 import kotlinx.android.synthetic.main.main.*
 import kotlinx.android.synthetic.main.meditation_dialog.view.*
 
-class MainActivity : Activity() {
+class MainActivity : FragmentActivity() {
 
     private lateinit var prefs: Prefs
 
@@ -101,7 +100,7 @@ class MainActivity : Activity() {
         val muteForItem = menu.findItem(R.id.muteFor)
         muteForItem.intent = Intent(this, MuteActivity::class.java)
         val aboutItem = menu.findItem(R.id.about)
-        aboutItem.intent = Intent(this, AboutActivity::class.java)
+        aboutItem.setOnMenuItemClickListener { onMenuItemClickAbout() }
         val helpItem = menu.findItem(R.id.help)
         helpItem.setOnMenuItemClickListener { onMenuItemClickHelp() }
         val meditatingItem = menu.findItem(R.id.meditating)
@@ -478,6 +477,23 @@ class MainActivity : Activity() {
             prefs.popup = versionCode
         } else {
             prefs.resetPopup()
+        }
+    }
+
+    private fun onMenuItemClickAbout(): Boolean {
+        supportFragmentManager.beginTransaction()
+                .replace(android.R.id.content, AboutFragment())
+                .addToBackStack(null)
+                .commit()
+        return true
+    }
+
+    class AboutFragment : Fragment() {
+        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+            val root = inflater.inflate(R.layout.fragment_about, container, false)
+            val view = root.findViewById<WebView>(R.id.webViewAboutHtmlText)
+            view.loadUrl(getString(R.string.about_html_text_url))
+            return root
         }
     }
 
