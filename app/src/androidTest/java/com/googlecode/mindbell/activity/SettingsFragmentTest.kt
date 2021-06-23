@@ -66,10 +66,10 @@ import java.util.*
 
 
 @RunWith(AndroidJUnit4::class)
-class SettingsActivityTest {
+class SettingsFragmentTest {
 
     @get:Rule
-    var activityTestRule = ActivityTestRule(SettingsActivity::class.java, false, false) // don't launch
+    var activityTestRule = ActivityTestRule(SettingsFragment::class.java, false, false) // don't launch
 
     private lateinit var context: Context
 

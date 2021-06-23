@@ -96,7 +96,7 @@ class MainActivity : FragmentActivity() {
         val inflater = menuInflater
         inflater.inflate(R.menu.settings, menu)
         val settingsItem = menu.findItem(R.id.settings)
-        settingsItem.intent = Intent(this, SettingsActivity::class.java)
+        settingsItem.setOnMenuItemClickListener { onMenuItemClickSettings() }
         val muteForItem = menu.findItem(R.id.muteFor)
         muteForItem.intent = Intent(this, MuteActivity::class.java)
         val aboutItem = menu.findItem(R.id.about)
@@ -483,6 +483,14 @@ class MainActivity : FragmentActivity() {
     private fun onMenuItemClickAbout(): Boolean {
         supportFragmentManager.beginTransaction()
                 .replace(android.R.id.content, AboutFragment())
+                .addToBackStack(null)
+                .commit()
+        return true
+    }
+
+    private fun onMenuItemClickSettings(): Boolean {
+        fragmentManager.beginTransaction()
+                .replace(android.R.id.content, SettingsFragment())
                 .addToBackStack(null)
                 .commit()
         return true

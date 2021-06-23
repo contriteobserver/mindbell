@@ -28,15 +28,15 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Vibrator
-import android.preference.CheckBoxPreference
-import android.preference.Preference
+import android.preference.*
 import android.preference.Preference.OnPreferenceChangeListener
-import android.preference.PreferenceActivity
-import android.preference.RingtonePreference
 import android.provider.Settings
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import com.googlecode.mindbell.R
 import com.googlecode.mindbell.mission.Prefs
@@ -49,11 +49,12 @@ import com.googlecode.mindbell.preference.MinutesIntervalPickerPreference
 import com.googlecode.mindbell.preference.MultiSelectListPreferenceWithSummary
 import com.googlecode.mindbell.util.TimeOfDay
 import com.googlecode.mindbell.util.Utils
+import kotlinx.android.synthetic.main.main.*
 
 /**
  *
  */
-class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
+class SettingsFragment : PreferenceFragment(), ActivityCompat.OnRequestPermissionsResultCallback {
 
     // Weird, but ringtone cannot be retrieved from RingtonePreference, only from SharedPreference or in ChangeListener
     private var preferenceRingtoneValue: String? = null
@@ -69,7 +70,7 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
             sb.append("\n\n")
             sb.append(getText(R.string.mailInfo2))
             sb.append("\n\n")
-            sb.append(Utils.getApplicationInformation(packageManager, packageName))
+            sb.append(Utils.getApplicationInformation(activity.packageManager, activity.packageName))
             sb.append("\n")
             sb.append(Utils.systemInformation)
             sb.append("\n")
@@ -87,7 +88,7 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
     fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val prefs = Prefs.getInstance(this)
+        val prefs = Prefs.getInstance(activity)
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences_1)
@@ -119,7 +120,7 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
         preferenceUseAudioStreamVolumeSetting.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
             val isChecked = newValue as Boolean
             if (!isChecked && prefs.mustUseAudioStreamVolumeSetting()) {
-                Toast.makeText(this@SettingsActivity, R.string.mustUseAudioStreamSetting, Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, R.string.mustUseAudioStreamSetting, Toast.LENGTH_SHORT).show()
                 false
             } else {
                 preferenceVolume.isEnabled = preferenceSound.isChecked && !isChecked
@@ -146,7 +147,7 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
         preferenceReminderBell.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
             val reminderBell = newValue as String
             val isChecked = Prefs.isUseStandardBell(reminderBell)
-            if (Prefs.isUseStandardBell(reminderBell) || ContextCompat.checkSelfPermission(this@SettingsActivity, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            if (Prefs.isUseStandardBell(reminderBell) || ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 if (mediateSoundDurationRelatedSettings(preferenceFrequency, preferenceUseWorkaroundBell, reminderBell,
                                 preferenceRingtoneValue, preferenceSound)) {
                     // Allow setting this option to "off" if permission is granted
@@ -160,7 +161,7 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
                 }
             } else {
                 // Ask for permission if this option shall be set to "off" but permission is missing
-                ActivityCompat.requestPermissions(this@SettingsActivity,
+                ActivityCompat.requestPermissions(activity,
                         arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_CODE_RINGTONE)
                 // As the permission request is asynchronous we have to deny setting this option (to "off")
                 false
@@ -184,7 +185,8 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
         preferenceVibrate.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue -> mediateShowAndSoundAndVibrate(preferenceShow, preferenceSound, newValue) }
 
         preferencePattern.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
-            val vibrator = this@SettingsActivity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            val vibrator = activity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
             vibrator.vibrate(Prefs.getVibrationPattern(newValue as String), -1)
             true
         }
@@ -218,7 +220,7 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
             } else {
                 // if frequency is NOT factor of an hour, ringing on the minute may NOT be set
                 if (preferenceNormalize.isEnabled && isNormalize(preferenceNormalize.value)) {
-                    Toast.makeText(this@SettingsActivity, R.string.frequencyDoesNotFitIntoAnHour, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity, R.string.frequencyDoesNotFitIntoAnHour, Toast.LENGTH_SHORT).show()
                     return@OnPreferenceChangeListener false
                 } else {
                     preferenceNormalize.isEnabled = false
@@ -236,14 +238,14 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
                 true
             } else {
                 // if frequency is NOT factor of an hour, ringing on the minute may NOT be set
-                Toast.makeText(this@SettingsActivity, R.string.frequencyDoesNotFitIntoAnHour, Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, R.string.frequencyDoesNotFitIntoAnHour, Toast.LENGTH_SHORT).show()
                 false
             }
         }
 
         preferenceActiveOnDaysOfWeek.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValues ->
             if ((newValues as Set<*>).isEmpty()) {
-                Toast.makeText(this@SettingsActivity, R.string.atLeastOneActiveDayNeeded, Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, R.string.atLeastOneActiveDayNeeded, Toast.LENGTH_SHORT).show()
                 return@OnPreferenceChangeListener false
             }
             true
@@ -274,12 +276,12 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
         }
 
         preferenceStatistics.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            startActivity(Intent(this, StatisticsActivity::class.java))
+            startActivity(Intent(activity, StatisticsActivity::class.java))
             true
         }
 
         preferenceSendMail.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            AlertDialog.Builder(this@SettingsActivity) //
+            AlertDialog.Builder(activity) //
                     .setTitle(R.string.prefsSendMail) //
                     .setMessage(R.string.mailInfo1) //
                     .setIcon(R.mipmap.ic_launcher) //
@@ -301,24 +303,30 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
 
     }
 
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = super.onCreateView(inflater, container, savedInstanceState)
+        view?.setBackgroundColor(resources.getColor(R.color.backgroundColor))
+        return view
+    }
+
     /**
      * Ensures that the CheckBoxPreferences checkBoxPreferenceMuteOffHook and checkBoxPreferenceStatus cannot be both "on" without
      * having READ_PHONE_STATE permission by returning false when this rule is violated.
      */
     private fun onPreferenceClickReadPhoneState() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-            AlertDialog.Builder(this) //
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+            AlertDialog.Builder(activity) //
                     .setTitle(R.string.prefsReadPhoneState) //
                     .setMessage(R.string.summaryReadPhoneStateGranted) //
                     .setPositiveButton(android.R.string.ok, null) //
                     .show()
         } else {
-            AlertDialog.Builder(this) //
+            AlertDialog.Builder(activity) //
                     .setTitle(R.string.prefsReadPhoneState) //
                     .setMessage(R.string.summaryReadPhoneStateDenied) //
                     .setNegativeButton(android.R.string.cancel, null) //
                     .setPositiveButton(android.R.string.ok) { _, _ ->
-                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_PHONE_STATE), REQUEST_READ_PHONE_STATE) //
+                        ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_PHONE_STATE), REQUEST_READ_PHONE_STATE) //
                     } //
                     .show()
         }
@@ -330,7 +338,7 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
      */
     private fun mediateShowAndSoundAndVibrate(firstOther: CheckBoxPreference, secondOther: CheckBoxPreference, newValue: Any): Boolean {
         if (!firstOther.isChecked && !secondOther.isChecked && !(newValue as Boolean)) {
-            Toast.makeText(this, R.string.atLeastOneReminderActionNeeded, Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, R.string.atLeastOneReminderActionNeeded, Toast.LENGTH_SHORT).show()
             return false
         }
         return true
@@ -374,7 +382,7 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
      * Returns the chosen sound depending on settings for reminderBell, ringtone and useWorkaroundBell.
      */
     private fun getReminderSoundUri(reminderBell: String, isUseWorkaroundBell: Boolean, ringtone: String?): Uri? {
-        val prefs = Prefs.getInstance(this)
+        val prefs = Prefs.getInstance(activity)
         // This implementation is almost the same as Prefs#getReminderBellSoundUri()
         var soundUri = prefs.getBellSoundUri(reminderBell, isUseWorkaroundBell)
         if (soundUri == null) { // use system notification ringtone if reminder bell sound is not set
@@ -392,9 +400,9 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
      */
     private fun validatePreferenceRingtone(newRingtoneValue: String?): Boolean {
         if (newRingtoneValue != null && !newRingtoneValue.isEmpty()) {
-            val ringtoneDuration = Utils.getSoundDuration(this, Uri.parse(newRingtoneValue))
+            val ringtoneDuration = Utils.getSoundDuration(activity, Uri.parse(newRingtoneValue))
             if (ringtoneDuration == null) {
-                Toast.makeText(this, R.string.ringtoneNotAccessible, Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, R.string.ringtoneNotAccessible, Toast.LENGTH_SHORT).show()
                 return false
             }
         }
@@ -423,8 +431,8 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
             getText(R.string.summaryRingtoneNotSet)
         } else {
             val ringtoneUri = Uri.parse(uriString)
-            val ringtone = RingtoneManager.getRingtone(this, ringtoneUri)
-            ringtone.getTitle(this)
+            val ringtone = RingtoneManager.getRingtone(activity, ringtoneUri)
+            ringtone.getTitle(activity)
         }
     }
 
@@ -457,8 +465,8 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
 
     private fun onPreferenceClickBatterySettings() {
         if (Build.VERSION.SDK_INT >= 23) {
-            if (Utils.isAppWhitelisted(this)) {
-                AlertDialog.Builder(this) //
+            if (Utils.isAppWhitelisted(activity)) {
+                AlertDialog.Builder(activity) //
                         .setTitle(R.string.prefsBatterySettings) //
                         .setMessage(R.string.summaryBatterySettingsWhitelisted) //
                         .setNegativeButton(android.R.string.cancel, null) //
@@ -468,7 +476,7 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
                         } //
                         .show()
             } else {
-                AlertDialog.Builder(this) //
+                AlertDialog.Builder(activity) //
                         .setTitle(R.string.prefsBatterySettings) //
                         .setMessage(R.string.summaryBatterySettingsNotWhitelisted) //
                         .setNegativeButton(android.R.string.cancel, null) //
@@ -477,21 +485,20 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
                             // suspending MindBell from Google Play Store. See the comments for this answer:
                             // https://stackoverflow.com/a/33114136/2532583
                             startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
-                            val context = this@SettingsActivity
                             Toast
-                                    .makeText(context, context.getText(R.string.battery_settings_guidance1), Toast.LENGTH_LONG)
+                                    .makeText(activity, R.string.battery_settings_guidance1, Toast.LENGTH_LONG)
                                     .show()
                             Toast
-                                    .makeText(context, context.getText(R.string.battery_settings_guidance2), Toast.LENGTH_LONG)
+                                    .makeText(activity, R.string.battery_settings_guidance2, Toast.LENGTH_LONG)
                                     .show()
                             Toast
-                                    .makeText(context, context.getText(R.string.battery_settings_guidance3), Toast.LENGTH_LONG)
+                                    .makeText(activity, R.string.battery_settings_guidance3, Toast.LENGTH_LONG)
                                     .show()
                         } //
                         .show()
             }
         } else {
-            AlertDialog.Builder(this) //
+            AlertDialog.Builder(activity) //
                     .setTitle(R.string.prefsBatterySettings) //
                     .setMessage(R.string.summaryBatterySettingsUnknown) //
                     .setPositiveButton(android.R.string.ok, null) //
@@ -514,17 +521,17 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
      * Handles click on confirmation to send info.
      */
     private fun onClickReallySendInfo() {
-        val prefs = Prefs.getInstance(this)
+        val prefs = Prefs.getInstance(activity)
         prefs.logStatistics()
         prefs.logSettings()
-        Log.d(TAG, "Excluded from battery optimization (always false for SDK < 23)? -> ${Utils.isAppWhitelisted(this)}")
+        Log.d(TAG, "Excluded from battery optimization (always false for SDK < 23)? -> ${Utils.isAppWhitelisted(activity)}")
         val i = Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getText(R.string.emailAddress).toString(), null))
         i.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.emailSubject))
         i.putExtra(Intent.EXTRA_TEXT, infoMailText)
         try {
             startActivity(Intent.createChooser(i, getText(R.string.emailChooseApp)))
         } catch (ex: android.content.ActivityNotFoundException) {
-            Toast.makeText(this, getText(R.string.noEmailClients), Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, getText(R.string.noEmailClients), Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -541,9 +548,9 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
             return true
         }
         val soundUri = getReminderSoundUri(reminderBell, useWorkaroundBell, ringtoneValue)!!
-        var soundDuration = Utils.getSoundDuration(this, soundUri)
+        var soundDuration = Utils.getSoundDuration(activity, soundUri)
         if (soundDuration == null) {
-            Toast.makeText(this, R.string.ringtoneNotAccessible, Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, R.string.ringtoneNotAccessible, Toast.LENGTH_SHORT).show()
             return false
         }
         soundDuration /= 1000L // in seconds
@@ -552,7 +559,7 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
             val msg = String.format(getText(R.string.ringtoneDurationTooLong).toString(), soundDuration, maxDuration,
                     frequency.interval * 60L)
             Log.w(TAG, "$msg (${soundUri.toString()})")
-            Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+            Toast.makeText(activity, msg, Toast.LENGTH_LONG).show()
             return false
         }
         return true
@@ -578,10 +585,10 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
             // if request is cancelled, the result arrays are empty, so nothing to do here, even don't explain it
         } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             // User granted the needed permission therefore it's no more to do here
-        } else if (ActivityCompat.shouldShowRequestPermissionRationale(this@SettingsActivity,
+        } else if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
                         Manifest.permission.READ_PHONE_STATE)) {
             // User denied the needed permission and can be given an explanation, so we show an explanation
-            AlertDialog.Builder(this@SettingsActivity) //
+            AlertDialog.Builder(activity) //
                     .setTitle(R.string.reasonReadPhoneStateTitle) //
                     .setMessage(R.string.reasonReadPhoneStateText) //
                     .setPositiveButton(android.R.string.ok, null) //
@@ -589,7 +596,7 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
                     .show()
         } else {
             // User denied the needed permission and checked never ask again
-            AlertDialog.Builder(this@SettingsActivity) //
+            AlertDialog.Builder(activity) //
                     .setTitle(R.string.neverAskAgainReadPhoneStateTitle) //
                     .setMessage(R.string.neverAskAgainReadPhoneStateText) //
                     .setPositiveButton(android.R.string.ok, null) //
@@ -608,10 +615,10 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
             if (preferenceReminderBell.onPreferenceChangeListener.onPreferenceChange(preferenceReminderBell, "0")) {
                 preferenceReminderBell.value = "0" // WARNING: This does NOT call the onPreferenceValueChangeListener
             }
-        } else if (ActivityCompat.shouldShowRequestPermissionRationale(this@SettingsActivity,
+        } else if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
                         Manifest.permission.READ_EXTERNAL_STORAGE)) {
             // User denied the needed permission and can be given an explanation, so we show an explanation
-            AlertDialog.Builder(this@SettingsActivity) //
+            AlertDialog.Builder(activity) //
                     .setTitle(R.string.reasonReadExternalStorageTitle) //
                     .setMessage(R.string.reasonReadExternalStorageText) //
                     .setPositiveButton(android.R.string.ok, null) //
@@ -619,7 +626,7 @@ class SettingsActivity : PreferenceActivity(), ActivityCompat.OnRequestPermissio
                     .show()
         } else {
             // User denied the needed permission and checked never ask again
-            AlertDialog.Builder(this@SettingsActivity) //
+            AlertDialog.Builder(activity) //
                     .setTitle(R.string.neverAskAgainReadExternalStorageTitle) //
                     .setMessage(R.string.neverAskAgainReadExternalStorageText) //
                     .setPositiveButton(android.R.string.ok, null) //
